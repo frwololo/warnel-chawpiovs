@@ -1018,7 +1018,7 @@
 						"display_title": "choose card to discard",
 						"selection_count": 1,
 						"selection_type": "equal",
-						"is_cost": true,
+						"is_cost": true
 					},
 					{
 						"name": "thwart",
@@ -1077,13 +1077,17 @@
 				},
 				{
 					"name": "attack",
-					"tags": ["collateral_attack"],
+					"tags": [
+						"collateral_attack"
+					],
 					"amount": 0,
 					"subject": "an_enemy"
 				},
 				{
 					"name": "attack",
-					"tags": ["collateral_attack"],					
+					"tags": [
+						"collateral_attack"
+					],
 					"amount": 0,
 					"subject": "an_enemy"
 				}

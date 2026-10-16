@@ -557,7 +557,7 @@
 							"trait_aerial": 0
 						}
 					}
-				],				
+				]
 			},
 			"board": [
 				{
@@ -3413,7 +3413,7 @@
 		},
 		"before_card_moved_to_board": {
 			"trigger": "my_minion",
-			"all": [ 
+			"all": [
 				{
 					"name": "mod_tokens",
 					"token_name": "damage",
@@ -3428,7 +3428,7 @@
 					}
 				},
 				{
-					"name":"forget_variable",
+					"name": "forget_variable",
 					"var_name": "my_minion"
 				}
 			]
@@ -6041,7 +6041,6 @@
 					}
 				}
 			]
-				
 		}
 	},
 	"Machete": {

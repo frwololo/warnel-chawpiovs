@@ -830,7 +830,7 @@
 					"end_condition": {
 						"event": "card_played",
 						"event_filters": {
-							"trigger" :"self"
+							"trigger": "self"
 						}
 					},
 					"subject": "tutor",
@@ -851,7 +851,7 @@
 								}
 							]
 						}
-					},
+					}
 				},
 				{
 					"name": "execute_scripts",

@@ -131,11 +131,14 @@ static func get_altered_value(
 	var preloaded_objs = []
 	#bypass the whole calculation if we know that no item in the game alters this
 	if _alteration_super_cache["initialized"] and property_name:	
-		if ! _alteration_super_cache["properties"].get(property_name):
-			for key in _alteration_super_cache["wildcard_properties"]:
-				if property_name.begins_with(key):
+		for key in _alteration_super_cache["wildcard_properties"]:
+			if property_name.begins_with(key):
+				if ! _alteration_super_cache["properties"].has(property_name):	
 					_alteration_super_cache["properties"][property_name] = _alteration_super_cache["wildcard_properties"][key].duplicate()
-					break			
+				else:
+					for obj in _alteration_super_cache["wildcard_properties"][key]:
+						_alteration_super_cache["properties"][property_name][obj] = _alteration_super_cache["wildcard_properties"][key][obj]
+				break			
 
 		preloaded_objs = _alteration_super_cache["properties"].get(property_name, {}).keys()
 		if !preloaded_objs:
@@ -190,7 +193,7 @@ static func get_altered_value(
 			unique[key] = true
 		scriptables_array = unique.keys()
 
-#		if task_properties.get("property_name", "") == "attack" and _owner.get_property("shortname", "") == "M.O.D.O.K.":
+#		if task_properties.get("property_name", "") == "trait_aerial" and _owner.get_property("shortname", "") == "Hope Summers":
 #			var _tmp = 1
 		
 		for obj in scriptables_array:

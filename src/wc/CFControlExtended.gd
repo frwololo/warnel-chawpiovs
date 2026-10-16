@@ -24,6 +24,8 @@ var schemes: Dictionary
 var modular_encounters: Dictionary = {}
 var standard_encounters: Dictionary = {}
 var cards_by_set: Dictionary
+#"Linked" keyword
+var cards_linked_to: Dictionary = {}
 var nemesis: Dictionary
 
 #Hero deck data identified by integer id (marvelcdb id)
@@ -719,6 +721,14 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 			trait = remove_bbcode(trait)
 			card_data["play_only_if_traits"].append(trait)
 
+	needle = "linked ("
+	var linked_pos = text_lc.find(needle)
+	if linked_pos > -1:
+		var card_pos = text_lc.find(")", linked_pos)
+		var startpos = linked_pos + needle.length()
+		var linked_str = text_lc.substr(startpos, card_pos - startpos )
+		card_data["linked_to"] = linked_str.to_lower()
+
 	if lc_card_type == "player_side_scheme":
 		card_data["secondary_type_code"] = "side_scheme"
 
@@ -793,6 +803,32 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 			if !reverse_duplicates.has(duplicate_of_id):
 				reverse_duplicates[duplicate_of_id] = []
 			reverse_duplicates[duplicate_of_id].append(card_id)	
+
+#get list of cards "linked" to this card
+#Here, linked refers specifically to the "linked "rule in Marvel Champions
+#this instructs to set these cards aside at setup
+func get_cards_linked_to(card_id):
+	#cache is in place
+	if !cards_linked_to:
+		var tmp_cache_name_to_id = {}
+		for card_id in card_definitions:
+			var card = card_definitions[card_id]
+			var lc_name = card["Name"].to_lower()		
+			tmp_cache_name_to_id[lc_name] = card_id	
+		
+		for card_id in card_definitions:
+			var card = card_definitions[card_id]
+			var linked_to = card.get("linked_to", "")
+			if linked_to:
+				var linked_to_id = tmp_cache_name_to_id.get(linked_to, "")
+				if linked_to_id:
+					if !cards_linked_to.has(linked_to_id):
+						cards_linked_to[linked_to_id] = []
+					cards_linked_to[linked_to_id].append(card_id)
+		
+		cards_linked_to["initialized"] = true
+
+	return cards_linked_to.get(card_id, [])
 
 func load_one_card_extra_data(card_data):
 	var box_name = card_data["box_name"]

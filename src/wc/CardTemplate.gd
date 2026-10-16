@@ -905,14 +905,15 @@ func _class_specific_process(delta):
 			$Debug/Panel/V/state.text = "STATE: " + stateslist[state]
 			$Debug/Panel/V/index.text = "INDEX: " + str(get_index())
 			$Debug/Panel/V/parent.text = "PARENT: " + str(get_parent().name)
-			if !get_owner_hero_id():
-				var traits = ""
-				var separator = "/"
-				for trait in cfc.all_traits:
-					var value = get_property("trait_" + trait, 0, true)
-					if value:
-						traits += trait +"(" + str(value) +")" + separator
-				$Debug/Panel/V/misc.text = "TRAITS: " + str(traits)
+
+			#display traits in debug
+			var traits = ""
+			var separator = "/"
+			for trait in cfc.all_traits:
+				var value = get_property("trait_" + trait, 0, true)
+				if value:
+					traits += trait +"(" + str(value) +")" + separator
+			$Debug/Panel/V/misc.text = "TRAITS: " + str(traits)
 			$Debug.rect_scale = Vector2(2.0, 2.0)
 		else:
 			$Debug.visible = false	

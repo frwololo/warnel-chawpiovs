@@ -37,7 +37,7 @@ func return_per_count(filters:={}) -> int:
 		if filters.get("has_property", ""):
 			var property_filter = filters.get("has_property")
 			for s in subjects:
-				if !s.get_property(property_filter):
+				if !s.get_property(property_filter, 0, true):
 					exclude.append(s)
 			for s in exclude:
 				subjects.erase(s)

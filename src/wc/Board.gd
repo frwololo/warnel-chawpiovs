@@ -1118,6 +1118,7 @@ func load_cards() -> void:
 
 		var set_aside_datas = hero_deck_data.get_extra_deck_cards()
 		
+		
 		#we also load the hero side of the card to set aside
 		set_aside_datas.append(hero_deck_data.get_hero_card_data())
 		for card_data in set_aside_datas:
@@ -1137,7 +1138,16 @@ func load_cards() -> void:
 					"card" : card_id,
 					"owner_hero_id": hero_id
 				})					
-				
+
+		#Linked" cards need to be added to the set_aside area
+		for card_data in card_datas:
+			var card_id = card_data["code"]
+			var other_cards = cfc.get_cards_linked_to(card_id)
+			for other_card in other_cards:
+				set_aside_info.append({
+					"card" : other_card,
+					"owner_hero_id": hero_id
+				}					)
 							
 		load_cards_to_pile(card_info, "deck" + str(hero_id))
 		load_cards_to_pile(set_aside_info, "set_aside")

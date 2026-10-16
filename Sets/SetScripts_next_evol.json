@@ -3720,7 +3720,7 @@
 			]
 		}
 	},
-	"Hope Summers": {
+	"Hope Summers #40130": {
 		"alterants": {
 			"board": [
 				{
@@ -3768,6 +3768,41 @@
 			"all": [
 				{
 					"name": "defeat"
+				}
+			]
+		}
+	},
+	"Hope Summers #40204": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_*",
+					"trigger": "self",
+					"per_boardseek": {
+						"subject": "my_identity",
+						"filter_has_requested_property": true
+					},
+					"alteration": "per_boardseek"
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"event_filters": {
+				"from": "hand_my_hero"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "tutor_and_choose",
+					"src_container": "deck",
+					"filter_state_tutor": "trait_superpower"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
 				}
 			]
 		}
@@ -5543,7 +5578,7 @@
 					"filter_property_name": "cannot_leave_play_from_abilities",
 					"trigger": "self",
 					"alteration": 1
-				}				
+				}
 			]
 		},
 		"interrupt_enemy_initiates_attack": {
@@ -9804,7 +9839,7 @@
 		}
 	},
 	"Uncanny X-Force": {
-		"give_to_player_max1": {},	
+		"give_to_player_max1": {},
 		"alterants": {
 			"board": [
 				{

@@ -1,0 +1,1493 @@
+{
+	"\"Now I'm Mad\"": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": {
+						"if": {
+							"func_name": "get_remaining_damage<0",
+							"func_params": {
+								"subject": "my_hero",
+								"plus": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "my_hero",
+										"property": "health",
+										"plus": 1,
+										"divider": -2
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "my_hero",
+					"alteration": {
+						"if": {
+							"func_name": "get_remaining_damage<0",
+							"func_params": {
+								"subject": "my_hero",
+								"plus": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "my_hero",
+										"property": "health",
+										"plus": 1,
+										"divider": -2
+									}
+								}
+							}
+						},
+						"then": -1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Adamantium Lacing": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_identity",
+					"alteration": 2
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "X-23",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "X-23",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Animal Instinct": {
+		"interrupt_thwart_started": {
+			"trigger": "X-23",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "basic_thwart_happened",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "X-23",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "X-23",
+											"property": "attack"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Anticipated Attack": {
+		"interrupt_enemy_initiates_attack": {
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "tutor",
+								"src_container": "victory_display",
+								"filter_state_tutor": [
+									{
+										"filter_properties": {
+											"type_code": "side_scheme"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Boom Boom - Tabitha Smith": {
+		"manual": {
+			"board": {
+				"Tick-Tock...": [
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"subject": "self",
+						"token_name": "boom"
+					}
+				],
+				"Boom!": [
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"subject": "self",
+						"token_name": "boom"
+					},
+					{
+						"name": "deal_damage",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": "group_enemies",
+						"amount": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "self",
+								"token_name": "boom"
+							}
+						}
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Claw Mastery": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "round_ended",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "X-23",
+									"alteration": 2
+								}
+							]
+						},
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"trigger": "X-23",
+									"alteration": {
+										"func_name": "card_is_in_play",
+										"func_params": {
+											"card_name": "Honey Badger"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Combat Specialist": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"response_basic_attack_happened": {
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Critical Hit": {
+		"response_attack_happened": {
+			"trigger": "my_hero",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "tutor",
+								"src_container": "victory_display",
+								"filter_state_tutor": [
+									{
+										"filter_properties": {
+											"type_code": "side_scheme"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "trigger_details_target"
+				}
+			]
+		}
+	},
+	"Critical Wound": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"subject": "host",
+					"amount": 4
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Cybermods": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Lady Deathstrike",
+					"is_cost": true
+				},
+				{
+					"name": "do_minion",
+					"is_else": true
+				}
+			]
+		},
+		"do_minion": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "previous"
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_host",
+					"var_type": "subject",
+					"value": "host"
+				}
+			]
+		},
+		"interrupt_card_moved_to_pile": {
+			"trigger": "my_host",
+			"filter_destination": "discard",
+			"board": [
+				{
+					"name": "shuffle_card_into_container",
+					"dest_container": "deck_villain",
+					"subject": "trigger"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_host"
+				}
+			]
+		}
+	},
+	"Defense Specialist": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"response_basic_defense_happened": {
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Endurance": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 3
+				}
+			]
+		}
+	},
+	"Front Line Specialist": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_hero",
+					"alteration": 4
+				}
+			]
+		},
+		"response_card_damaged": {
+			"trigger": "my_identity",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Grim Resolve": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Hack 'n' Slash": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_my_hero",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "deal_damage",
+					"subject": "my_identity",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_current_activation_target",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "deal_damage",
+					"subject": "current_activation_target",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Honey Badger - Gabby Kinney": {
+		"response_card_damaged": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "X-23"
+				}
+			]
+		}
+	},
+	"IPAC": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"In the Name of Vengeance": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"filter_state_trigger": "group_enemies",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Keep Them Busy": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "remove_threat",
+					"amount": "5p",
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Lady Deathstrike": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"subject": "event_source_hero"
+				}
+			]
+		}
+	},
+	"Laura Kinney": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"discard",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "X-23's Claws"
+							}
+						}
+					]
+				}
+			]
+		},
+		"once_per_round": {
+			"__name__": "__draw"
+		},
+		"manual": {
+			"board": {
+				"Draw 1": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__draw",
+						"subject": "self"
+					},
+					{
+						"name": "shuffle_card_into_container",
+						"subject": "tutor_and_choose",
+						"src_container": "discard",
+						"dest_container": "deck",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Honey Badger"
+								}
+							},
+							{
+								"filter_properties": {
+									"shortname": "Sisterly Bond"
+								}
+							}
+						]
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					}
+				]
+			}
+		}
+	},
+	"Moment of Triumph": {
+		"response_card_dies": {
+			"event_filters": {
+				"source": "my_hero",
+				"excess_damage": ">0"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "heal",
+					"subject": "my_hero",
+					"amount": "trigger_details_excess_damage"
+				}
+			]
+		}
+	},
+	"Pain Tolerance": {
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"card_set_code": "x23"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Predictable Ploy": {
+		"interrupt_reveal_encounter": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "tutor",
+								"src_container": "victory_display",
+								"filter_state_tutor": [
+									{
+										"filter_properties": {
+											"type_code": "side_scheme"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Puncture Wound": {
+		"attack_happened": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"shortname": "X-23"
+					}
+				},
+				{
+					"filter_properties": {
+						"shortname": "Honey Badger"
+					}
+				}
+			],
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "my_enemies",
+					"var_type": "subject",
+					"mode": "add",
+					"value": "trigger_details_target"
+				}
+			]
+		},
+		"phase_ended": {
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_enemies"
+				}
+			]
+		},
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_is_included_in": "my_enemies"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": -1
+				}
+			]
+		},
+		"step_started": {
+			"event_filters": {
+				"step_name": "PLAYER_TURN"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "host"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Rally the Troops": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "ally"
+				}
+			]
+		}
+	},
+	"Regenerative Longevity": {
+		"manual": {
+			"hand": {
+				"Heal 4 From Identity": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 4,
+						"is_cost": true,
+						"subject": "my_identity"
+					}
+				],
+				"Heal 3 From Identity, 1 From Honey Badget": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 3,
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"is_cost": true,
+						"subject": "Honey Badger"
+					}
+				],
+				"Heal 2 From Identity, 2 From Honey Badget": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 2,
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "heal",
+						"amount": 2,
+						"is_cost": true,
+						"subject": "Honey Badger"
+					}
+				],
+				"Heal 1 From Identity, 3 From Honey Badget": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"is_cost": true,
+						"subject": "my_identity"
+					},
+					{
+						"name": "heal",
+						"amount": 3,
+						"is_cost": true,
+						"subject": "Honey Badger"
+					}
+				],
+				"Heal 4 From Honey Badget": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 4,
+						"is_cost": true,
+						"subject": "Honey Badger"
+					}
+				]
+			}
+		}
+	},
+	"Rictor - Julio Richter": {
+		"attack_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_hero",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Self-Isolation": {
+		"give_obligation": {
+			"__to__": "Laura Kinney"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "host_card",
+					"tags": [
+						"facedown"
+					],
+					"subject": "tutor",
+					"src_container": [
+						"hand_my_hero",
+						"deck_my_hero",
+						"board",
+						"discard_my_hero"
+					],
+					"filter_state_tutor": "Honey Badger",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"is_else": true,
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"recovery_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Shatterstar - Gaveedra Seven": {
+		"interrupt_attack_started": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_last_subjects",
+									"filter_state_trigger": [
+										{
+											"filter_same_controller": true
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"subject": "self",
+									"end_condition": "attack_happened",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "engage_player",
+							"subject": "my_last_subjects",
+							"target_identity": "my_identity"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Sisterhood": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"is_cost": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "x23"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "tutor",
+					"filter_state_tutor": "Honey Badger"
+				}
+			]
+		}
+	},
+	"Sisterly Bond": {
+		"interrupt_thwart_started": {
+			"trigger": "Honey Badger",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "thwart_happened",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "Honey Badger",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "X-23",
+											"property": "thwart"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"trigger": "Honey Badger",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "attack_happened",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "Honey Badger",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "X-23",
+											"property": "attack"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Specialized Training": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Grab Specialization": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "!count_cards",
+									"func_params": {
+										"subject": "boardseek",
+										"filter_state_seek": [
+											"filter_same_controller",
+											"upgrade",
+											"trait_specialization"
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "move_card_to_board",
+										"subject": "tutor_and_choose",
+										"src_container": "set_aside",
+										"filter_state_tutor": [
+											"upgrade",
+											"trait_specialization"
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Surveillance Specialist": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"response_basic_thwart_happened": {
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"The Direct Approach": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					},
+					"filter_properties2": {
+						"permanent": 0
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "assault",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"X-23": {
+		"once_per_phase": {
+			"__name__": "__living_weapon"
+		},
+		"card_damaged": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "__living_weapon",
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"X-23's Claws": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "my_identity"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "round_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "X-23",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"X-Bunker": {
+		"manual": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "victory_display",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_properties": {
+								"trait_mutant": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"src_container": "deck_previous_subject",
+					"dest_container": "hand_previous_subject",
+					"subject": "index",
+					"subject_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "victory_display",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "side_scheme"
+									}
+								}
+							]
+						}
+					},
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_previous_subject"
+				}
+			]
+		}
+	}
+}

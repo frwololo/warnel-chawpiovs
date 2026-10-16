@@ -38,8 +38,8 @@ static func _get_deck_cards(_deck_id):
 	var slots = deck_data.slots
 	for card_id in slots:
 		var quantity = slots[card_id]
+		var card_data = cfc.get_card_by_id(card_id)		
 		for _i in range (quantity):
-			var card_data = cfc.get_card_by_id(card_id)
 			result.append(card_data)
 	return result	
 	

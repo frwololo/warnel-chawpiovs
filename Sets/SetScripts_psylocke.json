@@ -48,8 +48,11 @@
 		]
 	},
 	"Angel - Warren Worthington III": {
-		"self_moved_to_board": {
-			"optional_board": true,
+		"card_played": {
+			"trigger": "self",
+			"event_filters": {
+				"from": "hand_my_hero"
+			},
 			"board": [
 				{
 					"name": "ready_card",

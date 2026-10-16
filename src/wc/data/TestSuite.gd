@@ -72,6 +72,7 @@ var forced_status: int = TestStatus.NONE
 #current tests
 var initial_state:Dictionary
 var end_state:Dictionary
+var additional_checks: Array
 var test_conditions: Dictionary
 var actions:Array
 var current_action:int = 0
@@ -177,6 +178,7 @@ func reset_between_tests():
 	#current tests
 	initial_state = {}
 	end_state = {}
+	additional_checks = []
 	test_conditions = {}
 	actions = []
 	current_action= 0
@@ -851,7 +853,15 @@ func get_card_from_pile(card_id_or_name:String, pile:CardContainer):
 		if card.canonical_id == card_id:
 			return card 
 	return null	
-	
+
+func get_any_card():
+	var board_cards = cfc.NMAP.board.get_all_cards()
+	for c in board_cards:
+		if !is_instance_valid(c):
+			continue
+		return c
+	return null
+					
 #Find a card object (on the board, etc...)
 #requesting_hero_id is an indicator to help choosing the right card in case there are multiple cards of the same name on the board
 func get_card(card_id_or_name:String, requesting_hero_id):
@@ -975,6 +985,21 @@ mastersync func test_finalized(result):
 		_allclients_finalized = {}
 		var _next = next_test()
 
+func check_test_passed(current_gamestate):
+	if !(is_element1_in_element2(end_state, current_gamestate)):
+		return false
+	
+	for check in additional_checks:
+		var func_name = check.get("func_name", "")
+		var func_params = check.get("func_params", {})
+		var owner_card = get_any_card()
+		var value = cfc.ov_utils.dummy_func_name_run(owner_card, owner_card, func_name, func_params)
+		if !value:
+			failed_reason.append("failed additional check" + JSON.print(check))
+			return false
+	
+	return true
+
 remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 	var result = force_status
 	#last minute cleanup
@@ -991,7 +1016,7 @@ remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 		return
 	var current_gamestate = gameData.save_gamedata()
 	
-	if (is_element1_in_element2(end_state, current_gamestate)):
+	if check_test_passed(current_gamestate):
 		passed.append(current_test_file)
 		result = TestStatus.PASSED
 	else:
@@ -1174,6 +1199,7 @@ remote func initialize_clients_test(details:Dictionary):
 	end_state = details["end_state"]
 	current_test_file = details["current_test_file"]
 	test_conditions = details["test_conditions"]
+	additional_checks = details.get("additional_checks", [])
 	delta = 0
 	if test_conditions.has("setup"):
 		for card_id in test_conditions["setup"]:
@@ -1302,6 +1328,8 @@ func load_test(test_file)-> bool:
 		if !test_matches_filter(test_file, json_test_data, test_list_filter):
 			return false
 	
+	additional_checks = json_test_data.get("additional_checks", [])
+	
 	announce("running test: " + test_file +"\n")	
 	initial_state = json_test_data["init"]
 	actions = json_test_data["actions"]
@@ -1318,6 +1346,7 @@ func load_test(test_file)-> bool:
 		"end_state" : end_state,
 		"current_test_file" : current_test_file,
 		"test_conditions" : test_conditions,
+		"additional_checks" : additional_checks,
 	}
 	if initial_state.has("scenario"):
 		load_scenario(initial_state)

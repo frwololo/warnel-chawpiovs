@@ -184,7 +184,7 @@
 		},
 		"do_send_signal": {
 			"all": [
-						{
+				{
 					"name": "send_signal",
 					"signal_name": "storm_weather_special_resolved"
 				}
@@ -284,7 +284,7 @@
 		},
 		"do_send_signal": {
 			"all": [
-						{
+				{
 					"name": "send_signal",
 					"signal_name": "storm_weather_special_resolved"
 				}
@@ -586,7 +586,7 @@
 		},
 		"do_send_signal": {
 			"all": [
-						{
+				{
 					"name": "send_signal",
 					"signal_name": "storm_weather_special_resolved"
 				}
@@ -828,8 +828,8 @@
 			},
 			{
 				"card": "Blizzard #36005"
-			},			
-		],	
+			}
+		],
 		"setup": {
 			"all": [
 				{
@@ -1295,7 +1295,7 @@
 		},
 		"do_send_signal": {
 			"all": [
-						{
+				{
 					"name": "send_signal",
 					"signal_name": "storm_weather_special_resolved"
 				}

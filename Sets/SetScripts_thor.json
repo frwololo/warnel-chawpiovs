@@ -884,7 +884,9 @@
 		"interrupt_attack_started": {
 			"trigger": "my_hero",
 			"event_filters": {
-				"tags": ["basic power"]
+				"tags": [
+					"basic power"
+				]
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -911,7 +913,7 @@
 					"var_name": "my_ally",
 					"var_type": "subject",
 					"value": "previous",
-					"force_run_at_prime": true,
+					"force_run_at_prime": true
 				},
 				{
 					"name": "add_script",
@@ -941,7 +943,9 @@
 		"interrupt_thwart_started": {
 			"trigger": "my_hero",
 			"event_filters": {
-				"tags": ["basic power"]
+				"tags": [
+					"basic power"
+				]
 			},
 			"is_optional_hand": true,
 			"hand": [
@@ -968,7 +972,7 @@
 					"var_name": "my_ally",
 					"var_type": "subject",
 					"value": "previous",
-					"force_run_at_prime": true,
+					"force_run_at_prime": true
 				},
 				{
 					"name": "add_script",
@@ -994,7 +998,7 @@
 					}
 				}
 			]
-		},
+		}
 	},
 	"The Power of Aggression": {
 		"resource": {

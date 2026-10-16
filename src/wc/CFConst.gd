@@ -1100,7 +1100,7 @@ const DEFAULT_SETTINGS:= {
 		"next_evol": "https://marvelcdb.com/api/public/cards/next_evol.json", #Next Evolution Expansion Box	
 		"psylocke": "https://marvelcdb.com/api/public/cards/psylocke.json", #Psylocke Hero Pack		
 #		"angel": "https://marvelcdb.com/api/public/cards/angel.json", #Angel Hero Pack	
-#		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
+		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
 #		"deadpool": "https://marvelcdb.com/api/public/cards/deadpool.json", #Deadpool Hero Pack		
 #cycle 8
 		"aoa": "https://marvelcdb.com/api/public/cards/aoa.json", #Age of Apocalypse Expansion Box	

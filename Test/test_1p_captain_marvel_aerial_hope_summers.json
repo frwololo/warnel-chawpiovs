@@ -1,0 +1,167 @@
+{
+	"_comments": "Test hope Summers capabilities",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Cosmic Flight"
+				},
+				{
+					"card": "MockingBird"
+				}
+			],
+			"others": [
+				{
+					"card": "Charge",
+					"host": "Rhino - 1"
+				}
+			],
+			"allies1": [],
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Cosmic Flight"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Hope Summers #40204"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Hope Summers #40204"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Captain Marvel"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Shocker"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Stampede"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "MockingBird"
+				}
+			],
+			"others": [
+				{
+					"card": "Charge",
+					"host": "Rhino - 1"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Hope Summers #40204"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Captain Marvel"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Cosmic Flight"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Genius"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Cosmic Flight"
+				}
+			]
+		}
+	},
+	"additional_checks": [
+		{
+			"func_name": "has_trait",
+			"func_params": {
+				"and_or": "and",
+				"subject": "Hope Summers",
+				"trait": ["aerial", "soldier", "avenger"]
+			}
+		},
+		{
+			"func_name": "!has_trait",
+			"func_params": {
+				"subject": "Hope Summers",
+				"trait": "mutant"
+			}
+		}		
+	]
+}

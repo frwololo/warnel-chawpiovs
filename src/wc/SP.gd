@@ -34,6 +34,7 @@ const KEY_ATTACHMENTS_HOST:= "attachments_host"
 
 const FILTER_HOST_OF := "filter_is_host_of"
 const FILTER_HOSTED_BY  := "filter_is_hosted_by"
+const FILTER_INCLUDED_IN  := "filter_is_included_in"
 const FILTER_SAME_CONTROLLER := "filter_same_controller"
 const FILTER_PLAYER_CARD := "filter_player_card"
 const FILTER_CONTROLLER_NAME := "filter_controller_name"
@@ -97,6 +98,10 @@ static func filter_trigger(
 
 	if card_scripts.get(FILTER_HOSTED_BY):
 		if !check_hosted_by_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOSTED_BY)):
+			return false
+
+	if card_scripts.get(FILTER_INCLUDED_IN):
+		if !check_included_in_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOSTED_BY)):
 			return false
 
 	# Same Controller filter check
@@ -243,6 +248,27 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 	
 static func check_hosted_by_filter(trigger_card, owner_card, host_description : String) -> bool:
 	return check_host_filter(owner_card, trigger_card, host_description) 	
+
+# Returns true if the trigger is included in a variable of the owner, false otherwise
+static func check_included_in_filter(trigger_card, owner_card, variable_name : String) -> bool:
+	if !is_instance_valid(trigger_card): return false
+	if !is_instance_valid(owner_card): return false
+	
+	if !owner_card.script_variables:
+		return false
+		
+	var res = owner_card.script_variables.get(variable_name, null)
+	if !res:
+		return false
+		
+	match typeof(res):
+		TYPE_ARRAY:
+			if trigger_card in res:
+				return true
+			else:
+				return false
+		_:
+			return false		
 
 # Returns true if the trigger and the owner belong to the same hero, false otherwise
 static func check_source_controlled_by_filter(_trigger_card, owner_card, trigger_details, expected_controller) -> bool:
@@ -647,6 +673,9 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				elif filter == FILTER_HOSTED_BY:
 					if !check_hosted_by_filter(card,owner_card,state_filter):
 						card_matches =  false	
+				elif filter == FILTER_INCLUDED_IN:
+					if !check_included_in_filter(card,owner_card,state_filter):
+						card_matches =  false							
 				elif FILTER_FUNC in filter:
 					if !check_func_filter(card,owner_card,state_filter):
 						card_matches =  false	

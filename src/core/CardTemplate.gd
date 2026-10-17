@@ -1662,6 +1662,9 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_co
 		if state_scripts.has("_rules"):
 			rules = state_scripts.get("_rules")
 			state_scripts.erase("_rules")
+
+		#I've seen case where macro_name could surface here
+		state_scripts.erase("macro_name")
 			
 		if state_scripts.size() == 1:
 			var first_key = state_scripts.keys()[0]
@@ -1669,7 +1672,7 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_co
 			action_name = first_key
 		else:	
 			for entry_name in state_scripts.keys():
-				if entry_name == "_rules":
+				if entry_name in ["_rules", "macro_name"]:
 					continue
 				var state_script = state_scripts[entry_name]
 				var sceng = cfc.scripting_engine.new(

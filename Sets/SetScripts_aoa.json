@@ -5998,7 +5998,7 @@
 					],
 					"target_identity": "event_source_hero",
 					"subject_count": "all",
-					"need_selection": true,
+					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
 					"selection_optional": false,

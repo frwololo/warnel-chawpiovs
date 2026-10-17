@@ -193,8 +193,7 @@ static func _compute_move_zones(subject, script):
 	
 	if !script.get_property("grid_name"):
 		var type_code = override_properties.get("type_code", subject.get_property("type_code"))
-		if CFConst.TYPECODE_TO_GRID.has(type_code):
-			script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID[type_code]
+		script_definition["grid_name"] = CFConst.TYPECODE_TO_GRID.get(type_code, "villain_misc")
 
 
 	#Replace all occurrences of un_numberd "discard", etc... with the actual id
@@ -3158,14 +3157,7 @@ func send_signal(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		return CFConst.ReturnCode.CHANGED
 
-	
-	if !scripting_bus.has_signal(user_signal):
-		var args = [
-			{"name": "card", "type": TYPE_OBJECT}, 
-			{"name": "trigger_details", "type": TYPE_DICTIONARY }
-		]
-		scripting_bus.add_user_signal(user_signal, args )
-		scripting_bus.register_signal(user_signal, args)
+	scripting_bus.add_card_signal(user_signal)
 
 	scripting_bus.emit_signal_on_stack(user_signal, script.owner, script.script_definition )		
 	return CFConst.ReturnCode.CHANGED
@@ -4035,6 +4027,11 @@ static func script_constraints(subject, params, script = null) -> int:
 			tags.append(_tags[i])
 	
 	for tag in tags:
+		var negative = false
+		if tag.begins_with("!"):
+			tag = tag.substr(1)
+			negative = true
+			#TODO support negative for all use cases
 		match tag:
 			"hero_form" :
 				if !my_hero_card or !my_hero_card.is_hero_form():
@@ -4079,7 +4076,10 @@ static func script_constraints(subject, params, script = null) -> int:
 		if tag.begins_with("PHASE_"):
 			var actual_tag =  tag.replace("PHASE_", "")
 			if actual_tag in PhaseContainer.StepStrings:
-				if actual_tag != gameData.phaseContainer.get_current_phase_name():
+				if negative:
+					if actual_tag == gameData.phaseContainer.get_current_phase_name():
+						return 	CFConst.ReturnCode.FAILED
+				elif actual_tag != gameData.phaseContainer.get_current_phase_name():
 					return 	CFConst.ReturnCode.FAILED	
 	
 	var board:Board = cfc.NMAP.board

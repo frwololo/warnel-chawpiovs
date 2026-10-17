@@ -1,9 +1,14 @@
 {
 	"_macros": {
 		"__aim_interference": {
+			"_rules": {
+				"forced": true,
+			},
 			"Add 3 counters": [
 				{
 					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "secret",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": "trait_board_member"
@@ -19,6 +24,8 @@
 				},
 				{
 					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "secret",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"needs_selection": true,
@@ -38,6 +45,8 @@
 				},
 				{
 					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "secret",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"needs_selection": true,
@@ -59,15 +68,16 @@
 		},
 		"__remove_secret": {
 			"name": "mod_tokens",
-			"amount": -1,
+			"modification": -1,
+			"token_name": "secret",
 			"subject": "boardseek",
 			"subject_count": "all",
 			"selection_count": "__value__",
 			"selection_type": "as_much_as_possible",
+			"selection_assign_mode": true,
 			"selection_what_to_count": {
 				"func_name": "count_tokens",
 				"func_params": {
-					"subject": "trigger",
 					"token_name": "secret"
 				}
 			},
@@ -79,7 +89,8 @@
 		},
 		"__secret_lowest": {
 			"name": "mod_tokens",
-			"amount": "__value__",
+			"modification": "__value__",
+			"token_name": "secret",
 			"subject": "boardseek",
 			"sort_by": "function",
 			"sort_name": "count_tokens",
@@ -106,7 +117,8 @@
 			},
 			{
 				"name": "mod_tokens",
-				"amount": -1,
+				"modification": -1,
+				"token_name": "secret",
 				"subject": "boardseek",
 				"subject_count": "all",
 				"selection_count": "__value__",
@@ -114,7 +126,6 @@
 				"selection_what_to_count": {
 					"func_name": "count_tokens",
 					"func_params": {
-						"subject": "trigger",
 						"token_name": "secret"
 					}
 				},
@@ -255,8 +266,9 @@
 		"boost": {
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "reveal"
+					"name": "execute_scripts",
+					"exec_trigger": "reveal",
+					"subject": "self"
 				}
 			]
 		}
@@ -275,8 +287,9 @@
 		"boost": {
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "reveal"
+					"name": "execute_scripts",
+					"exec_trigger": "reveal",
+					"subject": "self"
 				}
 			]
 		}
@@ -295,8 +308,9 @@
 		"boost": {
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "reveal"
+					"name": "execute_scripts",
+					"exec_trigger": "reveal",
+					"subject": "self"
 				}
 			]
 		}
@@ -1503,6 +1517,7 @@
 	},
 	"Baron Zemo's Sword": {
 		"card_moved_to_board": {
+			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
@@ -9492,9 +9507,13 @@
 		},
 		"do_means": {
 			"all": {
+				"_rules": {
+					"forced": true
+				},			
 				"Means - Medical Records": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9523,6 +9542,7 @@
 				"Means - Wiretap": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9551,6 +9571,7 @@
 				"Means - Security Scanner": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9580,9 +9601,13 @@
 		},
 		"do_motive": {
 			"all": {
+				"_rules": {
+					"forced": true
+				},			
 				"Motive - Money": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9611,6 +9636,7 @@
 				"Motive - Blackmail": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9639,6 +9665,7 @@
 				"Motive - Ideology": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9668,9 +9695,13 @@
 		},
 		"do_opportunity": {
 			"all": {
+				"_rules": {
+					"forced": true
+				},			
 				"Opportunity - Security Clearance": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9699,6 +9730,7 @@
 				"Opportunity - Travel": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9727,6 +9759,7 @@
 				"Opportunity - Authority": [
 					{
 						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "count_cards",
@@ -9756,9 +9789,13 @@
 		},
 		"do_accused": {
 			"all": {
+				"_rules": {
+					"forced": true
+				},			
 				"Accused - Chief Medical Officer": [
 					{
-						"name": " constraints",
+						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "get_property_from_matrix",
@@ -9785,7 +9822,8 @@
 				],
 				"Accused - Chief Surveillance Officer": [
 					{
-						"name": " constraints",
+						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "get_property_from_matrix",
@@ -9812,7 +9850,8 @@
 				],
 				"Accused - Chief Tactical Officer": [
 					{
-						"name": " constraints",
+						"name": "constraints",
+						"is_cost": true,
 						"constraints": [
 							{
 								"func_name": "get_property_from_matrix",
@@ -11198,6 +11237,7 @@
 		}
 	},
 	"Zemo's Manipulations - 1A": {
+		"_comments": "tmp_pile1 contains the 3 culprit cards, tmp_pile 2 contains the evidence yet to be collected",
 		"setup": {
 			"all": [
 				{
@@ -11313,16 +11353,41 @@
 				"phase": "player_phase"
 			},
 			"board": {
+				"_rules": {
+					"forced": true
+				},
 				"Acquire Evidence": [
 					{
 						"name": "mod_tokens",
 						"subject": "boardseek_and_choose",
-						"filtr_state_seek": [
-							"trait_board_member",
-							"environment"
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_board_member": 1
+								},
+								"filter_properties2": {
+									"type_code": "environment"
+								},
+								"filter_func": {
+									"func_name": "!count_tokens",
+									"func_params": {
+										"subject": "trigger",
+										"token_name": "secret"
+									}
+								}
+							}
 						],
 						"token_name": "secret",
-						"modification": 2
+						"modification": 2,
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"subject_count": 2,
+						"up_to": true,
+						"subject_index": "random",
+						"src_container": "tmp_pile2"
 					},
 					{
 						"name": "sequence",
@@ -11339,6 +11404,9 @@
 		},
 		"do_advance": {
 			"board": {
+				"_rules": {
+					"forced": true
+				},			
 				"Advance to Accusation": [
 					{
 						"name": "move_to_next_scheme",
@@ -11353,6 +11421,7 @@
 			}
 		},
 		"response_stage_completed": {
+			"display_section": "paragraph_2",
 			"trigger": "self",
 			"all": [
 				{

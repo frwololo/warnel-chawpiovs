@@ -1,0 +1,331 @@
+{
+	"_comments": "Bug: Baron Zemo doesn't let me remove secret counters when doewn to zero life",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "43001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Eviction Notice #01165"
+				},
+				{
+					"card": "Reluctant Foe #50171"
+				}
+			],
+			"villain": [
+				{
+					"card": "Baron Zemo - A1 #50165a",
+					"tokens": {
+						"damage": 11
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Zemo's Manipulations - 1B #50167b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Chief Surveillance Officer #50182a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Tactical Officer #50183a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Medical Officer #50181a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Baron Zemo - A2 #50165b"
+				},
+				{
+					"card": "The Accusation - 2A #50168a"
+				},
+				{
+					"card": "The Accusation - 2B #50168b"
+				},
+				{
+					"card": "Fighting Zemo - 3A #50169a"
+				},
+				{
+					"card": "Fighting Zemo - 3B #50169b"
+				},
+				{
+					"card": "Medical Officer's Aid #50181b"
+				},
+				{
+					"card": "Surveillance Officer's Aid #50182b"
+				},
+				{
+					"card": "Tactical Officer's Aid #50183b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Zemo's Manipulations - 1A #50167a"
+				}
+			],
+			"tmp_pile1": [
+				{
+					"card": "Ideology #50190"
+				},
+				{
+					"card": "Medical Records #50185"
+				},
+				{
+					"card": "Authority #50193"
+				}
+			],
+			"tmp_pile2": [
+				{
+					"card": "Travel #50192"
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				},
+				{
+					"card": "Security Scanner #50187"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones #01059"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "X-23's Claws"
+				}
+			],
+			"identity1": [
+				{
+					"card": "X-23"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Interrogation Room #01063"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "X-23"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Baron Zemo - A1 #50165a"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Chief Surveillance Officer #50182a",
+				"Chief Surveillance Officer #50182a",
+				"Chief Medical Officer #50181a"
+			]
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "43001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Eviction Notice #01165"
+				},
+				{
+					"card": "Reluctant Foe #50171"
+				}
+			],
+			"villain": [
+				{
+					"card": "Baron Zemo - A1 #50165a",
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Zemo's Manipulations - 1B #50167b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Chief Surveillance Officer #50182a",
+					"tokens": {
+						"secret": 0
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Tactical Officer #50183a",
+					"tokens": {
+						"secret": 2
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Medical Officer #50181a",
+					"tokens": {
+						"secret": 1
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Baron Zemo - A2 #50165b"
+				},
+				{
+					"card": "The Accusation - 2A #50168a"
+				},
+				{
+					"card": "The Accusation - 2B #50168b"
+				},
+				{
+					"card": "Fighting Zemo - 3A #50169a"
+				},
+				{
+					"card": "Fighting Zemo - 3B #50169b"
+				},
+				{
+					"card": "Medical Officer's Aid #50181b"
+				},
+				{
+					"card": "Surveillance Officer's Aid #50182b"
+				},
+				{
+					"card": "Tactical Officer's Aid #50183b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Zemo's Manipulations - 1A #50167a"
+				}
+			],
+			"tmp_pile1": [
+				{
+					"card": "Ideology #50190"
+				},
+				{
+					"card": "Medical Records #50185"
+				},
+				{
+					"card": "Authority #50193"
+				}
+			],
+			"tmp_pile2": [
+				{
+					"card": "Travel #50192"
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				},
+				{
+					"card": "Security Scanner #50187"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones #01059"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "X-23's Claws"
+				}
+			],
+			"identity1": [
+				{
+					"card": "X-23"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Interrogation Room #01063"
+				}
+			]
+		}
+	}
+}

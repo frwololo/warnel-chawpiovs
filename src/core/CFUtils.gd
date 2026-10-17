@@ -75,6 +75,30 @@ static func array_join(arr: Array, separator = "") -> String:
 	return(output)
 
 
+
+static func list_files_in_directory_recursive(path: String, extension := "") -> Array:
+	var files := []
+	var dir := Directory.new()
+	# warning-ignore:return_value_discarded
+
+	if !path.ends_with("/"):
+		path+= "/"
+	dir.open(path)
+	# warning-ignore:return_value_discarded
+	dir.list_dir_begin()
+	while true:
+		var file := dir.get_next()
+		if file == "":
+			break
+		if dir.current_is_dir():
+			if not file.begins_with('.'):
+				files += list_files_in_directory_recursive(path + file, extension)
+		elif file.ends_with(extension):	
+			files.append(path + file)
+	dir.list_dir_end()
+	return files
+
+	
 # Returns a an array of all files in a specific directory.
 # If a prepend_needed String is passed, only returns files
 # which start with that string.

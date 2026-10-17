@@ -372,6 +372,14 @@
 		"card_readied": {
 			"trigger": "Quicksilver",
 			"is_optional_board": true,
+			"condition_board": [
+				{
+					"func_name": "script_constraints",
+					"func_params": {
+						"tags": ["!PHASE_PLAYER_READY"]
+					}
+				}
+			],
 			"board": [
 				{
 					"name": "ready_card",
@@ -991,17 +999,22 @@
 					"tags": [
 						"hero_action"
 					]
-				},
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
 				{
 					"name": "mod_tokens",
 					"token_name": "stunned",
 					"modification": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
-					"need_selection": true,
-					"selection_count": "max",
+					"needs_selection": true,
+					"selection_type": "max",
 					"selection_count": {
-						"func_name": "count_paid_resources"
+						"func_name": "get_overpaid_amount"
 					},
 					"filter_state_seek": [
 						{

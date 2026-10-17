@@ -74,8 +74,10 @@ const default_servers := {
 				#mcgbuilder has slight different pack code ordering than MarvelCDB
 				"exceptions": {
 					"pack_code": {
+						"43": "44",
+						"44": "43",						
 						"53": "54",
-						"54": "53"
+						"54": "53",
 					}
 				}					
 			},				
@@ -113,6 +115,7 @@ var health_check_results:= {}
 var	_load_pending_images := false
 var	_pending_images_idx := 0
 var	_pending_image_keys := []
+var _local_files_to_process:= {}
 
 signal one_server_check_completed()
 signal download_complete(card_id)
@@ -154,6 +157,7 @@ func init_servers():
 		result = cfc.get_setting("image_servers")
 		if !server_cfc_sanity_check(result):
 			result = default_servers
+			cfc.set_setting("image_servers", result)
 	
 	servers = result.duplicate(true)
 	for lang in servers:
@@ -187,7 +191,11 @@ func get_stats():
 		"remaining": cards_to_download.size(),
 		"current_url": current_file.get("url", ""),
 		"last_error_msg": last_error_msg,
-		"high_priority_error_msg": global_error_msg
+		"high_priority_error_msg": global_error_msg,
+		"local_convert_remaining": _local_files_to_process.get("remaining", 0),
+		"local_converted_ok": _local_files_to_process.get("processed_ok", 0),
+		"current_local_path": _local_files_to_process.get("current_path", ""),
+		"local_converted_error": _local_files_to_process.get("processed_error", 0),
 	}
 	return stats
 
@@ -201,7 +209,78 @@ func _process(_delta:float):
 			add_card(card_key)
 			_pending_images_idx += 1
 	process_next_file()
+	process_local_converter()
 
+
+func process_local_converter():
+	#game isn't loaded yet
+	if !cfc.card_definitions:
+		return
+		
+	var initialized = _local_files_to_process.get("initialized", false)
+	if !initialized:
+		var dir = Directory.new()
+		_local_files_to_process["initialized"] = true
+		_local_files_to_process["result"] = {}
+		_local_files_to_process["remaining"] = 0
+		_local_files_to_process["processed_ok"] = 0
+		_local_files_to_process["processed_error"] = 0
+		_local_files_to_process["current_path"] = ""		
+		
+		for lang in ["", "en", "fr"]:
+			var suffix = "_" + lang if lang else ""
+			var folder = "user://Sets/convert" + suffix + "/"
+			if dir.dir_exists(folder):
+				var files = CFUtils.list_files_in_directory_recursive(folder)
+				if files:
+					_local_files_to_process["result"][lang] = {}
+					_local_files_to_process["result"][lang]["files"] = files
+					_local_files_to_process["remaining"] += files.size() 
+					if dir.file_exists(folder + "use_printed_id.txt"):
+						_local_files_to_process["result"][lang]["use_printed_id"] = true
+			
+	
+	var to_process = _local_files_to_process.get("result", {})	
+	if !to_process:
+		return
+	
+	for lang in to_process:
+		var data = to_process[lang]
+		var files = data.get("files")
+		var use_printed_id = data.get("use_printed_id", false)
+		if !files:
+			to_process.erase(lang)
+			return
+		var file_path = files.pop_back()
+		_local_files_to_process["remaining"] -= 1
+		_local_files_to_process["current_path"] = file_path
+		
+		if !file_path.get_extension().to_lower() in["jpeg", "jpg", "png", "webp"]:
+			_local_files_to_process["processed_ok"] += 1
+			return 
+
+		var card_code = file_path.get_file().get_basename().to_lower()
+		if !card_code:
+			_local_files_to_process["processed_error"] += 1
+			return
+		var card_data = cfc.get_card_by_id(card_code)
+		if !card_data:
+			_local_files_to_process["processed_error"] += 1
+			return
+		if use_printed_id:
+			card_code = card_data.get("printed_card_id", card_code)
+			
+		var suffix = "_" + lang if lang!="en" else ""
+		
+		var box_name = card_data["box_name"]	
+		var destination = "user://Sets/images" + suffix + "/" + box_name + "/" + card_code + ".png"
+		var result = convert_image_for_game(file_path, destination, card_code, "local://", true)			
+
+		if result:
+			_local_files_to_process["processed_ok"] += 1
+		else:
+			_local_files_to_process["processed_error"] += 1
+			
 func process_next_file():
 	if current_file: #already processing
 		return	
@@ -612,7 +691,6 @@ func create_img_folders(card_id):
 	
 	
 func _img_download_completed(url, filename):
-	var dir:Directory = Directory.new()
 	var destination = current_file.get("destination", "")
 	var card_key = current_file.get("card_id", "")
 	
@@ -622,6 +700,18 @@ func _img_download_completed(url, filename):
 		_download_error(url, filename)
 		return false
 
+	return convert_image_for_game(filename, destination, card_key, url)
+
+func convert_image_for_game(filename, destination, card_key, url, overwrite = false):
+	if !overwrite:
+		var file = File.new()
+		if file.file_exists(destination):	
+			var _error = 1
+			FileDownloader.LOG("destination file already exsits and I'm asked to not overwrite" + destination)		
+			_download_error(url, filename)
+			return false
+			
+	var dir:Directory = Directory.new()	
 	var image = WCUtils.load_img(filename)
 	if !image:
 		var _error = 1
@@ -647,6 +737,7 @@ func mask_image(image:Image, destination, card_key):
 	if not destination:
 		var _error = 1
 		return null
+		
 	var mask_filename = "res://assets/utils/wc_card_mask.png"	
 	var mask_tex = load(mask_filename)
 	var mask_image = mask_tex.get_data()	

@@ -77,7 +77,9 @@ func init(
 	hide_ok_on_zero = params.get("hide_ok_on_zero", false)	
 	alternative_ok = params.get("alternative_ok", {})
 
-
+	_assign_mode = params.get("selection_assign_mode", false)
+	if _assign_mode:
+		can_select_cards_with_zero_value = true
 
 	if typeof(what_to_count) == TYPE_STRING:
 		
@@ -208,7 +210,14 @@ func initiate_selection(_card_array: Array) -> void:
 		# We connect each card grid's gui input into a call which will handle
 		# The selections
 		if _assign_mode:
-			var max_assign_value = card.call(_assign_max_function)
+			var max_assign_value = 0
+			if _assign_max_function:
+				max_assign_value = card.call(_assign_max_function)
+			elif typeof(what_to_count) == TYPE_DICTIONARY:
+				var func_name = what_to_count.get("func_name")
+				var func_params = what_to_count.get("func_params")
+				max_assign_value =  card.call(func_name, func_params, my_script)
+			
 			var spinbox = dupe_selection.get_spinbox()
 			spinbox.init_plus_minus_mode(0, 0, max_assign_value)
 			spinbox.connect("value_changed", self, "spinbox_value_changed", [dupe_selection, card])
@@ -528,15 +537,16 @@ func get_count(the_card_array: Array) -> int:
 	for card in the_card_array:
 		if !card in exclude_subjects:
 			_card_array.append(card)
+
+	if _assign_mode:
+		var total = 0
+		for card in card_array: #for "assign" we actually ignore the passed array and use our currently displayed one
+			var spinbox = _card_dupe_map[card].get_spinbox()
+			total = total + spinbox.value
+		return total	
 		
 	if typeof(what_to_count) == TYPE_STRING:
-		match what_to_count:
-			"assign":
-				var total = 0
-				for card in card_array: #for "assign" we actually ignore the passed array and use our currently displayed one
-					var spinbox = _card_dupe_map[card].get_spinbox()
-					total = total + spinbox.value
-				return total			
+		match what_to_count:		
 			"":
 				return _card_array.size()
 			_:
@@ -670,7 +680,14 @@ func dry_run(_card_array: Array) -> void:
 				if _assign_mode:
 					var remaining = get_selection_count()
 					for card in _card_array:
-						var can_assign = card.call(_assign_max_function)
+						var can_assign = 0
+						if _assign_max_function:
+							can_assign = card.call(_assign_max_function)
+						elif typeof(what_to_count) == TYPE_DICTIONARY:
+							var func_name = what_to_count.get("func_name")
+							var func_params = what_to_count.get("func_params")
+							can_assign = card.call(func_name, func_params, my_script)
+						
 						if can_assign > remaining:
 							can_assign = remaining
 						remaining -= can_assign

@@ -1,0 +1,164 @@
+{
+	"_comments": "Friction Resistance shouldn't ask to ready at end of turn",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Earthquake #14028"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Quicksilver",
+					"tokens": {
+						"damage": 1
+					},
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Friction Resistance",
+					"exhausted": true
+				}
+			],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Accelerated Reflex"
+				},
+				{
+					"card": "Adrenaline Rush"
+				},
+				{
+					"card": "Speed Cyclone"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Genius"
+				}				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "no discard"
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Earthquake #14028"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Quicksilver",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Friction Resistance"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Accelerated Reflex"
+				},
+				{
+					"card": "Adrenaline Rush"
+				},
+				{
+					"card": "Speed Cyclone"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Genius"
+				}	
+			]
+		}
+	}
+}

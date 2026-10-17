@@ -7,7 +7,6 @@ extends CFControl
 #cache variables
 var all_loaded := false
 var known_types : Dictionary
-var unknown_types : Dictionary
 var next_scene_params : Dictionary
 var lowercase_card_name_to_name : Dictionary
 var shortname_to_name : Dictionary
@@ -69,6 +68,7 @@ func _ready():
 	TEXT_BOX_KEYWORDS = CFConst.AUTO_KEYWORDS.keys() + CFConst.EXTRA_TEXT_BOX_KEYWORDS
 	resize()
 	scale_grids()
+	
 	
 func get_internal_setting(value):
 	return CFConst.PER_OS_INTERNAL_SETTINGS.get(OS.get_name(), {}).get(value, false)		
@@ -297,6 +297,24 @@ func _setup() -> void:
 	._setup()
 	delete_log_files()
 	preload_pck()
+	
+	version_first_run()
+
+func version_first_run():
+	#First run of a new version: clear some garbage/cache from previous versions
+	var build_number = get_build_number()
+	var first_run_check = "first_run_done/" + build_number
+	if !get_setting(first_run_check):
+		#we force a reload of the card database cache for a new version,
+		#to avoid any weird cache bug
+		clear_cards_cache()
+		
+		#delete server settings at each new version,
+		#to take into account changes I have brough to the system in the meantime
+		set_setting("image_servers", {})
+		
+		#done
+		set_setting(first_run_check, true)		
 
 func get_ping(client_id):
 	var ping_info =  ping_data.get(client_id, {})
@@ -794,6 +812,8 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 		hero_ids[card_id] = true
 	
 
+	known_types[lc_card_type] = true
+
 	card_data[CardConfig.SCENE_PROPERTY] = "CardTemplate"	
 
 	if card_data.get("duplicate_of_code", ""):
@@ -972,7 +992,8 @@ func save_card_definitions_to_cache(the_files):
 		lowercase_card_name_to_name,
 		hero_ids,
 		duplicates,
-		reverse_duplicates
+		reverse_duplicates,
+		known_types
 	]
 	var to_save_name = [
 		"card_definitions", 
@@ -982,7 +1003,8 @@ func save_card_definitions_to_cache(the_files):
 		"lowercase_card_name_to_name",
 		"hero_ids",
 		"duplicates",
-		"reverse_duplicates"
+		"reverse_duplicates",
+		"known_types"
 	]
 	
 	for i in to_save.size():
@@ -1108,6 +1130,14 @@ func load_card_definitions_from_cache(the_files) -> Dictionary:
 	else:	
 		pass
 		#no error check for this one
+
+	result = load_data_from_cache("known_types")
+	if result:
+		known_types = result
+	else:
+		return {
+				"_error": "known_types failed to load from cache"
+			}	
 	
 	return card_definitions
 			
@@ -1200,7 +1230,7 @@ func load_card_definitions() -> Dictionary:
 	#post load cleanup and config
 	load_card_definitions_extra_data()	
 	setup_traits_as_alterants()
-	
+	scripting_bus.register_game_signals()
 		
 	#done!
 	cards_loading = false

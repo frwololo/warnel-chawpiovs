@@ -3873,6 +3873,10 @@ func get_script_bool_property(params, script:ScriptObject = null) -> bool:
 
 func get_param_subject(params, script:ScriptObject = null):
 	var subject = self
+	
+	if typeof(params) != TYPE_DICTIONARY:
+		return subject
+		
 	if script and params.get("subject", ""):
 		var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		subject = subjects[0] if subjects else null
@@ -3880,6 +3884,10 @@ func get_param_subject(params, script:ScriptObject = null):
 
 func get_param_subjects(params, script:ScriptObject = null):
 	var subjects = [self]
+
+	if typeof(params) != TYPE_DICTIONARY:
+		return subjects
+	
 	if script and params.get("subject", ""):
 		var new_subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)
 		return new_subjects
@@ -4026,7 +4034,23 @@ func get_property_from_matrix(params, script:ScriptObject = null) -> int:
 	var sequence = params.get("sequence", [])
 	if !sequence:
 		return 0
+	var actual_sequence = []
+	for element in sequence:
+		var element_name = ""
+		var variable = subject.get_subject_variable(element)
+		if variable:
+			if typeof(variable) == TYPE_STRING:
+				element_name = variable
+			elif typeof(variable) == TYPE_ARRAY:
+				element_name = variable[0].canonical_name
+		else:
+			element_name = element
 
+		if element_name:
+			actual_sequence.append(element_name)
+		else:
+			var _error = 1
+			return 0
 	var expected_value = params.get("property_value", [])
 	if !expected_value:
 		return 0	
@@ -4036,12 +4060,12 @@ func get_property_from_matrix(params, script:ScriptObject = null) -> int:
 		return 0
 	
 	for attempt in matrix_data:
-		if attempt.size()!=sequence.size():
+		if attempt.size() != actual_sequence.size():
 			return 0
 		var found = true
 		for i in attempt.size():
 			var str1 = attempt[i].to_lower()
-			var str2 = sequence[i].to_lower()
+			var str2 = actual_sequence[i].to_lower()
 			if str1 != str2:
 				found = false
 				break
@@ -4091,7 +4115,12 @@ func get_subject_variable(params, script:ScriptObject = null):
 	if !subject:
 		return 0
 	
-	var var_name = params.get("variable", "")
+	var var_name
+	
+	if typeof(params) == TYPE_STRING:
+		var_name = params
+	else:
+		var_name = params.get("variable", "")
 	var result = subject.script_variables.get(var_name, 0)
 	
 	return result

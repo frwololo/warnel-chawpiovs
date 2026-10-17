@@ -1,0 +1,161 @@
+{
+	"_comments": "Automated Test Speed Cyclone (quicksilver bug)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Earthquake #14028"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Quicksilver",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Accelerated Reflex"
+				},
+				{
+					"card": "Adrenaline Rush"
+				},
+				{
+					"card": "Speed Cyclone"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Speed Cyclone"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Accelerated Reflex",
+				"Adrenaline Rush"
+			]
+		},		
+		{
+			"type": "select",
+			"value": [
+				"Hydra Soldier",
+				"Rhino - 1"
+			]
+		},
+		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Quicksilver"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Earthquake #14028"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Quicksilver",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier",
+					"tokens": {
+						"stunned": 1
+					}
+				},
+				{
+					"card": "Hydra Mercenary",
+					"tokens": {
+						"stunned": 0
+					}
+				}
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Accelerated Reflex"
+				},
+				{
+					"card": "Adrenaline Rush"
+				},
+				{
+					"card": "Speed Cyclone"
+				}
+			]
+		}
+	}
+}

@@ -52,12 +52,7 @@ func _ready() -> void:
 		TranslationServer.set_locale(cfc.get_setting("lang"))
 		if user_locale != "en":
 			cfc.load_card_translations()		
-	#First run of a new version: clear some garbage/cache from previous versions
-	var first_run_check = "first_run_done/" + CFConst.GAME_VERSION	
-	if !cfc.get_setting(first_run_check):
-		cfc.clear_cards_cache()
-		cfc.set_setting(first_run_check, true)
-	
+		
 	gameData.disconnect_from_network()
 	gameData.sanity_cleanup()	
 	create_default_folders()
@@ -393,6 +388,11 @@ func _process(delta):
 		dl_info.text = "image downloads: " + str(dl_stats["remaining"]) +\
 		 " remaining. (OK: " + str(dl_stats["downloaded_ok"]) + ", ERR: " +\
 		  str(dl_stats["download_errors"]) + ") - " + dl_stats["current_url"]
+	elif dl_stats["local_convert_remaining"] > 0:
+		dl_info.visible = true
+		dl_info.text = "local image conversion: " + str(dl_stats["local_convert_remaining"]) +\
+		 " remaining. (OK: " + str(dl_stats["local_converted_ok"]) + ", ERR: " +\
+		  str(dl_stats["local_converted_error"]) + ") - " + dl_stats["current_local_path"]	
 	else:
 		dl_info.visible = false
 		dl_info.text = ""

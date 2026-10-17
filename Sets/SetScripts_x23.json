@@ -176,6 +176,11 @@
 			"board": {
 				"Tick-Tock...": [
 					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
 						"name": "mod_tokens",
 						"modification": 1,
 						"subject": "self",
@@ -183,6 +188,11 @@
 					}
 				],
 				"Boom!": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
 					{
 						"name": "mod_tokens",
 						"modification": 1,
@@ -232,11 +242,7 @@
 									"filter_property_name": "attack",
 									"trigger": "X-23",
 									"alteration": 2
-								}
-							]
-						},
-						"alterants": {
-							"all": [
+								},
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "overkill",
@@ -1169,6 +1175,10 @@
 					"name": "move_card_to_container",
 					"dest_container": "hand",
 					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"discard"
+					],
 					"filter_state_tutor": "Honey Badger"
 				}
 			]

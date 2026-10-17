@@ -106,40 +106,6 @@ signal character_dies(card, details)
 # warning-ignore:unused_signal
 signal stack_event_deleted(event)
 
-#todo should be dynamic?
-# warning-ignore:unused_signal
-signal event_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal minion_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal main_scheme_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal player_side_scheme_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal side_scheme_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal villain_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal hero_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal alter_ego_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal ally_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal upgrade_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal support_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal attachment_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal treachery_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal obligation_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal environment_moved_to_board(card,details)
-# warning-ignore:unused_signal
-signal resource_moved_to_board(card,details)
-
 # warning-ignore:unused_signal
 signal event_played(card,details)
 # warning-ignore:unused_signal
@@ -223,6 +189,21 @@ enum SignalLevel {
 	NORMAL,
 	INTERRUPT,
 }
+
+func add_card_signal(signal_name):
+	if self.has_signal(signal_name):
+		return false
+	
+	var args = [
+		{"name": "card", "type": TYPE_OBJECT}, 
+		{"name": "trigger_details", "type": TYPE_DICTIONARY }
+	]
+	add_user_signal(signal_name, args )
+	register_signal(signal_name, args)
+
+func register_game_signals():
+	for type in cfc.known_types:
+		add_card_signal(type + "_moved_to_board")
 
 func register_card_signals(card, signal_names, has_interrupt:= false):
 	for signal_name in signal_names:

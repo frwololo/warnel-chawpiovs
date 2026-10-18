@@ -1,0 +1,177 @@
+{
+	"_comments": "Gunboat Diplomacy bug: effect not happening",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Bamf!"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "cypher #41013"
+				},
+				{
+					"card": "Deadpool #40024"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Daytripper"
+				},
+				{
+					"card": "Gunboat Diplomacy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Gunboat Diplomacy"
+		},
+		{
+			"type": "select",
+			"value": "Deadpool #40024"
+		},
+		{
+			"type": "select",
+			"value": [
+				"01097b",
+				"01097b",
+				"Bomb Scare",
+				"01097b"
+			]
+		},
+		{
+			"type": "select",
+			"value": [
+				"Hydra bomber",
+				"Rhino - 1",
+				"Rhino - 1",
+				"Rhino - 1"
+			]
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				},
+				{
+					"card": "Bamf!"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler",
+					"exhausted": true
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 0,
+						"damage": 0
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "cypher #41013"
+				},
+				{
+					"card": "Deadpool #40024",
+					"exhausted": true
+				}
+			],
+			"discard1": [
+				{
+					"card": "Daytripper"
+				},
+				{
+					"card": "Gunboat Diplomacy"
+				}
+			]
+		}
+	}
+}

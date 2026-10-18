@@ -18,6 +18,7 @@ var players_mode = 1
 var _needs_refresh = 0
 var item_id_to_deck_id = {}
 var deck_id_to_item_id = {}
+var enable_deck_container = true
 #
 #shortcuts
 # 
@@ -36,7 +37,12 @@ func _ready():
 	var style_box = WCUtils.theme_flatbox_1()
 	$PanelContainer.add_stylebox_override("panel", style_box)
 	
-	
+	var screen_size = get_viewport().size/cfc.screen_scale
+	if screen_size.x <= 1800:
+		enable_deck_container = false
+		deck_container.visible = false
+		_on_deck_container_resized(Vector2(0,0))
+		
 	playerName.connect("item_selected", self, "_on_owner_changed")
 	deckSelect.connect("item_selected", self, "_on_deck_changed")
 	deck_container.connect("resize_done", self, "_on_deck_container_resized")
@@ -112,6 +118,8 @@ func select_tab(tab_name):
 
 
 func _on_deck_container_resized(new_size):
+	if !enable_deck_container:
+		new_size = Vector2(0, 0)
 	rect_min_size = Vector2(0,0)
 	rect_size = Vector2(0,0)
 	var target_size_x = 0
@@ -159,7 +167,7 @@ func resize():
 		hero_picture_12.rect_min_size = Vector2(300, 300)
 	else:		
 		hero_picture_12.rect_min_size = Vector2(200, 200)
-		get_node("%PlayerName").clip_text = true
+		playerName.clip_text = true
 	
 	resize_hero_picture()
 	hero_picture_12.rect_size = hero_picture_12.rect_min_size	
@@ -238,8 +246,8 @@ func load_deck_contents(new_deck_id):
 			"scrollable" :false,
 			"can_add_cards": false,
 			"columns": 6,
-			"max_size_x": 1200,
-			"max_size_y": 600			
+			"max_size_x": 1200 * cfc.hardcoded_positions_modifier.x,
+			"max_size_y": 600	* cfc.hardcoded_positions_modifier.y		
 	}
 	match players_mode:
 		1:
@@ -248,12 +256,12 @@ func load_deck_contents(new_deck_id):
 			settings["columns"] = 7
 			settings["margin_top"] = 10
 			settings["margin_left"] = -25
-			settings["max_size_x"] = 850
-			settings["max_size_y"] = hero_picture_12.rect_min_size.y + 300			
+			settings["max_size_x"] = 850 * cfc.hardcoded_positions_modifier.x
+			settings["max_size_y"] = (hero_picture_12.rect_min_size.y + 300) * cfc.hardcoded_positions_modifier.y			
 		_:
 			settings["columns"] = 9
-			settings["max_size_x"] = 800
-			settings["max_size_y"] = hero_picture.rect_min_size.y + 50
+			settings["max_size_x"] = 800 * cfc.hardcoded_positions_modifier.x
+			settings["max_size_y"] = (hero_picture.rect_min_size.y + 50) * cfc.hardcoded_positions_modifier.y
 
 			
 	deck_container.setup(settings)

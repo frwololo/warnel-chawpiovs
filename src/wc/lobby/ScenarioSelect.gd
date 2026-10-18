@@ -202,15 +202,16 @@ func migration_finished():
 func resize():
 
 	var screen_size = get_viewport().size/cfc.screen_scale
-	var grid_width = 450
-	var grid_height = 220
+	var grid_width = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] * cfc.hardcoded_positions_modifier.x
+	var grid_height = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"] * cfc.hardcoded_positions_modifier.y
+
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
-		grid_width = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"]
-		grid_height = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"]
 		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
 		scenario_name.add_font_override("font", dynamic_font)	
 		scenario_name.add_color_override("font_color", Color8(220, 220,220))			
-		
+	else:
+		grid_height -= 0
+			
 	var parent = target_container if target_container else get_parent()
 	var columns = parent.columns
 	

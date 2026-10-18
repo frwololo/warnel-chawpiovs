@@ -144,15 +144,14 @@ func resize():
 #		return
 
 	var screen_size = get_viewport().size/cfc.screen_scale
-	var grid_width = 390
-	var grid_height = 400
+	var grid_width = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] * cfc.hardcoded_positions_modifier.x
+	var grid_height = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"] * cfc.hardcoded_positions_modifier.y
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
-		grid_width = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"]
-		grid_height = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"]
 		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
 		hero_name_label.add_font_override("font", dynamic_font)	
 		hero_name_label.add_color_override("font_color", Color8(220, 220,220))			
-	
+	else:
+		grid_height -= 170
 	var parent = target_container if target_container else get_parent()
 	var columns = parent.columns
 	
@@ -161,7 +160,7 @@ func resize():
 		rows += 1
 		
 	var image_width = grid_width / columns
-	var image_height = grid_height / rows - CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_NAME_HEIGHT"] 
+	var image_height = grid_height / rows - (CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_NAME_HEIGHT"])
 	var image_size = min(image_width, image_height)
 	
 	hero_picture.rect_min_size = Vector2(image_size, image_size)

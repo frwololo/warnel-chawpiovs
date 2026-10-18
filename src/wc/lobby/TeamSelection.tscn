@@ -292,7 +292,8 @@ margin_bottom = 499.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="MainMenu/Outercontainer/MainContainer/ScenarioSelectionTab/TeamScenarioPanel/ScenarioOptionsVContainer"]
+[node name="ScenarioLabel" type="Label" parent="MainMenu/Outercontainer/MainContainer/ScenarioSelectionTab/TeamScenarioPanel/ScenarioOptionsVContainer"]
+unique_name_in_owner = true
 margin_right = 1286.0
 margin_bottom = 30.0
 text = "TITLE_CHOOSE_SCENARIO_OPTIONS"

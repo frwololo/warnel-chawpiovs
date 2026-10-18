@@ -146,7 +146,7 @@ func show_deck_info():
 func set_max_size(new_size):
 	max_size = new_size
 	#TODO no magic number
-	var expected_size = Vector2(1800, 500)
+	var expected_size = Vector2(1800, 500) * cfc.hardcoded_positions_modifier
 	
 	var scale = max_size / expected_size
 	global_scale = min(scale.x, scale.y)

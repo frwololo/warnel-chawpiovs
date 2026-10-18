@@ -385,8 +385,17 @@ func resize():
 		get_node("%TeamScenarioPanel").add_constant_override("separation", 5)
 		get_node("%ScenarioOverContainer").add_constant_override("separation", 2)
 		get_node("%VBoxContainer").add_constant_override("separation", 5)
-		get_node("%MarginContainer").add_constant_override("margin_top", 5)
-		get_node("%MarginContainer").add_constant_override("margin_bottom", 5)
+		get_node("%ModularButton").rect_min_size = Vector2(100, 10)
+		get_node("%ModularButton").rect_size = Vector2(100, 10)
+		get_node("%ScenarioTexture").rect_min_size = Vector2(100, 100)
+		get_node("%ScenarioTexture").rect_size = Vector2(100, 100)
+		get_node("%VBoxContainer").rect_min_size = Vector2(100, 100)
+		get_node("%VBoxContainer").rect_size = Vector2(100, 100)
+		get_node("%ScenarioOptionsContainer").rect_min_size = Vector2(100, 100)
+		get_node("%ScenarioOptionsContainer").rect_size = Vector2(100, 100)					
+		get_node("%ScenarioLabel").text = "4) SCENARIO"
+		#get_node("%MarginContainer").add_constant_override("margin_top", 5)
+		#get_node("%MarginContainer").add_constant_override("margin_bottom", 5)
 		v_folder_label.visible = false
 		scenario_picture.rect_min_size = Vector2(200, 200)
 		scenario_picture.rect_size = scenario_picture.rect_min_size
@@ -400,8 +409,8 @@ func resize():
 
 		
 func _load_scenarios():
-	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"])
-	var x_size = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] + 20
+	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"]) * cfc.hardcoded_positions_modifier.y
+	var x_size = (CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] + 20) * cfc.hardcoded_positions_modifier.x
 	get_node("%Scenarios").rect_min_size = Vector2(x_size, y_size)
 	
 
@@ -435,8 +444,8 @@ func get_container_y_size(expected_size):
 func calc_columns(container_size, containee_offset, total_items):
 	var t = total_items
 	var max_size = -1000
-	var cols
-	var rows
+	var cols = 0
+	var rows = 0
 	for i in t:
 		if !i:
 			continue
@@ -455,8 +464,8 @@ func calc_columns(container_size, containee_offset, total_items):
 	return cols
 
 func _create_hero_container():
-	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"]) 
-	var x_size = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"]
+	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"]) * cfc.hardcoded_positions_modifier.y
+	var x_size = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] * cfc.hardcoded_positions_modifier.x
 	#TODO what about small screens
 	get_node("%HeroesPanel").rect_min_size = Vector2(x_size, y_size)
 	#show in alphabetical order

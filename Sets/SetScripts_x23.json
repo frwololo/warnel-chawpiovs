@@ -369,7 +369,8 @@
 					"is_cost": true
 				},
 				{
-					"name": "do_minion",
+					"name": "sequence",
+					"sequence_ability": "do_minion",
 					"is_else": true
 				}
 			]
@@ -1217,6 +1218,7 @@
 					"name": "move_card_to_container",
 					"dest_container": "hand",
 					"subject": "tutor",
+					"is_cost": true,
 					"src_container": [
 						"deck",
 						"discard"

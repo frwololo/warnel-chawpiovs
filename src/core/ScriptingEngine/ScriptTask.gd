@@ -103,7 +103,6 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 #	print_debug("skipped: " + str(is_skipped) +  " valid: " + str(is_valid))
 
 func prime_integer_from_network_prepaid():
-	var result = {}
 	var prepayment = get_property("network_prepaid", null)
 	_network_prepaid_called = true
 	if typeof(prepayment) == TYPE_DICTIONARY:
@@ -116,6 +115,7 @@ func prime_integer_from_network_prepaid():
 			return {
 				"result": number
 			}	
+	return {}
 
 func prime_ask_integer(_run_type: int) -> int:
 	#check first if the number was already provided from an online call

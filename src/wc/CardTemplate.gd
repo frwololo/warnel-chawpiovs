@@ -1318,7 +1318,6 @@ func attach_to_host(
 		#current logic is that an encounter card is controlled by the same controller
 		#as the host card. Not sure if this holds well
 		if self.is_encounter():
-			var previous_controller = get_controller_hero_id()
 			var new_controller = host.get_controller_hero_id()
 			self.set_controller_hero_id(new_controller)
 			
@@ -4752,7 +4751,7 @@ func pay_as_resource(script):
 	#1) spare a network trip
 	#2) because of the Network delay, I suspect I've seen bugs where the payment is processed
 	# after the card is played, leading to desync between the players
-	var delegate = {}
+	var pay_trigger_details = {}
 	var hero_id = 0
 	var owner_card = script.owner
 	if owner_card:
@@ -4760,13 +4759,16 @@ func pay_as_resource(script):
 	else:
 		owner_card = self
 	if hero_id:
-		delegate = {"for_hero_id" : hero_id}
+		pay_trigger_details = {"for_hero_id" : hero_id}
 
+	var context_uid =  script.get_property("context_uid")
+	if context_uid:
+		pay_trigger_details["context_uid"] = context_uid
 	#either pay the special resource, or go through the normal process
 	var paid_special_resource = get_resource_value_as_int_special("execute", script)
 
 	if !paid_special_resource:
-		var exe_sceng = self.execute_scripts_no_stack(owner_card, "resource", delegate)				
+		var exe_sceng = self.execute_scripts_no_stack(owner_card, "resource", pay_trigger_details)				
 		while exe_sceng is GDScriptFunctionState && exe_sceng.is_valid():
 			exe_sceng  = exe_sceng.resume()	
 

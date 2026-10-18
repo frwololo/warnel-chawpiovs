@@ -623,7 +623,8 @@ func open_context( context, position =-1):
 		"context_name": context["context_name"],
 		"context_details": context_details, 
 	}
-	var task = SimplifiedStackScript.new(definition, event.get_owner())
+	var owner = event.get_owner() if event else original_script.owner
+	var task = SimplifiedStackScript.new(definition, owner)
 	task.context_marker = true
 	var stack_uid = insert_event_into_stack(task, position)
 	context["context_stack_uid"] = stack_uid
@@ -1460,6 +1461,8 @@ func get_stack_object_by_uid(stack_uid):
 
 func find_event_id_in_stack(event):
 	#the requester usually doesn't want to delete themselves
+	if !event:
+		return -1
 	for i in stack.size():
 		if is_script_in_stack_object(event, stack[i]):
 			return i

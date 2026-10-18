@@ -1,0 +1,179 @@
+{
+	"_comments": "Bug: Across the Spider Verse requires tapped hero",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"stunned": 1,
+						"confused": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Tooth and Nail",
+					"tokens": {
+						"threat": 9
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Web-Shooter",
+					"tokens": {
+						"web": 2
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Spider-Man #27049"
+				},
+				{
+					"card": "Ghost-Spider #27048"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Across The Spider-Verse"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Man - Hobie Brown"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Across The Spider-Verse"
+		},
+		{
+			"type": "select",
+			"value": "Spider-Man - Hobie Brown"
+		},
+		{
+			"type": "select",
+			"value": "Ghost-Spider #27048"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom - 1",
+					"tokens": {
+						"stunned": 1,
+						"confused": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "\"Leave Us Alone!\"",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Tooth and Nail",
+					"tokens": {
+						"threat": 9
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Web-Shooter",
+					"tokens": {
+						"web": 1
+					},
+					"exhausted": true
+				}
+			],
+			"discard1": [
+				{
+					"card": "Spider-Man #27049"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Spider-Man #27049"
+				},			
+				{
+					"card": "Web-Shot"
+				},
+				{
+					"card": "Across The Spider-Verse"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Man - Hobie Brown",
+					"exhausted": true
+				},
+				{
+					"card": "Ghost-Spider #27048"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

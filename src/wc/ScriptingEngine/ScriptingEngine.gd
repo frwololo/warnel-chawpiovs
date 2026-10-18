@@ -111,6 +111,13 @@ func pay_as_resource(script: ScriptTask) -> int:
 	var resources_paid := []
 #	if !script.subjects:
 #		var _tmp = 1
+	var context = {
+			"context_name": "pay_as_resource",
+			"original_script": script,
+			"stack_event": null
+	}
+	var context_uid = gameData.theStack.open_context(context)
+	script.script_definition["context_uid"] = context_uid
 	for subject in script.subjects:
 		var resource = subject.pay_as_resource(script)
 		resources_paid.append({"source": subject, "resource" : resource})

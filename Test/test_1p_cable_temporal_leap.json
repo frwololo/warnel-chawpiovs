@@ -1,0 +1,175 @@
+{
+	"_comments": "Bug: Temporal Leap not triggering on last scheme",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Lock and Load"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Psimitar"
+				},
+				{
+					"card": "Sidearm #40030"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Temporal Leap"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Temporal Leap"
+		},	
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Lock and Load",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"victory_display": [],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Psimitar"
+				},
+				{
+					"card": "Sidearm #40030"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable",
+					"tokens": {"defeat": 0}
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Temporal Leap"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

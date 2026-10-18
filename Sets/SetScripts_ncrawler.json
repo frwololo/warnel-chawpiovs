@@ -956,15 +956,23 @@
 		}
 	},
 	"Kurt's Cutlasses": {
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"restricted": 1,
+						"restricted_count": 2
+					}
+				}
+			]
+		},	
 		"alterants": {
 			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "restricted_limit",
-					"trigger": "my_identity",
-					"alteration": -1,
-					"_comments": "hack to make it count as 2 restricted"
-				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
@@ -1136,7 +1144,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "restricted_limit",
 					"trigger": "my_identity",
-					"alteration": -1,
+					"alteration": 1,
 					"_comments": "hack to make it count as 2 restricted"
 				}
 			]

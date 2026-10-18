@@ -746,7 +746,7 @@ func check_restricted_limit():
 		var count = 0
 		for card in my_cards:
 			if card.get_property("restricted", 0):
-				count += 1
+				count += card.get_property("restricted_count", 1)
 		if (count) > restricted_limit:
 			identity_card.execute_scripts(identity_card, "restricted_limit_rule")
 

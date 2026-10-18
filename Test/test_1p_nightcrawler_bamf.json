@@ -1,0 +1,169 @@
+{
+	"_comments": "Bug: Nightcrawler's BAMF not triggering if something else can trigger at the same time",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Prehensile Tail"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [],
+			"others": [
+				{
+					"card": "BAMF!",
+					"owner_hero_id": 1,
+					"host": "Rhino - 1"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Change of Fortune"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Powerful Punch"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "gain_control"
+		},	
+		{
+			"type": "activate",
+			"value": "BAMF!"
+		},
+		{
+			"type": "pass",
+			"value": 1
+		},		
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Prehensile Tail"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler",
+					"exhausted": false,
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [
+				{
+					"card": "BAMF!"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Change of Fortune"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Powerful Punch"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

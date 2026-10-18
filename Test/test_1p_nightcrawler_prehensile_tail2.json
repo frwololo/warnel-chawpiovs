@@ -1,0 +1,139 @@
+{
+	"_comments": "Bug: Prehensile tail not giving +1 restrivted",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Bamf!",
+					"host": "Rhino"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Prehensile Tail"
+				},
+				{
+					"card": "Psimitar"
+				},
+				{
+					"card": "Godslayer"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Hand Cannon"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Hand Cannon"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nightcrawler"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Make the Call"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nightcrawler"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra bomber",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Bamf!",
+					"host": "Rhino"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Prehensile Tail"
+				},
+				{
+					"card": "Psimitar"
+				},
+				{
+					"card": "Godslayer"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

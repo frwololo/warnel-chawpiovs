@@ -10287,6 +10287,7 @@
 					{
 						"name": "save_variable",
 						"var_name": "my_count",
+						"force_run_at_prime": true,
 						"var_type": "int",
 						"value": {
 							"func_name": "get_subject_int_printed_property",

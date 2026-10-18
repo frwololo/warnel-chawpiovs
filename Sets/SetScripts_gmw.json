@@ -5156,7 +5156,7 @@
 								"func_params": {
 									"subject": "boardseek",
 									"subject_count": "all",
-									"filter_state_boardseek": [
+									"filter_state_seek": [
 										{
 											"filter_group": "group_identities"
 										}
@@ -5183,7 +5183,7 @@
 									"func_params": {
 										"subject": "boardseek",
 										"subject_count": "all",
-										"filter_state_boardseek": [
+										"filter_state_seek": [
 											{
 												"filter_group": "group_identities"
 											}
@@ -5207,7 +5207,6 @@
 					"else": [
 						{
 							"name": "surge",
-							"is_else": true
 						}
 					]
 				}

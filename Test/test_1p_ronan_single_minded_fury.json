@@ -1,0 +1,166 @@
+{
+	"_comments": "Bug: Ronan Single Minded fury attacking even if no Power Stone",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Single-Minded Fury"
+				},
+				{
+					"card": "Caught off guard"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Ronan the Accuser - 1"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Vine Spikes"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a",
+					"tokens": {
+						"growth": 3
+					}
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Groot"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Ronan the Accuser - 1"
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Kree Command Ship"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Caught off guard"
+				},
+				{
+					"card": "Single-Minded Fury"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Interception Imminent",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Power Stone #16149",
+					"host": "Ronan the Accuser - 1"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Vine Spikes"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Root Stomp"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Groot #16001a",
+					"tokens": {
+						"growth": 3
+					}
+				}
+			]
+		}
+	}
+}

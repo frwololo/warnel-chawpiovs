@@ -105,6 +105,27 @@ func _init(_state_scripts: Array,
 	state_scripts = _state_scripts.duplicate() 	
 	add_scripts(state_scripts, owner,  trigger_object, children_trigger_details)
 
+	fill_network_prepaid()
+
+func fill_network_prepaid():
+	# We execute the scripts locally, but in multiplayer only one player has to select
+	# payments. Once they do, we send the payment information to other players,
+	# and instead of selecting manually, the cost is paid automatically with the network_prepaid data
+	network_prepaid = []
+	if !trigger_details.has("network_prepaid"):
+		return null
+	
+	var prepaid = trigger_details["network_prepaid"]
+	if scripts_queue.size() != prepaid.size():
+		var _error = 1
+		print_debug ("ScriptingEngine: prepaid not same size as scripts queue" + JSON.print(trigger_details, '\t'))
+		return false
+	for i in range(prepaid.size()):
+		scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]	
+
+	return true
+
+
 func add_update_trigger_details_recursive(details):
 	for key in details:
 		trigger_details[key] = details[key]
@@ -267,6 +288,10 @@ func precompute(script):
 	run_type = _tmp_run_type
 	return script.process_result
 
+func network_prepaid_prime():
+	for task in scripts_queue:
+		task.prime_from_network_prepaid()
+
 # The main engine starts here.
 # It receives array with all the tasks to execute,
 # then turns each array element into a [ScriptTask] object and
@@ -293,15 +318,13 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 	network_prepaid = []
 	if trigger_details.has("network_prepaid"):
 		is_network_master = false
-		self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
-		var prepaid = trigger_details["network_prepaid"]
-		if scripts_queue.size() != prepaid.size():
+		self.user_interaction_status = CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID		
+		var prepaid_ok = fill_network_prepaid()
+		if !prepaid_ok:
 			var _error = 1
-			print_debug ("ScriptingEngine: prepaid not same size as scripts queue" + JSON.print(trigger_details, '\t'))
 			reset_cost_context()
-			return
-		for i in range(prepaid.size()):
-			scripts_queue[i].script_definition["network_prepaid"] =  prepaid[i]		
+			return false
+	
 		
 	var prev_subjects := []
 	var has_else = self.has_else_condition()

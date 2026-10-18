@@ -1344,6 +1344,8 @@ func receive_damage(script: ScriptTask) -> int:
 		var lethal = false
 		if damage_happened:
 			lethal = card.check_death(script)
+		if lethal:
+			tags.append("lethal")
 		if ("attack" in tags):
 			var context_uid = script.get_property("context_uid", 0)
 			if context_uid:

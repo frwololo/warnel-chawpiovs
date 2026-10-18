@@ -2,7 +2,7 @@
 	"_macros": {
 		"__aim_interference": {
 			"_rules": {
-				"forced": true,
+				"forced": true
 			},
 			"Add 3 counters": [
 				{
@@ -4153,6 +4153,14 @@
 	"Front Organization": {
 		"give_to_player_max1": {},
 		"interrupt_discard": {
+			"filter_state_trigger": [{
+				"filter_func": {
+					"func_name": "is_encounter",
+					"func_params": {
+						"subject": "trigger"
+					}
+				}
+			}],
 			"event_filters": {
 				"filter_state_event_target": [
 					{
@@ -6192,19 +6200,12 @@
 						"name": "move_card_to_container",
 						"src_container": "deck",
 						"dest_container": "hand",
-						"subject": "tutor",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
+						"subject": "tutor_and_choose",
+						"selection_optional": true,
+						"is_cost": true,
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"trait_s.h.i.e.l.d": 1
-								},
-								"filter_properties2": {
-									"type_code": "support"
-								}
-							}
+							"trait_s.h.i.e.l.d",
+							"support"
 						]
 					},
 					{
@@ -6298,8 +6299,7 @@
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
-				"basic_thwart_happened",
-				"basic_defense_happened"
+				"basic_thwart_happened"
 			],
 			"trigger": "self",
 			"board": [
@@ -6544,8 +6544,7 @@
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
-				"basic_thwart_happened",
-				"basic_defense_happened"
+				"basic_thwart_happened"
 			],
 			"trigger": "self",
 			"board": [
@@ -9509,7 +9508,7 @@
 			"all": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Means - Medical Records": [
 					{
 						"name": "constraints",
@@ -9603,7 +9602,7 @@
 			"all": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Motive - Money": [
 					{
 						"name": "constraints",
@@ -9697,7 +9696,7 @@
 			"all": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Opportunity - Security Clearance": [
 					{
 						"name": "constraints",
@@ -9791,7 +9790,7 @@
 			"all": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Accused - Chief Medical Officer": [
 					{
 						"name": "constraints",
@@ -11406,7 +11405,7 @@
 			"board": {
 				"_rules": {
 					"forced": true
-				},			
+				},
 				"Advance to Accusation": [
 					{
 						"name": "move_to_next_scheme",

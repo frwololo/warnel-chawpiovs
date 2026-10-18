@@ -182,7 +182,8 @@ func retrieve_ghostable_scripts(card):
 	if !card_scripts:
 		return null
 		
-	var state_scripts = card.retrieve_current_state_scripts(card_scripts)
+	var state_scripts_data = card.retrieve_current_state_scripts(card_scripts)
+	var state_scripts = state_scripts_data["state_scripts"]
 	return state_scripts
 
 func check_ghost_card(card):

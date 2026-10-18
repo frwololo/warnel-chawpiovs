@@ -424,7 +424,7 @@
 								"comparison": "ge"
 							},
 							"filter_properties2": {
-								"type_code": "ally"
+								"type_code": "support"
 							}
 						},
 						{
@@ -433,7 +433,7 @@
 								"comparison": "ge"
 							},
 							"filter_properties2": {
-								"type_code": "ally"
+								"type_code": "support"
 							}
 						}
 					]

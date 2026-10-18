@@ -37,6 +37,10 @@ func _init(_task, _owner = null, _trigger_object = null, _trigger_details = {}):
 
 	if !task.trigger_details.has("tags"):
 		task.trigger_details["tags"] = []
+	
+	#typical cleanup of network_prepaid
+	task.trigger_details.erase("network_prepaid")
+	task.script_definition.erase("network_prepaid")
 		
 	#convoluted way to recreate a sceng from a task... is there something cleaner?
 	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)

@@ -1,0 +1,205 @@
+{
+	"_comments": "Front organization normal behavior: triggers on discards caused by encounters",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Laser Strike"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Front Organization"
+				},
+				{
+					"card": "The Douglass",
+					"tokens": {
+						"operation": 1
+					}
+				},
+				{
+					"card": "S.H.I.E.L.D. Director"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Front Organization"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Laser Strike"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Front Organization"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "The Douglass",
+					"tokens": {
+						"operation": 1
+					}
+				},
+				{
+					"card": "S.H.I.E.L.D. Director"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

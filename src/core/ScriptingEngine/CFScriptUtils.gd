@@ -202,7 +202,8 @@ static func get_altered_value(
 				continue				
 			var scripts = obj.retrieve_scripts(alterants_key)
 			# We select which scripts to run from the card, based on it state
-			var state_scripts = obj.retrieve_current_state_scripts(scripts)
+			var state_scripts_data = obj.retrieve_current_state_scripts(scripts)
+			var state_scripts = state_scripts_data["state_scripts"]
 			if scripts.get("_breakpoint"):
 				obj.script_breakpoint()
 			# To avoid unnecessary operations

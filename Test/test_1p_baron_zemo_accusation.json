@@ -1,0 +1,395 @@
+{
+	"_comments": "Bug: Accusation doesn't proceed",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "43001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Baron Zemo's Sword"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"villain": [
+				{
+					"card": "Baron Zemo - A1 #50165a",
+					"tokens": {
+						"damage": 11
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Zemo's Manipulations - 1B #50167b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Chief Surveillance Officer #50182a",
+					"tokens": {
+						"secret": 1
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Tactical Officer #50183a",
+					"tokens": {
+						"secret": 1
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Medical Officer #50181a",
+					"tokens": {
+						"secret": 1
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Baron Zemo - A2 #50165b"
+				},
+				{
+					"card": "The Accusation - 2A #50168a"
+				},
+				{
+					"card": "The Accusation - 2B #50168b"
+				},
+				{
+					"card": "Fighting Zemo - 3A #50169a"
+				},
+				{
+					"card": "Fighting Zemo - 3B #50169b"
+				},
+				{
+					"card": "Medical Officer's Aid #50181b"
+				},
+				{
+					"card": "Surveillance Officer's Aid #50182b"
+				},
+				{
+					"card": "Tactical Officer's Aid #50183b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Zemo's Manipulations - 1A #50167a"
+				}
+			],
+			"tmp_pile1": [
+				{
+					"card": "Ideology #50190"
+				},
+				{
+					"card": "Medical Records #50185"
+				},
+				{
+					"card": "Authority #50193"
+				}
+			],
+			"tmp_pile2": [
+				{
+					"card": "Travel #50192"
+				},
+				{
+					"card": "Security Scanner #50187"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones #01059"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "X-23's Claws"
+				}
+			],
+			"identity1": [
+				{
+					"card": "X-23"
+				}
+			],
+			"hand1": [
+				{
+					"card": "claw mastery"
+				},
+				{
+					"card": "genius"
+				},
+				{
+					"card": "strength"
+				},
+				{
+					"card": "energy"
+				},
+				{
+					"card": "grim resolve"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "next_phase",
+			"value": 1
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "Don't discard hand"
+		},
+		{
+			"type": "choose",
+			"value": "Don't acquire evidence"
+		},
+		{
+			"type": "choose",
+			"value": "Advance to accusation"
+		},
+		{
+			"type": "choose",
+			"value": "Means - Medical Records"
+		},
+		{
+			"type": "choose",
+			"value": "Motive - Ideology"
+		},
+		{
+			"type": "choose",
+			"value": "Opportunity - Authority"
+		},
+		{
+			"type": "choose",
+			"value": "Accused - Chief Tactical Officer"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "choose",
+			"value": "secret",
+			"_comments": "tell Zemo to add 1 secret on Tactical aid, and take 2 damage"
+		},
+		{
+			"type": "select",
+			"value": "Tactical Officer's Aid #50183b"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "43001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				}
+			],
+			"villain": [
+				{
+					"card": "Baron Zemo - A2 #50165b",
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Baron Zemo's Sword",
+					"host": "Baron Zemo - A2 #50165b"
+				},
+				{
+					"card": "Tactical Officer's Aid #50183b",
+					"tokens": {
+						"secret": 2,
+						"the_mole": 1,
+						"the_accused": 1
+					},
+					"host": "Baron Zemo - A2 #50165b"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Fighting Zemo - 3B #50169b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Chief Surveillance Officer #50182a",
+					"tokens": {
+						"secret": 1
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Chief Medical Officer #50181a",
+					"tokens": {
+						"secret": 1
+					},
+					"script_variables": {
+						"my_threshold": 4
+					}
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Medical Officer's Aid #50181b"
+				},
+				{
+					"card": "Surveillance Officer's Aid #50182b"
+				},
+				{
+					"card": "Zemo's Manipulations - 1B #50167b"
+				},
+				{
+					"card": "The Accusation - 2B #50168b"
+				},
+				{
+					"card": "Baron Zemo - A1 #50165a"
+				},
+				{
+					"card": "Chief Tactical Officer #50183a"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Zemo's Manipulations - 1A #50167a"
+				}
+			],
+			"tmp_pile1": [
+				{
+					"card": "Ideology #50190"
+				},
+				{
+					"card": "Medical Records #50185"
+				},
+				{
+					"card": "Authority #50193"
+				}
+			],
+			"tmp_pile2": [
+				{
+					"card": "Travel #50192"
+				},
+				{
+					"card": "Security Scanner #50187"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Jessica Jones #01059"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "X-23's Claws"
+				}
+			],
+			"identity1": [
+				{
+					"card": "X-23",
+					"tokens": {
+						"damage": 8
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"hand1": [
+				{
+					"card": "claw mastery"
+				},
+				{
+					"card": "genius"
+				},
+				{
+					"card": "strength"
+				},
+				{
+					"card": "energy"
+				},
+				{
+					"card": "grim resolve"
+				}
+			]
+		}
+	}
+}

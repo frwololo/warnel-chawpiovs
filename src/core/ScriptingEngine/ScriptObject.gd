@@ -287,17 +287,23 @@ func _network_prepaid():
 		"is_valid": prepayment["is_valid"],
 		"subjects": result
 		}
+
+func set_subjects_from_network_prepaid():
+	var prepaid = _network_prepaid()
+	if (null != prepaid):
+		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
+		set_subjects(prepaid["subjects"])
+		is_valid = prepaid["is_valid"]
+		return prepaid
+	return null		
 	
 # Figures out what the subjects of this script is supposed to be.
 #
 # Returns a Card object if subjects is defined, else returns null.
 func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) -> Array:
 	#TODO MULTIPLAYER_MODIFICATION
-	var prepaid = _network_prepaid()
+	var prepaid = set_subjects_from_network_prepaid()
 	if (null != prepaid):
-		user_interaction_status =  CFConst.USER_INTERACTION_STATUS.DONE_NETWORK_PREPAID
-		set_subjects(prepaid["subjects"])
-		is_valid = prepaid["is_valid"]
 		return prepaid["subjects"]
 
 	var result = _local_find_subjects(stored_integer, run_type)

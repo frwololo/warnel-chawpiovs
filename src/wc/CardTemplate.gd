@@ -1581,7 +1581,8 @@ func find_interrupt_script(trigger_card, trigger_details):
 	for trigger_name in  ["interrupt_" + event_name, "interrupt"]:
 		var card_scripts = retrieve_filtered_scripts(trigger_card, trigger_name, trigger_details)
 		if card_scripts:
-			var state_scripts = get_state_scripts(card_scripts, trigger_card, trigger_details)
+			var state_scripts_dict = get_state_scripts_dict(card_scripts, trigger_card, trigger_details)
+			var state_scripts = state_scripts_dict["state_scripts"]
 			if state_scripts:
 #				var meta = trigger_details.get("meta_response", {})
 #				if meta:
@@ -1589,6 +1590,7 @@ func find_interrupt_script(trigger_card, trigger_details):
 				return {
 					"card_scripts": card_scripts,
 					"state_scripts": state_scripts,
+					"state_exec": state_scripts_dict["state_exec"],
 					"trigger": trigger_name,
 					"context": {
 						"is_attack_interrupt": is_attack_interrupt,
@@ -1614,9 +1616,9 @@ func can_interrupt(
 		return CFConst.CanInterrupt.NO
 	
 	var _debug = false
-	if canonical_name == "Colossus - Piotr Rasputin" and trigger_card:
-		if trigger_details["event_name"] == "enemy_initiates_attack":
-			_debug = true
+#	if canonical_name == "Molecular Acceleration" and trigger_card:
+#		if trigger_details["event_name"] == "discard":
+#			_debug = true
 
 	if (_debug):
 		display_debug("{interrupt} Hero:" + str(hero_id) + " Checks for " + canonical_name + " vs " + trigger_details.get("event_name") + " - " + trigger_card.canonical_name)		
@@ -1646,9 +1648,19 @@ func can_interrupt(
 
 
 	if gameData.can_hero_play_this_ability(hero_id,self):
-		if card_scripts.get("is_optional_" + get_state_exec()):
+		#TODO: "is_optional_all" should make the script optional as well
+		#however this triggers a cascade of problems, because the card might not
+		#be on the board while we expect it to be "clickable"
+		#a solution would be to consider it as optional here,
+		#but then take the proper action upstream in globalscriptstack (attempt_to_play instead of add_to_interrupters when card is not on board?)
+		#for now, marking it as "must" when is_optional_all is set to true seems to "work", there are not that many cards relying on this
+		#and they all seem to be ok with this being a MUST instead of a MAY
+		var script_is_optional = card_scripts.get("is_optional_" + get_state_exec(), false)# or  card_scripts.get("is_optional_all", false)
+
+		if script_is_optional:
 			#optional interrupts need to check costs
-			if check_play_costs_no_cache(hero_id, _debug) == CFConst.CostsState.IMPOSSIBLE:
+			var cost_check_params = {"state_exec": interrupt_data["state_exec"]}
+			if check_play_costs_no_cache(hero_id, cost_check_params, _debug) == CFConst.CostsState.IMPOSSIBLE:
 				if (_debug):
 					display_debug("allowed to interrupt but can't pay cost")
 				return CFConst.CanInterrupt.NO			
@@ -1706,7 +1718,8 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 		if !obj_scripts:
 			continue
 		# We select which scripts to run from the card, based on it state
-		var state_scripts = obj.retrieve_current_state_scripts(obj_scripts)
+		var state_scripts_data =  obj.retrieve_current_state_scripts(obj_scripts)
+		var state_scripts = state_scripts_data["state_scripts"]		
 			
 		for script in state_scripts:
 			if not SP.filter_trigger(
@@ -1884,7 +1897,8 @@ func get_potential_scripts(trigger):
 	var card_scripts = retrieve_scripts(trigger)
 	if !card_scripts:
 		return false
-	var state_scripts = retrieve_current_state_scripts(card_scripts)
+	var state_scripts_data = retrieve_current_state_scripts(card_scripts)
+	var state_scripts = state_scripts_data["state_scripts"]
 	return state_scripts
 
 #returns true if something is going on that prevents execution of card scripts
@@ -1931,7 +1945,7 @@ func execute_scripts(
 		orig_trigger_details: Dictionary = {},
 		run_type := CFInt.RunType.NORMAL):
 
-#	if (trigger == "receive_damage") and canonical_name == "Arm Block":# and run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+#	if (trigger == "manual") and canonical_name == "Molecular Acceleration":# and run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 #		var _tmp = 1
 
 
@@ -2174,35 +2188,38 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 					#basically if boardseek has only one option, we shouldn't bail
 					show_optional_confirmation_menu = false
 	if show_optional_confirmation_menu and !is_network_call:
-		if !interaction_authorized:
-			cfc.remove_ongoing_process(self, "core_execute_scripts")
-			gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "pending interaction because of optional dialog")		
-			return null
+		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+			pass
+		else:
+			if !interaction_authorized:
+				cfc.remove_ongoing_process(self, "core_execute_scripts")
+				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "pending interaction because of optional dialog")		
+				return null
 
-		gameData.select_current_playing_hero(interacting_hero)
-		force_user_interaction_required = true	
-		
-		var confirm_return = cfc.ov_utils.confirm(
-			self,
-			{
-				"is_optional_" + get_state_exec() : true,
-				"announcer_data": {
-					"origin_event": origin_event,
-					"interacting_hero": interacting_hero
-				}
-			},
-			canonical_name,
-			trigger,
-			get_state_exec())
-		if confirm_return is GDScriptFunctionState: # Still working.			
-			confirm_return = yield(confirm_return, "completed")
-			# If the player chooses not to play an optional cost
-			# We consider the whole cost dry run unsuccesful
-			if not confirm_return:
-				if origin_event and trigger_details.get("is_interrupt_or_response", false):
-					gameData.theStack.pass_interrupt_for_card(origin_event, self)
-				gameData.theStack.resume_operations_to_all(checksum)
-				state_scripts = []
+			gameData.select_current_playing_hero(interacting_hero)
+			force_user_interaction_required = true	
+			
+			var confirm_return = cfc.ov_utils.confirm(
+				self,
+				{
+					"is_optional_" + get_state_exec() : true,
+					"announcer_data": {
+						"origin_event": origin_event,
+						"interacting_hero": interacting_hero
+					}
+				},
+				canonical_name,
+				trigger,
+				get_state_exec())
+			if confirm_return is GDScriptFunctionState: # Still working.			
+				confirm_return = yield(confirm_return, "completed")
+				# If the player chooses not to play an optional cost
+				# We consider the whole cost dry run unsuccesful
+				if not confirm_return:
+					if origin_event and trigger_details.get("is_interrupt_or_response", false):
+						gameData.theStack.pass_interrupt_for_card(origin_event, self)
+					gameData.theStack.resume_operations_to_all(checksum)
+					state_scripts = []
 	
 	# If the state_scripts return a dictionary entry
 	# it means it's a multiple choice between two scripts
@@ -2847,11 +2864,12 @@ func check_ghost_card():
 #
 # If it returns false, the card will be highlighted with a red tint, and the
 # player will not be able to drag it out of the hand.
-func check_play_costs_no_cache(hero_id = 0, _debug = false)-> Color:
+func check_play_costs_no_cache(hero_id = 0, params = {},  _debug = false)-> Color:
 	if !hero_id:
 		hero_id = gameData.get_current_local_hero_id()
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.CACHE_INVALID
-	return check_play_costs({"hero_id" : hero_id}, _debug)
+	params["hero_id"] = hero_id
+	return check_play_costs(params, _debug)
 
 func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	#return .check_play_costs();
@@ -2870,7 +2888,8 @@ func check_play_cost_refresh(hero_id, params:Dictionary = {}, _debug = false) ->
 	#cards in hand or on board
 	#cards that are "ghost" cards 
 	#(that is, cards in piles that can exceptionally be played from outside of board/hand)
-	if !is_playable_card_state():
+	var all_states_allowed = (params.get("state_exec", "") == "all")
+	if !is_playable_card_state() and !all_states_allowed:
 		return {
 				"reason": "is_playable_card_state",
 				"status" :_check_play_costs_cache[hero_id]

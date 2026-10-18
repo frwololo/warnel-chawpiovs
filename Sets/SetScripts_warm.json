@@ -612,8 +612,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard",
+					"name": "discard",
 					"src_container": "upgrade_support",
 					"is_cost": true,
 					"subject": "tutor",
@@ -644,8 +643,7 @@
 			},
 			"all": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard",
+					"name": "discard",
 					"src_container": "upgrade_support",
 					"is_cost": true,
 					"subject": "tutor",

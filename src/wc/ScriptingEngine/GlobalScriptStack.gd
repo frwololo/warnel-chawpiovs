@@ -516,7 +516,10 @@ func client_create_script(details):
 				owner_card,
 				trigger_card,
 				remote_trigger_details)
-	sceng.stored_integers = stored_integers			
+	sceng.stored_integers = stored_integers
+	#we force setting the subjects here based on network_prepaid,
+	#to ensure that when this sceng goes on the stack, its subjects are ready for any interrupt to check for them	
+	sceng.network_prepaid_prime()	
 	var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
 	stackEvent.set_display_name(action_name)
 	return stackEvent
@@ -770,7 +773,7 @@ func _process(_delta: float):
 	#signal gameData about who's currently "playing"
 	var script_identity = stack_object.owner_identity
 	gameData.set_current_acting_identity(script_identity)
-		
+	
 	var _interrupt_state = compute_interrupts(stack_object)
 	
 	if !_sent_about_to_execute_signal.has(stack_object):

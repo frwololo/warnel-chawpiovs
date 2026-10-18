@@ -580,6 +580,9 @@
 	"Honey Badger - Gabby Kinney": {
 		"response_card_damaged": {
 			"trigger": "self",
+			"event_filters": {
+				"tags": ["!lethal"]
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -929,12 +932,21 @@
 						"subject": "my_identity"
 					}
 				],
-				"Heal 3 From Identity, 1 From Honey Badget": [
+				"Heal 3 From Identity, 1 From Honey Badger": [
 					{
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
 							"action_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "Honey Badger",
+									"token_name": "damage"
+								}
+							}
 						]
 					},
 					{
@@ -950,12 +962,21 @@
 						"subject": "Honey Badger"
 					}
 				],
-				"Heal 2 From Identity, 2 From Honey Badget": [
+				"Heal 2 From Identity, 2 From Honey Badger": [
 					{
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
 							"action_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "count_tokens>=2",
+								"func_params": {
+									"subject": "Honey Badger",
+									"token_name": "damage"
+								}
+							}
 						]
 					},
 					{
@@ -971,12 +992,21 @@
 						"subject": "Honey Badger"
 					}
 				],
-				"Heal 1 From Identity, 3 From Honey Badget": [
+				"Heal 1 From Identity, 3 From Honey Badger": [
 					{
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
 							"action_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "count_tokens>=3",
+								"func_params": {
+									"subject": "Honey Badger",
+									"token_name": "damage"
+								}
+							}
 						]
 					},
 					{
@@ -992,12 +1022,21 @@
 						"subject": "Honey Badger"
 					}
 				],
-				"Heal 4 From Honey Badget": [
+				"Heal 4 From Honey Badger": [
 					{
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
 							"action_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "count_tokens>=4",
+								"func_params": {
+									"subject": "Honey Badger",
+									"token_name": "damage"
+								}
+							}
 						]
 					},
 					{

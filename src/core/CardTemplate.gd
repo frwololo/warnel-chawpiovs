@@ -1619,11 +1619,23 @@ func retrieve_current_state_scripts(card_scripts):
 			var precise_state = state_exec + "_" + parent.get_base_name()
 			var state_scripts = card_scripts.get(precise_state, [])
 			if state_scripts:
-				return state_scripts
+				return {
+					"state_exec": precise_state,
+					"state_scripts": state_scripts
+				}
 				
-	var any_state_scripts = card_scripts.get('all', [])
-	var state_scripts = card_scripts.get(state_exec, any_state_scripts)
-	return state_scripts
+
+	var state_scripts = card_scripts.get(state_exec, [])
+	if state_scripts:
+		return {
+			"state_exec": state_exec,
+			"state_scripts": state_scripts
+		}
+
+	return {
+		"state_exec": "all",
+		"state_scripts": card_scripts.get('all', [])
+	}
 	
 func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	var card_scripts = retrieve_scripts(trigger)
@@ -1650,7 +1662,8 @@ func get_state_scripts(card_scripts, trigger_card, trigger_details):
 func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_config = {}):
 	var action_name = ""
 	# We select which scripts to run from the card, based on it state
-	var state_scripts = retrieve_current_state_scripts(card_scripts)
+	var state_scripts_data = retrieve_current_state_scripts(card_scripts)
+	var state_scripts = state_scripts_data["state_scripts"]
 
 	var rules = {}
 	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
@@ -1712,7 +1725,7 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_co
 				
 
 	
-	return { "action_name" : action_name, "state_scripts" : state_scripts, "rules": rules}
+	return { "action_name" : action_name, "state_scripts" : state_scripts, "rules": rules, "state_exec": state_scripts_data["state_exec"]}
 
 func is_dry_run(run_type):
 	return ((run_type == CFInt.RunType.COST_CHECK) or

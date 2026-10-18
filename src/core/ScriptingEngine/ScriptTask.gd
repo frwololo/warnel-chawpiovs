@@ -43,6 +43,13 @@ func _init(owner,
 			trigger_details):
 		is_skipped = true
 
+#pre-sets the subjects from the "network_prepaid" variable
+#this is for network-initiated evetns that already have their costs paid
+func prime_from_network_prepaid():		
+	if self.script_name == "ask_integer":
+		return prime_integer_from_network_prepaid()
+	return set_subjects_from_network_prepaid()
+
 #Prime is the act of choosing subjects and valid targets in preparation for the script
 func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_prev_subjects: Array) -> void:
 
@@ -95,7 +102,8 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 	cfc.remove_ongoing_process(self)	
 #	print_debug("skipped: " + str(is_skipped) +  " valid: " + str(is_valid))
 
-func prime_ask_integer(_run_type: int) -> int:
+func prime_integer_from_network_prepaid():
+	var result = {}
 	var prepayment = get_property("network_prepaid", null)
 	_network_prepaid_called = true
 	if typeof(prepayment) == TYPE_DICTIONARY:
@@ -105,9 +113,16 @@ func prime_ask_integer(_run_type: int) -> int:
 		var number = prepayment[0]
 		if typeof(number) == TYPE_INT:
 			subjects = [number]
-			_set_primed()
-			return number
-			
+			return {
+				"result": number
+			}	
+
+func prime_ask_integer(_run_type: int) -> int:
+	#check first if the number was already provided from an online call
+	var prepaid = prime_integer_from_network_prepaid()
+	if prepaid:
+		_set_primed()
+		return prepaid["result"]		
 			
 	cfc.add_ongoing_process(self)
 	var integer_dialog = _ASK_INTEGER_SCENE.instance()

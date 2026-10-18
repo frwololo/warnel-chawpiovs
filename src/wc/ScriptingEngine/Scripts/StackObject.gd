@@ -310,7 +310,10 @@ func _get_display_text_nocache():
 								action = "remove status:"						
 							result = owner_name + " - " + action + token_name + subjects
 							return result
-		
+			"receive_damage":
+				var tags = task.get_property("tags")
+				if "retaliate" in tags:
+					result = owner_name + " - Retaliate Damage "
 							
 	result = result.replace("_", " ")
 	result = result + subjects

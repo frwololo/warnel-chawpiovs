@@ -80,6 +80,83 @@
 			]
 		}
 	},
+	"attach_upgrade_to_boardseek": {
+		"manual": {
+			"hand": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": true,
+					"is_cost": true,
+					"filter_state_seek": "__filter_state_seek__"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous",
+					"is_cost": true,
+					"_comments": "remembering  for next use"
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"_silent": true,
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_variable",
+								"func_params": {
+									"subject": "self",
+									"variable": "my_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "forget_variable",
+									"var_name": "my_target"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "attempt_attach"
+						}
+					]
+				}
+			]
+		},
+		"attempt_attach": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": true,
+					"is_cost": true,
+					"filter_state_seek": "__filter_state_seek__"
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		}
+	},	
 	"attach_upgrade_to_target": {
 		"manual": {
 			"hand": [

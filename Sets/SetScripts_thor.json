@@ -1092,12 +1092,13 @@
 		}
 	},
 	"Under Surveillance": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
+		"attach_upgrade_to_boardseek": {
+			"__filter_state_seek__": [
 				{
-					"name": "attach_to_card",
-					"subject": "main_scheme"
+					"filter_properties": {
+						"type_code": "main_scheme"
+					},
+					"filter_max_per_host": 1
 				}
 			]
 		},

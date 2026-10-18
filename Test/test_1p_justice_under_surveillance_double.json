@@ -1,0 +1,185 @@
+{
+	"_comments": "Under Surveillance bug: can play multiple",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin'"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Surveillance Team"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "The power of Justice"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Under Surveillance",
+					"properties": {
+						"nickname": "US1"
+					}
+				},
+				{
+					"card": "Under Surveillance",
+					"properties": {
+						"nickname": "US2"
+					}
+				},
+				{
+					"card": "Genius"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "US1"
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		},
+		{
+			"type": "play",
+			"value": "US2",
+			"expected_to_fail": true
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin'"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Surveillance Team"
+				},
+				{
+					"card": "Nick Fury"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Swinging Web Kick"
+				},
+				{
+					"card": "The power of Justice"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"others": [
+				{
+					"card": "Under Surveillance",
+					"host": "01097b"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Under Surveillance"
+				},
+				{
+					"card": "Genius"
+				}
+			]
+		}
+	}
+}

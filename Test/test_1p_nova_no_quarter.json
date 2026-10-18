@@ -1,0 +1,278 @@
+{
+	"_comments": "Bug: No Quarter 'excess damage' ability not triggering",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19389,
+					"hero": "28001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Down but Not Out #50137"
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Sam Alexander #28001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring the War!\" #28022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"The War's Been Brought\" #28025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "One by One #28014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Chase Them Down"
+				},
+				{
+					"card": "Pitchback"
+				},
+				{
+					"card": "Forcefield Projection #28003",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Everyday Hero #28019",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nova #28001a",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Supernova Helmet #28009",
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "No quarter"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"others": [
+				{
+					"card": "Moonstone #50139",
+					"host": "50131b"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "No quarter"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Mercenary"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"deck_id": 19389,
+					"hero": "28001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Down but Not Out #50137"
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b"
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Sam Alexander #28001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring the War!\" #28022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"The War's Been Brought\" #28025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "One by One #28014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Chase Them Down"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Everyday Hero #28019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength"
+				},				
+				{
+					"card": "No quarter"
+				},
+
+				{
+					"card": "Forcefield Projection #28003",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Nova #28001a",
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Supernova Helmet #28009"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Pitchback"
+				}
+			],
+			"others": [
+				{
+					"card": "Moonstone #50139",
+					"host": "50131b"
+				}
+			]
+		}
+	}
+}

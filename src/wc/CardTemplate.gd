@@ -1303,6 +1303,10 @@ func attach_to_host(
 		cfc.flush_cache()
 
 	var result = .attach_to_host(host, is_following_previous_host, tags)
+	
+	if "facedown" in tags and is_faceup:
+		set_is_faceup(false)
+	
 	if !result.get("moved_to_board", false):
 		#TODO Hack
 		#one thing we want to ensure is that encounter cards that move away from

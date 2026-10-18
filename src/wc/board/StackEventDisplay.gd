@@ -27,7 +27,7 @@ var owner_card
 var subjects:= []
 var status = ANIMATION_STATUS.NONE
 var initialized = false
-var text_loaded = false
+var text_loaded = ""
 var arrows_initialized = false
 var arrows := []
 var rect_size = Vector2(200, 200)
@@ -57,6 +57,11 @@ func _init():
 	self.visible = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	load_text()
+	if !text_loaded:
+		force_close()
+		return
+
 	scripting_bus.connect("stack_event_deleted", self, "_stack_event_deleted")	
 	gameData.theStack.connect("script_executed_from_stack", self, "_script_executed_from_stack")
 
@@ -115,11 +120,11 @@ func _process(_delta):
 		ANIMATION_STATUS.STARTING:
 			status = ANIMATION_STATUS.RUNNING
 		ANIMATION_STATUS.STOPPING:
-			status = ANIMATION_STATUS.STOPPED
 			force_close()
 	pass
 
 func force_close():
+	status = ANIMATION_STATUS.STOPPED
 	for arrow in arrows:
 		var container = self  #cfc.NMAP.board
 		container.remove_child(arrow)
@@ -140,9 +145,9 @@ func init_display(forced = false):
 	control.rect_position = owner_card.global_position
 
 	move_to_target_position()	
-	
+	display_text.bbcode_text = text_loaded
 	initialized = load_card_texture()
-	load_text()
+
 	init_arrows()
 	$Control.rect_scale = Vector2(SCALE,SCALE) *  cfc.hardcoded_positions_modifier
 	$Shadow.rect_scale = Vector2(SCALE,SCALE) *  cfc.hardcoded_positions_modifier
@@ -239,13 +244,10 @@ func load_card_texture() -> bool:
 	card_texture.self_modulate = Color(1,1,1)
 	return true
 
-func set_text_loaded():
-	text_loaded = true
-	gameData.theAnnouncer.emit_signal("announce_text_loaded", self, display_text.bbcode_text)
+func set_text_loaded(value):
+	text_loaded = value
+	gameData.theAnnouncer.emit_signal("announce_text_loaded", self, text_loaded)
 func load_text():
-	if !display_text:
-		return
-
 	if text_loaded:
 		return
 
@@ -253,8 +255,8 @@ func load_text():
 		if owner_card.is_boost():
 			var text = owner_card.get_printed_text("boost")
 			if text:
-				display_text.bbcode_text = text
-				set_text_loaded()
+				text_loaded = text
+				set_text_loaded(text_loaded)
 				return
 		else: #there are cases where an interrupt is coming but we're not in interrupt mode, so
 			#I am forced to guess this is what's happening here
@@ -268,22 +270,22 @@ func load_text():
 			for id in sections:
 				var text = owner_card.get_printed_text(id)
 				if text:
-					display_text.bbcode_text = text
-					set_text_loaded()
+					text_loaded = text
+					set_text_loaded(text_loaded)
 					return		
-		display_text.bbcode_text = owner_card.get_printed_text()
-		set_text_loaded()
+		text_loaded = owner_card.get_printed_text()
+		set_text_loaded(text_loaded)
 		return
 			
 	if stack_event:
-		display_text.bbcode_text = stack_event.get_display_text()
+		text_loaded = stack_event.get_display_text()
 	else:
 		if owner_card:
-			display_text.bbcode_text = owner_card.get_printed_text()
+			text_loaded = owner_card.get_printed_text()
 		else:
-			display_text.bbcode_text = "---"
+			text_loaded = ""
 
-	set_text_loaded()	
+	set_text_loaded(text_loaded)	
 
 func load_from_event(event):
 	stack_event = event

@@ -2151,6 +2151,7 @@
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": -1,
+					"is_cost": true,
 					"token_name": "secret"
 				},
 				{
@@ -2220,6 +2221,7 @@
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": -1,
+					"is_cost": true,
 					"token_name": "secret"
 				},
 				{
@@ -2288,6 +2290,7 @@
 					"name": "mod_tokens",
 					"subject": "self",
 					"modification": -1,
+					"is_cost": true,
 					"token_name": "secret"
 				},
 				{
@@ -9998,6 +10001,60 @@
 		"post_reveal": {
 			"board": [
 				{
+					"name": "move_card_to_container",
+					"_comments": "Clean up the board",
+					"subject": "boardseek",
+					"dest_container": "tmp_pile1",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Money"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Blackmail"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Ideology"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Medical Records"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Wiretap"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Security Clearance"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Travel"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Authority"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Security Scanner"
+							}
+						}
+					]
+				},
+				{
 					"name": "move_to_next_scheme",
 					"subject": "self"
 				}
@@ -11351,6 +11408,7 @@
 	},
 	"Zemo's Manipulations - 1B": {
 		"phase_ended": {
+			"_silent": true,
 			"event_filters": {
 				"phase": "player_phase"
 			},
@@ -11393,18 +11451,21 @@
 					},
 					{
 						"name": "sequence",
+						"_silent": true,
 						"sequence_ability": "do_advance"
 					}
 				],
 				"Don't Acquire Evidence": [
 					{
 						"name": "sequence",
+						"_silent": true,
 						"sequence_ability": "do_advance"
 					}
 				]
 			}
 		},
 		"do_advance": {
+			"_silent": true,
 			"board": {
 				"_rules": {
 					"forced": true

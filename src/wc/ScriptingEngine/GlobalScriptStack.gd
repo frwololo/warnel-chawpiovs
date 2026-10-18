@@ -255,6 +255,10 @@ func add_yielded_script(yield_data):
 func attempt_yielded_script():
 	if !yielded_scripts:
 		return false
+	
+	#failsafe in case game exited early
+	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
+		return false
 		
 	var script_data = yielded_scripts.pop_front()
 	remove_yield_counter("yielded_script")	

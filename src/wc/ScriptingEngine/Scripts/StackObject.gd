@@ -186,7 +186,7 @@ func modify(script, task_object = null):
 
 
 func get_owner_card():
-	var first_task = get_first_task()
+	var first_task = get_first_task(false)
 	if first_task:
 		return first_task.owner
 	return null
@@ -340,7 +340,11 @@ func get_first_task(meaningful = true):
 			if skip_cost_tasks and task.has_method("get_property"):
 				if task.get_property("is_cost", false):
 					continue	
-
+			if task.script_name == "mod_tokens":
+				var token_name = task.get_property("token_name", "")
+				if typeof(token_name) == TYPE_STRING and token_name.begins_with("_"):
+					continue
+				
 			var sceng = get_sceng()
 			if sceng:
 				#trying to avoid showing "else" messages when inappropriate

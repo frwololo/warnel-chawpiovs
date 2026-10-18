@@ -671,7 +671,7 @@
 					"src_container": "deck_villain"
 				},
 				{
-					"name": "deal_damage",
+					"name": "indirect_damage",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
@@ -836,6 +836,7 @@
 	},
 	"Puncture Wound": {
 		"attack_happened": {
+			"_silent": true,
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -859,6 +860,7 @@
 			]
 		},
 		"phase_ended": {
+			"_silent": true,	
 			"all": [
 				{
 					"name": "forget_variable",
@@ -1133,6 +1135,7 @@
 	},
 	"Shatterstar - Gaveedra Seven": {
 		"interrupt_attack_started": {
+			"trigger":"self",
 			"is_optional_board": true,
 			"board": [
 				{
@@ -1399,7 +1402,7 @@
 	},
 	"X-23": {
 		"once_per_phase": {
-			"__name__": "__living_weapon"
+			"__name__": "_living_weapon"
 		},
 		"card_damaged": {
 			"trigger": "self",
@@ -1409,7 +1412,7 @@
 					"name": "mod_tokens",
 					"is_cost": true,
 					"modification": -1,
-					"token_name": "__living_weapon",
+					"token_name": "_living_weapon",
 					"subject": "self"
 				},
 				{

@@ -406,6 +406,10 @@ func considered_in_play()-> bool:
 	var type = get_property("type_code", "")
 	if type in ["treachery", "event"]:
 		return false
+	
+	if is_inactive_attachment():
+		return false	
+		
 	return true
 
 

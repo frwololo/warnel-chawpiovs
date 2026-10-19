@@ -1302,6 +1302,11 @@ func move_to(targetHost: Node,
 	var signal_to_emit = ""
 	var destination_grid = ""	
 
+	if typeof(board_position) == TYPE_STRING:
+		var slot = cfc.find_slot_in_grid(board_position)
+		if slot:
+			board_position = slot
+
 	var execute_self_moved_to_board = false
 	if targetHost == cfc.NMAP.board and not board_position:
 		match board_placement:

@@ -947,13 +947,20 @@
 					]
 				},
 				{
+					"name": "save_variable",
+					"value": "previous",
+					"force_run_at_prime": true,
+					"var_name": "my_target",
+					"var_type": "subject",
+				},				
+				{
 					"name": "conditional_script",
 					"options": [
 						{
 							"condition": {
 								"func_name": "get_subject_int_property",
 								"func_params": {
-									"subject": "previous",
+									"subject": "my_target",
 									"property": "type_code",
 									"property_value": "main_scheme"
 								}
@@ -962,7 +969,7 @@
 								{
 									"name": "remove_threat",
 									"amount": 1,
-									"subject": "previous"
+									"subject": "my_target"
 								}
 							]
 						},
@@ -970,7 +977,7 @@
 							"condition": {
 								"func_name": "get_subject_int_property",
 								"func_params": {
-									"subject": "previous",
+									"subject": "my_target",
 									"property": "type_code",
 									"property_value": "side_scheme"
 								}
@@ -979,7 +986,7 @@
 								{
 									"name": "remove_threat",
 									"amount": 1,
-									"subject": "previous"
+									"subject": "my_target"
 								}
 							]
 						}
@@ -988,7 +995,7 @@
 						{
 							"name": "deal_damage",
 							"amount": 1,
-							"subject": "previous"
+							"subject": "my_target"
 						}
 					]
 				}

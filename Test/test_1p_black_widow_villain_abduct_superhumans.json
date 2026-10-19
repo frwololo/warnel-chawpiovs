@@ -1,0 +1,219 @@
+{
+	"_comments": "Black Widow (Villain) Abduct superhumans not returning to right place",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Abduct superhumans",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The douglass"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nick Fury #50002"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "The Widow's Web - 1B #50067b"
+		},
+		{
+			"type": "target",
+			"value": "The Iliad",
+			"_comments": "Nick Fury ability"
+		},
+		{
+			"type": "activate",
+			"value": "Maria Hill"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Abduct superhumans"
+		},
+		{
+			"type": "activate",
+			"value": "The Iliad"
+		},
+		{
+			"type": "choose",
+			"value": "Remove 4 Threat"
+		},
+		{
+			"type": "target",
+			"value": "Abduct superhumans"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Abduct superhumans"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"discard1": [],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "The douglass"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	}
+}

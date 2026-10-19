@@ -585,7 +585,8 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 	if card.is_inactive_attachment() and ! (type in ["attachment", "trigger"]):
 		var set_code = card.get_property("card_set_code", "")
 		var owner_set_code = owner_card.get_property("card_set_code", "")
-		if (set_code == owner_set_code) or (owner_card == card.current_host_card):
+		var host_set_code = card.current_host_card.get_property("card_set_code", "") 
+		if ((set_code == owner_set_code) and (set_code == host_set_code) ) or (owner_card == card.current_host_card):
 			pass
 		else:
 			return false	

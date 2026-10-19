@@ -292,18 +292,6 @@
 						"my_threshold": 4
 					}
 				},
-				{
-					"card": "Wiretap #50186"
-				},
-				{
-					"card": "Blackmail #50189"
-				},
-				{
-					"card": "Money #50188"
-				},
-				{
-					"card": "Security Clearance #50191"
-				}
 			],
 			"victory_display": [],
 			"set_aside": [
@@ -329,7 +317,8 @@
 			"removed_from_game": [
 				{
 					"card": "Zemo's Manipulations - 1A #50167a"
-				}
+				},
+				
 			],
 			"tmp_pile1": [
 				{
@@ -340,7 +329,19 @@
 				},
 				{
 					"card": "Authority #50193"
-				}
+				},
+				{
+					"card": "Wiretap #50186"
+				},
+				{
+					"card": "Blackmail #50189"
+				},
+				{
+					"card": "Money #50188"
+				},
+				{
+					"card": "Security Clearance #50191"
+				}				
 			],
 			"tmp_pile2": [
 				{

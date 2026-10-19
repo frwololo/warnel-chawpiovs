@@ -226,6 +226,9 @@ func _get_display_text_nocache():
 	var subjects = ""	
 	if task: 	
 		var owner = task.owner
+		if !is_instance_valid(owner):
+			return ""
+			
 		var owner_name = owner.get_property("shortname", "") if owner else ""
 		#facedown cards won't have a type_code unless they are used on the board (e.g. facedown ultron drones)
 		if !owner.is_faceup and !owner.is_onboard():

@@ -354,6 +354,17 @@ func _instance_card(card_id: String) -> Card:
 	return(card)
 
 
+func find_slot_in_grid(grid_name):
+	if !grid_name:
+		return null
+	var grid: BoardPlacementGrid = cfc.NMAP.board.get_grid(grid_name)
+	var slot: BoardPlacementSlot
+	if grid:
+		slot = grid.find_available_slot()
+		if slot:
+			return slot
+	return null
+
 func get_all_cards_from_containers(container_names) -> Array:
 	if !NMAP.has('board'):
 		return []

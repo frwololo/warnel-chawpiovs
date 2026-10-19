@@ -4143,7 +4143,10 @@ static func script_constraints(subject, params, script = null) -> int:
 	var teamup = params.get("team_up", [])
 	if teamup:
 		for identity_name in teamup:
-			if !board.find_card_by_name(identity_name): #TODO this should be only ally/identity
+			var my_card = board.find_card_by_name(identity_name) #TODO this should be only ally/identity
+			if !my_card:
+				return 	CFConst.ReturnCode.FAILED
+			if !my_card.considered_in_play():
 				return 	CFConst.ReturnCode.FAILED		
 
 

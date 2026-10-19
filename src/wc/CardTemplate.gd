@@ -4567,14 +4567,10 @@ func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
 
 func count_printed_resources(params:Dictionary, script) -> int:
 	var mana = ManaCost.new()
-	var subjects = script._local_find_subjects(0, CFInt.RunType.NORMAL, params)	
-
-	while subjects is GDScriptFunctionState && subjects.is_valid():
-		subjects = subjects.resume()	
+	var subjects = get_param_subjects(params, script)
 	if !subjects:
-		cfc.LOG("error retrieving subjects for " + to_json(params))
 		return 0
-		
+			
 	for subject in subjects:
 		var printed_resource = subject.get_printed_resource_value_as_mana()
 		mana.add_manacost(printed_resource)

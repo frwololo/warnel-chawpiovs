@@ -4739,7 +4739,7 @@
 		},
 		"card_played": {
 			"event_filters": {
-				"from": "deck_my_hero",
+				"from": "deck_my_hero"
 			},
 			"board": [
 				{
@@ -7031,7 +7031,8 @@
 					"subject_count": 1,
 					"sort_by": "function",
 					"sort_name": "count_printed_resources",
-					"sort_descending": true
+					"sort_descending": true,
+					"is_cost": true
 				},
 				{
 					"name": "add_threat",

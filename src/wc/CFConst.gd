@@ -1225,7 +1225,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
 const GAME_VERSION := "1.8.0"
-const BUILD_NUMBER := "20261019-1800"
+const BUILD_NUMBER := "20261019-2254"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

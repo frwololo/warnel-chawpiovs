@@ -1,0 +1,215 @@
+{
+	"_comments": "Bug: Temporal Trickery infinite loop",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				},
+				{
+					"card": "Temporal Trickery"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Super-Charged",
+					"tokens": {
+						"charge": 2
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Randall",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Sidekick"
+				},
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "The Power of Leadership"
+				},
+				{
+					"card": "Lead from the Front"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 7
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Temporal Trickery"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				},
+				{
+					"card": "Stored Energy"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Super-Charged",
+					"tokens": {
+						"charge": 2
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Randall",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Sidekick"
+				},
+				{
+					"card": "The Power of Leadership"
+				},
+				{
+					"card": "Lead from the Front"
+				}
+			]
+		}
+	}
+}

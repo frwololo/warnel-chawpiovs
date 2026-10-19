@@ -2573,7 +2573,8 @@
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
-				"basic_thwart_happened"
+				"basic_thwart_happened",
+				"basic_defense_happened"
 			],
 			"trigger": "my_hero",
 			"is_optional_hand": true,
@@ -5032,7 +5033,8 @@
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
-				"basic_thwart_happened"
+				"basic_thwart_happened",
+				"basic_defense_happened"
 			],
 			"trigger": "my_hero",
 			"is_optional_hand": true,

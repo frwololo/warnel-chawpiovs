@@ -480,6 +480,16 @@
 		"thwart": 0,
 		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
 	},
+	"40163": {
+		"wc_meta": {	
+			"portrait": {
+				 "x": 120,
+				 "y": 45,
+				 "w": 150,
+				 "h": 150, 
+			}
+		}
+	},	
 	"41014": {
 		"alternate_art": true
 	},
@@ -629,6 +639,16 @@
 			}
 		}
 	},
+	"50086a": {
+		"wc_meta": {	
+			"portrait": {
+				 "x": 120,
+				 "y": 45,
+				 "w": 150,
+				 "h": 150, 
+			}
+		}
+	},		
 	"50136": {
 		"boost": 1
 	}

@@ -7658,7 +7658,7 @@
 	"Rapido": {
 		"attacks_gain": {
 			"__trigger__": "self",
-			"__tags__": "piercing"
+			"__tags__": "ranged"
 		},
 		"alterants": {
 			"board": [
@@ -8369,7 +8369,7 @@
 					"selection_optional": true,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_my_hero",
+							"filter_group": "group_friendly_my_hero",
 							"filter_is_exhausted": false
 						}
 					]
@@ -8385,7 +8385,7 @@
 							"subject_count": "all",
 							"filter_state_seek": [
 								{
-									"filter_group": "group_characters_my_hero"
+									"filter_group": "group_friendly_my_hero"
 								}
 							],
 							"multiplier": {

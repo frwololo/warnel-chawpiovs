@@ -416,7 +416,7 @@
 		"interrupt_card_moved_to_pile": {
 			"trigger": "my_host",
 			"filter_destination": "discard",
-			"board": [
+			"all": [
 				{
 					"name": "shuffle_card_into_container",
 					"dest_container": "deck_villain",

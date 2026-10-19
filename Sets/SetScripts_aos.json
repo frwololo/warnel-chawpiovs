@@ -2019,7 +2019,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"token_name": "_preparation",
+					"token_name": "__preparation",
 					"modification": 0,
 					"set_to_mod": true,
 					"subject": "self"
@@ -2034,7 +2034,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"token_name": "_preparation",
+					"token_name": "__preparation",
 					"modification": 1,
 					"subject": "self"
 				}
@@ -2042,12 +2042,13 @@
 		},
 		"response_attack_happened": {
 			"event_filters": {
-				"target": "Black Widow"
+				"target": "host",
+				"_breakpoint": true,
 			},
 			"condition_board": {
 				"func_name": "!count_tokens",
 				"func_params": {
-					"token_name": "_preparation",
+					"token_name": "__preparation",
 					"subject": "self"
 				}
 			},

@@ -1822,7 +1822,7 @@ func unique_card_in_play(unique_card:WCCard):
 		var card_type_code = card.get_property("type_code", "")
 		if card_type_code in ["hero", "alter_ego"]:
 			var alter_ego_data = cfc.get_alter_ego_data(card.canonical_id)
-			card_data["card_alter_ego_title"] = alter_ego_data.get("shortname", "").to_lower()
+			card_data["alter_ego_title"] = alter_ego_data.get("shortname", "").to_lower()
 	
 		var cards_match = WCUtils.unique_cards_match(unique_data, card_data)
 		if cards_match:

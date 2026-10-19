@@ -366,7 +366,7 @@ func get_all_cards_from_containers(container_names) -> Array:
 
 	if (typeof(container_names) != TYPE_ARRAY):
 		container_names = [container_names]
-	
+				
 	for container_name in container_names:
 		var container = NMAP.get(container_name, null)
 		if !container:

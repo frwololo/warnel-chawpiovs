@@ -1,0 +1,187 @@
+{
+	"_comments": "Circe should not be activatable if there are no allies available in hand",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Circe",
+					"tokens": {
+						"deploy": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "The Circe",
+			"expected_to_fail": true
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Bomb Scare",
+					"tokens": {
+						"threat": 3
+					}
+				},
+				{
+					"card": "Crowd Control",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Circe",
+					"tokens": {
+						"deploy": 2
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},				
+			]
+		}
+	}
+}

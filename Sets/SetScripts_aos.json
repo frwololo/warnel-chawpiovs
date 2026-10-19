@@ -1836,6 +1836,13 @@
 			"event_filters": {
 				"target": "self"
 			},
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "main_scheme",
+					"token_name": "threat"
+				}
+			},
 			"board": [
 				{
 					"name": "remove_threat",
@@ -1874,6 +1881,13 @@
 			"event_filters": {
 				"target": "self"
 			},
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "main_scheme",
+					"token_name": "threat"
+				}
+			},
 			"board": [
 				{
 					"name": "remove_threat",
@@ -1911,6 +1925,13 @@
 		"interrupt_attack_started": {
 			"event_filters": {
 				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "main_scheme",
+					"token_name": "threat"
+				}
 			},
 			"board": [
 				{
@@ -10136,6 +10157,14 @@
 			"__amount__": 2
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"src_container": "any_hand",
+					"filter_state_tutor": "ally"
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -10173,19 +10202,10 @@
 				{
 					"name": "move_card_to_board",
 					"dest_grid": "allies_previous_subject",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "hand_previous_subject",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
-						}
-					]
+					"selection_optional": true,
+					"filter_state_tutor": "ally"
 				}
 			]
 		}

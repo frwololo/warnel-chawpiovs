@@ -310,7 +310,12 @@ func _process(delta:float):
 			viewboard.self_modulate = Color(1.0,1.0,1.0)
 			var last_index = get_child_count() - 1
 			move_child(viewboard, last_index)
-		wallpaper.self_modulate = Color(0.5,0.5,0.5)
+			$Tween.interpolate_property(
+			wallpaper,'self_modulate', wallpaper.self_modulate,
+			Color(0.5,0.5,0.5),
+			0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			$Tween.start()	
+		#wallpaper.self_modulate = Color(0.5,0.5,0.5)
 	else:
 		viewboard.visible = false
 		wallpaper.self_modulate = Color(1,1,1)
@@ -724,8 +729,8 @@ func post_cards_moved_load():
 	#draw_cheat("Sector Scan", 2)
 	#draw_cheat("Energy")
 	#draw_cheat("Genius")
-	#draw_cheat("Agent 13 - Sharon Carter")
-	#draw_cheat("R&D Facility")	
+	#draw_cheat("Agent 13 - Sharon Carter")						
+	
 
 	cfc.LOG_DICT(guidMaster.guid_to_object)
 		

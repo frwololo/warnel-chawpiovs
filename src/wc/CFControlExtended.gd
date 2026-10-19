@@ -2408,6 +2408,29 @@ func quit_game() -> void:
 	print_debug("printing Stray nodes:")	
 	cfc.print_stray_nodes()	
 	print_debug("End of Stray nodes")		
+
+func get_all_cards_from_containers(container_names) -> Array:
+	if !container_names:
+		var _error = 1
+		print_debug("missing parameter in get_all_cards_from_containers")
+		return []
+			
+	if (typeof(container_names) != TYPE_ARRAY):
+		container_names = [container_names]
+			
+	#handle the "any_" use case
+	var to_replace = []
+	for container_name in container_names:
+		if container_name.begins_with("any_"):
+			to_replace.append(container_name)
+	for container_name in to_replace:
+		var prefix = container_name.replace("any_", "")
+		container_names.erase(container_name)
+		for i in gameData.get_team_size():
+			var hero_id = i+1
+			container_names.append(prefix + str(hero_id))
+		
+	return .get_all_cards_from_containers(container_names)
 	
 func get_container(container_name):
 	var result = NMAP.get(container_name, null)

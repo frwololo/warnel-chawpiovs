@@ -1,0 +1,182 @@
+{
+	"_comments": "Bug: Black Widow (Villain) when no threat on main scheme",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Grappling Hook #50069"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Grant Ward"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Grant Ward"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Black Widow",
+			"_comments": "Attacking black widow should simply do damage"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Grappling Hook #50069"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Grant Ward",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Super Spies"
+				}
+			]
+		}
+	}
+}

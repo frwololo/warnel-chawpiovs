@@ -7,8 +7,6 @@
 class_name CFControl
 extends Node
 
-const CHUNK_SIZE = 2048
-
 # Sent when all CGF nodes have been added to the NMAP dictionary
 signal all_nodes_mapped
 # Sent any time the scripting engine cache is cleared
@@ -216,37 +214,9 @@ func load_scripts():
 func play_sfx(string):
 	pass	
 
-func hash_file(path):
-	var file = File.new()	
-	# Check that file exists.
-	if not file.file_exists(path):
-		return null
-
-	# Open the file to hash.
-	var error = file.open(path, File.READ)
-	if error != OK:
-		return null
-			
-	var ctx = HashingContext.new()
-	# Start a MD5 context.
-	ctx.start(HashingContext.HASH_MD5)
-
-	# Update the context after reading each chunk.
-	while not file.eof_reached():
-		ctx.update(file.get_buffer(CHUNK_SIZE))
-	# Get the computed hash.
-	var res = ctx.finish()
-	return res.hex_encode()
 
 func get_build_number():
-	var version = CFConst.GAME_VERSION
-	
-	var my_exe = OS.get_executable_path()
-	var result_hash = hash_file(my_exe)
-	if result_hash:
-		version += "." + result_hash
-	
-	return version
+	return CFConst.GAME_VERSION + "." + CFConst.BUILD_NUMBER
 
 func load_cards_database():
 	if CFConst.DISABLE_THREADS or OS.get_name() == "HTML5":

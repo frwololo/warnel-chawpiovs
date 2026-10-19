@@ -287,6 +287,11 @@ func _process(delta:float):
 	
 	if cfc.throttle_process_for_performance():
 		return
+
+
+	var last_index = get_child_count() - 1	
+	#hack to ensure the top menu remains at the top
+	move_child(get_node("%TopMenu"), last_index)
 	
 	if OS.get_name() == "HTML5":
 		if cfc.get_low_fps_counts() > 50:
@@ -308,7 +313,6 @@ func _process(delta:float):
 #			viewboard.rect_position = Vector2(x,modal_menu.rect_position.y - 85)
 			viewboard.visible = true
 			viewboard.self_modulate = Color(1.0,1.0,1.0)
-			var last_index = get_child_count() - 1
 			move_child(viewboard, last_index)
 			$Tween.interpolate_property(
 			wallpaper,'self_modulate', wallpaper.self_modulate,
@@ -357,7 +361,6 @@ func _process(delta:float):
 			board_organizer.organize()
 			
 	if blocking_activity_ongoing():
-		var last_index = get_child_count() - 1
 		move_child(_server_activity, last_index)
 		_server_activity.visible = true
 		if gamepadHandler.is_mouse_input():
@@ -1958,7 +1961,8 @@ func add_child_to_top_layer(child):
 	var control = get_node("%TopMenuControl")
 	control.add_child(child)
 	#ensure the top layer stays on top for user clicks
-	move_child(get_node("%TopMenu"), get_children().size()-1)
+	var last_index = get_child_count() - 1	
+	move_child(get_node("%TopMenu"), last_index)
 
 func remove_child_from_top_layer(child):
 	var control = get_node("%TopMenuControl")

@@ -4709,7 +4709,6 @@
 			]
 		},
 		"alterants": {
-			"_breakpoint": true,
 			"board": [
 				{
 					"trigger": "my_top_card",
@@ -4741,7 +4740,6 @@
 		"card_played": {
 			"event_filters": {
 				"from": "deck_my_hero",
-				"_breakpoint": true
 			},
 			"board": [
 				{

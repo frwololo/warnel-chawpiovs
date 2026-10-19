@@ -16,7 +16,7 @@ func _init(_sceng = null, _run_type = 0, _trigger = "", _trigger_details = {}):
 	trigger = _trigger
 	trigger_details = _trigger_details
 
-	if is_instance_valid(sceng):
+	if is_instance_valid(sceng) and is_instance_valid(sceng.owner):
 		var owner_card = sceng.owner
 		owner_identity = owner_card.get_controller_hero_card()
 

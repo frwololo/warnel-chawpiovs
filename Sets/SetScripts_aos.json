@@ -123,6 +123,7 @@
 				"subject_count": "all",
 				"selection_count": "__value__",
 				"selection_type": "as_much_as_possible",
+				"selection_assign_mode": true,
 				"selection_what_to_count": {
 					"func_name": "count_tokens",
 					"func_params": {
@@ -951,8 +952,8 @@
 					"value": "previous",
 					"force_run_at_prime": true,
 					"var_name": "my_target",
-					"var_type": "subject",
-				},				
+					"var_type": "subject"
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -2043,7 +2044,6 @@
 		"response_attack_happened": {
 			"event_filters": {
 				"target": "host",
-				"_breakpoint": true,
 			},
 			"condition_board": {
 				"func_name": "!count_tokens",
@@ -7761,7 +7761,6 @@
 			]
 		},
 		"card_attached": {
-			"_breakpoint": true,
 			"trigger": "self",
 			"all": [
 				{
@@ -8581,7 +8580,6 @@
 			}
 		},
 		"boost_alterants": {
-			"_breakpoint": true,
 			"all": [
 				{
 					"filter_task": "get_property",

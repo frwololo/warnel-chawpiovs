@@ -561,13 +561,13 @@
 				{
 					"name": "discard",
 					"subject": "index",
-					"src_container": "hand_current_activation_target",
+					"src_container": "hand_current_hero_target",
 					"subject_index": "random",
 					"subject_count": 1
 				},
 				{
 					"name": "deal_damage",
-					"subject": "current_activation_target",
+					"subject": "current_hero_target",
 					"amount": {
 						"func_name": "count_printed_resources",
 						"func_params": {

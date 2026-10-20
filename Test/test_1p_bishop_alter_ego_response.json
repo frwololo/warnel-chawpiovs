@@ -1,0 +1,207 @@
+{
+	"_comments": "Bug: Alter Ego not fetching card",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Lucas Bishop"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Randall"
+				},
+				{
+					"card": "Advanced Suit"
+				},
+				{
+					"card": "Stored Energy"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Bishop",
+					"tokens": {
+						"damage": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Super-Charged",
+					"tokens": {
+						"charge": 2
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Sidekick"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Bishop"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form"
+		},
+		{
+			"type": "choose",
+			"value": "Yes"
+		},
+		{
+			"type": "select",
+			"value": "Stored Energy"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Lucas Bishop"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Randall"
+				},
+				{
+					"card": "Advanced Suit"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Lucas Bishop",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Super-Charged",
+					"tokens": {
+						"charge": 2
+					}
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Sidekick"
+				},
+				{
+					"card": "Stored Energy"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,135 @@
+{
+	"_comments": "Cable Bodyslide buggy interaction",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},		
+				{
+					"card": "Spider-Tracer"
+				},
+			],
+			"identity2": [
+				{
+					"card": "Cable"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Bodyslide"
+				},		
+			],			
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Bodyslide",
+			"hero": 2,
+		},	
+	] ,
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens" : {"threat" : 4},
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				}
+			],			
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},		
+				{
+					"card": "Spider-Tracer"
+				},
+			],
+			"discard2": [
+							{
+					"card": "Bodyslide"
+				},
+			],
+			"identity2": [
+				{
+					"card": "Nathan Summers"
+				}
+			],
+			"hand2": [
+		
+			],			
+		}
+	}
+}

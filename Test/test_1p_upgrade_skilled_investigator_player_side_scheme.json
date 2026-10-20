@@ -1,0 +1,182 @@
+{
+	"_comments": "Bug: Skilled Investigator doesn't trigger on player side schemes",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Red Skull - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Red House"
+				},
+				{
+					"card": "The Sleeper Awakened"
+				},
+				{
+					"card": "Establish Perimeter",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "The Sleeper",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				},
+				{
+					"card": "Finesse"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "skilled Investigator"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Clear the Area"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Spider-Woman"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Establish Perimeter"
+		},
+		{
+			"type": "choose",
+			"value": "yes",
+			"_comments": "answer yes to draw from skilled investigator"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Woman"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Red Skull - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Assault"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Red House"
+				},
+				{
+					"card": "The Sleeper Awakened"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "The Sleeper",
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Pheromones"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Woman",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Establish Perimeter"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "skilled Investigator"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Jessica Jones"
+				},
+				{
+					"card": "Clear the Area"
+				},
+				{
+					"card": "Finesse"
+				}
+			]
+		}
+	}
+}

@@ -89,7 +89,7 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
+		"card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -104,13 +104,8 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject_count": "all",
-					"subject": "index",
+					"subject": "tutor_and_choose",
 					"src_container": "hand",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"selection_optional": false,
 					"is_cost": true
 				},
 				{
@@ -133,13 +128,8 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject_count": "all",
-					"subject": "index",
+					"subject": "tutor_and_choose",
 					"src_container": "hand",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"selection_optional": false,
 					"is_cost": true
 				},
 				{

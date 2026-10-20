@@ -887,57 +887,69 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "other_players"
+					"sequence_ability": "other_players",
+					"delay_until_no_activity": true
 				}
 			]
 		},
 		"other_players": {
-			"all": {
-				"_rules": {
-					"for_each_player": true
-				},
-				"To Hero": [
-					{
-						"name": "constraints",
-						"constraints": [
-							{
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
 								"func_name": "is_hero_form",
 								"func_params": {
 									"subject": "my_owner"
 								}
-							}
-						]
-					},
-					{
-						"name": "change_form",
-						"change_to": "hero",
-						"is_cost": true
-					}
-				],
-				"To Alter-Ego": [
-					{
-						"name": "constraints",
-						"constraints": [
-							{
-								"func_name": "is_alter_ego_form",
-								"func_params": {
-									"subject": "my_owner"
+							},
+							"nested_tasks": [
+								{
+									"name": "change_form",
+									"subject": "boardseek",
+									"subject_exclude": "my_owner",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_optional": true,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_identities",
+											"filter_func": {
+												"func_name": "is_alter_ego_form",
+												"func_params": {
+													"subject": "trigger"
+												}
+											}
+										}
+									]
 								}
-							}
-						]
-					},
-					{
-						"name": "change_form",
-						"change_to": "alter_ego",
-						"is_cost": true
-					}
-				],
-				"Do nothing": [
-					{
-						"name": "nop"
-					}
-				]
-			}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "change_form",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"subject_exclude": "my_owner",
+							"needs_selection": true,
+							"selection_optional": true,
+							"filter_state_seek": [
+								{
+									"filter_group": "group_identities",
+									"filter_func": {
+										"func_name": "is_hero_form",
+										"func_params": {
+											"subject": "trigger"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			]
 		}
 	},
 	"Bolstered by Wrath": {
@@ -5322,6 +5334,7 @@
 					}
 				}
 			],
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "constraints",

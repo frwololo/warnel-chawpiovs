@@ -3717,7 +3717,7 @@ func change_form(script: ScriptTask) -> int:
 	var tags: Array = script.get_property(SP.KEY_TAGS)
 	var is_manual = "player_initiated" in tags
 	
-	if (!script.subjects):
+	if !script.subjects and !script.script_definition.has("subject"):
 		script.set_subjects(_get_identity_from_script(script))
 
 	var to_card = script.get_property("change_to", "").replace("#", "")
@@ -3780,7 +3780,7 @@ func change_form(script: ScriptTask) -> int:
 	return CFConst.ReturnCode.CHANGED
 
 func swap_card(script: ScriptTask) -> int:
-	if (!script.subjects):
+	if !script.subjects and !script.script_definition.has("subject"):
 		script.set_subjects(script.owner)
 
 	var to_card = script.get_property("change_to", "").replace("#", "")

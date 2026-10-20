@@ -352,7 +352,7 @@ const TYPES_TO_GROUPS := {
 	"upgrade": ["group_upgrade_support", "play_area"],
 	"support": ["group_upgrade_support", "play_area"],
 	"main_scheme" : ["group_schemes", "play_area"],
-	"player_side_scheme" : ["group_schemes", "play_area"],
+	"player_side_scheme" : ["group_schemes", "group_side_schemes", "play_area"],
 	"side_scheme" : ["group_schemes", "group_side_schemes", "play_area"],
 	"minion" : ["group_enemies", "group_characters", "play_area"],
 	"villain" : ["group_enemies", "group_villains", "group_characters", "play_area"],

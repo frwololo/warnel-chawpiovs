@@ -1150,7 +1150,7 @@ const RESOURCES_URL = "https://wololo.net/wc/resources/"
 const PER_OS_INTERNAL_SETTINGS = {
 	"HTML5": {
 		"exit_is_toggle_fullscreen": true,
-		"disable_fanmade": true,
+		"disable_mods": true,
 		"disable_multiplayer": true,
 		"disable_tests": true,
 		"hide_folder_label_team_selection": true

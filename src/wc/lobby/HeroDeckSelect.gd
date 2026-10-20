@@ -265,7 +265,8 @@ func load_deck_contents(new_deck_id):
 
 			
 	deck_container.setup(settings)
-	deck_container.load_cards(deck_info)
+	if enable_deck_container:
+		deck_container.load_cards(deck_info)
 
 #deck change notification from a remote caller
 func set_deck (_deck_id, caller_id):

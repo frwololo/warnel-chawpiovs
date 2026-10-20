@@ -43,8 +43,8 @@ func _ready():
 	select_tab("general")
 	update_mods_button_text()
 	
-	if cfc.get_internal_setting("disable_fanmade"):
-		get_node("%EnableModsButton").visible = false
+	if cfc.get_internal_setting("disable_mods"):
+		get_node("%ModsButton").visible = false
 
 	if cfc.get_internal_setting("disable_tests"):
 		get_node("%TestContainer").visible = false

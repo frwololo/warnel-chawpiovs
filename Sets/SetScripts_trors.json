@@ -575,8 +575,7 @@
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
-				"basic_thwart_happened",
-				"basic_defense_happened"
+				"basic_thwart_happened"
 			],
 			"trigger": "self",
 			"board": [

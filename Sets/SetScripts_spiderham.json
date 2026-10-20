@@ -1798,7 +1798,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"token_name": "__left_play",
+					"token_name": "_left_play",
 					"modification": 0,
 					"set_to_mod": true,
 					"subject": "self"
@@ -1834,7 +1834,7 @@
 					"trigger": "host",
 					"alteration": "per_token_self",
 					"per_token_self": {
-						"token_name": "__left_play"
+						"token_name": "_left_play"
 					}
 				}
 			]
@@ -1851,11 +1851,10 @@
 					}
 				}
 			],
-			"is_optional_board": true,
 			"board": [
 				{
 					"name": "mod_tokens",
-					"token_name": "__left_play",
+					"token_name": "_left_play",
 					"modification": 1,
 					"subject": "self"
 				}

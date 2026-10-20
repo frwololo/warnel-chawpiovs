@@ -1,0 +1,182 @@
+{
+	"_comments": "Test Warrior of the great web",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 3,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Girl - Anya Corazon"
+				},
+				{
+					"card": "Spider-Man #30013",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Warrior of the Great Web"
+				},
+				{
+					"card": "Surveillance Team"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Warrior of the Great Web"
+		},
+		{
+			"type": "target",
+			"value": "Spider-Girl - Anya Corazon"
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Man #30013"
+		},
+		{
+			"type": "choose",
+			"value": "thwart"
+		},
+		{
+			"type": "target",
+			"value": "Lower Manhattan - B"
+		},
+		{
+			"type": "activate",
+			"value": "Spider-Girl - Anya Corazon"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Venom Goblin - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Venom Goblin - 1",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Symbiotic Thrall"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Lower Manhattan - B",
+					"tokens": {
+						"threat": 2,
+						"glider": 1
+					}
+				},
+				{
+					"card": "Midtown Manhattan - C"
+				},
+				{
+					"card": "Upper Manhattan - D"
+				},
+				{
+					"card": "Festering Mass"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Surveillance Team"
+				},			
+				{
+					"card": "Spider-Man #30013"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Girl - Anya Corazon"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Genius"
+				}
+			],
+			"others": [
+							{
+					"card": "Warrior of the Great Web",
+					"host": "Spider-Girl - Anya Corazon"
+				},
+			],
+			"hand1": [
+
+
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

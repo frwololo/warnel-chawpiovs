@@ -1,0 +1,177 @@
+{
+	"_comments": "Bug: Stryfe cancels all events",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Lock and Load"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Psimitar"
+				},
+				{
+					"card": "Sidearm #40030"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Temporal Leap"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Stryfe #40032"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Mind Scan"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Mind Scan"
+		},
+		{
+			"type": "target",
+			"value": "01097b"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cable"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"victory_display": [
+				{
+					"card": "Lock and Load"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Psimitar"
+				},
+				{
+					"card": "Sidearm #40030"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Cable"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Temporal Leap"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Stryfe #40032",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Mind Scan"
+				}
+			]
+		}
+	}
+}

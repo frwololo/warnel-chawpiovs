@@ -8208,18 +8208,9 @@
 			}
 		}
 	},
-	"Stryfe": {
+	"Stryfe #40032": {
 		"interrupt_play_card": {
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"trait_psionic": 1
-					},
-					"filter_properties": {
-						"type_code": "event"
-					}
-				}
-			],
+			"filter_state_trigger": ["trait_psionic", "event"],
 			"board": [
 				{
 					"name": "prevent",

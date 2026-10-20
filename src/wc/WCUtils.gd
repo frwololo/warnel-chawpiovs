@@ -640,7 +640,7 @@ static func replace_text_macro (replacements, macro_value):
 		var to_replace = key
 		if typeof(value) in [TYPE_REAL,TYPE_INT,TYPE_BOOL, TYPE_ARRAY, TYPE_DICTIONARY]:
 			to_replace = "\"" + key + "\""
-			value = JSON.print(value).to_lower()
+			value = JSON.print(value)
 		text = text.replace(to_replace, str(value))
 	
 	var result = parse_json(text)

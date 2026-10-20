@@ -663,7 +663,10 @@ func _build_card_collection():
 		var faction_code = card_data.get("faction_code", "")
 		if faction_code in ["campaign", "encounter", "hero"]:
 			continue
-		
+			
+		#linked" cards cannot be included in decks	
+		if card_data.get("linked_to", ""):
+			continue
 		var card_set_type_name_code = card_data.get("card_set_type_name_code", "")
 		if card_set_type_name_code:
 			continue			
@@ -890,7 +893,7 @@ func _on_CostFilter_item_selected(index):
 
 func _on_Search_focus_entered():
 	var node = get_node("%Search")
-	if node.text in ["search...", "No results :("]:
+	if node.text in ["search.. .", "No results :("]:
 		node.text = ""
 
 func reset_search_text():
@@ -907,7 +910,7 @@ func search_cards(text):
 	var to_search = text.to_lower()
 	for card_id in card_collection:
 		var card_data = card_collection[card_id]
-		for key in ["text", "name", "subname", "traits"]:
+		for key in ["text", "Name", "subname", "traits"]:
 			var lc_txt = card_data.get(key, "").to_lower()
 			if to_search in lc_txt:
 				result[card_id] = card_data

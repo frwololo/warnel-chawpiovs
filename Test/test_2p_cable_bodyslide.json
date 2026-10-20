@@ -69,7 +69,8 @@
 		},	
 		{
 			"type": "select",
-			"value": "Spider-Man"
+			"value": "Spider-Man",
+			"hero": 2,			
 		}
 	] ,
 	"end": {

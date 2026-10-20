@@ -87,10 +87,15 @@ func grab_default_focus():
 		get_node("%ModularOK").grab_focus()
 		return
 	
-	for child in all_heroes_container.get_children():
-		child.grab_focus()	
-		return
-	
+	match selected_tab:
+		"HeroSelectionTab":
+			for child in all_heroes_container.get_children():
+				child.grab_focus()	
+				return
+		_:
+			for child in all_scenarios_container.get_children():
+				child.grab_focus()	
+				return			
 	#last hope
 	get_node("%CancelButton").grab_focus()
 
@@ -948,6 +953,9 @@ remotesync func assign_hero(hero_id, slot):
 	ack()
 
 func verify_step2_button():
+	if selected_tab != "HeroSelectionTab":
+		return
+			
 	if check_ready_for_step2():
 		enable_step2_button()
 		step2_button.grab_focus()
@@ -956,6 +964,9 @@ func verify_step2_button():
 		grab_default_focus()
 		
 func verify_launch_button():
+	if selected_tab != "ScenarioSelectionTab":
+		return
+			
 	if check_ready_to_launch():
 		enable_launch_button()
 		launch_button.grab_focus()

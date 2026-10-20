@@ -12,7 +12,9 @@ A digital card game based on the Marvel Champions board game, with full rules en
 ## Quickstart
 You can try this game in your browser at https://wololo.net/wc
 
-I do recommend however to download local binaries for your system of choice. Those have better performance and will let you play offline (after all assets have been downloaded). to do this, [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable.
+_I do recommend however to download local binaries for your system of choice. Those have better performance and will let you play offline (after all assets have been downloaded). to do this, [download the game from the release page](https://github.com/frwololo/warnel-chawpiovs/releases), extract the zip to any folder on your machine, and run the executable._
+
+Questions or feedback? Try our Discord Channel **https://discord.gg/suP7m7uafT**
 
 If you need more details, read along
 
@@ -26,15 +28,16 @@ _This is a fan-created work and is not affiliated with, endorsed by, or sponsore
 ## How is Warnel Chawpiovs different from the original game?
 Generally Speaking this tries to perfectly mimic the rules of the orginal board game (currently supporting v1.8 of the rules). There are a few intentional exceptions (see below), the rest can probably be considered bugs
 
-* Unlike Marvel Champions, Warnel Chawpiovs allows heroes to play their turn in parallel. This is particularly obvious in Multiplayer mode. This is intentional: although the rules of the game state that each player should play their turn one player after the other (and explicitly ask other players to activate abilities or play cards as needed), in practice, most people play simultaneously and synchronize verbally. Because this is a video game, it felt important to me to minimize friction on that aspect, and allow clients to play simultaneously. If you'd rather follow the actual rules and play your turns in order, nothing prevents you from coordinating with your fellow players ;)
-* In Warnel Chawpiovs, minions attack in the order in which they appeared on the board, instead of letting the players choose the order. This is mostly a design decision for gameplay speed. It sometimes impact one's strategy but I felt the benefit was worth it
+* Unlike Marvel Champions, Warnel Chawpiovs allows heroes to play their turn in parallel. This is particularly obvious in Multiplayer mode. Because this is a video game, it felt important to me to minimize friction on that aspect, and allow clients to play simultaneously. If you'd rather follow the actual rules and play your turns in order, nothing prevents you from coordinating with your fellow players ;)
+* In Warnel Chawpiovs, minions attack in the order in which they appeared on the board, instead of letting the players choose the order. This is mostly a design decision for gameplay speed.
 
 Other than that, here are known limitations with the engine at the moment:
 * Warnel Chawpiovs doesn't support Campaign mode currently
 
 ## Current Status (General)
-![Warnel Chawpiovs Supported Characters and Scenarios](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters and Scenarios")
-This simulator supports the following cards from the original game (current total 46 heroes, 38 villains, as well as associated player cards and encounters):
+![Warnel Chawpiovs Supported Characters](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters")
+![Warnel Chawpiovs Supported Scenarios](doc/pictures/scenarios.jpg "Warnel Chawpiovs SupportedScenarios")
+This simulator supports the following cards from the original game (current total 51 heroes, 43 villains, as well as associated player cards and encounters):
 * Cycle 1:
   * Core box (5 heroes, 3 villains)
   * Captain America (1 Hero)
@@ -63,6 +66,7 @@ This simulator supports the following cards from the original game (current tota
   * Vision (1 Hero)
 * Cycle 5:
   * Sinister Motives ( 2 heroes, 5 villains)
+  * Nova (1 Hero) 
   * Ironheart (1 Hero) 
   * Spider-Ham (1 Hero)
 * Cycle 6:
@@ -70,30 +74,33 @@ This simulator supports the following cards from the original game (current tota
   * Cyclops (1 Hero)
   * Phoenix (1 Hero)
   * Wolverine (1 Hero)
+  * Storm (1 Hero)
   * Gambit (1 Hero)
 * Cycle 7:
   * Next Evolution ( 2 Heroes, 5 villains)
   * Psylocke (1 Hero)
+  * X-23 (1 Hero)
 * Cycle 8:
   * The Age of Apocalypse ( 2 Heroes, 5 villains)
   * Nightcrawler (1 Hero)  
 * Cycle 9:
+  * Agents of S.H.I.E.L.D. ( 2 Heroes, 5 villains) 
   * Winter soldier (1 Hero)  
 
-This represents roughly 55% of all official cards (excluding campaigns) at the time of this writing.
+This represents roughly 65% of all official cards (excluding campaigns) at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familiar with the original game.
 
 Rules can be found [here](https://images-cdn.fantasyflightgames.com/filer_public/ab/be/abbef836-d5ef-4241-b2bd-1062df73f367/mvc01_learn_to_play_eng-compressed.pdf). (if broken link, go to [fantasy flight's official page](https://www.fantasyflightgames.com/en/products/marvel-champions-the-card-game/), scroll down to "support/rules" and select "Learn to play"
 
-For all intents and purposes, Warnel Chawpiovs works for a single player using 1 or 2 heroes. Other game modes, in particular Multiplayer, are hit and miss. The Multiplayer layer in particular is a disgusting pile of race conditions and I'm not sure I have the skills to fix it for now.
+For all intents and purposes, Warnel Chawpiovs works for a single player using 1 or 2 heroes. For other game modes, including Multiplayer, your mileage might vary.
 * Single Player Mode:
-  * 1 Player, 1 Hero: Generally works well
-  * 1 Player, 2 heroes: Should generally work, with the occasional glitch or game-breaking bug
-  * 1 Player, 3 or 4 heroes: mostly untested
+  * 1 Player, 1 Hero: Generally works well, and this is the most playtested part of the game
+  * 1 Player, 2 heroes: Generally works, with the occasional glitch or game-breaking bug
+  * 1 Player, 3 or 4 heroes: Should work but is quite untested
 * Multiplayer Mode:
-  * Multiplayer (2 players, 1 hero per player): The multiplayer mode... exists, but that's about it. It is supposed to work but in practice it's difficult to finish a game without running into a freeze, crash or race condition. To mitigate this, the host can try and click on the "force sync" option button to force other clients to reload the host's current board state. ![force_resync_image](doc/pictures/resync.png "force resync")
-  * Multiplayer (Other cases): Not tested. Multiplayer isn't in a reliable state at the moment, so more than 2 players, or more than 1 hero per player, hasn't been really tested yet.
+  * The multiplayer mode occasionally runs into desync issues. To mitigate this, the host can try and click on the "force sync" option button to force other clients to reload the host's current board state. ![force_resync_image](doc/pictures/resync.png "force resync")
+
  
 ### Current Status of the Nintendo Switch version
 The Switch version requires a hacked console, for example running [Atmosphere](https://github.com/Atmosphere-NX/Atmosphere). The switch port has the same features as the PC version, but it is significantly slower. Without overclocking it can get very slow, in particular if the console is in handheld mode. But because this is a board game, it remains somewhat ok if you don't mind the low FPS. In my opinion the game actually becomes fairly enjoyable if you overclock the console with the excellent [sys_clk](https://github.com/retronx-team/sys-clk)
@@ -117,7 +124,7 @@ A Web version of the game is available at https://wololo.net/wc/ . Although I'd 
 
 ## Users: Running the game
 ### Downloading Images and other resources
-When you run the game for the first time, Warnel Chawpiovs needs to download some data, including card definitions and card pictures. By default, most of this data is downloaded from https://marvelcdb.com.
+When you run the game for the first time, Warnel Chawpiovs needs to download some data, including card definitions and card pictures, so you will need an Internet connection in this early step. By default, most of this data is downloaded from https://marvelcdb.com.
 Image downloads in particular might take some time, but this will happen in the background and you can play the game while pictures get downloaded.
 
 **Alternatively**, it is possible to have all the images packed either in a PCK or a ZIP file at the root of the user folder (PCK are the DLC file format for Godot) with the right structure. See below for folder structure.
@@ -132,8 +139,6 @@ Quick Tutorial for the included deck editor:
 [https://www.youtube.com/watch?v=xo86uE3PY2k](https://www.youtube.com/watch?v=xo86uE3PY2k)
 
 ### Hosting a Multiplayer game
-See the Current Status section above for disclaimers about the multiplayer mode.
-
 THe host needs to **forward port 7777** on their computer/router. The rest should be semi automated. Make sure the host clicks on "host" before anybody else clicks on "Join", otherwise things start breaking.
 
 ## Users: Folder Structure
@@ -146,7 +151,8 @@ Relevant files and subfolders of the user folder are:
 * Decks: Hero decks (those follow the format of marvelcdb.com)
 * Sets: where the Set definitions and images live. Note: These will override any images with the same name that can be found in the *.pck and*.zip files mentioned above
   * images: image subfolder for set. Each "box" is a subfolder with its own pictures, e.g. images/core/01001a.png
-  * SetDefinition_*.json: definition of a given set, typically downloaded "as is" from marvelcdb.com. This describes the cards in a given set, but does not contain the scripting data for these cards (see the Modders section below) 
+  * SetDefinition_*.json: definition of a given set, typically downloaded "as is" from marvelcdb.com. This describes the cards in a given set, but does not contain the scripting data for these cards (see the Modders section below)
+ * Sets_fanmade: a folder for fanmade/homebrew content
 
 
 ## Users FAQ and Troubleshooting
@@ -181,13 +187,14 @@ You can see an example of fanmade set and how it's created/activated here: [http
 * **Complete card rules enforcement** capacity, via provided Scripting Engine. (see [doc](doc/script_doc.html))
 * Deck Editor
 * Custom content (Homebrew cards) support
-* Multiplayer Support (Work in progress)
+* Multiplayer Support
 
 ## Developers: Source code Structure
 * assets: icons, textures, and fonts for the game
 * Decks: a series of default decks for the game to start. These are in theory overridden by Decks folder in the User directory
 * doc: Documentation for the game and card engine
 * fonts: additional fonts
+* Lang: language files 
 * scripts: offline scripts e.g. in python for various tasks related to the game
 * Sets: hardcoded definitions of the game card scripts. These should be overridden by files of the same name in the USer Directory
   * _macros.json: some macros to make writing some scripts a bit less tedious

@@ -292,8 +292,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						"is_cost": true,
 						"subject_index": "top",
 						SP.KEY_SELECTION_OPTIONAL: false,
-						"name": "move_card_to_container",
-						"dest_container": "discard",
+						"name": "discard",
 						"subject":"boardseek",
 						"subject_count": "all",
 						"selection_count": 1,
@@ -302,7 +301,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						"filter_state_seek": [{
 							"filter_group" : "group_allies_my_hero"
 						}],
-						"display_title": "Ally limit"
+						"display_title": "Ally limit (discard 1)"
 					}				
 				]
 			},
@@ -312,8 +311,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 						"is_cost": true,
 						"subject_index": "top",
 						SP.KEY_SELECTION_OPTIONAL: false,
-						"name": "move_card_to_container",
-						"dest_container": "discard",
+						"name": "discard",
 						"subject":"boardseek",
 						"subject_count": "all",
 						"selection_count": 1,
@@ -323,10 +321,29 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 							"filter_group" : "play_area_my_hero",
 							"filter_properties" : {"restricted" : 1}
 						}],
-						"display_title": "Restricted limit"
+						"display_title": "Restricted limit (discard 1)"
 					}				
 				]
-			},			
+			},
+			"player_side_scheme_limit_rule": {
+				"board": [
+					{
+						"is_cost": true,
+						"subject_index": "top",
+						SP.KEY_SELECTION_OPTIONAL: false,
+						"name": "discard",
+						"subject":"boardseek",
+						"subject_count": "all",
+						"selection_count": 1,
+						"selection_type": "equal",					
+						"needs_selection": true,
+						"filter_state_seek": [{
+							"filter_group" : "group_player_side_schemes",
+						}],
+						"display_title": "Player Side Scheme limit (discard 1)"
+					}				
+				]
+			},							
 			"mulligan": {
 				"board": [
 					{

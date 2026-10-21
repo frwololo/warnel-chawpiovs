@@ -1,0 +1,118 @@
+{
+	"_comments": "Multitasking bug: cannot be played if only 1 scheme",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Multitasking"
+				},
+				{
+					"card": "Surveillance Team"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	},
+	"actions": [
+		
+		{
+			"type": "play",
+			"value": "Multitasking"
+		},
+	
+		{
+			"type": "target",
+			"value": "01097b",
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 2
+					}
+				},
+			],
+			"enemies1": [
+				{
+					"card": "Symbiotic Monstrosity",
+					"tokens": {
+						"damage": 5
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Surveillance Team"
+				},			
+				{
+					"card": "Multitasking"
+				},
+
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #27030a"
+				}
+			]
+		}
+	}
+}

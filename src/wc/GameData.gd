@@ -500,6 +500,7 @@ func _scripting_event_about_to_trigger(_trigger_object = null,
 		"card_moved_to_board":
 			check_ally_limit()
 			check_restricted_limit()
+			check_player_side_scheme_limit()
 	return
 
 #emit sub _signals for convenience
@@ -718,6 +719,28 @@ remotesync func next_scheme_loaded():
 	_next_scheme = null	
 	return new_card			
 
+
+func check_player_side_scheme_limit():
+	var player_side_scheme_limit = 1
+	match gameData.get_team_size():
+		3, 4:
+			player_side_scheme_limit = 2
+			
+
+	var my_cards = cfc.NMAP.board.get_grid("schemes").get_all_cards()
+	var count = 0
+	
+	for card in my_cards:
+		if !card.is_card_type("player_side_scheme"):
+			continue		
+#TODO needed ?
+#		if card.get_property("exclude_from_playser_side_scheme_limit", 0, true):
+#			continue
+
+		count += 1
+	if (count) > player_side_scheme_limit:
+		var identity_card = get_identity_card(1)
+		identity_card.execute_scripts(identity_card, "player_side_scheme_limit_rule")
 
 func check_ally_limit():
 	var my_heroes = gameData.get_my_heroes()

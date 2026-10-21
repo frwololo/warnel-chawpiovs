@@ -656,7 +656,6 @@
 					},
 					"subject_exclude": "previous",
 					"subject": "target",
-					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_schemes"

@@ -1092,6 +1092,7 @@
 				{
 					"name": "thwart",
 					"subject": "a_scheme",
+					"needs_subject":false,
 					"tags": [
 						"collateral_thwart"
 					],

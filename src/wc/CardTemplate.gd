@@ -1247,7 +1247,8 @@ func get_state_exec_no_cache() -> String:
 # 0 is valid and represents the villain
 func update_hero_groups():
 	var type_code = properties.get("type_code", "")
-	
+	var secondary_type_code = properties.get("secondary_type_code", "")
+		
 	var all_groups:Array = CFConst.ALL_TYPE_GROUPS
 	for group in all_groups:
 		for i in range (gameData.team.size() + 1):
@@ -1256,7 +1257,9 @@ func update_hero_groups():
 				self.remove_from_group(hero_group)	
 	
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
-	
+	if secondary_type_code:
+		groups += CFConst.TYPES_TO_GROUPS.get(secondary_type_code, [])
+		
 	for group in groups:
 		if group == "play_area" and !self.is_onboard():
 			continue
@@ -1267,13 +1270,17 @@ func update_hero_groups():
 
 func update_groups() -> void :
 	var type_code = properties.get("type_code", "")
-
+	var secondary_type_code = properties.get("secondary_type_code", "")
+	
 	var all_groups:Array = CFConst.ALL_TYPE_GROUPS
 	for group in all_groups:
 		if self.is_in_group(group):
 			self.remove_from_group(group)	
 			
 	var groups:Array = CFConst.TYPES_TO_GROUPS.get(type_code, [])
+	if secondary_type_code:
+		groups += CFConst.TYPES_TO_GROUPS.get(secondary_type_code, [])
+			
 	for group in groups:
 		if group == "play_area" and !self.is_onboard():
 			continue		

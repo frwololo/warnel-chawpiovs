@@ -176,20 +176,9 @@ func resize():
 		pass
 
 func _load_hero_base_cards(hero_id):
-	var hero_data = cfc.get_card_by_id(hero_id)
-	var set_name = hero_data["card_set_code"].to_lower()
-	var all_set_cards = cfc.cards_by_set[set_name]
-	var slots = {}
-	for card in all_set_cards:
-		var type = card["type_code"].to_lower()
-		if type in ["hero", "alter_ego", "obligation"]:
-			continue 
-		if !type in CFConst.PLAYER_CARD_TYPES:
-			continue
-		var quantity = card.get("quantity", 1)
-		slots[card["_code"]] = quantity
+	var deck_data = HeroDeckData.get_hero_base_deck(hero_id)
+	return deck_data.get("slots", {})
 
-	return slots	
 		
 #creates a new deck then goes to editing mode
 func create_and_edit_new_deck(hero_id = ""):

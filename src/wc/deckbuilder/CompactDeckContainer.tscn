@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/wc/deckbuilder/CompactDeckContainer.gd" type="Script" id=2]
+
+[node name="CompactDeckContainer" type="PanelContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="DeckContainer" type="MarginContainer" parent="."]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1913.0
+margin_bottom = 1073.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeckContainer"]
+unique_name_in_owner = true
+margin_right = 1906.0
+margin_bottom = 1066.0
+
+[node name="DeckName" type="LineEdit" parent="DeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 58.0
+margin_bottom = 24.0
+size_flags_horizontal = 0
+expand_to_text_length = true
+caret_blink = true
+caret_blink_speed = 0.5
+
+[node name="DeckStatsLabel" type="Label" parent="DeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 28.0
+margin_right = 1906.0
+margin_bottom = 42.0
+text = "Total Cards: "
+
+[node name="OverallContainer" type="VBoxContainer" parent="DeckContainer/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 46.0
+margin_right = 1906.0
+margin_bottom = 50.0
+
+[node name="CardsContainer" type="VBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer"]
+unique_name_in_owner = true
+margin_right = 1906.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer"]
+margin_top = 4.0
+margin_right = 1906.0
+margin_bottom = 4.0
+custom_constants/separation = 15
+
+[node name="LeftContainer" type="VBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer/HBoxContainer"]
+unique_name_in_owner = true
+
+[node name="RightContainer" type="VBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer/HBoxContainer"]
+unique_name_in_owner = true
+margin_left = 15.0
+margin_right = 15.0
+
+[node name="Node2D" type="Node2D" parent="."]
+z_index = 4096
+
+[node name="LargePicture" type="TextureRect" parent="Node2D"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+expand = true
+stretch_mode = 7
+
+[node name="Garbage" type="Node2D" parent="."]

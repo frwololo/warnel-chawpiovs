@@ -5,6 +5,8 @@
 class_name WCUtils
 extends "res://src/core/CFUtils.gd"
 
+const PREVIEW_CARD_SIZE = Vector2(450, 630)
+const WAIT_BEFORE_PREVIEW = 0.7
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -881,7 +883,7 @@ static func check_delete_all_pck():
 	dir.remove(delete_pck_mark)
 	return
 
-static func large_card_preview_offset(large_picture, container, preview_card_size):
+static func large_card_preview_offset(large_picture, container, preview_card_size = PREVIEW_CARD_SIZE):
 	if !large_picture:
 		return
 		
@@ -920,6 +922,43 @@ static func large_card_preview_offset(large_picture, container, preview_card_siz
 
 	if out_of_bounds.y > screen_size.y:
 		large_picture.rect_global_position.y = screen_size.y - 50 - correction_offset.y
+
+
+static func show_preview(card_id, large_picture):
+	if cfc.get_setting("disable_card_images"):
+		return
+		#TODO support for text mode
+	if !is_instance_valid(large_picture):
+		return
+			
+	var card_data = cfc.get_card_by_id(card_id)
+	var horizontal = card_data["_horizontal"]
+	var filename = cfc.get_img_filename(card_id)	
+	var new_img = load_img(filename)
+	if not new_img:
+		return	
+	var imgtex = ImageTexture.new()
+	imgtex.create_from_image(new_img)	
+	large_picture.texture = imgtex
+	large_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	# In case the generic art has been modulated, we switch it back to normal colour
+	large_picture.self_modulate = Color(1,1,1)
+	large_picture.visible = false
+
+	var _preview_rotation = 0
+	if horizontal:
+		_preview_rotation = 90
+		
+	large_picture.rect_rotation = _preview_rotation	
+	large_picture.rect_size = PREVIEW_CARD_SIZE	
+	
+	yield(large_picture.get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")
+	if !is_instance_valid(large_picture):
+		return
+	if !large_picture.texture:
+		return
+	large_picture.visible = true
+
 
 #compares titles information for two unique cards, according to MC's rules
 static func unique_cards_match(unique_card, card):
@@ -1096,3 +1135,57 @@ static func theme_flatbox_1():
 	
 	_themes_cache[id] = style_box
 	return style_box
+
+const _all_team_up_cards = {}
+static func get_team_up_cards():
+	if ! _all_team_up_cards:
+		for card_id in cfc.card_definitions:
+			var found_scripts = cfc.set_scripts.get(card_id,{})
+			if !found_scripts:
+				continue
+			if card_id == "32021":
+				var _tmp = 1	
+			var path:Array = find_string_in_variant(found_scripts,"team_up")
+			if path:
+				
+				var root = found_scripts
+				for i in path.size():
+					var subkey = path[i]
+					root = root[subkey]
+				var team_members = root["team_up"]			
+				_all_team_up_cards[card_id] = [team_members[0].to_lower(), team_members[1].to_lower()]
+	return 	_all_team_up_cards
+
+static func find_team_up_card(team_up_data):
+	var titles1 = team_up_data[0].values()
+	var titles2 = team_up_data[1].values()
+
+	get_team_up_cards()
+	
+	for i in titles1:
+		for j in titles2:
+			for card_id in _all_team_up_cards:
+				var team_members = _all_team_up_cards[card_id]
+				if team_members[0] == i and team_members[1] == j:
+					return card_id
+				if team_members[0] == j and team_members[1] == i:
+					return card_id
+	return ""
+
+static func find_team_up_cards_for_hero(card_id):
+	#prime the cache
+	get_team_up_cards()
+	var results = []
+	
+	var hero_data = cfc.get_card_by_id(card_id)
+	var alter_ego_data = cfc.get_alter_ego_data(card_id)
+	var hero_name = hero_data["Name"].to_lower()
+	var alter_ego_name = alter_ego_data["Name"].to_lower()
+	
+	for card_id in _all_team_up_cards:
+		var team_members = _all_team_up_cards[card_id]
+		if team_members[0] == hero_name or team_members[1] == hero_name:	
+			results.append(card_id)
+		elif team_members[0] == alter_ego_name or team_members[1] == alter_ego_name:		
+			results.append(card_id)
+	return results

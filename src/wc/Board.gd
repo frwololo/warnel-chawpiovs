@@ -1252,37 +1252,7 @@ func can_add_card_to_deck(card_id, deck_id):
 	return WCUtils.can_add_card_to_deck(card_id, deck.get_all_cards())
 
 
-var _all_team_up_cards = {}
-func find_team_up_card(team_up_data):
-	var titles1 = team_up_data[0].values()
-	var titles2 = team_up_data[1].values()
 
-	if ! _all_team_up_cards:
-		for card_id in cfc.card_definitions:
-			var found_scripts = cfc.set_scripts.get(card_id,{})
-			if !found_scripts:
-				continue
-			if card_id == "32021":
-				var _tmp = 1	
-			var path:Array = WCUtils.find_string_in_variant(found_scripts,"team_up")
-			if path:
-				
-				var root = found_scripts
-				for i in path.size():
-					var subkey = path[i]
-					root = root[subkey]
-				var team_members = root["team_up"]			
-				_all_team_up_cards[card_id] = [team_members[0].to_lower(), team_members[1].to_lower()]
-	
-	for i in titles1:
-		for j in titles2:
-			for card_id in _all_team_up_cards:
-				var team_members = _all_team_up_cards[card_id]
-				if team_members[0] == i and team_members[1] == j:
-					return card_id
-				if team_members[0] == j and team_members[1] == i:
-					return card_id
-	return ""
 
 
 

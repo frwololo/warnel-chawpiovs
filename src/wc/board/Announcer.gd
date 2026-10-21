@@ -406,7 +406,7 @@ func can_display_stack_event(stack_object, mode = GlobalScriptStack.InterruptMod
 
 
 
-	var owner_card = stack_object.get_owner_card()
+	var owner_card = stack_object.get_owner()
 	if is_instance_valid(owner_card):
 		var path = get_ignore_list_path(owner_card, stack_object)
 		var root = ignore_stack_events	

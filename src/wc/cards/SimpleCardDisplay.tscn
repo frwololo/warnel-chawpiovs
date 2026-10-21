@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/wc/cards/SimpleCardDisplay.gd" type="Script" id=1]
+
+[node name="SimpleCardDisplay" type="TextureButton"]
+rect_min_size = Vector2( 300, 419 )
+expand = true
+stretch_mode = 4
+script = ExtResource( 1 )

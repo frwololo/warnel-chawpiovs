@@ -185,11 +185,6 @@ func modify(script, task_object = null):
 	return result
 
 
-func get_owner_card():
-	var first_task = get_first_task(false)
-	if first_task:
-		return first_task.owner
-	return null
 
 func get_subjects():
 	var first_task = get_first_task()

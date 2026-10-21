@@ -1,6 +1,6 @@
 # warning-ignore-all:UNUSED_ARGUMENT
 # warning-ignore-all:RETURN_VALUE_DISCARDED
-
+class_name DeckEdit
 extends Node
 
 
@@ -17,7 +17,7 @@ extends Node
 const card_collection = {}
 var deck_data := {}
 const card_cache := {}
-var cache_pending := []
+const cache_pending := []
 var current_collection_subset := []
 var current_page = 0
 var CARDS_PER_PAGE = 0
@@ -111,7 +111,11 @@ func _process(delta:float):
 	if loaded < 2:
 		loaded+= 1
 	if loaded == 2:	
-		_build_card_collection()	
+		#primes the card_collection cache
+		var _collection = get_card_collection()
+		for card_id in card_collection:
+			current_collection_subset.append(card_id)
+		_init_filters()	
 		_load_deck()
 		
 	#	mouse_pointer = load(CFConst.PATH_MOUSE_POINTER).instance()
@@ -271,20 +275,25 @@ func guess_aspect_from_deck():
 				filter_collection()
 				break
 
+static func can_add_card_to_deck(card_data, _deck_data):
+	var card_id = card_data["code"]
+	var currently_in_deck = _deck_data["slots"].get(card_id, 0)
+	
+	#also need to count duplicates
+	if card_data.get("duplicate_of_code"):
+		currently_in_deck += _deck_data["slots"].get(card_data.get("duplicate_of_code"), 0)
+	for duplicate_reverse_id in cfc.reverse_duplicates.get(card_id, []):
+		currently_in_deck += _deck_data["slots"].get(duplicate_reverse_id, 0)
+	
+	return WCUtils.can_add_card_to_deck(card_id, currently_in_deck)	
+
 func can_add_card(card):
 	if !rules_enforced:
 		return true	
 			
 	var card_id = card.canonical_id
-	var currently_in_deck = deck_data["slots"].get(card_id, 0)
-	
-	#also need to count duplicates
-	if card.get_property("duplicate_of_code"):
-		currently_in_deck += deck_data["slots"].get(card.get_property("duplicate_of_code"), 0)
-	for duplicate_reverse_id in cfc.reverse_duplicates.get(card_id, []):
-		currently_in_deck += deck_data["slots"].get(duplicate_reverse_id, 0)
-	
-	return WCUtils.can_add_card_to_deck(card_id, currently_in_deck)
+	var card_data = cfc.get_card_by_id(card_id)
+	return can_add_card_to_deck(card_data, deck_data)
 
 func card_clicked(object):
 	if object in collection_grid.get_children():
@@ -442,28 +451,33 @@ func hide_preview(card):
 	large_picture.texture = null	
 	large_picture.visible = false
 
-
-func save_deck():
-	var id = deck_data.get("id", 0)
+static func save_player_deck(_deck_data):
+	var id = _deck_data.get("id", 0)
 	if !id:
 		var _error = 1
 		return
-	if !deck_name.text:
-		deck_name.text = "New Deck"	
-	deck_data["name"] = deck_name.text
-	
+	if !_deck_data.get("name"):
+		_deck_data["name"] = "NO NAME"	
 	#we have the hero in ourd deck for convenience,
 	#but it shouldn't end up in the saved data
 	#we temporarily remove it before saving
-	var hero_code = deck_data["hero_code"]
+	var hero_code = _deck_data["hero_code"]
 	var backup_hero_qty = 0
-	if deck_data["slots"].has(hero_code):
-			backup_hero_qty	= deck_data["slots"][hero_code]
-			deck_data["slots"].erase(hero_code) 
-	cfc.save_one_deck_to_file(deck_data)
+	if _deck_data["slots"].has(hero_code):
+			backup_hero_qty	= _deck_data["slots"][hero_code]
+			_deck_data["slots"].erase(hero_code) 
+	cfc.save_one_deck_to_file(_deck_data)
 	
 	if backup_hero_qty:
-		deck_data["slots"][hero_code] = backup_hero_qty
+		_deck_data["slots"][hero_code] = backup_hero_qty	
+
+func save_deck():
+	if !deck_name.text:
+		deck_name.text = "New Deck"	
+	deck_data["name"] = deck_name.text
+		
+	save_player_deck(deck_data)
+
 
 func _load_deck():
 	deck_data = gameData.editor_deck_data
@@ -493,7 +507,7 @@ func init_deck_container():
 	
 	var max_types = compute_max_types()
 	
-	for type in ["hero", "ally", "event", "upgrade", "support",  "resource", "player_side_scheme",]:
+	for type in HeroDeckData.ORDERED_PLAYER_TYPES:
 		add_deck_row(type)
 		if type in max_types:
 			add_deck_row(type, "1")
@@ -650,9 +664,9 @@ func make_filterable(readable_key):
 	return readable_key.replace(" ", "_").to_lower()
 
 #creates the collection of player cards usable for deck editing, removing duplicates, encounter cards, etc...
-func _build_card_collection():
+static func get_card_collection():
 	if card_collection:
-		return
+		return card_collection
 	for card_id in cfc.card_definitions:
 		var card_data = cfc.card_definitions[card_id]
 		
@@ -683,13 +697,10 @@ func _build_card_collection():
 		aspects_dict[faction_code] = true
 		if !cost == null:
 			costs_dict[str(cost)] = true
-		
-
-		
-					
+							
 		cache_pending.append(card_id)
 		card_collection[card_id] = card_data
-		current_collection_subset.append(card_id)
+
 		
 	for key in types_dict:
 		types.append(key)
@@ -702,6 +713,9 @@ func _build_card_collection():
 	aspects.sort()
 	costs.sort()
 	
+	return card_collection
+
+func _init_filters():	
 	var aspect_filter = get_node("%AspectFilter")
 	for key in aspects:
 		aspect_filter.add_item(key)		

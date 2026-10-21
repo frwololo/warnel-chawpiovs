@@ -2020,7 +2020,7 @@ func prevent(script: ScriptTask) -> int:
 #				var _event = gameData.theStack.retrieve_last_event(script)
 #				if !_event:
 #					return CFConst.ReturnCode.FAILED
-				var event_owner = stack_object.get_owner_card()
+				var event_owner = stack_object.get_owner()
 				if event_owner and event_owner.get_property("cannot_be_canceled", 0, true):
 					return CFConst.ReturnCode.FAILED
 					

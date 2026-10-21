@@ -226,6 +226,16 @@ func _on_deck_changed(index):
 				}
 				get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/DeckManagement.tscn')
 				return
+			"__draft__":
+				#TODO will need to return to this page somehow
+				get_tree().current_scene.queue_free()	
+				gameData.disconnect_from_network()
+				gameData.menu_command = {
+					"hero_id": self.hero_id,
+					"callback":lobby.get_menu_command_callback_data()
+				}
+				get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/Drafter.tscn')
+				return				
 		return
 		
 	if (cfc.get_network_unique_id() == my_owner_network_id) :
@@ -354,7 +364,7 @@ func load_hero(_hero_id):
 		var hero_name = cfc.get_card_name_by_id(hero_id)		
 		for _deck_id in decks:
 			var deck_data = cfc.deck_definitions[_deck_id]
-			var deck_name: String = deck_data.name
+			var deck_name: String = deck_data.get("name", "NO NAME")
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")
 			deck_name = deck_name.trim_prefix("- ")
 			item_id_to_deck_id[current_idx] = deck_data.id
@@ -367,7 +377,8 @@ func load_hero(_hero_id):
 		var additional_entries = {
 			"__dl__" : "...MarvelCDB Download",
 			"__edit__": "...Edit this Deck",
-			"__create__": "...Create a new deck for " + hero_name
+			"__create__": "...Create a new deck for " + hero_name,
+			"__draft__": "...Draft a deck for " + hero_name
 			}
 		for key in additional_entries:
 			deck_select.add_item(additional_entries[key], current_idx)

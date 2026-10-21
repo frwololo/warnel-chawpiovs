@@ -166,6 +166,39 @@ func _ready():
 	tween_s.connect("tween_all_completed", self, "_tween_s_completed")
 	team_panel.modulate.a = 0
 	
+	if gameData.menu_command:
+		process_menu_command(gameData.menu_command)
+		gameData.menu_command = {}
+
+func get_menu_command_callback_data():
+	var heroes = []
+	for i in HERO_COUNT:
+		var data: HeroDeckData = team[i]
+		if (data.get_hero_id()): 
+			heroes.append({"hero_id": data.get_hero_id(), "deck_id": data.deck_id})
+	return {
+		"heroes": heroes
+	}
+		
+func process_menu_command(command):
+	if typeof(command) != TYPE_DICTIONARY:
+		return	
+	var heroes = command.get("heroes", "")
+	if !heroes:
+		#unsupported for now
+		return
+
+	var slot = 0
+	for hero in heroes:
+		var hero_id = hero["hero_id"]
+		var deck_id = hero["deck_id"]
+		cfc._rpc(self, "assign_hero", hero_id, slot)
+		yield(get_tree().create_timer(0.5), "timeout")
+		#cfc._rpc(self, "remote_deck_changed", deck_id, slot)
+		deck_changed(deck_id, slot, true)
+		slot +=1	
+		
+			
 #Quickstart for tests
 #TODO remove
 	if (cfc.is_game_master() and CFConst.DEBUG_AUTO_START_MULTIPLAYER):
@@ -1082,17 +1115,20 @@ remote func remote_owner_changed (id, index):
 	var _heroDeckSelect = heroes_container.get_child(index)
 	_heroDeckSelect.set_owner(id+1)
 
-func deck_changed(_deck_id, hero_index):
+func deck_changed(_deck_id, hero_index, force_refresh = false):
 	team[hero_index].deck_id = _deck_id
-	cfc._rpc(self,"remote_deck_changed",_deck_id, hero_index)	
+	cfc._rpc(self,"remote_deck_changed",_deck_id, hero_index, force_refresh)
 
-remote func remote_deck_changed (_deck_id, hero_index):
+
+remote func remote_deck_changed (_deck_id, hero_index, force_refresh):
 	var client_id =  cfc.get_rpc_sender_id() 	
 	#update data
 	team[hero_index].deck_id = _deck_id
 	#update GUI
 	var _heroDeckSelect = heroes_container.get_child(hero_index)
 	_heroDeckSelect.set_deck(_deck_id, client_id)
+	if force_refresh:
+		_heroDeckSelect.load_deck_contents(_deck_id)		
 
 func request_deck_data(caller_id, _deck_id):
 	cfc._rpc_id(self, caller_id, "upload_deck_data", _deck_id)

@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/wc/deckbuilder/SimpleCardList.gd" type="Script" id=2]
+
+[node name="SimpleCardList" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+
+[node name="CardsContainer" type="GridContainer" parent="."]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+columns = 5
+
+[node name="Node2D" type="Node2D" parent="."]
+z_index = 4096
+
+[node name="LargePicture" type="TextureRect" parent="Node2D"]
+unique_name_in_owner = true
+margin_right = 40.0
+margin_bottom = 40.0
+expand = true
+stretch_mode = 7
+
+[node name="Garbage" type="Node2D" parent="."]

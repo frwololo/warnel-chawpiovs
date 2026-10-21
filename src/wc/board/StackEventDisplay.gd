@@ -289,7 +289,7 @@ func load_text():
 
 func load_from_event(event):
 	stack_event = event
-	owner_card = stack_event.get_owner_card()
+	owner_card = stack_event.get_owner()
 	if !owner_card:
 		#There's an edge case where only irrelevant actions (e.g. only nop) are in the stack_event
 		#at which point this will return a weird empty event with no text. We don't want to display that		
@@ -311,7 +311,7 @@ func load_from_past_event(event, storage):
 		return
 	
 	if stack_event:
-		var owner_card_2 = stack_event.get_owner_card()
+		var owner_card_2 = stack_event.get_owner()
 		if owner_card_2 and owner_card_2!= owner_card:
 			if owner_card:
 				subjects.append(owner_card_2)

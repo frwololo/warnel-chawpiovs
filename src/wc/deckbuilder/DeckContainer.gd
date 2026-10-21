@@ -4,8 +4,7 @@ extends Control
 signal resize_done(new_size)
 
 const DECK_CARD_SCALE = 1.12
-const WAIT_BEFORE_PREVIEW = 0.7
-const PREVIEW_CARD_SIZE = Vector2(450, 630)
+
 const DECK_CARD_SPACING = 40
 const MIN_SIZE_Y = 250
 
@@ -75,7 +74,7 @@ func _process(_delta:float):
 	
 	
 	
-	WCUtils.large_card_preview_offset(large_picture, self, PREVIEW_CARD_SIZE)
+	WCUtils.large_card_preview_offset(large_picture, self)
 
 func setup(settings := {}):
 
@@ -543,38 +542,9 @@ func add_deck_row(type, index = ""):
 		label.visible = false	
 	
 func show_preview(card):
-	if cfc.get_setting("disable_card_images"):
-		return
-		#TODO support for text mode
-			
-	var card_id = card.canonical_id
-	var card_data = cfc.get_card_by_id(card_id)
-	var horizontal = card_data["_horizontal"]
-	var filename = cfc.get_img_filename(card_id)	
-	var new_img = WCUtils.load_img(filename)
-	if not new_img:
-		return	
-	var imgtex = ImageTexture.new()
-	imgtex.create_from_image(new_img)	
-	large_picture.texture = imgtex
-	large_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	# In case the generic art has been modulated, we switch it back to normal colour
-	large_picture.self_modulate = Color(1,1,1)
-	large_picture.visible = false
 	current_hover_card = card	
-	
-	if horizontal:
-		_preview_rotation = 90
-	else:
-		_preview_rotation = 0
-		
-	large_picture.rect_rotation = _preview_rotation	
-	large_picture.rect_size = PREVIEW_CARD_SIZE	
-	
-	yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")
-	if !large_picture.texture:
-		return
-	large_picture.visible = true
+	var card_id = card.canonical_id	
+	WCUtils.show_preview(card_id, large_picture)	
 
 
 func hide_preview(card):

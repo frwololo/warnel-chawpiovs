@@ -76,8 +76,11 @@ func init_cards():
 				my_container = right_container
 			elif lefts.has(type):
 				my_container = left_container
-			
+						
 			my_container.add_child(type_label)
+
+			if my_container == cards_container:
+				type_label.align = Label.ALIGN_CENTER				
 			
 			for card_code in cards_by_type[type]:
 				var hbox = HBoxContainer.new()
@@ -85,11 +88,16 @@ func init_cards():
 				var card_data = cfc.get_card_by_id(card_code)
 				var card_name = WCUtils.get_translated_property(card_code, "Name")
 				var label:Label = Label.new()
+
 				label.name = "card_" + card_code
 				label.mouse_filter = Control.MOUSE_FILTER_STOP
 				label.connect("mouse_entered", self, "label_entered", [label.name])
 				label.connect("mouse_exited", self, "label_exited", [label.name])
-				label.text = "  " + str(quantity) + "x " + card_name.capitalize() 
+				label.text = "  " + str(quantity) + "x " + card_name.capitalize()
+				
+				if my_container == cards_container:
+					label.text = card_name.capitalize()
+				
 				hbox.add_child(label)
 				var icons = compute_resources(card_data)
 				var rightbox = HBoxContainer.new()
@@ -100,7 +108,10 @@ func init_cards():
 					icon.expand = true	
 					icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED				
 				hbox.add_child(rightbox)
-				my_container.add_child(hbox)			
+				
+				my_container.add_child(hbox)
+				if my_container == cards_container:
+					hbox.alignment = BoxContainer.ALIGN_CENTER						
 	init_done = true
 
 func compute_resources(card_data):

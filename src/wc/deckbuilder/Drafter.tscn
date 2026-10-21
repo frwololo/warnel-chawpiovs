@@ -161,6 +161,7 @@ size_flags_horizontal = 3
 text = "Cards per pack"
 
 [node name="OptionButton" type="OptionButton" parent="MainMenu/Outercontainer/LeftRightContainer/SetupTab/VBoxContainer/OptionsSetup/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 margin_left = 251.0
 margin_right = 500.0
 margin_bottom = 40.0

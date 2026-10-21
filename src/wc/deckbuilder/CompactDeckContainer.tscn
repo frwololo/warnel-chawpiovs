@@ -38,16 +38,25 @@ text = "Total Cards: "
 unique_name_in_owner = true
 margin_top = 46.0
 margin_right = 1906.0
-margin_bottom = 50.0
+margin_bottom = 56.0
+alignment = 1
 
 [node name="CardsContainer" type="VBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer"]
 unique_name_in_owner = true
 margin_right = 1906.0
+size_flags_horizontal = 7
+alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer"]
+[node name="Panel" type="ColorRect" parent="DeckContainer/VBoxContainer/OverallContainer"]
 margin_top = 4.0
 margin_right = 1906.0
-margin_bottom = 4.0
+margin_bottom = 6.0
+rect_min_size = Vector2( 100, 2 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer"]
+margin_top = 10.0
+margin_right = 1906.0
+margin_bottom = 10.0
 custom_constants/separation = 15
 
 [node name="LeftContainer" type="VBoxContainer" parent="DeckContainer/VBoxContainer/OverallContainer/HBoxContainer"]

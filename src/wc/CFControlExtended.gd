@@ -727,19 +727,20 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
 
-	var needle = "play only if your identity has the "
-	var play_only_if_pos = text_lc.find(needle)
-	if play_only_if_pos > -1:
-		var trait_pos = text_lc.find(" trait")
-		var startpos = play_only_if_pos + needle.length()
-		var involved_traits_str = text_lc.substr(startpos, trait_pos - startpos )
-		var involved_traits = involved_traits_str.split(" or ")
-		card_data["play_only_if_traits"] = []
-		for trait in involved_traits:
-			trait = remove_bbcode(trait)
-			card_data["play_only_if_traits"].append(trait)
+	for needle in ["play only if your identity has the ", "play only if you have the "]:
 
-	needle = "linked ("
+		var play_only_if_pos = text_lc.find(needle)
+		if play_only_if_pos > -1:
+			var trait_pos = text_lc.find(" trait")
+			var startpos = play_only_if_pos + needle.length()
+			var involved_traits_str = text_lc.substr(startpos, trait_pos - startpos )
+			var involved_traits = involved_traits_str.split(" or ")
+			card_data["play_only_if_traits"] = []
+			for trait in involved_traits:
+				trait = remove_bbcode(trait)
+				card_data["play_only_if_traits"].append(trait)
+
+	var needle = "linked ("
 	var linked_pos = text_lc.find(needle)
 	if linked_pos > -1:
 		var card_pos = text_lc.find(")", linked_pos)

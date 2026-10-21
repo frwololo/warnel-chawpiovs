@@ -3,7 +3,7 @@ extends Panel
 
 
 var draft_aspect = ""
-var cards_per_pack = 5
+var cards_per_pack = 6
 var current_draft_step = 0
 var hero_id = ""
 var deck_id = 0
@@ -19,7 +19,8 @@ onready var card_count: Label = get_node("%CardCount")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	draft_cards.set_columns(4)
+	get_node("%OptionButton").select(1)
+	cards_per_pack_selected(1)
 	setup_setup()
 	if gameData.menu_command:
 		process_command(gameData.menu_command)
@@ -176,12 +177,16 @@ func _on_StartButton_pressed():
 
 
 func _on_OptionButton_item_selected(index):
+	cards_per_pack_selected(index)
+
+func cards_per_pack_selected(index):
 	cards_per_pack = index + 5
 	if cards_per_pack > 8:
 		draft_cards.set_columns(5)
 		draft_cards.set_cards_size(Vector2(220, 300))
 	else:
-		draft_cards.set_columns(4)
+		var cols = (cards_per_pack+1)/2
+		draft_cards.set_columns(cols)
 		draft_cards.set_cards_size(Vector2(300, 419))
 
 func _on_SimpleCardList_card_clicked(card_code):

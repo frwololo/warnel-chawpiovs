@@ -277,7 +277,10 @@ func focus_card(card: Card, show_preview := true) -> void:
 	# the whole time		
 	if _current_focus_source != card:
 		
-
+		#cleanup previous card focus state in case something fishy happened (I've seen it with my own eyes!)
+		if is_instance_valid(_current_focus_source):
+			_current_focus_source.lose_focus()
+		
 		#remove children cards to always only keep one displayed
 		if vbc_position_mode:
 			for c in $VBC.get_children():

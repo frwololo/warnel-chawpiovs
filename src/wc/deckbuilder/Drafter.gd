@@ -156,7 +156,7 @@ func add_card_to_deck(card_code):
 	deck.add_card(card_code)
 	
 func next_draft_step():
-	var deck_count = deck.count_cards()
+	var deck_count = deck.count_cards(true)
 	card_count.text = "Cards: " + str(deck_count) + "/ 40"
 	if deck_count >= 40:
 		select_tab("FinishedTab")
@@ -203,6 +203,7 @@ func _on_BackToGameButton_pressed():
 			for hero in callback_menu_command.get("heroes", []):
 				if hero["hero_id"] == hero_id:
 					hero["deck_id"] = deck_id
+					hero["deck_data"] = deck.get_deck_data()
 		gameData.menu_command = callback_menu_command
 		
 		self.queue_free()

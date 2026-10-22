@@ -1216,7 +1216,7 @@ func unique_team_up_replace():
 	var replacement_happened:PoolStringArray = []
 	for replacement in to_replace:
 		var card = replacement["card"]
-		var new_code = find_team_up_card(replacement["team_up"])
+		var new_code = WCUtils.find_team_up_card(replacement["team_up"])
 		if can_add_card_to_deck(new_code, replacement["deck_id"]):
 			var desc = card.canonical_name
 			card.load_from_card_id(new_code)

@@ -727,7 +727,7 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	var force_horizontal = CFConst.FORCE_HORIZONTAL_CARDS.get(lc_card_type, false)
 	card_data["_horizontal"] = force_horizontal
 
-	for needle in ["play only if your identity has the ", "play only if you have the "]:
+	for needle in ["play only if your identity has the ", "play only if you have the ",  "play only if your hero has the "]:
 
 		var play_only_if_pos = text_lc.find(needle)
 		if play_only_if_pos > -1:
@@ -1278,13 +1278,16 @@ func remove_one_deck(deck_id):
 	
 	deck_definitions.erase(deck_id)		
 
+func get_deck_hero_id(json_deck_data):
+	return json_deck_data.get("hero_code",json_deck_data.get("investigator_code", ""))
+	
 func load_one_deck(json_deck_data, filepath = ""):
 	if !(_is_deck_valid(json_deck_data)):
 		return {}
 	json_deck_data = WCUtils.replace_real_to_int(json_deck_data)
 	var deck_id = json_deck_data["id"]
 	#var deck_id_int = int(deck_id)
-	var hero_id = json_deck_data.get("hero_code",json_deck_data.get("investigator_code", ""))
+	var hero_id = get_deck_hero_id(json_deck_data)
 
 	#Begin data fixes
 	json_deck_data["hero_code"] = hero_id
@@ -1332,6 +1335,13 @@ func load_deck_definitions():
 		load_one_deck(json_deck_data, full_path)
 	return
 
+func get_deck_data_for_hero(hero_id):
+	var result = []
+	var deck_ids = idx_hero_to_deck_ids.get(hero_id, [])
+	for deck_id in deck_ids:
+		result.append(deck_definitions[deck_id])	
+	return result
+	
 # copies Res fanmade sets into user folder
 func preload_fanmade_sets():
 	if ! self.get_setting("enable_fanmade_sets"):

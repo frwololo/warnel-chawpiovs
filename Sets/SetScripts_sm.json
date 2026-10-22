@@ -7044,56 +7044,37 @@
 					"filter_task": "get_property",
 					"filter_property_name": "health",
 					"alteration": 10,
-					"filter_same_controller": true,
-					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"trigger": "my_identity"
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "attack",
 					"alteration": 1,
-					"filter_same_controller": true,
-					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"trigger": "my_identity"
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "thwart",
 					"alteration": 1,
-					"filter_same_controller": true,
-					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"trigger": "my_identity"
 				},
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
 					"alteration": 1,
-					"filter_same_controller": true,
-					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"trigger": "my_identity"
 				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "recover",
+					"alteration": 1,
+					"trigger": "my_identity"
+				},				
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "hand_size",
 					"alteration": 1,
-					"filter_same_controller": true,
-					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
-					]
+					"trigger": "my_identity"
 				}
 			]
 		}

@@ -511,7 +511,7 @@ func _on_Tests_pressed():
 	gameData.init_1player()
 	var hd = HeroDeckData.new()
 	hd.set_hero_id("01001a")
-	hd.deck_id = 5
+	hd.load_deck_data_from_local_id(5)
 	gameData.set_team_data({1: hd})
 
 	var launch_data = {

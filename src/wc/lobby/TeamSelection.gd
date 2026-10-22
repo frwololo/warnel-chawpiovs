@@ -31,6 +31,7 @@ var selected_modulars:= []
 var _rotation = 0
 var _preview_rotation = 0
 var launch_data
+var remote_deck_data:= {}
 
 #animation/loading
 var heroes_pipeline:= {}
@@ -175,7 +176,7 @@ func get_menu_command_callback_data():
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.get_hero_id()): 
-			heroes.append({"hero_id": data.get_hero_id(), "deck_id": data.deck_id})
+			heroes.append({"hero_id": data.get_hero_id(), "deck_data": data.deck_data})
 	return {
 		"heroes": heroes
 	}
@@ -192,10 +193,11 @@ func process_menu_command(command):
 	for hero in heroes:
 		var hero_id = hero["hero_id"]
 		var deck_id = hero["deck_id"]
+		var deck_data = hero["deck_data"]		
 		cfc._rpc(self, "assign_hero", hero_id, slot)
 		yield(get_tree().create_timer(0.5), "timeout")
 		#cfc._rpc(self, "remote_deck_changed", deck_id, slot)
-		deck_changed(deck_id, slot, true)
+		deck_changed(deck_data, slot, true)
 		slot +=1	
 		
 			
@@ -916,12 +918,15 @@ func _on_ExpertMode_toggled(button_pressed):
 	pass # Replace with function body.
 
 
+#Calls the network master to ask for a hero slot
+#send hero_id information as well as my deck data for this hero
 func request_hero_slot(hero_id):
-	cfc._rpc_id(self, 1, "get_next_hero_slot",hero_id)
+	var all_deck_data = cfc.get_deck_data_for_hero(hero_id)
+	cfc._rpc_id(self, 1, "get_next_hero_slot",hero_id, all_deck_data)
 
 #Attempt to get a slot for a given hero for a given player
 #If succesful, tell everyone to update their info
-mastersync func get_next_hero_slot(hero_id) -> int:
+mastersync func get_next_hero_slot(hero_id, remote_deck_data) -> int:
 	if (not cfc.is_game_master()):
 		return -1
 	var client_id = cfc.get_rpc_sender_id() 
@@ -934,7 +939,7 @@ mastersync func get_next_hero_slot(hero_id) -> int:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == ""):
 			add_pending_acks()
-			cfc._rpc(self, "assign_hero", hero_id, i)
+			cfc._rpc(self, "assign_hero", hero_id, i, {"deck_data": remote_deck_data})
 			return i
 	return -1			
 
@@ -955,7 +960,7 @@ func heroes_container_update(hero_id, slot):
 	for c in heroes_container.get_children():
 		c.set_players_mode(count_visible)
 
-remotesync func assign_hero(hero_id, slot):
+remotesync func assign_hero(hero_id, slot, data = {}):
 	#data update
 	var hero_deck_data: HeroDeckData = team[slot]
 	var previous_hero_id = hero_deck_data.get_hero_id()
@@ -964,7 +969,7 @@ remotesync func assign_hero(hero_id, slot):
 	#gui update
 	heroes_container_update(hero_id, slot)
 	var hero_deck_select = heroes_container.get_child(slot)
-	hero_deck_select.load_hero(hero_id)
+	hero_deck_select.load_hero(hero_id, data.get("deck_data", []))
 	if hero_id:
 		for child in all_heroes_container.get_children():
 			if child.hero_id == hero_id:
@@ -1058,7 +1063,7 @@ func all_players_have_a_hero() -> bool:
 		if (data.get_hero_id()): 
 			if (data.owner.network_id):
 				players_with_heroes[data.owner.network_id] = true
-			if (!data.deck_id) or heroes_container.get_child(i).deckSelect.get_selected() == -1:
+			if (!data.get_deck_id()) or heroes_container.get_child(i).deckSelect.get_selected() == -1:
 				return false
 	if players_with_heroes.size() != gameData.network_players.size():
 		return false
@@ -1115,20 +1120,20 @@ remote func remote_owner_changed (id, index):
 	var _heroDeckSelect = heroes_container.get_child(index)
 	_heroDeckSelect.set_owner(id+1)
 
-func deck_changed(_deck_id, hero_index, force_refresh = false):
-	team[hero_index].deck_id = _deck_id
-	cfc._rpc(self,"remote_deck_changed",_deck_id, hero_index, force_refresh)
+func deck_changed(deck_data, hero_index, force_refresh = false):
+	team[hero_index].set_deck_data(deck_data)
+	cfc._rpc(self,"remote_deck_changed",deck_data, hero_index, force_refresh)
 
 
-remote func remote_deck_changed (_deck_id, hero_index, force_refresh):
+remote func remote_deck_changed (deck_data, hero_index, force_refresh):
 	var client_id =  cfc.get_rpc_sender_id() 	
 	#update data
-	team[hero_index].deck_id = _deck_id
+	team[hero_index].set_deck_data(deck_data)
 	#update GUI
 	var _heroDeckSelect = heroes_container.get_child(hero_index)
-	_heroDeckSelect.set_deck(_deck_id, client_id)
+	_heroDeckSelect.set_deck(deck_data, client_id)
 	if force_refresh:
-		_heroDeckSelect.load_deck_contents(_deck_id)		
+		_heroDeckSelect.load_deck_contents(deck_data)		
 
 func request_deck_data(caller_id, _deck_id):
 	cfc._rpc_id(self, caller_id, "upload_deck_data", _deck_id)
@@ -1159,7 +1164,9 @@ func deck_download_error(msg):
 func process_deck_download(deck_data):
 	cfc.load_one_deck(deck_data)
 	cfc.save_one_deck_to_file(deck_data)
-	refresh_deck_containers()
+	var hero_id = cfc.get_deck_hero_id(deck_data)
+	var decks_data = cfc.get_deck_data_for_hero(hero_id)
+	refresh_deck_containers(hero_id, decks_data)
 
 	if cfc._last_deck_error_msg:
 		deck_download_error(cfc._last_deck_error_msg)
@@ -1169,9 +1176,10 @@ func process_deck_download(deck_data):
 		label.text = "Deck Downloaded:" + str(deck_data["id"]) 
 	
 
-func refresh_deck_containers():
+func refresh_deck_containers(hero_id, decks_data):
 	for child in heroes_container.get_children():
-		child.refresh_decks()
+		if child.get_hero_id() == hero_id:
+			child.refresh_decks(decks_data)
 
 var _ready_to_launch:= {}
 mastersync func ready_to_launch():
@@ -1196,7 +1204,7 @@ func _launch_server_game():
 	for key in team.keys():
 		var hero_data = team[key]
 		serialized_team[key] = hero_data.savestate_to_json()
-		save_last_used_deck(hero_data.get_hero_id(), hero_data.deck_id)
+		save_last_used_deck(hero_data.get_hero_id(), hero_data.get_deck_id())
 	
 	var scenario_options = {}
 	for key in _scenario_options:

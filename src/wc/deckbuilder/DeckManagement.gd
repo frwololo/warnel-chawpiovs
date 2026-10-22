@@ -323,9 +323,7 @@ func _filter_decks(hero_id = ""):
 	#show in alphabetical order
 	var decks:Array = []
 	if hero_id:
-		var deck_ids = cfc.idx_hero_to_deck_ids.get(hero_id, [])
-		for deck_id in deck_ids:
-			decks.append(cfc.deck_definitions[deck_id])
+		decks += cfc.get_deck_data_for_hero(hero_id)
 	else:
 		var names_to_id = {}
 		for my_hero_id in cfc.hero_ids:

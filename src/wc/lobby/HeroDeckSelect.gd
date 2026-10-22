@@ -9,9 +9,10 @@ extends MarginContainer
 
 var my_owner = 0
 var my_index = 0
-var hero_id = 0
+var hero_id = ""
 var deck_id = 0
-
+var decks_data := []
+var decks_index := {}
 
 var players_mode = 1
 
@@ -48,7 +49,9 @@ func _ready():
 	deck_container.connect("resize_done", self, "_on_deck_container_resized")
 	_load_players()
 	set_players_mode()
-	
+
+func get_hero_id():
+	return hero_id	
 
 func set_players_mode(value = 0):
 	var previous_value = players_mode
@@ -106,7 +109,7 @@ func set_players_mode(value = 0):
 	if deck_id:
 		#Refresh everything
 		#aggressive but ensures proper size
-		load_deck_contents(deck_id)
+		load_deck_contents(decks_index[deck_id])
 	resize()
 
 func select_tab(tab_name):
@@ -237,18 +240,19 @@ func _on_deck_changed(index):
 				get_tree().change_scene(CFConst.PATH_CUSTOM + 'deckbuilder/Drafter.tscn')
 				return				
 		return
-		
+
+	var deck_data = decks_index[new_deck_id]		
 	if (cfc.get_network_unique_id() == my_owner_network_id) :
-		lobby.deck_changed(new_deck_id, my_index)
+		lobby.deck_changed(deck_data, my_index )
 		
-	load_deck_contents(new_deck_id)
+	load_deck_contents(deck_data)
 
 func reset_deck_contents():
 	deck_container.reset()
 
-func load_deck_contents(new_deck_id):
+func load_deck_contents(deck_info):
 	reset_deck_contents()
-	var deck_info = cfc.deck_definitions[new_deck_id]
+	var new_deck_id = deck_info.id
 	var settings = 	{
 			"show_hero": false,
 			"show_headers": false,
@@ -279,7 +283,8 @@ func load_deck_contents(new_deck_id):
 		deck_container.load_cards(deck_info)
 
 #deck change notification from a remote caller
-func set_deck (_deck_id, caller_id):
+func set_deck (deck_data, caller_id):
+	var _deck_id = deck_data.id
 	var index = deck_id_to_item_id.get(_deck_id, -1)
 	if index <0: #deck doesn't exist on my side, I need to download it
 		_needs_refresh = _deck_id
@@ -290,7 +295,7 @@ func set_deck (_deck_id, caller_id):
 		deckSelect.select(index)
 		deck_id = _deck_id
 
-func refresh_decks():
+func refresh_decks(decks_data = {}):
 	#keep the currently selected index in tmp variable,
 	#unless it was previsouly set during a download request
 	if !_needs_refresh:
@@ -298,7 +303,7 @@ func refresh_decks():
 		_needs_refresh = item_id_to_deck_id.get(item_id, 0)
 
 	#reload our hero to refresh the deck list
-	load_hero(hero_id)
+	load_hero(hero_id, decks_data)
 
 	#set the correct selected item again
 	if deck_id_to_item_id.has(_needs_refresh):
@@ -345,28 +350,31 @@ func reload_texture(callback_owner = null):
 		hero_picture.texture = null	
 		hero_picture_12.texture = null	
 		
-func load_hero(_hero_id):
+func load_hero(_hero_id, _decks_data = []):
 	hero_id = _hero_id
 	
 	reset_deck_contents()
 	deck_select.clear()
+	decks_index = {}
 	
-	var decks = 0
 	var last_deck_id = 0 	
+	if _decks_data:
+		decks_data = _decks_data.duplicate(true)
 	if (hero_id):
+		if !decks_data:
+			decks_data = cfc.get_deck_data_for_hero(hero_id)
 		reload_texture(self)
-		decks = cfc.idx_hero_to_deck_ids[hero_id]
 		last_deck_id = load_last_used_deck(hero_id)
-	if (decks):	
+	if (decks_data):	
 		var current_idx = 0
 		item_id_to_deck_id = {}
 		deck_id_to_item_id = {}
 		var hero_name = cfc.get_card_name_by_id(hero_id)		
-		for _deck_id in decks:
-			var deck_data = cfc.deck_definitions[_deck_id]
+		for deck_data in decks_data:
 			var deck_name: String = deck_data.get("name", "NO NAME")
 			deck_name = deck_name.replacen(hero_name, "").trim_prefix(" ")
 			deck_name = deck_name.trim_prefix("- ")
+			decks_index[deck_data.id] = deck_data
 			item_id_to_deck_id[current_idx] = deck_data.id
 			deck_id_to_item_id[deck_data.id] = current_idx
 			deck_select.add_item(deck_name, current_idx)

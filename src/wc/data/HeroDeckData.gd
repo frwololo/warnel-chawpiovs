@@ -6,7 +6,6 @@ extends Reference
 const ORDERED_PLAYER_TYPES = ["hero", "ally", "event", "upgrade", "support",  "resource", "player_side_scheme",]
 
 var owner:PlayerData
-var deck_id
 var _hero_id setget set_hero_id,get_hero_id
 var deck_data:= {}
 var _flattened_deck_data:= []
@@ -18,12 +17,17 @@ func set_hero_id(id):
 func get_hero_id():
 	return _hero_id
 
+func get_deck_id():
+	if !deck_data:
+		return 0
+	return deck_data.id
+
 func _init():
 	if gameData.network_players:
 		owner = gameData.network_players[1] #Default to being owned by master
 	else:
 		owner = PlayerData.new("tmp_user_name", 1, 1)
-	deck_id = 0
+	deck_data = {}
 	_hero_id = ""
 
 func get_hero_card_data() -> Dictionary:
@@ -52,12 +56,6 @@ func clear_cache():
 	_flattened_deck_data = []
 	_cards_by_type = {}
 
-func set_deck_id(_deck_id):
-	if !_deck_id:
-		return
-	clear_cache()
-	deck_data = cfc.deck_definitions[_deck_id].duplicate(true)
-	_flattened_deck_data = _get_deck_cards(deck_data)
 
 func add_card(card_id):
 	clear_cache()
@@ -67,9 +65,7 @@ func add_card(card_id):
 	slots[card_id] += 1
 
 func set_deck_data(_deck_data):
-	if !deck_id:
-		if _deck_data.has("id"):
-			deck_id = _deck_data.get("id")
+	clear_cache()
 	if !_hero_id:
 		var hero_id = _deck_data.get("hero_code",_deck_data.get("investigator_code", ""))
 		_hero_id = hero_id
@@ -81,8 +77,6 @@ func get_deck_cards():
 	if !_flattened_deck_data:
 		if deck_data:
 			_flattened_deck_data = _get_deck_cards(deck_data)
-		elif deck_id:
-			set_deck_id(deck_id)
 
 	return _flattened_deck_data
 
@@ -129,11 +123,14 @@ func savestate_to_json() -> Dictionary:
 	var json_data:Dictionary = {
 		"herodeckdata": {
 			"owner" : self.owner.get_id(),
-			"deck_id" : self.deck_id,
+			"deck_data" : self.deck_data,
 			"hero" : self._hero_id
 		}
 	}
 	return json_data
+
+func load_deck_data_from_local_id(deck_id):
+	deck_data = cfc.deck_definitions[deck_id].duplicate(true)
 	
 func loadstate_from_json(json:Dictionary) -> bool:
 	var json_data = json.get("herodeckdata", null)
@@ -142,8 +139,11 @@ func loadstate_from_json(json:Dictionary) -> bool:
 		return false
 	var owner_id:int = 	int(json_data.get("owner", 1))
 	owner = gameData.network_players.get(gameData.id_to_network_id.get(owner_id)) #Default to being owned by master
-	deck_id = json_data.get("deck_id", -1) #-1 here to force initialization if needed
-	
+	var deck_id = json_data.get("deck_id", 0) 
+	deck_data = json_data.get("deck_data", {}) 
+	if deck_id and !deck_data:
+		load_deck_data_from_local_id(deck_id)
+		
 	#Hero might be a card id or card name. We try to accomodate for both use cases here
 	var hero:String = json_data.get("hero", "")
 	if (!hero):

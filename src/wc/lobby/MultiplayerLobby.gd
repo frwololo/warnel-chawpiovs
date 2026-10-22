@@ -190,8 +190,9 @@ func register_self(info):
 func _process(delta:float):
 	launch_button.disabled = false
 	
+#we still allow launching the game in case of database desync. Player responsibility	
 	if (_multiplayer_desync):
-		launch_button.disabled = true
+		launch_button.text = "Launch ? (Cards Desync)"
 	if players_container.get_children().size()<2:
 		launch_button.disabled = true
 	

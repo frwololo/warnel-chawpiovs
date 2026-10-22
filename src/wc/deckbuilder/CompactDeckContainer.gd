@@ -95,19 +95,30 @@ func init_cards():
 				label.connect("mouse_exited", self, "label_exited", [label.name])
 				label.text = "  " + str(quantity) + "x " + card_name.capitalize()
 				
-				if my_container == cards_container:
+				if type == "hero":
 					label.text = card_name.capitalize()
-				
-				hbox.add_child(label)
-				var icons = compute_resources(card_data)
-				var rightbox = HBoxContainer.new()
-				for icon in icons:
-					rightbox.add_child(icon)
-					icon.rect_min_size = Vector2(15,15)	
-					icon.rect_size = icon.rect_min_size
-					icon.expand = true	
-					icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED				
-				hbox.add_child(rightbox)
+					hbox.add_child(label)
+					var alter_ego_data = cfc.get_alter_ego_data(card_code)
+					var alter_ego_card_code = alter_ego_data["code"]
+					var alter_ego_card_name = alter_ego_data["Name"]
+					var alter_ego_label:Label = Label.new()
+					alter_ego_label.name = "card_" + alter_ego_card_code
+					alter_ego_label.mouse_filter = Control.MOUSE_FILTER_STOP
+					alter_ego_label.connect("mouse_entered", self, "label_entered", [alter_ego_label.name])
+					alter_ego_label.connect("mouse_exited", self, "label_exited", [alter_ego_label.name])
+					alter_ego_label.text = " (" + alter_ego_card_name.capitalize() + ")"
+					hbox.add_child(alter_ego_label)
+				else:
+					hbox.add_child(label)
+					var icons = compute_resources(card_data)
+					var rightbox = HBoxContainer.new()
+					for icon in icons:
+						rightbox.add_child(icon)
+						icon.rect_min_size = Vector2(15,15)	
+						icon.rect_size = icon.rect_min_size
+						icon.expand = true	
+						icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED				
+					hbox.add_child(rightbox)
 				
 				my_container.add_child(hbox)
 				if my_container == cards_container:
@@ -160,9 +171,22 @@ func add_card(card_id):
 	deck_data.add_card(card_id)
 	init_cards()
 
-func count_cards():
+func count_cards(exclude_hero_and_permanents = false):
 	var all_cards = deck_data.get_deck_cards()
-	return all_cards.size()	
+
+	if !exclude_hero_and_permanents:	
+		return all_cards.size()	
+
+	#count but exclude permanents and hero,
+	#for deck building rules
+	var count = 0
+	for card_data in all_cards:
+		if card_data.get("permanent", false):
+			continue
+		if card_data["type_code"] in ["hero", "alter_ego"]:
+			continue			
+		count += 1
+	return count		
 
 func save_deck():
 	DeckEdit.save_player_deck(deck_data.deck_data)

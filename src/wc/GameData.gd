@@ -824,7 +824,7 @@ func set_team_data(_team:Dictionary):
 	var hero_count = 0;
 	for hero_idx in _team:
 		var hero_data:HeroDeckData = _team[hero_idx]
-		if (hero_data.deck_id and hero_data.get_hero_id()):
+		if (hero_data.get_deck_id() and hero_data.get_hero_id()):
 			hero_count += 1
 			team[hero_count] = { 
 				"hero_data" : hero_data,

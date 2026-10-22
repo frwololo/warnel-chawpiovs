@@ -73,11 +73,7 @@
 			]
 		}
 	},
-	"actions": [
-		{
-			"type": "other",
-			"value": "gain_control"
-		},	
+	"actions": [	
 		{
 			"type": "activate",
 			"value": "BAMF!"

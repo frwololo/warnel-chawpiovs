@@ -137,19 +137,26 @@ func loadstate_from_json(json:Dictionary) -> bool:
 	if (null == json_data):
 		#herodeckdata should always be set, even if with minimalistic info
 		return false
-	var owner_id:int = 	int(json_data.get("owner", 1))
-	owner = gameData.network_players.get(gameData.id_to_network_id.get(owner_id)) #Default to being owned by master
-	var deck_id = json_data.get("deck_id", 0) 
-	deck_data = json_data.get("deck_data", {}) 
-	if deck_id and !deck_data:
-		load_deck_data_from_local_id(deck_id)
-		
+
 	#Hero might be a card id or card name. We try to accomodate for both use cases here
 	var hero:String = json_data.get("hero", "")
 	if (!hero):
 		#TODO error
 		return false
 	_hero_id = cfc.get_corrected_card_id(hero, {"type_code": "hero"})
+		
+	var owner_id:int = 	int(json_data.get("owner", 1))
+	owner = gameData.network_players.get(gameData.id_to_network_id.get(owner_id)) #Default to being owned by master
+	var deck_id = json_data.get("deck_id", -1) 
+	deck_data = json_data.get("deck_data", {}) 
+	if !deck_data:
+		if deck_id > 0:
+			load_deck_data_from_local_id(deck_id)
+		else:
+			var fallback_deck_data = cfc.get_deck_data_for_hero(_hero_id)[0]
+			deck_data = fallback_deck_data.duplicate(true)
+		
+
 	return true
 
 	

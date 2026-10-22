@@ -252,7 +252,6 @@ func reset_deck_contents():
 
 func load_deck_contents(deck_info):
 	reset_deck_contents()
-	var new_deck_id = deck_info.id
 	var settings = 	{
 			"show_hero": false,
 			"show_headers": false,
@@ -295,7 +294,7 @@ func set_deck (deck_data, caller_id):
 		deckSelect.select(index)
 		deck_id = _deck_id
 
-func refresh_decks(decks_data = {}):
+func refresh_decks(new_decks_data = {}):
 	#keep the currently selected index in tmp variable,
 	#unless it was previsouly set during a download request
 	if !_needs_refresh:
@@ -303,7 +302,7 @@ func refresh_decks(decks_data = {}):
 		_needs_refresh = item_id_to_deck_id.get(item_id, 0)
 
 	#reload our hero to refresh the deck list
-	load_hero(hero_id, decks_data)
+	load_hero(hero_id, new_decks_data)
 
 	#set the correct selected item again
 	if deck_id_to_item_id.has(_needs_refresh):

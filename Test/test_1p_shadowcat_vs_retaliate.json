@@ -1,9 +1,5 @@
 {
-	"_comments": "Bug: Shadowcat not taking retaliate damage when attacking a minion",
-	"test_conditions": {
-		"bug_type": "cant_repro",
-		"_comments": "cant_repro means a test was written to try and reproduce a bug report, but we couldnt confirm the issue"
-	},		
+	"_comments": "Bug: Shadowcat not taking retaliate damage when attacking a minion",	
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [

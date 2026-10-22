@@ -101,7 +101,7 @@ func get_property(property: String, default = null, subscript_definition = null,
 		default = SP.get_default(property)
 #	var found_value = lookup_script_property(script_definition.get(property,default))
 
-	if !owner:
+	if !is_instance_valid(owner):
 		return default
 
 	

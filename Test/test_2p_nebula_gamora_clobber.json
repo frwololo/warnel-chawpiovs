@@ -174,8 +174,8 @@
 			"hero_id": 2
 		},
 		{
-			"type": "choose",
-			"value": "No",
+			"type": "target",
+			"value": "Cancel",
 			"hero_id": 2,
 			"_comments": "refuse to remove threat with Gamora's triggered ability"
 		}		
@@ -186,14 +186,12 @@
 			{
 				"herodeckdata": {
 					"owner": 1,
-					"deck_id": 14353,
 					"hero": "22001a"
 				}
 			},
 			{
 				"herodeckdata": {
 					"owner": 1,
-					"deck_id": 11401,
 					"hero": "18001a"
 				}
 			}

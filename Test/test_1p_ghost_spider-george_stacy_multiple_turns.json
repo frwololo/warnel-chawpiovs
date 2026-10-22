@@ -3,7 +3,7 @@
 	"test_conditions": {
 		"bug_type": "no_repro",
 		"_comments": "no_repro bug indicates the issue could not be reproduced when testing"
-	},		
+	},
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -18,7 +18,6 @@
 				{
 					"card": "Hydra Soldier"
 				},
-
 				{
 					"card": "Assault"
 				},
@@ -27,7 +26,7 @@
 				},
 				{
 					"card": "Hydra Mercenary"
-				},				
+				},
 				{
 					"card": "Advance"
 				}
@@ -59,76 +58,83 @@
 				{
 					"card": "Ghost-Spider",
 					"exhausted": true,
-					"tokens": {"damage": 3}
+					"tokens": {
+						"damage": 3
+					}
 				}
 			],
 			"upgrade_support1": [
 				{
 					"card": "George Stacy"
-				},			
+				}
 			],
 			"hand1": [
 				{
 					"card": "Strength"
-				},	
+				},
 				{
 					"card": "What Doesn't Kill me"
-				},	
+				},
 				{
 					"card": "Young Love"
 				},
 				{
 					"card": "Ticket to the Multiverse"
-				},	
+				},
 				{
 					"card": "Phantom Flip"
 				},
 				{
 					"card": "Ghost Kick"
-				},				
+				}
 			]
 		}
 	},
-	"actions": [	
+	"actions": [
 		{
 			"type": "activate",
-			"value": "George Stacy",
-		},			
+			"value": "George Stacy"
+		},
 		{
 			"type": "select",
-			"value": "What Doesn't Kill me",
-		},	
+			"value": "What Doesn't Kill me"
+		},
 		{
 			"type": "next_phase",
 			"value": 1,
-			"_comments": "go to villain phase",
+			"_comments": "go to villain phase"
 		},
 		{
 			"type": "select",
 			"value": "cancel",
-			"_comments": "don't discard hand",
-		},			
+			"_comments": "don't discard hand"
+		},
 		{
 			"type": "other",
-			"value": "wait_a_bit",
-		},	
+			"value": "wait_a_bit"
+		},
 		{
 			"type": "select",
 			"value": "Ghost-Spider",
 			"_comments": "block attack withghost spider"
 		},
 		{
+			"type": "pass",
+			"value": 1,
+			"_comments": "don't play post defense cards"
+		},
+		{
 			"type": "other",
-			"value": "wait_for_player_turn",
+			"value": "wait_for_player_turn"
 		},
 		{
 			"type": "play",
-			"value": "What Doesn't Kill me",
-		},	
+			"value": "What Doesn't Kill me"
+		},
 		{
 			"type": "select",
-			"value": "Strength",
-		},		
+			"value": "Strength"
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -143,19 +149,18 @@
 			"discard_villain": [
 				{
 					"card": "Advance"
-				}		
+				}
 			],
 			"deck_villain": [
 				{
 					"card": "Hydra Soldier"
 				},
-
 				{
 					"card": "Assault"
 				},
 				{
 					"card": "Caught Off guard"
-				},				
+				}
 			],
 			"villain": [
 				{
@@ -183,26 +188,28 @@
 			"identity1": [
 				{
 					"card": "Ghost-Spider",
-					"tokens": {"damage": 1}
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"enemies1": [
 				{
 					"card": "Hydra Mercenary"
-				},
+				}
 			],
 			"upgrade_support1": [
 				{
 					"card": "George Stacy"
-				},			
+				}
 			],
 			"discard1": [
 				{
 					"card": "Strength"
-				},		
+				},
 				{
 					"card": "What Doesn't Kill me"
-				},					
+				}
 			],
 			"hand1": [
 				{
@@ -210,13 +217,13 @@
 				},
 				{
 					"card": "Ticket to the Multiverse"
-				},	
+				},
 				{
 					"card": "Phantom Flip"
 				},
 				{
 					"card": "Ghost Kick"
-				},				
+				}
 			]
 		}
 	}

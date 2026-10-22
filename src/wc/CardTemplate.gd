@@ -2013,6 +2013,9 @@ func execute_scripts(
 	if trigger == "reveal":
 		var hero_id_to_check = gameData.get_villain_current_hero_target()
 		var identity_card = gameData.get_identity_card(hero_id_to_check)
+		if !is_instance_valid(identity_card):
+			var _error = 1
+			return null
 		var specific_trigger = "reveal_alter_ego" if identity_card.is_alter_ego_form() else "reveal_hero"
 		var specific_reveal = cfc.set_scripts.get(canonical_id,{}).get(specific_trigger,{})
 		if specific_reveal:

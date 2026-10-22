@@ -31,7 +31,6 @@ var selected_modulars:= []
 var _rotation = 0
 var _preview_rotation = 0
 var launch_data
-var remote_deck_data:= {}
 
 #animation/loading
 var heroes_pipeline:= {}
@@ -167,6 +166,30 @@ func _ready():
 	tween_s.connect("tween_all_completed", self, "_tween_s_completed")
 	team_panel.modulate.a = 0
 	
+	
+			
+#Quickstart for tests
+#TODO remove
+	if (cfc.is_game_master() and CFConst.DEBUG_AUTO_START_MULTIPLAYER):
+		if (gameData.is_multiplayer_game):
+			yield(get_tree().create_timer(0.5), "timeout")	
+			owner_changed(1, 1)
+			var hero1 = "01001a"
+			var hero2 = "01010a"
+			var deck_data1 =  cfc.get_deck_data_for_hero(hero1)
+			var deck_data2 =  cfc.get_deck_data_for_hero(hero2)
+			cfc._rpc(self, "assign_hero", hero1, 0, {"deck_data": deck_data1})
+			cfc._rpc(self, "assign_hero", hero2 , 1, {"deck_data": deck_data2})
+			yield(get_tree().create_timer(0.5), "timeout")
+			scenario_select("01097a")
+			yield(get_tree().create_timer(0.5), "timeout")	
+			if CFConst.DEBUG_AUTO_START_MULTIPLAYER:			
+				_launch_server_game()
+		pass	
+
+	resize()
+		
+	
 	if gameData.menu_command:
 		process_menu_command(gameData.menu_command)
 		gameData.menu_command = {}
@@ -192,7 +215,6 @@ func process_menu_command(command):
 	var slot = 0
 	for hero in heroes:
 		var hero_id = hero["hero_id"]
-		var deck_id = hero["deck_id"]
 		var deck_data = hero["deck_data"]		
 		cfc._rpc(self, "assign_hero", hero_id, slot)
 		yield(get_tree().create_timer(0.5), "timeout")
@@ -200,23 +222,7 @@ func process_menu_command(command):
 		deck_changed(deck_data, slot, true)
 		slot +=1	
 		
-			
-#Quickstart for tests
-#TODO remove
-	if (cfc.is_game_master() and CFConst.DEBUG_AUTO_START_MULTIPLAYER):
-		if (gameData.is_multiplayer_game):
-			yield(get_tree().create_timer(0.5), "timeout")	
-			owner_changed(1, 1)
-			cfc._rpc(self, "assign_hero", "01001a", 0)
-			cfc._rpc(self, "assign_hero", "01010a", 1)
-			yield(get_tree().create_timer(0.5), "timeout")
-			scenario_select("01097a")
-			yield(get_tree().create_timer(0.5), "timeout")	
-			if CFConst.DEBUG_AUTO_START_MULTIPLAYER:			
-				_launch_server_game()
-		pass	
 
-	resize()
 
 func _tween_h_completed():
 	if h_tab.rect_global_position.x < 0:

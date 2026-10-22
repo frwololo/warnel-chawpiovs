@@ -649,6 +649,8 @@ func loadstate_from_json(json:Dictionary):
 	set_current_step_complete(true, "loadstate_from_json")
 
 func _systems_check():
+	while !would_be_ready_for_next_phase():
+		yield(get_tree().create_timer(2.0), "timeout")
 	gameData.systems_check()
 	#setting the step complete here.
 	set_current_step_complete(true, "_systems_check") 

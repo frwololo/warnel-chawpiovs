@@ -1088,9 +1088,13 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 			ignore_order.append("others")
 	
 			for key in element1:
+				var value = element1[key]
+				#special case of deck_id which was deprecated
+				if key == "deck_id":
+					if !element2.has(key):
+						element2[key] = value
 				#special case to test for exhausted = false
-				if key =="exhausted":
-					var value = element1[key]
+				if key == "exhausted":				
 					if value == false:
 						if !element2.has(key):
 							element2[key] = false				
@@ -1115,8 +1119,8 @@ func is_element1_in_element2 (element1, element2, _parent_name = "")-> bool:
 				#special case to test for tokens 0
 				if key =="tokens":
 					for child_key in element1[key]:
-						var value = element1[key][child_key]
-						if value == 0:
+						var sub_value = element1[key][child_key]
+						if sub_value == 0:
 							var el2_tokens = element2[key]
 							if !el2_tokens.has(child_key):
 								el2_tokens[child_key] = 0

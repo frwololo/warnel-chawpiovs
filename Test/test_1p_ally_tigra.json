@@ -43,7 +43,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Tigra",
+					"card": "Tigra #01051",
 					"tokens": {"damage": 1}
 				}
 			]
@@ -52,7 +52,7 @@
 	"actions": [	
 		{
 			"type": "activate",
-			"value": "Tigra",
+			"value": "Tigra #01051",
 		},	
 		{
 			"type": "choose",
@@ -110,7 +110,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Tigra",
+					"card": "Tigra #01051",
 					"tokens": {"damage": 1}
 				}
 			]

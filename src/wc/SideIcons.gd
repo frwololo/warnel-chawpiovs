@@ -35,7 +35,13 @@ var icons_by_type_code : = {
 		"scheme" :  [0,38],  
 		"attack" :  [0,74.5], 
 		"heart": [0, 145],
-	}			
+	},	
+	"leader": {
+		"scheme" :  [0,38],  
+		"attack" :  [0,74.5], 
+		"heart": [0, 145],
+	}
+				
 }
 
 var icons_to_property: = {

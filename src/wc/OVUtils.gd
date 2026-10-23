@@ -75,6 +75,14 @@ func preprocess_subject_definition(script: ScriptObject):
 							}
 						}
 					]
+		
+		#PvP (Civil War) related subjects. 
+		#TODO
+		#in the meantime we replace those with automated decisions by the engine
+		"enemy_team_tutor_and_choose":
+			script_definition[SP.KEY_SUBJECT] = "tutor"
+			script_definition[SP.KEY_SUBJECT_INDEX] = "random" 
+			script_definition[SP.KEY_SUBJECT_COUNT] = 1
 						
 	return script_definition 
 
@@ -137,7 +145,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 				results.append(owner.last_subjects.duplicate())												
 		#when an existing subject already exists for the script
 		"current_subject":
-			results = script.subjects		
+			results = script.subjects	
 		SP.KEY_SUBJECT_V_CURRENT_ATTACKER:
 			var attacker = gameData.theStack.get_context_details("attack", "attacker")
 			if attacker:
@@ -1032,3 +1040,28 @@ static func get_event_source_hero_id(trigger_details):
 				event_source_hero_id = hero_id		
 		
 	return event_source_hero_id
+
+func parse_additional_script_replacements(script):
+	var wip_definitions :Dictionary = script.script_definition#.duplicate(true)
+	for key in wip_definitions:
+		# We have to go through all the state filters
+		# Because they have variable names
+		if SP.FILTER_STATE in key:
+			var state_filters_array : Array =  wip_definitions[key]
+			for state_filters in state_filters_array:
+				for filter in state_filters:
+					# This branch checks for replacements for
+					# filter_properties
+					# We have to go to each dictionary for filter_properties
+					# filters and check all values if they contain a
+					# relevant keyword
+					if SP.FILTER_PROPERTIES in filter:
+						var property_filters = state_filters[filter]
+						for property in property_filters:
+							var str_pty = str(property_filters[property])
+							if str_pty.begins_with("[villain_"):
+								var actual_property = str_pty.replace("[villain_", "").replace("]","")
+								var villain = gameData.get_villain()
+								if villain:
+									var actual_str_pty = villain.get_property(actual_property, "")
+									property_filters[property] = actual_str_pty

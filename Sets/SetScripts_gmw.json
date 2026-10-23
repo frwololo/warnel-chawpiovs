@@ -1483,7 +1483,7 @@
 	},
 	"Crisis on Halfworld": {
 		"give_obligation": {
-			"__to__": "Rocket Rackoon"
+			"__to__": "Rocket Raccoon"
 		},
 		"card_moved_to_board": {
 			"trigger": "self",
@@ -5206,7 +5206,7 @@
 					],
 					"else": [
 						{
-							"name": "surge",
+							"name": "surge"
 						}
 					]
 				}

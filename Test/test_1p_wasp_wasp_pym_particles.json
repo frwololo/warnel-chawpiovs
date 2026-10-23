@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Wasp"
+					"hero": "Wasp #13001a"
 				}
 			}
 		],
@@ -35,7 +35,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Wasp"
+					"card": "Wasp #13001a"
 				}
 			],
 			"upgrade_support1": [
@@ -85,7 +85,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Wasp"
+					"hero": "Wasp #13001a"
 				}
 			}
 		],
@@ -115,7 +115,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Wasp"
+					"card": "Wasp #13001a"
 				}
 			],
 			"upgrade_support1": [

@@ -61,8 +61,7 @@ func _card_moved_to_board(card, _details):
 	add_villain(card)
 
 func _card_moved_to_pile(card, _details):
-	var type_code = card.get_property("type_code", "")
-	if type_code != "villain":
+	if !card.is_card_type("villain"):
 		return	
 	
 	remove_villain(card)	
@@ -124,8 +123,7 @@ func load_scenario():
 		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
 			yield(sceng_return,"completed")	
 		for potential_villain in sceng.all_subjects_so_far:
-			var type_code = potential_villain.get_property("type_code")
-			if type_code == "villain":
+			if potential_villain.is_card_type("villain"):
 				var ckey = potential_villain.get_property("_code")
 				load_villain(ckey)
 				villain_loaded = true
@@ -243,8 +241,7 @@ func set_active_villain(card):
 	active_villain = card
 
 func add_villain(card):
-	var type_code = card.get_property("type_code", "")
-	if type_code != "villain":
+	if !card.is_card_type("villain"):
 		return
 			
 	villains[card._placement_slot] = card

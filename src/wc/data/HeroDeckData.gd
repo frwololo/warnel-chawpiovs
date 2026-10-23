@@ -13,6 +13,8 @@ var _cards_by_type:= {}
 
 func set_hero_id(id):
 	_hero_id = id
+	clear_cache()
+	deck_data = {}
 
 func get_hero_id():
 	return _hero_id

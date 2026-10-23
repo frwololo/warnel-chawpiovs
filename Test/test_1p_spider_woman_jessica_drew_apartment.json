@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Woman"
+					"hero": "Spider-Woman #04031a"
 				}
 			}
 		],
@@ -42,13 +42,13 @@
 					"card": "Captain Marvel - Carol Danvers"
 				},
 				{
-					"card": "Inconspicuous"
+					"card": "Inconspicuous #04038"
 				},
 				{
 					"card": "Nick Fury"
 				},
 				{
-					"card": "Pheromones"
+					"card": "Pheromones #04036"
 				},				
 			],
 			"identity1": [
@@ -81,7 +81,7 @@
 		},
 		{
 			"type": "select",
-			"value": "Pheromones"
+			"value": "Pheromones #04036"
 		},
 	],
 	"end": {
@@ -89,7 +89,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Woman"
+					"hero": "Spider-Woman #04031a"
 				}
 			}
 		],
@@ -123,7 +123,7 @@
 					"card": "Captain Marvel - Carol Danvers"
 				},
 				{
-					"card": "Inconspicuous"
+					"card": "Inconspicuous #04038"
 				},				
 				{
 					"card": "Finesse"
@@ -155,7 +155,7 @@
 					"card": "The Power of Aggression"
 				},
 				{
-					"card": "Pheromones"
+					"card": "Pheromones #04036"
 				},				
 			]
 		}

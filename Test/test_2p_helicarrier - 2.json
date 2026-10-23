@@ -37,7 +37,7 @@
 			],
 			"hand1": [
 				{
-					"card": "Daredevil"
+					"card": "Daredevil #01058"
 				},
 				{
 					"card": "Strength"
@@ -85,7 +85,7 @@
 		},		
 		{
 			"type": "play",
-			"value": "Daredevil",
+			"value": "Daredevil #01058",
 			"_comments" : "Playing Daredevil this time should work"
 		},				
 	] ,
@@ -126,7 +126,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Daredevil"
+					"card": "Daredevil #01058"
 				},
 			],
 			"discard1":[

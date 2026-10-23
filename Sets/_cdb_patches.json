@@ -179,15 +179,15 @@
 		"attack": 1
 	},
 	"16080a": {
-		"wc_meta": {	
+		"wc_meta": {
 			"portrait": {
-				 "x": 120,
-				 "y": 45,
-				 "w": 150,
-				 "h": 150, 
+				"x": 120,
+				"y": 45,
+				"w": 150,
+				"h": 150
 			}
 		}
-	},	
+	},
 	"16099": {
 		"boost": 3
 	},
@@ -204,12 +204,12 @@
 		"thwart": 1
 	},
 	"21031a": {
-		"wc_meta": {	
+		"wc_meta": {
 			"portrait": {
-				 "x": 100,
-				 "y": 40,
-				 "w": 100,
-				 "h": 120, 
+				"x": 100,
+				"y": 40,
+				"w": 100,
+				"h": 120
 			}
 		}
 	},
@@ -430,10 +430,10 @@
 	"36001b": {
 		"printed_card_id": "36001a",
 		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
-	},	
+	},
 	"36026": {
 		"alternate_art": true
-	},	
+	},
 	"37001a": {
 		"printed_card_id": "37001b",
 		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
@@ -457,15 +457,15 @@
 		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
 	"40001a": {
-		"wc_meta": {	
+		"wc_meta": {
 			"portrait": {
-				 "x": 150,
-				 "y": 46,
-				 "w": 140,
-				 "h": 140, 
+				"x": 150,
+				"y": 46,
+				"w": 140,
+				"h": 140
 			}
 		}
-	},	
+	},
 	"40030": {
 		"alternate_art": true
 	},
@@ -481,15 +481,15 @@
 		"_comments": "engine considers that if those aren't defined, the character isn't able to attack/scheme"
 	},
 	"40163": {
-		"wc_meta": {	
+		"wc_meta": {
 			"portrait": {
-				 "x": 120,
-				 "y": 45,
-				 "w": 150,
-				 "h": 150, 
+				"x": 120,
+				"y": 45,
+				"w": 150,
+				"h": 150
 			}
 		}
-	},	
+	},
 	"41014": {
 		"alternate_art": true
 	},
@@ -499,7 +499,7 @@
 	},
 	"43017": {
 		"alternate_art": true
-	},	
+	},
 	"45013": {
 		"alternate_art": true
 	},
@@ -619,10 +619,10 @@
 	"48021": {
 		"attack": 0,
 		"thwart": 0
-	},	
+	},
 	"50025": {
 		"alternate_art": true
-	},	
+	},
 	"50026": {
 		"alternate_art": true
 	},
@@ -630,26 +630,35 @@
 		"alternate_art": true
 	},
 	"50034a": {
-		"wc_meta": {	
+		"wc_meta": {
 			"portrait": {
-				 "x": 100,
-				 "y": 40,
-				 "w": 170,
-				 "h": 180, 
+				"x": 100,
+				"y": 40,
+				"w": 170,
+				"h": 180
 			}
 		}
 	},
 	"50086a": {
-		"wc_meta": {	
+		"wc_meta": {
 			"portrait": {
-				 "x": 120,
-				 "y": 45,
-				 "w": 150,
-				 "h": 150, 
+				"x": 120,
+				"y": 45,
+				"w": 150,
+				"h": 150
 			}
 		}
-	},		
+	},
 	"50136": {
 		"boost": 1
+	},
+	"56020": {
+		"alternate_art": true
+	},
+	"56021": {
+		"alternate_art": true
+	},
+	"56022": {
+		"alternate_art": true
 	}
 }

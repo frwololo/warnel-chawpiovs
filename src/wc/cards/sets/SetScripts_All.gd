@@ -420,7 +420,7 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 
 
 	
-	if type_code == "villain" or type_code == "minion":
+	if type_code in ["villain", "minion", "leader"]:
 		var enemy_scripts = get_enemy_scripts()
 		script = WCUtils.merge_dict(script,enemy_scripts, true)
 	var keywords:Dictionary = card.get("keywords", {})

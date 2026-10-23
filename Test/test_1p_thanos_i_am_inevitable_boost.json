@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spectrum"
+					"hero": "Spectrum #21001a"
 				}
 			}
 		],
@@ -53,7 +53,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Spectrum",
+					"card": "Spectrum #21001a",
 				}
 			],
 			"upgrade_support1": [
@@ -85,7 +85,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spectrum"
+					"hero": "Spectrum #21001a"
 				}
 			}
 		],
@@ -141,7 +141,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Spectrum",
+					"card": "Spectrum #21001a",
 					"tokens": {"damage": 5}
 				}
 			],

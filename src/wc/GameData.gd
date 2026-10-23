@@ -1211,7 +1211,7 @@ func start_activity(enemy, action, script, target = 0):
 		
 	display_debug("drawing boost cards")
 	var type_code = enemy.get_property("type_code")
-	if (type_code== "villain") or enemy.get_property("villainous", 0, true):
+	if enemy.is_card_type("villain") or enemy.get_property("villainous", 0, true):
 		display_debug("villain confirmed, drawing boost cards")
 		if script and script.has_tag("no_boost"):
 			pass
@@ -1236,7 +1236,7 @@ func start_activity(enemy, action, script, target = 0):
 			next_step = EnemyAttackStatus.BOOST_CARDS
 		"attack":
 			script_name = "enemy_attack"
-			if !type_code in ["villain", "minion"]:
+			if !type_code in ["villain", "leader", "minion"]:
 				var attack_script = {
 					"enemy_attack": {
 						"board": [
@@ -2174,7 +2174,7 @@ func get_villains() :
 	var cards:Array = cfc.NMAP.board.get_grid("villain").get_all_cards()
 	for card in cards:
 		if !card in result:
-			if "villain" == card.properties.get("type_code", "false"):
+			if card.is_card_type("villain"):
 				result.append(card)
 	return result	
 
@@ -2596,7 +2596,7 @@ func move_to_next_villain(current_villain):
 			yield(sceng_return,"completed")	
 		for potential_villain in sceng.all_subjects_so_far:
 			var type_code = potential_villain.get_property("type_code")
-			if type_code == "villain":
+			if potential_villain.is_card_type("villain"):
 				ckey = potential_villain.get_property("_code")	
 		if !ckey:
 			return null	

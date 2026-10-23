@@ -49,7 +49,7 @@
 					"card": "Captain Marvel - Carol Danvers"
 				},
 				{
-					"card": "Inconspicuous"
+					"card": "Inconspicuous #04038"
 				}
 			]
 		}
@@ -57,7 +57,7 @@
 	"actions": [	
 		{
 			"type": "play",
-			"value": "Inconspicuous"
+			"value": "Inconspicuous #04038"
 		},
 		{
 			"type": "select",
@@ -112,7 +112,7 @@
 					"card": "Captain Marvel - Carol Danvers"
 				},
 				{
-					"card": "Inconspicuous"
+					"card": "Inconspicuous #04038"
 				}
 			]
 		}

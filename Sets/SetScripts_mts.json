@@ -3779,8 +3779,7 @@
 					"is_cost": true
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_villain",
+					"name": "discard",
 					"subject": "self"
 				}
 			]

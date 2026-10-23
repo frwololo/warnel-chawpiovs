@@ -231,9 +231,9 @@ func move_card_to_board(script: ScriptTask) -> int:
 	#unique rule, max 1 per player, etc...
 	var to_remove = []
 	for card in script.subjects:
-		var type_code = card.get_property("type_code")
+		#var type_code = card.get_property("type_code")
 		#Villain cards are a notable exception, they get into play no matter what
-		if type_code =="villain":
+		if card.is_card_type("villain"):
 			continue
 		if cfc.NMAP.board.unique_card_in_play(card):
 			to_remove.append(card)
@@ -282,7 +282,7 @@ func move_card_to_board(script: ScriptTask) -> int:
 
 		var type_code = card.get_property("type_code", "")
 		var set_properties =  script.get_property("set_properties", {})	
-		if type_code == "villain":
+		if card.is_card_type("villain"):
 			cfc.NMAP.board.load_villain(card.canonical_id)
 			result = CFConst.ReturnCode.CHANGED
 		else:
@@ -320,6 +320,8 @@ func init_properties(script: ScriptTask) -> int:
 		var properties = script.get_property(SP.KEY_MODIFY_PROPERTIES)
 		for property in properties:
 			var value = properties[property]
+			if typeof(value) == TYPE_DICTIONARY and value.has("precompute"):
+				value = script.retrieve_integer_subproperty("precompute", properties[property], 0)	
 			var ret_once = card.modify_property(
 					property,
 					value,
@@ -435,8 +437,7 @@ func move_card_to_container(script: ScriptTask) -> int:
 	
 	if !costs_dry_run():
 		for subject in script.subjects:
-			var type_code = subject.get_property("type_code", "")
-			if type_code == "villain":
+			if subject.is_card_type("villain"):
 				cfc.NMAP.board.remove_villain(subject)
 	
 	var result = .move_card_to_container(script)
@@ -833,7 +834,7 @@ func character_died(script: ScriptTask) -> int:
 		var type = card.get_property("type_code", "")
 		if type:			
 			scripting_bus.emit_signal_on_stack(type + "_died", card, script.trigger_details)			
-		if type in ["minion", "villain"]: #TODO more generic way to handle this?			
+		if type in ["minion", "villain", "leader"]: #TODO more generic way to handle this?			
 			scripting_bus.emit_signal_on_stack("enemy_died", card, script.trigger_details)			
 
 		card.post_death_move()
@@ -1759,7 +1760,7 @@ func set_active_villain(script:ScriptTask) -> int:
 		return retcode	
 		
 	var villain = script.subjects[0]
-	if villain.get_property("type_code") != "villain":
+	if !villain.is_card_type("villain"):
 		villain = villain.get_associated_villain()
 	
 	gameData.set_active_villain(villain)
@@ -2160,14 +2161,15 @@ func discard(script: ScriptTask):
 				gameData.theStack.add_script(discard_event)	
 	
 		if from_top_of_deck:
+			var controller_hero = script.subjects[0].get_controller_hero_card()
 			var signal_details = {
 				"amount": script.subjects.size(),
 				"source": from_top_of_deck.get_name().to_lower(),
-				"deck_owner":  script.subjects[0].get_controller_hero_card()
+				"deck_owner":  controller_hero,
+				"player_deck": (controller_hero != null)
 			}
 			scripting_bus.emit_signal_on_stack("cards_discarded_from_top_of_deck", script.subjects[0],	signal_details)
-
-	return CFConst.ReturnCode.CHANGED	
+		return CFConst.ReturnCode.CHANGED	
 
 
 static func simple_discard_task(target_card, details = {}):	
@@ -3324,7 +3326,7 @@ func cancel_current_encounter(script: ScriptTask) -> int:
 	
 	#villains and main schems cannot be canceled	
 	var type_code = current_encounter.get_property("type_code")
-	if type_code in ["villain", "main_scheme"]:
+	if type_code in ["villain", "leader", "main_scheme"]:
 		return CFConst.ReturnCode.FAILED
 	
 	if (costs_dry_run()): #not allowed ?

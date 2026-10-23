@@ -2043,7 +2043,7 @@
 		},
 		"response_attack_happened": {
 			"event_filters": {
-				"target": "host",
+				"target": "host"
 			},
 			"condition_board": {
 				"func_name": "!count_tokens",

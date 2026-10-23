@@ -52,7 +52,7 @@
 					"card": "Sonic Arrow"
 				},
 				{
-					"card": "Earth's Mightiest Heroes"
+					"card": "Earth's Mightiest Heroes #04022"
 				},				
 			]
 		}
@@ -60,7 +60,7 @@
 	"actions": [	
 		{
 			"type": "play",
-			"value": "Earth's Mightiest Heroes",
+			"value": "Earth's Mightiest Heroes #04022",
 		},	
 		{
 			"type": "target",
@@ -120,7 +120,7 @@
 			],
 			"discard1": [
 				{
-					"card": "Earth's Mightiest Heroes"
+					"card": "Earth's Mightiest Heroes #04022"
 				},	
 			],
 			"hand1": [

@@ -467,12 +467,11 @@ static func attack_guarded_status(card, action_character, owner_card): # , card_
 		for other_card in all_cards:
 			if other_card == card:
 				continue
-			if other_card.get_property("guard", 0, true) and other_card.is_faceup: #TODO better way to ignore face down cards?
-				var other_type_code = other_card.get_property("type_code", "")
-				if other_type_code == "villain":
+			if other_card.get_property("guard", 0, true) and !other_card.get_property("cannot_guard", 0, true) and other_card.is_faceup : #TODO better way to ignore face down cards?
+				if other_card.is_card_type("villain"):
 					#if another villain has "guard" and I don't have it myself,
 					#it means that other villain is protecting me
-					if !card.get_property("guard", 0, true):
+					if !card.get_property("guard", 0, true) or (card.get_property("cannot_guard", 0, true)):
 						result["is_guarded"] = other_card
 						return result
 				else:

@@ -544,8 +544,9 @@ func _split_traits(traits:String) -> Array:
 
 func setup_traits_as_alterants():
 	for trait in self.all_traits:
-
 		CardConfig.PROPERTIES_NUMBERS.append("trait_" + trait)
+		CardConfig.PROPERTIES_NUMBERS.append("teamwork_" + trait)		
+		
 	for keyword in CFConst.AUTO_KEYWORDS:	
 		if CFConst.AUTO_KEYWORDS[keyword] in ["int", "bool"]:
 			CardConfig.PROPERTIES_NUMBERS.append(keyword)
@@ -748,8 +749,18 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 		var linked_str = text_lc.substr(startpos, card_pos - startpos )
 		card_data["linked_to"] = linked_str.to_lower()
 
-	if lc_card_type == "player_side_scheme":
-		card_data["secondary_type_code"] = "side_scheme"
+	needle = "teamwork ("
+	var teamwork_pos = text_lc.find(needle)
+	if teamwork_pos > -1:
+		var card_pos = text_lc.find(")", teamwork_pos)
+		var startpos = teamwork_pos + needle.length()
+		var teamwork_str = text_lc.substr(startpos, card_pos - startpos )
+		teamwork_str = remove_bbcode(teamwork_str)
+		card_data["teamwork_" + teamwork_str] = 1
+		card_data["teamwork"] = 1
+
+	if CFConst.SECONDARY_TYPES.has(lc_card_type):
+		card_data["secondary_type_code"] = CFConst.SECONDARY_TYPES[lc_card_type]
 
 	var default_properties = CFConst.DEFAULT_PROPERTIES_BY_TYPE.get(lc_card_type, {})
 	for k in default_properties:
@@ -797,7 +808,7 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 	#Villains: multiple cards have the same name.
 	#Hack to "fix" this by adding stage number
 	#e.g. "Rhino_2"
-	if (lc_card_type == "villain"):
+	if (lc_card_type in ["villain", "leader"]):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])
 	if (lc_card_type == "main_scheme" and card_data["stage"]):
 		card_data["Name"] = card_data["Name"] + " - " + String(card_data["stage"])	

@@ -82,7 +82,7 @@ func _init(_owner, script: Dictionary,  _trigger_object = null, 	_trigger_detail
 	trigger_object = _trigger_object
 	user_interaction_status =  CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
 	parse_replacements()
-
+	cfc.ov_utils.parse_additional_script_replacements(self)
 
 func get_property_raw(property: String, default = null):
 	if default == null:
@@ -988,7 +988,7 @@ func sort_subjects(subject_list: Array) -> Array:
 # of the card running the script.
 func parse_replacements() -> void:
 	# We need a deep copy because of all the nested dictionaries
-	var wip_definitions := script_definition.duplicate(true)
+	var wip_definitions := script_definition#.duplicate(true)
 	for key in wip_definitions:
 		# We have to go through all the state filters
 		# Because they have variable names
@@ -1065,11 +1065,11 @@ func parse_replacements() -> void:
 						if str(state_filters[filter]) == SP.VALUE_COMPARE_WITH_TRIGGER:
 							var card: Card = trigger_object
 							state_filters[filter] = card.get_parent()
-	script_definition = wip_definitions
+#	script_definition = wip_definitions
 
 func parse_prev_subject_replacements() -> void:
 	# We need a deep copy because of all the nested dictionaries
-	var wip_definitions := script_definition.duplicate(true)
+	var wip_definitions := script_definition#.duplicate(true)
 	for key in wip_definitions:
 		# We have to go through all the state filters
 		# Because they have variable names
@@ -1102,7 +1102,7 @@ func parse_prev_subject_replacements() -> void:
 								else:
 									property_filters[property] =\
 											card.get_property(property)
-	script_definition = wip_definitions
+	#script_definition = wip_definitions
 
 func serialize_to_json() -> Dictionary:
 	var result = {}

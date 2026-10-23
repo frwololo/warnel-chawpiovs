@@ -662,7 +662,7 @@ func _card_properties_modified(owner_card, details):
 	if owner_card == self and details.get("property_name", "") == "type_code":
 		var previous_value = details.get("previous_property_value", "")
 		var new_value = details.get("new_property_value", "")
-		if new_value in ["villain", "minion"] and new_value != previous_value  and "emit_signal" in details["tags"]:
+		if new_value in ["villain", "leader", "minion"] and new_value != previous_value  and "emit_signal" in details["tags"]:
 			scripts = SetScripts_All.get_enemy_scripts()
 		update_groups()
 		update_hero_groups()
@@ -724,7 +724,7 @@ func display_health():
 		return
 
 	var type_code = get_property("type_code", 0)
-	if !(type_code in ["hero", "alter_ego", "villain"]):
+	if !(type_code in ["hero", "alter_ego", "villain", "leader"]):
 		return
 
 	var total_health = get_property("health", 0)
@@ -1749,12 +1749,97 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 	_script_alter_cache[alterant_cache_key] = result
 	return 	_script_alter_cache[alterant_cache_key]
 
+func retrieve_engine_scripts(trigger, filter) -> Dictionary:
+	var result = {}
+	#TODO WORK IN PROGRESS
+	return result
+	
+	match trigger:
+		"card_moved_to_board":
+			if self.get_property("quickstrike", 0, true):
+				var quickstrike_ability = {
+					"trigger": "self",
+					"display_name": "Quickstrike",
+					"board": [
+						{
+							"name": "constraints",
+							"is_cost": true,
+							"tags": [
+								"hero_form"
+							]
+						},
+						{
+							"name": "enemy_attacks_you",
+							"subject": "self"
+						}
+					]
+				}
+				result = WCUtils.merge_dict(result, quickstrike_ability, true)			 		
+		"self_moved_to_board":
+			if self.get_property("toughness", 0, true):
+				var toughness_ability = {
+					"board": [
+						{
+							"name": "mod_tokens",
+							"subject": "self",
+							"modification": 1,
+							"token_name":  "tough",
+						},					
+					]
+				}
+				result = WCUtils.merge_dict(result, toughness_ability, true)
+			if self.get_property("teamwork", 0 ,true):
+				for trait in cfc.all_traits:
+					if self.get_property("teamwork_" + trait, 0 ,true):
+						var teamwork_ability = {
+							"board": [
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "count_cards>1",
+												"func_params": {
+													"subject": "boardseek",
+													"subject_count": "all",
+													"filter_state_seek": [
+														{
+															"filter_group": "group_enemies",
+															"filter_properties": {
+																"type_code": "minion"
+															},
+															"filter_properties2": {
+																"trait_" + trait: 1,
+																"comparison": "ge"
+															}
+														}
+													]
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "enemy_activates",
+													"subject": "self"
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+						result = WCUtils.merge_dict(result, teamwork_ability, true)					
+	return result
+
 func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 	if self.is_onboard() && self.get_property("blank_abilities", 0, true):
 		return {}
 	
 	var result = .retrieve_scripts(trigger, filters)
-	
+
+	var engine_addons = retrieve_engine_scripts(trigger, filters)
+	if engine_addons:
+		result = WCUtils.merge_dict(result, engine_addons.duplicate(), true)
+				
 	if CFScriptUtils.game_has_script_alterants(trigger):
 		var altered_results = retrieve_altered_scripts(trigger, filters)
 		if altered_results:
@@ -2814,7 +2899,7 @@ func die(script):
 		"side_scheme", "player_side_scheme":
 			post_death_move()
 #			move_to(cfc.NMAP["discard_villain"])	
-		"villain":
+		"villain", "leader":
 			gameData.villain_died(self, script)
 		_:
 			self.discard()
@@ -3384,8 +3469,7 @@ func get_associated_villain():
 		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
 			yield(sceng_return,"completed")	
 		for potential_villain in sceng.all_subjects_so_far:
-			var type_code = potential_villain.get_property("type_code")
-			if type_code == "villain":
+			if potential_villain.is_card_type("villain"):
 				return potential_villain
 		
 	return gameData.get_villain()
@@ -3979,6 +4063,11 @@ func count_unique_property_value(params, script:ScriptObject = null) -> int:
 		count[value] = 1
 		
 	return count.size()
+
+#returns number of heroes on the team
+#Todo Versus support
+func get_team_size(params, script:ScriptObject= null) -> int:
+	return gameData.get_team_size()
 
 func count_engaged_minions(params, script:ScriptObject= null) -> int:
 	var subject = get_param_subject(params, script)

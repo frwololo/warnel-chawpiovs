@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Woman"
+					"hero": "Spider-Woman #04031a"
 				}
 			}
 		],
@@ -33,17 +33,17 @@
 			],
 			"deck1": [
 				{
-					"card": "Pheromones"
+					"card": "Pheromones #04036"
 				}
 			],
 			"identity1": [
 				{
-					"card": "Spider-Woman"
+					"card": "Spider-Woman #04031a"
 				}
 			],
 			"hand1": [
 				{
-					"card": "Venom Blast"
+					"card": "Venom Blast #04035"
 				},
 				{
 					"card": "The Power of Aggression"
@@ -54,7 +54,7 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "Venom Blast"
+			"value": "Venom Blast #04035"
 		},	
 		{
 			"type": "target",
@@ -62,7 +62,7 @@
 		},	
 		{
 			"type": "activate",
-			"value": "Spider-Woman",
+			"value": "Spider-Woman #04031a",
 		},	
 		{
 			"type": "choose",
@@ -78,7 +78,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Spider-Woman"
+					"hero": "Spider-Woman #04031a"
 				}
 			}
 		],
@@ -107,12 +107,12 @@
 			],
 			"deck1": [
 				{
-					"card": "Pheromones"
+					"card": "Pheromones #04036"
 				}
 			],
 			"identity1": [
 				{
-					"card": "Spider-Woman"
+					"card": "Spider-Woman #04031a"
 				}
 			],
 			"discard1": [
@@ -120,7 +120,7 @@
 					"card": "The Power of Aggression"
 				},			
 				{
-					"card": "Venom Blast"
+					"card": "Venom Blast #04035"
 				},				
 			]
 		}

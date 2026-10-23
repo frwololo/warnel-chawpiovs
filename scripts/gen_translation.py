@@ -23,6 +23,8 @@ for card in parsed_json:
     fr_data = {}
     fr_data["name"] = card["name"]
     fr_data["text"] = card.get("text", "")
+    if card.get("flavor", ""):
+      fr_data["flavor"] = card.get("flavor", "")
     output_json[card_id] = fr_data
 
 json.dump(output_json, f)

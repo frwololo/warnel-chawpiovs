@@ -1287,7 +1287,7 @@ func post_load_move():
 				slot = grid.find_available_slot()
 				if slot:
 					card.move_to(cfc.NMAP.board, -1, slot)
-					if card.get_property("type_code", "") == "villain":
+					if card.is_card_type("villain"):
 						villain.add_villain(card)
 		var host_card
 		if host_guid:

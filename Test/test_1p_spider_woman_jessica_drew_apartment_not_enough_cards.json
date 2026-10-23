@@ -33,7 +33,7 @@
 			],
 			"deck1": [
 				{
-					"card": "Pheromones"
+					"card": "Pheromones #04036"
 				},
 				{
 					"card": "Skilled Investigator"
@@ -69,7 +69,7 @@
 		},
 		{
 			"type": "select",
-			"value": "Pheromones"
+			"value": "Pheromones #04036"
 		},
 	],
 	"end": {
@@ -130,7 +130,7 @@
 					"card": "The Power of Aggression"
 				},
 				{
-					"card": "Pheromones"
+					"card": "Pheromones #04036"
 				},				
 			]
 		}

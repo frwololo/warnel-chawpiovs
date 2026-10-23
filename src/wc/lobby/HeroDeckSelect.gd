@@ -248,6 +248,7 @@ func _on_deck_changed(index):
 	load_deck_contents(deck_data)
 
 func reset_deck_contents():
+	decks_data = []
 	deck_container.reset()
 
 func load_deck_contents(deck_info):

@@ -9,7 +9,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Venom"
+					"hero": "Venom #20001a"
 				}
 			}
 		],
@@ -42,7 +42,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Venom",
+					"card": "Venom #20001a",
 					"tokens": {
 						"damage": 3
 					}
@@ -109,7 +109,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Venom"
+					"hero": "Venom #20001a"
 				}
 			}
 		],
@@ -145,7 +145,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Venom",
+					"card": "Venom #20001a",
 					"tokens": {
 						"damage": 3
 					}

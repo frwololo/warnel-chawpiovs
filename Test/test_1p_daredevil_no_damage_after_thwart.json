@@ -38,7 +38,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Daredevil"
+					"card": "Daredevil #01058"
 				}				
 				
 			]
@@ -47,7 +47,7 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Daredevil"
+			"value": "Daredevil #01058"
 		},
 		{
 			"type": "choose",
@@ -59,7 +59,7 @@
 		},
 		{
 			"type": "activate",
-			"value": "daredevil"
+			"value": "daredevil #01058"
 		},		
 		{
 			"type": "target",
@@ -105,7 +105,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Daredevil"
+					"card": "Daredevil #01058"
 				}
 			]
 		}

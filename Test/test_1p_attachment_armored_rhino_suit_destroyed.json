@@ -52,7 +52,7 @@
 					"card": "Mockingbird"
 				},
 				{
-					"card": "Daredevil"
+					"card": "Daredevil #01058"
 				},				
 			]			
 		}
@@ -80,7 +80,7 @@
 		},
 		{
 			"type": "activate",
-			"value" : "Daredevil",
+			"value" : "Daredevil #01058",
 			"wait_longer" : true,			
 		},
 		{
@@ -162,7 +162,7 @@
 					"card": "Mockingbird"
 				},
 				{
-					"card": "Daredevil"
+					"card": "Daredevil #01058"
 				},				
 			]			
 		}

@@ -47,7 +47,7 @@
 			],
 			"hand1": [
 				{
-					"card": "Moon Knight - Marc Spector"
+					"card": "Moon Knight - Marc Spector #04097"
 				},
 				{
 					"card": "The Power of Justice"
@@ -69,7 +69,7 @@
 	"actions": [
 		{
 			"type": "play",
-			"value": "Moon Knight - Marc Spector"
+			"value": "Moon Knight - Marc Spector #04097"
 		},
 		{
 			"type": "choose",
@@ -136,7 +136,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Moon Knight - Marc Spector"
+					"card": "Moon Knight - Marc Spector #04097"
 				}
 			],
 			"deck1": [

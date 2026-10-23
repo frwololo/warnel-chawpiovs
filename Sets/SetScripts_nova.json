@@ -455,7 +455,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"manual": {
 			"hand": [
 				{
@@ -559,36 +559,38 @@
 			]
 		},
 		"response_card_dies": {
-            "event_filters": {
-                "secondary_source": "self",
-                "excess_damage": ">0"
-            },
-            "all": [
-                {
-                    "name": "discard",
-                    "subject": "tutor",
-                    "sort_descending": true,
-                    "up_to": true,
-                    "subject_count": "trigger_details_excess_damage",
-                    "src_container": "deck_my_hero",
-					"tags": ["immediate"]
-                },
-                {
-                    "name": "move_card_to_container",
-                    "subject": "previous",
-                    "subject_count": "all",
-                    "filter_each_previous_subject": true,
-                    "dest_container": "hand_my_hero",
-                    "filter_state_subject": [
-                        {
-                            "filter_properties": {
-                                "faction_code": "aggression",
-                            }
-                        }
-                    ]
-                }
-            ]
-        }		
+			"event_filters": {
+				"secondary_source": "self",
+				"excess_damage": ">0"
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": "trigger_details_excess_damage",
+					"src_container": "deck_my_hero",
+					"tags": [
+						"immediate"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "previous",
+					"subject_count": "all",
+					"filter_each_previous_subject": true,
+					"dest_container": "hand_my_hero",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Nova": {
 		"response": {

@@ -17,6 +17,8 @@ var extra_decks: = []
 var grid_setup:= {}
 var scenario_data: = {}
 var set_aside := []
+var set_aside_index := {}
+
 
 const all_scenarios:= []
 const primitives:= {}
@@ -88,8 +90,8 @@ static func _load_card_scenarios():
 	for key in json_card_data:
 		var card_data = json_card_data[key]
 		#error correction
-		key = _get_corrected_scheme_card_id(key)
-		if !key:
+		var actual_key = _get_corrected_scheme_card_id(key)
+		if !actual_key:
 			continue
 		var card_code = _get_corrected_scheme_card_id(card_data["code"])
 		if !card_code:
@@ -100,7 +102,7 @@ static func _load_card_scenarios():
 		if 	expert_data and expert_data.has("encounter_sets"):
 				WCUtils.array_to_lowercase(expert_data["encounter_sets"])		
 		primitives[card_code] = card_data
-		all_scenarios.append(key)
+		all_scenarios.append(actual_key)
 
 
 
@@ -237,6 +239,8 @@ static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false):
 				var card_id = cfc.get_corrected_card_id(villain_string)
 				if card_id:
 					result.append(card_id)
+				else:
+					var _error = 1
 					
 		results.append(result)
 
@@ -280,7 +284,7 @@ static func get_villains_ids_from_set(card_set_code):
 	var card_set = cfc.cards_by_set.get(card_set_code, [])
 	for card_data in card_set:
 		var card_type = card_data["type_code"]
-		if card_type == "villain":
+		if card_type in ["villain", "leader"]:
 			result.append(card_data["code"])
 	return result
 
@@ -372,6 +376,7 @@ func load_from_dict(_scenario:Dictionary):
 	load_villains()
 	
 	set_aside = []
+	set_aside_index = {}
 	encounter_deck = []
 	get_encounter_deck()
 	_load_extra_rules_from_encounters()
@@ -382,22 +387,41 @@ func set_scenario_option(key, value):
 	scenario_options[key] = value
 
 #returns all schemes belonging to the same collection as scheme_id,
-#sorted in expected appearance order		
+#sorted in expected appearance order
+#result will be overridden if the "schemes" variable is set in the scenario		
 static func get_schemes(scheme_id):	
-	#todo error handling
-	var scheme = cfc.get_card_by_id(scheme_id)
-	#error correction
-	if !scheme:
-		scheme = cfc.get_card_by_id(scheme_id + "b")
-	if !scheme:
-		return []
-	 
-	var set_name = scheme["card_set_code"]
-	if !set_name:
-		return []
-		
-	var my_schemes = cfc.schemes.get(set_name.to_lower(), [])
-	my_schemes.sort_custom(WCUtils, "sort_stage")
+	if !primitives:
+		_load_card_scenarios()	
+	
+	var override = primitives.get(scheme_id, {}).get("schemes")
+	
+	var my_schemes = []
+	
+	if override:
+		for scheme_id in override:
+			var side_a = cfc.get_card_by_id(scheme_id + "a")
+			var side_b =  cfc.get_card_by_id(scheme_id + "b")
+			if !side_a or !side_b:
+				var _error = 1
+				continue
+			my_schemes.append(side_a)
+			my_schemes.append(side_b)
+	else:				
+		#todo error handling
+		var scheme = cfc.get_card_by_id(scheme_id)
+		#error correction
+		if !scheme:
+			scheme = cfc.get_card_by_id(scheme_id + "b")
+		if !scheme:
+			return []
+		 
+		var set_name = scheme["card_set_code"]
+		if !set_name:
+			return []
+			
+		my_schemes = cfc.schemes.get(set_name.to_lower(), [])
+		my_schemes.sort_custom(WCUtils, "sort_stage")
+	
 	return my_schemes
 
 func get_setting(key, default = null):
@@ -416,13 +440,12 @@ func get_description():
 		var a_side_code = _get_corrected_scheme_card_id(scheme_card_id)
 		var a_side_data = cfc.get_card_by_id(a_side_code)
 		if a_side_data:
-			var flavor = a_side_data.get("flavor", "")
+			var flavor = WCUtils.get_translated_property(a_side_code, "flavor")
 			if flavor:
 				description.append(flavor)
 			var b_side_code = a_side_data.get("back_card_code", "")
 			if b_side_code:
-				var b_side_data = cfc.get_card_by_id(b_side_code)
-				var flavor_b = b_side_data.get("flavor", "")
+				var flavor_b = WCUtils.get_translated_property(b_side_code, "flavor")
 				if flavor_b:
 					description.append(flavor_b)
 	
@@ -573,23 +596,29 @@ func get_simple_encounter_deck(encounter_sets):
 				encounter_set_code = get_scenario_option("standard_override")		
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		
+		#in some cases (e.g. Civil War) the Main scheme doesn't come from
+		#the scenario's included sets
+		#So we force include them here
+		#if some scheme cards are duplicated by this step, they get pruned in the loop below
+		encounter_set += schemes
+		
 		for card_data in encounter_set:
 			var code = card_data["code"]		
 			var added_to_scenario = true
 			var card_type = card_data["type_code"]
 			if (card_type == "main_scheme"): #skip villain and schemes from the deck
-				if card_data in set_aside:
+				if set_aside_index.has(code):
 					added_to_scenario = false
 				else:
-					set_aside.append(card_data)
-			elif(card_type == "villain"):
-				if villain_is_in_scenario(card_data) and ! card_data in set_aside:
-					set_aside.append(card_data)	
+					add_to_set_aside(card_data)
+			elif(card_type in ["villain", "leader"]):
+				if villain_is_in_scenario(card_data) and ! set_aside_index.has(code):
+					add_to_set_aside(card_data)	
 				else:
 					added_to_scenario = false			
 			else:
 				var add_to_encounter_deck = true
-				var card_set_position = card_data["set_position"]
+				var card_set_position = card_data.get("set_position", 0)
 				if positions.has(card_set_position):
 					#conflict e.g. android efficiency
 					var existing_card_data = positions[card_set_position]
@@ -602,7 +631,7 @@ func get_simple_encounter_deck(encounter_sets):
 				if add_to_encounter_deck:
 					#permanent cards are set aside in setup
 					if card_data.get("permanent", false):
-						set_aside.append(card_data)
+						add_to_set_aside(card_data)
 					else:
 						result_deck.push_back(card_data)
 					positions[card_set_position] = card_data
@@ -618,6 +647,11 @@ func get_aside_deck():
 		
 	return set_aside
 
+func add_to_set_aside(card_data:Dictionary):
+	var card_id = card_data["code"]
+	set_aside.append(card_data)
+	set_aside_index[card_id] = card_data
+
 func get_extra_cards_aside(card_id):
 	var extra_cards_str = "additional_cards_set_aside"		
 	var extra_cards = cfc.set_scripts.get(card_id,{}).get(extra_cards_str,[]).duplicate(true)
@@ -628,7 +662,7 @@ func get_extra_cards_aside(card_id):
 			continue
 		var extra_card_id = cfc.get_corrected_card_id(card_id_or_name)
 		var card_data = cfc.get_card_by_id(extra_card_id)
-		set_aside.append(card_data)
+		add_to_set_aside(card_data)
 		
 func get_encounter_deck():
 	if (not encounter_deck.empty()):

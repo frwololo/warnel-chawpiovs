@@ -378,6 +378,11 @@ const ALL_TYPE_GROUPS: = [
 	"play_area",
 ]
 
+const SECONDARY_TYPES := {
+	"player_side_scheme": "side_scheme",
+	"leader": "villain"
+}
+
 #list of hardcoded entries for which we will update
 #scripts at runtime to append player info
 #e.g. "__player_token" will become "__player_token1"
@@ -390,7 +395,8 @@ const ENCOUNTER_CARD_TYPES:= [
 	"side_scheme", 
 	"environment", 
 	"attachment", 
-	"villain", 
+	"villain",
+	"leader", 
 	"minion", 
 	"obligation", 
 	"treachery"
@@ -411,7 +417,8 @@ const CONSIDERED_AS_ACTION_OWNER: =[
 	"hero",
 	"alter_ego", 
 	"ally", 
-	"villain", 
+	"villain",
+	"leader", 
 	"minion", 
 	"support"
 ]
@@ -420,7 +427,8 @@ const CHARACTER_CARD_TYPES: =[
 	"hero",
 	"alter_ego", 
 	"ally", 
-	"villain", 
+	"villain",
+	"leader", 
 	"minion", 
 ]
 
@@ -446,7 +454,11 @@ const DEFAULT_PROPERTIES_BY_TYPE:= {
 	"villain" : {
 		"boost_cards_per_attack":1,
 		"boost_cards_per_scheme": 1,
-	}
+	},
+	"leader" : {
+		"boost_cards_per_attack":1,
+		"boost_cards_per_scheme": 1,
+	}	
 } 
 
 const TYPECODE_TO_PILE := {
@@ -789,9 +801,9 @@ const AUTO_KEYWORDS := {
 	"steady" : "int",
 	"surge" : "bool",
 	"team-up" : "bool",
-	"teamwork" : "string",
+	"teamwork" : "int",
 	"temporary" : "int",
-	"toughness" : "bool",
+	"toughness" : "int",
 	"uses" : "string",
 	"victory" : "int_no_alterant", #victory 0 is different from no Victory, so we don't want to init it at 0
 	"villainous" : "int",
@@ -821,7 +833,8 @@ const AUTO_KEYWORDS := {
 	"cannot_defend": "int",
 	"cannot_defend_basic": "int",	
 	"cannot_exhaust": "int",	
-	"cannot_flip": "int",	
+	"cannot_flip": "int",
+	"cannot_guard": "int",	
 	"cannot_have_attachments": "int",	
 	"cannot_have_player_card_attachments": "int",	
 	"cannot_have_upgrade_attachments": "int",				
@@ -1118,7 +1131,7 @@ const DEFAULT_SETTINGS:= {
 		"winter": "https://marvelcdb.com/api/public/cards/winter.json", #Winter Soldier Hero Pack	
 #		"tt": "https://marvelcdb.com/api/public/cards/tt.json", #Trickster Takeover Scenario Pack
 #cycle 10
-#		"cw": "https://marvelcdb.com/api/public/cards/cw.json", #Civil War Expansion
+		"cw": "https://marvelcdb.com/api/public/cards/cw.json", #Civil War Expansion
 #		"synthezoid": "https://marvelcdb.com/api/public/cards/synthezoid.json", #Synthezoid smackdown Scenario Pack
 #		"wonder_man": "https://marvelcdb.com/api/public/cards/wonder_man.json", #Wonder Man Hero Pack
 #		"hercules": "https://marvelcdb.com/api/public/cards/hercules.json", #Hercules Hero Pack

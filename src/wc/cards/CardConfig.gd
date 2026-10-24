@@ -52,6 +52,7 @@ const PROPERTIES_NUMBERS := [
 	"scheme_amplify",
 	"scheme_crisis",
 	"scheme_hazard",
+	"teamwork",	
 	"threat",
 	"thwart",
 	"thwart_cost"

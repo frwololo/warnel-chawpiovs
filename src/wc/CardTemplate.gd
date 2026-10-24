@@ -1750,10 +1750,7 @@ func retrieve_altered_scripts(trigger: String, filters := {}):
 	return 	_script_alter_cache[alterant_cache_key]
 
 func retrieve_engine_scripts(trigger, filter) -> Dictionary:
-	var result = {}
-	#TODO WORK IN PROGRESS
-	return result
-	
+	var result = {}	
 	match trigger:
 		"card_moved_to_board":
 			if self.get_property("quickstrike", 0, true):

@@ -557,23 +557,7 @@
 		}
 	},
 	"quickstrike": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"display_name": "Quickstrike",
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_form"
-					]
-				},
-				{
-					"name": "enemy_attacks_you",
-					"subject": "self"
-				}
-			]
-		}
+		"_comments": "to-do remove quickstrike from scripts, it was moved to code"
 	},
 	"_surge": {
 		"reveal": {
@@ -590,42 +574,7 @@
 		}
 	},
 	"teamwork": {
-		"self_moved_to_board": {
-			"board": [
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_cards>1",
-								"func_params": {
-									"subject": "boardseek",
-									"subject_count": "all",
-									"filter_state_seek": [
-										{
-											"filter_group": "group_enemies",
-											"filter_properties": {
-												"type_code": "minion"
-											},
-											"filter_properties2": {
-												"trait___trait__": 1,
-												"comparison": "ge"
-											}
-										}
-									]
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "enemy_activates",
-									"subject": "self"
-								}
-							]
-						}
-					]
-				}
-			]
-		}
+		"_comments": "to-do remove teamwork from scripts, it was moved to code"
 	},
 	"__thunderbolt_fetch_and_activate": {
 		"reveal": {

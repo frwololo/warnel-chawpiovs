@@ -562,17 +562,17 @@
 						"value": 0
 					},
 					{
-						"display_name": "Standard (1)",
-						"value": 1,
+						"display_name": "Standard (1p)",
+						"value": "1p",
 						"default": true
 					},
 					{
-						"display_name": "Expert (2)",
-						"value": 2
+						"display_name": "Expert (2p)",
+						"value": "2p"
 					},
 					{
-						"display_name": "Heroic (3)",
-						"value": 3
+						"display_name": "Heroic (3p)",
+						"value": "3p"
 					}
 				]
 			}

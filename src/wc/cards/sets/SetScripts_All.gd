@@ -23,19 +23,6 @@ static func keyword_to_script(keyword, _value):
 					]
 				}
 			}
-		"toughness" :
-			return { 
-				"self_moved_to_board": {
-					"board": [
-						{
-							"name": "mod_tokens",
-							"subject": "self",
-							"modification": 1,
-							"token_name":  "tough",
-						},					
-					]
-				}
-			}
 	return null		
 
 # This fuction merges text files scripts for a given card 

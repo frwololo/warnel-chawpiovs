@@ -1,4 +1,27 @@
 {
+	"_macros": {
+		"_mightiest": {
+			"filter_task": "get_property",
+			"filter_property_name": "__property__",
+			"filter_state_trigger": [
+				"minion",
+				"trait_avenger"
+			],
+			"alteration": {
+				"func_name": "get_subject_int_printed_property",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_exclude": "trigger",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"minion",
+						"trait_avenger"
+					],
+					"property": "__property__"
+				}
+			}
+		}
+	},
 	"\"Bring It!\"": {
 		"manual": {
 			"hand": [
@@ -1223,34 +1246,38 @@
 		}
 	},
 	"Earth's Mightiest Heroes": {
-		"manual": {
-			"hand": [
+		"alterants": {
+			"board": [
 				{
-					"name": "exhaust_card",
-					"subject": "target",
-					"is_cost": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_friendly_my_hero",
-							"filter_properties": {
-								"trait_avenger": 1
-							}
-						}
-					]
+					"_mightiest": {
+						"__property__": "retaliate"
+					}
 				},
 				{
-					"name": "ready_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_friendly_my_hero",
-							"filter_properties": {
-								"trait_avenger": 1
-							}
-						}
-					]
-				}
+					"_mightiest": {
+						"__property__": "teamwork"
+					}
+				},
+				{
+					"_mightiest": {
+						"__property__": "teamwork_avenger"
+					}
+				}	,
+				{
+					"_mightiest": {
+						"__property__": "guard"
+					}
+				},
+				{
+					"_mightiest": {
+						"__property__": "quickstrike"
+					}
+				},
+				{
+					"_mightiest": {
+						"__property__": "toughness"
+					}
+				}					
 			]
 		}
 	},
@@ -1743,7 +1770,6 @@
 	},
 	"Hellcat": {
 		"TODO": "",
-		"quickstrike": {},
 		"reveal": {
 			"all": [
 				{

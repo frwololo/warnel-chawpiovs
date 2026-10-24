@@ -4280,28 +4280,33 @@ func get_trigger_details_property(params, script:ScriptObject= null) -> int:
 	if value == expected_value:
 		return 1
 	return 0
-	
+
+#returns the property of a given subject
+#returns the sum if multiple subjects	
 func get_subject_int_printed_property(params, script:ScriptObject = null) -> int:
-	var subject = get_param_subject(params, script)
+	var subjects = get_param_subjects(params, script)
 	
-	if !subject:
+	if !subjects:
 		return 0
 	
 	var property = params.get("property", "")
 	if !property:
 		return 0
+	
+	var result = 0
+	for subject in subjects:	
+		var id = subject.get_property("_code", "")
+		if !id:
+			continue
 		
-	var id = subject.get_property("_code", "")
-	if !id:
-		return 0
-		
-	var card_data = cfc.get_card_by_id(id)
-	var result = card_data.get(property, 0)
-	if typeof(result) == TYPE_BOOL:
-		if result:
-			result = 1
-		else:
-			result = 0
+		var card_data = cfc.get_card_by_id(id)
+		var tmp_result = card_data.get(property, 0)
+		if typeof(tmp_result) == TYPE_BOOL:
+			if tmp_result:
+				tmp_result = 1
+			else:
+				tmp_result = 0
+		result += tmp_result
 	return int(result)
 
 func get_scenario_option_value(params, script:ScriptObject = null) -> int:

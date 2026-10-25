@@ -73,6 +73,7 @@ def download_img(img_url, img_code, serverName, setName):
         extension = ".png"       
     else:
         extension = ".jpeg"
+        image_type = "unknown"
         do_skip = True
 
     if do_skip:

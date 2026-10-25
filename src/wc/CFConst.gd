@@ -1062,7 +1062,7 @@ const DEFAULT_SETTINGS:= {
 	'enable_fanmade_sets': false,
 	"decks_base_url": "https://marvelcdb.com/api/public/decklist/",
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
-	"proxy_url": "https://wololo.net/wc/wc_proxy.php",
+	"proxy_url": "/wc/wc_proxy.php",
 	'dont_show_msg': {},
 	'database': {
 #cycle 1	
@@ -1152,6 +1152,7 @@ const DEFAULT_SETTINGS:= {
 		'list_rooms_url': 'wc/lobby.php?mode=list_rooms',
 		'join_room_url': 'wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
 	},
+	'server': 'https://wololo.net/',
 	'notifications_level': 'normal',
 	'adventure_mode': true,
 	'unlocked_heroes': ["01001a"], #default unlocked character
@@ -1159,7 +1160,8 @@ const DEFAULT_SETTINGS:= {
 	
 }
 
-const RESOURCES_URL = "https://wololo.net/wc/resources/"
+const SERVER_RESOURCES_URL = "/wc/resources/"
+const SERVER_REMOTE_CONFIG_URL = "/wc/resources/remote_settings.json"
 
 const PER_OS_INTERNAL_SETTINGS = {
 	"HTML5": {
@@ -1239,7 +1241,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
 const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261023-1805"
+const BUILD_NUMBER := "20261025-1015"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

@@ -1,7 +1,15 @@
 class_name CardImageDownloader
 extends Node
 
+#default list of servers
+#this can be overriden by a remote config on the main game server 
+#(to urgently switch image servers)
+#or by a local setting on the user's computer (in which case they must set
+#"modified_by_user" to true to avoid overrwriting by the server) 
 const default_servers := {
+	"_data": {
+		"modified_by_user": false
+	},
 	"en": {
 		"marvelcdb": 
 			{
@@ -61,7 +69,12 @@ const default_servers := {
 					"MC4DB":"https://mc4db.merlindumesnil.net/",
 					"cgbuilder": "https://mc.cgbuilder.fr/" 
 				}					
-			},	
+			},
+		"narwhal_fr": 
+			{
+				"url": "https://play.narwhalchampions.com",
+				"path": "/scan/fr_[card_id]",									
+			},						
 		"mcgbuilder_fr":	
 			{
 				"url": "https://mc-src.cgbuilder.fr",
@@ -74,8 +87,10 @@ const default_servers := {
 				#mcgbuilder has slight different pack code ordering than MarvelCDB
 				"exceptions": {
 					"pack_code": {
+						"37": "39",						
+						"39": "37",							
 						"43": "44",
-						"44": "43",						
+						"44": "43",											
 						"53": "54",
 						"54": "53",
 					}
@@ -141,7 +156,7 @@ func server_cfc_sanity_check(server_list):
 		return false
 	if typeof(server_list) != TYPE_DICTIONARY:
 		return false
-	if !server_list.has("en"):
+	if !server_list.get("en", {}):
 		return false
 		
 	return true
@@ -149,23 +164,45 @@ func server_cfc_sanity_check(server_list):
 func init_servers():
 	if servers:
 		return servers
-		
-	var result = default_servers
 	
-	#in HTML5, skip personal preferences
+	if !serverConfig.is_loaded():
+		return {}
+		
+	
+	var remote_override = serverConfig.get_setting("image_servers")
+	
+	var result = remote_override if remote_override else default_servers
+	
+	
+	#always overwrite user settings unless "modified_by_user" is set to true
+
 	if OS.get_name() != "HTML5":
-		result = cfc.get_setting("image_servers")
-		if !server_cfc_sanity_check(result):
+		var local_settings = cfc.get_setting("image_servers")
+		var has_local_override = local_settings.get("_data", {}).get("modified_by_user", false)
+		if has_local_override:
+			if !server_cfc_sanity_check(result):
+				local_settings = {}
+			#if local settings are different from default	
 			result = default_servers
-			cfc.set_setting("image_servers", result)
+		cfc.set_setting("image_servers", result)
 	
 	servers = result.duplicate(true)
+	#cleanup comments and meta entries
+	for lang in servers.keys():
+		if lang.begins_with("#") or lang.begins_with("_"):
+			servers.erase(lang)			
+	for lang in servers:
+		var all_servers = servers[lang]
+		for key in all_servers.keys():
+			if key.begins_with("#"):
+				all_servers.erase(key)
+				
 	for lang in servers:
 		#for non english languages, we add all the EN servers as backups
 		if lang != "en":
 			for server_name in servers["en"]:
 				servers[lang][server_name] = servers["en"][server_name].duplicate(true)
-		for server_name in servers[lang]:
+		for server_name in servers[lang]:		
 			var server = servers[lang][server_name]
 			server["is_up"] = true #assume server is up so we can start downloading
 			server["health_check"] = "not_started"
@@ -182,7 +219,7 @@ func _ready():
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
 	cfc.connect("locale_changed", self, "_game_locale_changed")
-	init_servers()
+
 
 func get_stats():
 	var stats = {
@@ -200,6 +237,15 @@ func get_stats():
 	return stats
 
 func _process(_delta:float):
+	#we can't start until the servers list is ready
+	#the servers list cannot be ready until the serverConfig Node
+	#has downloaded (or failed to download) the remote config
+	if !init_servers():
+		return
+	
+	#used for debug only!
+	#_preprocess_all_downloads()	
+		
 	#progressively download images in background, one per process cycle
 	if _load_pending_images:
 		if _pending_images_idx >= _pending_image_keys.size():
@@ -685,6 +731,7 @@ func create_img_folders(card_id):
 
 		#create additional folders for other languages
 		for lang in servers:
+			#english is the default and we don't add its lang at the end of the folder			
 			if lang == "en":
 				continue
 			dir.make_dir_recursive("user://Sets/images_" + lang + "/" + card_data["_set"])	
@@ -779,10 +826,12 @@ func load_pending_images():
 	_pending_images_idx = 0
 	_pending_image_keys = cfc.card_definitions.keys()	
 
-	#_preprocess_all_downloads()	
 
 ##Stores all download links for debug purposes
+#var _preprocessed = false
 #func _preprocess_all_downloads():
+#	if _preprocessed:
+#		return
 #	for card_key in cfc.card_definitions.keys():	
 #		add_card(card_key)
 #
@@ -808,4 +857,5 @@ func load_pending_images():
 #	file.store_string(JSON.print(result, '\t'))
 #	file.close()
 #	cards_to_download = []	
+#	_preprocessed = true
 #	return 

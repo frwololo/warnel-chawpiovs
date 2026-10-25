@@ -439,6 +439,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://src/core/SelectionWindow.gd"
 }, {
+"base": "Node",
+"class": "ServerConfig",
+"language": "GDScript",
+"path": "res://src/wc/data/ServerConfig.gd"
+}, {
 "base": "Reference",
 "class": "SetScripts_All",
 "language": "GDScript",
@@ -641,6 +646,7 @@ _global_script_class_icons={
 "ScriptingBus": "",
 "ScriptingEngine": "",
 "SelectionWindow": "",
+"ServerConfig": "",
 "SetScripts_All": "",
 "SideIcons": "",
 "SignalStackScript": "",
@@ -680,6 +686,7 @@ scripting_bus="*res://src/wc/ScriptingEngine/ScriptingBus.gd"
 guidMaster="*res://src/multiplayer/GUID.gd"
 gamepadHandler="*res://src/wc/GamepadHandler.gd"
 fileDownloader="*res://src/wc/data/FileDownloader.gd"
+serverConfig="*res://src/wc/data/ServerConfig.gd"
 
 [debug]
 

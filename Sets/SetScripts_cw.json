@@ -1191,18 +1191,45 @@
 		}
 	},
 	"Doc Samson": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_confused",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"subject": "main_scheme",
+									"amount": 2
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "my_identity",
+							"modification": 1,
+							"token_name": "confused"
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "current_hero_target",
+					"modification": 1,
+					"token_name": "confused"
 				}
 			]
 		}
@@ -1222,25 +1249,83 @@
 		}
 	},
 	"Drafted": {
-		"TODO": "",
-		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 2
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_avenger",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
 						{
-							"TODO": "TODO"
+							"condition": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "competitive_mode"
+								},
+								"nested_tasks": [
+									{
+										"name": "nop",
+										"_comments": "TODO. competitive mode unsupported"
+									}
+								]
+							}
 						}
 					],
-					"alteration": 1
+					"else": [
+						{
+							"name": "move_card_to_container",
+							"subject": "grab_until",
+							"src_container": "deck_villain",
+							"dest_container": "discard_villain",
+							"filter_state_grab_until": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									}
+								}
+							]
+						},
+						{
+							"name": "reveal_encounter",
+							"subject": "index",
+							"subject_count": 1,
+							"subject_index": "retrieve_integer",
+							"src_container": "deck_villain"
+						},
+						{
+							"name": "save_variable",
+							"var_name": "my_target",
+							"var_type": "subject",
+							"value": "previous"
+						}
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "my_target",
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_target"
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "trigger"
 				}
 			]
 		}
@@ -1262,7 +1347,7 @@
 					"_mightiest": {
 						"__property__": "teamwork_avenger"
 					}
-				}	,
+				},
 				{
 					"_mightiest": {
 						"__property__": "guard"
@@ -1277,7 +1362,7 @@
 					"_mightiest": {
 						"__property__": "toughness"
 					}
-				}					
+				}
 			]
 		}
 	},
@@ -1453,19 +1538,44 @@
 		}
 	},
 	"Executive Order": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "group_schemes"
+				},
+				{
+					"name": "if",
+					"func_name": "card_is_in_play",
+					"func_params": {
+						"card_name": "Maria Hill"
+					},
+					"then": [
+						{
+							"name": "surge"
+						}
+					]
 				}
 			]
 		},
-		"boost": {
+		"boost_alterants": {
 			"all": [
 				{
-					"name": "TODO"
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Maria Hill"
+							}
+						},
+						"then": 3,
+						"else": 0
+					}
 				}
 			]
 		}
@@ -1769,18 +1879,45 @@
 		}
 	},
 	"Hellcat": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "indirect_damage",
+									"subject": "my_identity",
+									"amount": 2
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "my_identity",
+							"modification": 1,
+							"token_name": "stunned"
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"subject": "current_hero_target",
+					"modification": 1,
+					"token_name": "stunned"
 				}
 			]
 		}
@@ -2650,39 +2787,53 @@
 		}
 	},
 	"Life Model Decoy": {
-		"interrupt_enemy_initiates_attack": {
-			"event_filters": {
-				"target_identity": "my_identity"
-			},
-			"is_optional_board": true,
+		"alterants": {
 			"board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"interrupt"
-					]
-				},
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
 				{
-					"name": "add_script",
-					"end_condition": "enemy_activation_finished",
-					"subject": "self",
-					"script": {
-						"interrupt_receive_damage": {
-							"event_filters": {
-								"tags": [
-									"enemy_attack"
-								]
-							},
-							"all": [
-								{
-									"name": "prevent",
-									"subject": "interrupted_event",
-									"amount": "all"
-								}
-							]
+					"name": "attach_to_card",
+					"subject": "enemy_team_boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_max_per_host": 1,
+							"filter_properties": {
+								"type_code": "leader"
+							}
+						},
+						{
+							"filter_max_per_host": 1,
+							"filter_properties": {
+								"type_code": "minion"
+							}
 						}
-					}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
 				},
 				{
 					"name": "discard",
@@ -2770,23 +2921,23 @@
 		}
 	},
 	"Maria Hill": {
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": {
-				"Draw": [
-					{
-						"name": "draw_cards",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"amount": 1,
-						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
-						]
-					}
-				]
-			}
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "enemy_team_tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						"Life Model Decoy"
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
+				}
+			]
 		}
 	},
 	"Mark V Armor": {
@@ -3597,12 +3748,24 @@
 		"TODO": ""
 	},
 	"S.H.I.E.L.D. Helicarrier": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_damage",
+					"subject_count": "all",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_event_source_hero"
+						},
+						{
+							"filter_group": "group_enemies_event_source_hero",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -4797,12 +4960,19 @@
 		"TODO": ""
 	},
 	"The Fifty State Initiative": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain",
+					"filter_state_tutor": [
+						"minion",
+						"trait_avenger"
+					]
 				}
 			]
 		}
@@ -5230,38 +5400,36 @@
 		}
 	},
 	"Venom": {
-		"once_per_phase": {
-			"__name__": "__symbiotic_bond"
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
 		},
-		"alterants": {
-			"board": [
+		"reveal": {
+			"all": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "restricted_limit",
-					"trigger": "my_identity",
-					"alteration": 1
-				}
-			]
-		},
-		"resource": {
-			"board": [
-				{
-					"name": "deal_damage",
-					"amount": 1,
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "mod_tokens",
-					"modification": -1,
-					"is_cost": true,
-					"token_name": "__symbiotic_bond",
-					"subject": "self"
-				},
-				{
-					"name": "add_resource",
-					"amount": 1,
-					"resource_name": "wild"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "competitive_mode"
+								},
+								"nested_tasks": [
+									{
+										"name": "nop",
+										"_comments": "TODO. competitive mode unsupported"
+									}
+								]
+							}
+						}
+					],
+					"else": [
+						{
+							"name": "enemy_activates_against_you",
+							"subject": "self"
+						}
+					]
 				}
 			]
 		}

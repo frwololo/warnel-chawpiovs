@@ -260,7 +260,7 @@ func urgent_image_download(card_id, callback_owner):
 	
 
 func _file_downloaded(url, destination):
-	if url == CFConst.RESOURCES_URL + "music.zip":
+	if url == serverConfig.get_server_url(CFConst.SERVER_RESOURCES_URL) + "music.zip":
 		var dir:Directory = Directory.new()	
 		var filename = "user://music.zip"		
 		dir.rename(destination, filename)

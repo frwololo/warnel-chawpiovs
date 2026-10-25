@@ -136,7 +136,7 @@ func _send_get_request() -> void:
 					'Proxy-Target-URL: ' + _current_url,
 				]
 				var escaped_url = _current_url.http_escape() 
-				_actual_url = cfc.get_setting("proxy_url") + "?target_url=" + escaped_url
+				_actual_url = serverConfig.get_server_url_setting("proxy_url") + "?target_url=" + escaped_url
 				break
 	var error = request(_actual_url, _headers, _ssl, HTTPClient.METHOD_GET)
 	if error == OK:

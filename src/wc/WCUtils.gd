@@ -696,7 +696,7 @@ static func replace_macros(json_card_data, local_macro_data, json_macro_data):
 	for macro_key in macro_data.keys():
 		result = replace_one_macro(result, macro_key, macro_data[macro_key])
 	subject_pre_processing(result)
-	filter_state_pre_processing(result)		
+	script_definitions_pre_processing(result)		
 	return result	
 
 #does subject preprocessing in place,
@@ -779,40 +779,52 @@ static func subject_pre_processing(script_definition):
 			for value in script_definition:
 				subject_pre_processing(value)	
 
-static func filter_state_pre_processing(script_definition):
+static func script_definitions_pre_processing(script_definition):
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
 			for key in script_definition.keys():
+				var value = script_definition[key]
 				if key.begins_with("filter_state_"):
-					var filter_array = script_definition[key]
+					var filter_array = value
 					#we're looking for "simpler" filter_state definitions such as "filter_state_seek : ["a", "b", "c"]
 					if typeof(filter_array) == TYPE_STRING:
 						filter_array = [filter_array]
 					if typeof(filter_array[0]) == TYPE_STRING:
 						var values = {}
 						var properties_count = 1
-						for value in filter_array:
-							if value.begins_with("trait_"):
-								values["filter_properties" + str(properties_count)] =  {value: 1, "comparison": "ge"}
+						for filter in filter_array:
+							if filter.begins_with("trait_"):
+								values["filter_properties" + str(properties_count)] =  {filter: 1, "comparison": "ge"}
 								properties_count += 1
-							elif value.begins_with("group_"):
-								values["filter_group"] = value
-							elif (value in CFConst.PLAYER_CARD_TYPES) or (value in CFConst.ENCOUNTER_CARD_TYPES):
-								values["filter_properties" + str(properties_count)] = {"type_code": value}
+							elif filter.begins_with("group_"):
+								values["filter_group"] = filter
+							elif (filter in CFConst.PLAYER_CARD_TYPES) or (filter in CFConst.ENCOUNTER_CARD_TYPES):
+								values["filter_properties" + str(properties_count)] = {"type_code": filter}
 								properties_count += 1
-							elif value.begins_with("filter_"):
-								values[value] = true
+							elif filter.begins_with("filter_"):
+								values[filter] = true
 							else:
-								values["filter_properties" + str(properties_count)] = {"shortname": value}
+								values["filter_properties" + str(properties_count)] = {"shortname": filter}
 								properties_count += 1
 						script_definition[key] = [values]
 					else:
-						filter_state_pre_processing(script_definition[key])										
+						script_definitions_pre_processing(script_definition[key])										
+				elif key == "name" and (typeof(value) == TYPE_STRING) and value == "if":
+					script_definition[key] = "conditional_script"
+					script_definition["options"] = [
+						{
+							"condition": {
+								"func_name": script_definition["func_name"],
+								"func_params": script_definition["func_params"]
+							},
+							"nested_tasks": script_definition["then"]
+						}
+					]
 				else:
-					filter_state_pre_processing(script_definition[key])
+					script_definitions_pre_processing(script_definition[key])
 		TYPE_ARRAY:	
 			for value in script_definition:
-				filter_state_pre_processing(value)		
+				script_definitions_pre_processing(value)		
 
 # Recursively deletes a directory and all its contents
 static func delete_dir_recursive(path: String, delete_folder = true) -> bool:

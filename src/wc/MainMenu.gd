@@ -324,7 +324,7 @@ func download_music():
 	if WCUtils.file_exists("music.zip"):
 		return ""
 	
-	var music_url = CFConst.RESOURCES_URL + "music.zip"	
+	var music_url = serverConfig.get_server_url(CFConst.SERVER_RESOURCES_URL) + "music.zip"	
 	var urls = PoolStringArray([music_url])
 	fileDownloader.start_download(urls)
 	return music_url

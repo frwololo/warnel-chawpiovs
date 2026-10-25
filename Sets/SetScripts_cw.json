@@ -180,67 +180,16 @@
 		}
 	},
 	"Alpha Flight Station": {
-		"manual": {
-			"board": {
-				"Discard 1, Draw 1": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"hero_action"
-						]
-					},
-					{
-						"name": "exhaust_card",
-						"subject": "self",
-						"is_cost": true
-					},
-					{
-						"name": "move_card_to_container",
-						"dest_container": "discard",
-						"is_cost": true,
-						"subject": "index",
-						"subject_count": "all",
-						"selection_count": 1,
-						"selection_type": "equal",
-						"needs_selection": true,
-						"src_container": "hand"
-					},
-					{
-						"name": "draw_cards",
-						"amount": 1
-					}
-				],
-				"Discard 1, Draw 2": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"alter_ego_action"
-						]
-					},
-					{
-						"name": "exhaust_card",
-						"subject": "self",
-						"is_cost": true
-					},
-					{
-						"name": "move_card_to_container",
-						"dest_container": "discard",
-						"is_cost": true,
-						"subject": "index",
-						"subject_count": "all",
-						"selection_count": 1,
-						"selection_type": "equal",
-						"needs_selection": true,
-						"src_container": "hand"
-					},
-					{
-						"name": "draw_cards",
-						"amount": 2
-					}
-				]
-			}
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"amount": 3,
+					"subject": "Energy Channel",
+					"token_name": "energy"
+				}
+			]
 		}
 	},
 	"Altman Residence": {
@@ -594,11 +543,41 @@
 		}
 	},
 	"Bullseye": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "competitive_mode"
+								},
+								"nested_tasks": [
+									{
+										"name": "nop",
+										"is_cost": true,
+										"_comments": "TODO. competitive mode unsupported"
+									},
+									{
+										"name": "nop",
+										"is_else": true
+									}
+								]
+							}
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": [
+								"filter_same_controller",
+								"upgrade"
+							]
+						}
+					]
 				}
 			]
 		}
@@ -682,34 +661,215 @@
 		"TODO": "TODO"
 	},
 	"Captain Marvel - 1": {
-		"TODO": "TODO"
+		"setup": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": "Energy Channel"
+				}
+			]
+		},
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"amount": 1,
+					"subject": "Energy Channel",
+					"token_name": "energy"
+				}
+			]
+		}
 	},
 	"Captain Marvel - 2": {
-		"TODO": "TODO"
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "invincible",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"amount": 1,
+					"subject": "Energy Channel",
+					"token_name": "energy"
+				}
+			]
+		}
 	},
 	"Captain Marvel - 3": {
-		"TODO": "TODO"
+		"setup": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": "Energy Channel"
+				}
+			]
+		},
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"amount": 1,
+					"subject": "Energy Channel",
+					"token_name": "energy"
+				}
+			]
+		}
 	},
 	"Captain Marvel - 4": {
-		"TODO": "TODO"
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "invincible",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"amount": 1,
+					"subject": "Energy Channel",
+					"token_name": "energy"
+				}
+			]
+		}
 	},
 	"Captain Marvel's Helmet": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Captain Marvel"
+				}
+			]
+		},
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "defense",
+					"filter_property_name": "stalwart",
 					"trigger": "Captain Marvel",
 					"alteration": 1
+				}
+			]
+		},
+		"response_basic_attack_happened": {
+			"event_filters": {
+				"target": "host"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 3,
+						"type_constraint": "same"
+					},
+					"is_cost": true
 				},
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "defense",
-					"filter_state_trigger": [
-						"Captain Marvel",
-						"trait_aerial"
-					],
-					"alteration": 1
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
 				}
 			]
 		}
@@ -902,33 +1062,43 @@
 		}
 	},
 	"Cosmic Flight": {
-		"alterants": {
+		"card_moved_to_board": {
+			"trigger": "self",
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "trait_aerial",
-					"trigger": "Captain Marvel",
-					"alteration": 1
+					"name": "attach_to_card",
+					"subject": "Captain Marvel"
 				}
 			]
 		},
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"target": "my_hero"
+				"target": "host",
+				"amount": ">3",
+				"tags": [
+					"attack"
+				]
 			},
-			"is_optional_board": true,
 			"board": [
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"subject": "self",
-					"is_cost": true
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"amount": 3
+					}
 				},
 				{
-					"name": "prevent",
-					"amount": 3,
-					"subject": "interrupted_event"
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
 				}
 			]
 		}
@@ -994,38 +1164,35 @@
 		}
 	},
 	"Crisis Interdiction": {
-		"manual": {
-			"hand": [
+		"reveal_alter_ego": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					"name": "enemy_schemes",
+					"subject": "Captain Marvel"
 				},
 				{
-					"name": "thwart",
-					"subject": "a_scheme",
-					"amount": 2
-				},
+					"name": "sequence",
+					"sequence_ability": "do_energy"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
 				{
-					"name": "thwart",
-					"subject": "a_scheme",
-					"needs_subject": false,
-					"tags": [
-						"collateral_thwart"
-					],
-					"amount": {
-						"if": {
-							"func_name": "identity_has_trait",
-							"func_params": {
-								"trait": "aerial"
-							}
-						},
-						"then": 2,
-						"else": 0
-					},
-					"subject_exclude": "previous"
+					"name": "add_threat",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "group_schemes"
+				}
+			]
+		},
+		"do_energy": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"subject": "Energy Channel",
+					"modification": 1,
+					"token_name": "energy"
 				}
 			]
 		}
@@ -1124,10 +1291,19 @@
 		}
 	},
 	"Dangerous Recruits": {
-		"TODO": "",
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"card_defeated": {
+			"filter_state_trigger": "minion",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
 		}
 	},
 	"Daredevil": {
@@ -1367,133 +1543,94 @@
 		}
 	},
 	"Energy Absorption": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "energy",
+					"subject": "Energy Channel",
+					"modification": 1
+				},
+				{
+					"name": "heal",
+					"subject": "Captain Marvel",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"token_name": "energy",
+							"subject": "Energy Channel"
+						}
+					}
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "energy",
+					"subject": "Energy Channel",
+					"modification": 1
 				}
 			]
 		}
 	},
 	"Energy Channel": {
-		"manual": {
-			"hand": [
+		"response_attack_happened": {
+			"event_filters": {
+				"target": "self"
+			},
+			"filter_state_attacker": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"max_per_hero": 1
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				},
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				},
+				{
+					"filter_properties": {
+						"type_code": "leader"
+					}
 				}
 			],
-			"board": {
-				"add 1 energy": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"action_ability"
-						]
-					},
-					{
-						"name": "pay_cost",
-						"cost": {
-							"energy": 1
-						},
-						"is_cost": true
-					},
-					{
-						"name": "mod_tokens",
-						"token_name": "energy",
-						"modification": 1,
-						"subject": "self"
-					}
-				],
-				"add 2 energy": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"action_ability"
-						]
-					},
-					{
-						"name": "pay_cost",
-						"cost": {
-							"energy": 2
-						},
-						"is_cost": true
-					},
-					{
-						"name": "mod_tokens",
-						"token_name": "energy",
-						"modification": 2,
-						"subject": "self"
-					}
-				],
-				"add 3 energy": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"action_ability"
-						]
-					},
-					{
-						"name": "pay_cost",
-						"cost": {
-							"energy": 3
-						},
-						"is_cost": true
-					},
-					{
-						"name": "mod_tokens",
-						"token_name": "energy",
-						"modification": 3,
-						"subject": "self"
-					}
-				],
-				"Unleash energy": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"hero_action"
-						]
-					},
-					{
-						"name": "move_card_to_container",
-						"dest_container": "discard",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "energy",
+					"subject": "self",
+					"modification": 1,
+					"is_cost": true
+				},
+				{
+					"name": "if",
+					"func_name": "count_tokens>=4",
+					"func_params": {
 						"subject": "self",
-						"is_cost": true
+						"token_name": "energy"
 					},
-					{
-						"name": "deal_damage",
-						"subject": "target",
-						"amount": "per_token_self",
-						"needs_subject": true,
-						"per_token_self": {
+					"then": [
+						{
+							"name": "mod_tokens",
+							"subject": "self",
 							"token_name": "energy",
-							"multiplier": 2,
-							"max": 10
+							"set_to_mod": true,
+							"modification": 0
 						},
-						"filter_state_subject": [
-							{
-								"filter_group": "group_enemies"
-							}
-						],
-						"tags": [
-							"attack"
-						]
-					}
-				]
-			}
+						{
+							"name": "i_attack",
+							"action_owner": "Captain Marvel",
+							"subject": "trigger",
+							"tags": [
+								"overkill"
+							]
+						}
+					]
+				}
+			]
 		}
 	},
 	"Excelsior": {
@@ -1520,19 +1657,46 @@
 		}
 	},
 	"Excessive Force": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": "minion"
+						}
+					},
+					"subject": "main_scheme",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "enemy_activates_against_you",
+									"subject": "villain",
+									"tags": [
+										"no_boost"
+									]
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -2208,7 +2372,16 @@
 		}
 	},
 	"Hunting Rebel Heroes - 2B": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_unregistered",
+					"filter_state_trigger": "hero",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Imitation Shape": {
 		"alterants": {
@@ -2777,11 +2950,28 @@
 		}
 	},
 	"Justice Like Lightning": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "enemy_activates",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "enemy_activates_against_you",
+					"subject": "villain",
+					"tags": [
+						"no_boost"
+					]
 				}
 			]
 		}
@@ -3327,41 +3517,47 @@
 		}
 	},
 	"Photonic Blast": {
-		"manual": {
-			"hand": [
+		"reveal_alter_ego": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
-				{
-					"name": "attack",
-					"is_cost": true,
-					"subject": "target",
-					"amount": 5,
-					"filter_state_subject": [
+					"name": "discard",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
 						{
-							"filter_group": "group_enemies"
-						}
-					],
-					"tags": [
-						"attack"
-					]
-				},
-				{
-					"name": "draw_cards",
-					"amount": {
-						"if": {
-							"func_name": "paid_with_includes",
-							"func_params": {
-								"energy": 1
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "ally"
 							}
 						},
-						"then": 1,
-						"else": 0
-					}
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Captain Marvel"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_energy"
+				}
+			]
+		},
+		"do_energy": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"subject": "Energy Channel",
+					"modification": 1,
+					"token_name": "energy"
 				}
 			]
 		}
@@ -3774,13 +3970,41 @@
 		"TODO": ""
 	},
 	"S.H.I.E.L.D. Recruits - 1B": {
-		"TODO": "",
-		"reveal": {
+		"on_load": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
+					}
 				}
 			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter": [
+					{
+						"name": "deal_encounter",
+						"target_identity": "my_identity",
+						"subject": "enemy_team_tutor_and_choose",
+						"src_container": "deck_villain",
+						"filter_state_tutor": "minion"
+					}
+				]
+			}
 		}
 	},
 	"S.H.I.E.L.D. Soldier": {

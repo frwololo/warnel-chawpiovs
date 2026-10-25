@@ -87,8 +87,29 @@ const default_servers := {
 				#mcgbuilder has slight different pack code ordering than MarvelCDB
 				"exceptions": {
 					"pack_code": {
+						"2": "3", #Captain America/Green Goblin swapped
+						"3": "2",
+						"4": "10", #trors
+						"8": "7", #Black Widow/Hulk/Doctor Strange swap
+						"7": "4", #Wrecking Crew
+						"9": "8",
+						"10": "9",
+						"13": "14", #Quicksilver/The Wasp
+						"14": "13",
+						"18": "19", #Gamora -> Drax
+						"19": "20", #Drax/MTS
+						"20": "21", #Venom
+						"21": "18", #MTS
+						"28" : "29", #Nova/Ironheart
+						"29" : "28",
+						"33": "34",#Cyclops and Phoenix inverted
+						"34": "33",	
+						"35": "36", #Storm/Wolverine	
+						"36": "35",								
 						"37": "39",						
-						"39": "37",							
+						"39": "37",	
+						"41": "42", #Psylocke/Angel
+						"42": "41",						
 						"43": "44",
 						"44": "43",											
 						"53": "54",

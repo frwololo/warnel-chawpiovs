@@ -509,7 +509,7 @@
 					"filter_property_name": "not_temporary",
 					"filter_state_trigger": [
 						{
-							"filter_same_controler": true,
+							"filter_same_controller": true,
 							"filter_properties": {
 								"type_code": "upgrade"
 							},

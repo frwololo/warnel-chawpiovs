@@ -201,10 +201,11 @@ func init_servers():
 		var local_settings = cfc.get_setting("image_servers")
 		var has_local_override = local_settings.get("_data", {}).get("modified_by_user", false)
 		if has_local_override:
-			if !server_cfc_sanity_check(result):
+			if server_cfc_sanity_check(result):
+				result = local_settings
+			else:
 				local_settings = {}
-			#if local settings are different from default	
-			result = default_servers
+				result = default_servers
 		cfc.set_setting("image_servers", result)
 	
 	servers = result.duplicate(true)

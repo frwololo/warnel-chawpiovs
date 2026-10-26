@@ -1259,29 +1259,70 @@
 		"_comments": "TODO. PVP mode not supported"
 	},
 	"Cloak": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"subject": "a_scheme",
+					"amount": 2
+				},
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "count_cards",
+					"func_params": {
+						"subject": "boardseek",
+						"filter_state_seek": "Dagger"
+					},
+					"then": [
+						{
+							"name": "reveal_encounter",
+							"subject": "self"
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": "group_schemes",
+							"amount": 1
+						}
+					]
 				}
 			]
 		}
 	},
 	"Cloak and Dagger": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "heal",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "villain"
 				}
 			]
 		}
@@ -1664,18 +1705,54 @@
 		}
 	},
 	"Dagger": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_damage",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": "group_friendly_my_hero",
+					"amount": 2
+				},
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "heal",
+							"amount": 2,
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "count_cards",
+					"func_params": {
+						"subject": "boardseek",
+						"filter_state_seek": "Cloak"
+					},
+					"then": [
+						{
+							"name": "reveal_encounter",
+							"subject": "self"
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": "group_friendly_my_hero",
+							"amount": 1
+						}
+					]
 				}
 			]
 		}
@@ -1697,45 +1774,96 @@
 		}
 	},
 	"Daredevil": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "enemy_team_boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero",
+							"filter_is_exhausted": false
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target",
+							"filter_is_exhausted": false
+						}
+					]
 				}
 			]
 		}
 	},
 	"Darkforce": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "villain",
+					"modification": 1,
+					"token_name": "tough"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"_comments": "Todo handle case where no threat was added",
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "remove_threat",
+							"subject": "todo",
+							"_comments": "TODO. competitive mode unsupported"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Defend Hell's Kitchen": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_remove_threat",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								"minion",
+								"trait_defender"
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Defensive Conditioning": {
 		"give_to_player_max1": {},
@@ -1801,7 +1929,7 @@
 		}
 	},
 	"Double Agent": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -1834,21 +1962,15 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
 						{
-							"condition": {
-								"func_name": "get_scenario_option_value",
-								"func_params": {
-									"option_name": "competitive_mode"
-								},
-								"nested_tasks": [
-									{
-										"name": "nop",
-										"_comments": "TODO. competitive mode unsupported"
-									}
-								]
-							}
+							"name": "nop",
+							"_comments": "TODO. competitive mode unsupported"
 						}
 					],
 					"else": [
@@ -2306,7 +2428,7 @@
 		}
 	},
 	"Fighting Dirty": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -2455,6 +2577,16 @@
 					}
 				}
 			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "steady",
+					"trigger": "villain",
+					"alteration": 1
+				}
+			]
 		}
 	},
 	"Goliath": {
@@ -2562,10 +2694,48 @@
 		}
 	},
 	"Guerilla Warfare - 2B": {
-		"TODO": ""
+		"_comments": "dirty way to handle multiple token types",
+		"card_token_modified": {
+			"trigger": "villain",
+			"filter_count_difference": "increase",
+			"filter_token_name": "stunned",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"response_card_token_added": {
+			"trigger": "villain",
+			"event_filters": {
+				"token_name": "tough"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_added": {
+			"trigger": "villain",
+			"event_filters": {
+				"token_name": "confused"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Hard to Hit": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -3270,33 +3440,86 @@
 		}
 	},
 	"Iron Fist": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "add_script",
+							"subject": "self",
+							"end_condition": "enemy_activation_finished",
+							"script": {
+								"card_moved_to_board": {
+									"trigger": "self",
+									"board": [
+										{
+											"name": "i_attack",
+											"subject": "todo",
+											"_comments": " todo cometitive mode not supported"
+										}
+									]
+								}
+							},
+							"_comments": "calling enemy_attacks_you directly here doesn't work because the enemy is still in the encounters_revealed pile. So instead we make the attack once it comes into play"
+						}
+					],
+					"else": [
+						{
+							"name": "add_script",
+							"subject": "self",
+							"end_condition": "enemy_activation_finished",
+							"script": {
+								"card_moved_to_board": {
+									"trigger": "self",
+									"board": [
+										{
+											"name": "enemy_activates_against_you",
+											"subject": "self"
+										}
+									]
+								}
+							},
+							"_comments": "calling enemy_attacks_you directly here doesn't work because the enemy is still in the encounters_revealed pile. So instead we make the attack once it comes into play"
+						}
+					]
 				}
 			]
 		},
 		"boost": {
+			"condition_all": {
+				"func_name": "get_scenario_option_value",
+				"func_params": {
+					"option_name": "competitive_mode"
+				}
+			},
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "TODO",
+									"_comments": "TODO. competitive_mode not supported",
+									"tags": [
+										"no_boost"
+									]
+								}
+							]
+						}
+					}
 				}
 			]
 		}
 	},
 	"Iron Lad - Nathaniel Richards": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
-		},
 		"interrupt_attack_started": {
 			"trigger": "self",
 			"event_filters": {
@@ -3593,24 +3816,84 @@
 		}
 	},
 	"Jessica Jones": {
-		"alterants": {
-			"board": [
+		"reveal": {
+			"all": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "thwart",
-					"trigger": "self",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "side_scheme"
-								}
-							}
-						]
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
 					},
-					"alteration": "per_boardseek"
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						},
+						{
+							"name": "sequence",
+							"sequence_name": "do_confuse"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"do_confuse": {
+			"_comments": "confuse identity if leader didn't get confused",
+			"condition_all": {
+				"func_name": "!is_confused",
+				"func_params": {
+					"subject": "todo"
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						},
+						{
+							"name": "sequence",
+							"sequence_name": "do_confuse"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "my_identity"
+						}
+					]
 				}
 			]
 		}
@@ -3718,28 +4001,100 @@
 		}
 	},
 	"Lightforce": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "heal",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "indirect_damage",
+					"amount": 3,
+					"subject": "my_identity"
 				}
 			]
 		}
 	},
 	"Luke Cage": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						},
+						{
+							"name": "sequence",
+							"sequence_name": "do_stun"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"do_stun": {
+			"_comments": "stun identity if leader didn't get stunned",
+			"condition_all": {
+				"func_name": "!is_stunned",
+				"func_params": {
+					"subject": "todo"
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_identity"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						},
+						{
+							"name": "sequence",
+							"sequence_name": "do_stun"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "my_identity"
+						}
+					]
 				}
 			]
 		}
@@ -4035,11 +4390,28 @@
 		}
 	},
 	"Neighborhood Hero": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"subject": "self",
+							"amount": "2p"
+						}
+					]
 				}
 			]
 		}
@@ -4134,7 +4506,7 @@
 		}
 	},
 	"No, You Move!": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"interrupt": {
 			"event_name": "TODO",
 			"board": []
@@ -4503,12 +4875,34 @@
 		}
 	},
 	"Protect the Innocent": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "count_tokens",
+					"func_params": {
+						"subject": "villain",
+						"token_name": "tough"
+					},
+					"then": [
+						{
+							"name": "surge"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "villain",
+					"token_name": "tough",
+					"modification": 1
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "minion",
+					"token_name": "tough",
+					"modification": 1
 				}
 			]
 		}
@@ -4579,6 +4973,16 @@
 							}
 						}
 					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"filter_state_trigger": "minion",
+					"alteration": 1
 				}
 			]
 		}
@@ -4660,7 +5064,7 @@
 		}
 	},
 	"Recruited by Cap": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -4711,14 +5115,23 @@
 		}
 	},
 	"Resistance Fighter": {
-		"TODO": "",
-		"_surge": {},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "enemy_team_boardseek_and_choose",
+					"filter_state_seek": "minion",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
@@ -4726,12 +5139,14 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 4
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "host",
 					"alteration": 1
 				}
 			]
@@ -4739,7 +5154,12 @@
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "attach_to_card",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"minion",
+						"group_enemies_current_hero_target"
+					]
 				}
 			]
 		}
@@ -5048,7 +5468,7 @@
 		}
 	},
 	"Secret Contact": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"response": {
 			"event_name": "TODO",
 			"is_optional_board": true,
@@ -5350,11 +5770,26 @@
 		}
 	},
 	"Spectacular!": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 2
+				},
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"subject": "todo",
+							"_comments": "TODO, competitive mode not supported"
+						}
+					]
 				}
 			]
 		}
@@ -5390,7 +5825,7 @@
 		}
 	},
 	"Spider-Blast": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -5431,19 +5866,61 @@
 		}
 	},
 	"Spider-Man": {
-		"interrupt": {
-			"event_name": "enemy_initiates_attack",
-			"is_optional_board": true,
-			"board": [
+		"reveal": {
+			"all": [
 				{
-					"name": "draw_cards",
-					"amount": 1
-				}
-			],
-			"filter_target_hero": "Spider-Man",
-			"filter_state_trigger": [
-				{
-					"filter_group": "group_villains"
+					"name": "if",
+					"func_name": "card_is_in_play",
+					"func_params": {
+						"card_name": "Tangled Up"
+					},
+					"then": [
+						{
+							"name": "add_script",
+							"subject": "self",
+							"end_condition": "enemy_activation_finished",
+							"script": {
+								"card_moved_to_board": {
+									"trigger": "self",
+									"board": [
+										{
+											"name": "i_attack",
+											"subject": "boardseek",
+											"filter_state_seek": [
+												{
+													"filter_group": "group_characters",
+													"filter_func": {
+														"func_name": "count_attachments",
+														"func_params": {
+															"subject": "trigger",
+															"filter_state_attachment": "Tangled Up"
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							},
+							"_comments": "calling enemy_attacks_you directly here doesn't work because the enemy is still in the encounters_revealed pile. So instead we make the attack once it comes into play"
+						}
+					],
+					"else": [
+						{
+							"name": "move_card_to_container",
+							"subject": "enemy_team_tutor_and_choose",
+							"src_container": [
+								"discard_villain",
+								"deck_villain"
+							],
+							"filter_state_tutor": "Tangled Up",
+							"dest_container": "deck_villain"
+						},
+						{
+							"name": "draw_boost_card",
+							"subject": "villain"
+						}
+					]
 				}
 			]
 		}
@@ -5678,11 +6155,28 @@
 		}
 	},
 	"Street Defenders": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "enemy_activates",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "enemy_activates_against_you",
+					"subject": "villain",
+					"tags": [
+						"no_boost"
+					]
 				}
 			]
 		}
@@ -5822,7 +6316,41 @@
 		}
 	},
 	"Superhero Jailbreak - 2B": {
-		"TODO": ""
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_villain"
+					},
+					{
+						"name": "if",
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "type_code",
+							"property_value": "minion"
+						},
+						"then": [
+							{
+								"name": "move_card_to_board",
+								"subject": "previous",
+								"grid_name": "enemies_my_hero"
+							}
+						]
+					}
+				]
+			}
+		}
 	},
 	"Superhero Registration Act - 1A": {
 		"setup": {
@@ -6084,24 +6612,71 @@
 		}
 	},
 	"Tangled Up": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
-					"name": "attach_to_card",
-					"subject": "TODO"
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "attach_to_card",
+							"subject": "TODO",
+							"_comments": "TODO. competitive mode unsupported"
+						}
+					],
+					"else": [
+						{
+							"name": "attach_to_card",
+							"subject": "my_hero",
+							"is_cost": true
+						},
+						{
+							"name": "discard",
+							"subject": "self",
+							"is_else": true
+						}
+					]
 				}
 			]
 		},
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": [
+				"enemy_would_scheme",
+				"enemy_would_attack",
+				"attack",
+				"thwart"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
 		},
 		"boost": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						"minion",
+						"Spider-Man"
+					]
+				}
+			},
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "self"
 				}
 			]
 		}
@@ -6268,7 +6843,16 @@
 		}
 	},
 	"The Defenders": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"filter_state_trigger": "minion",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"The Fifty State Initiative": {
 		"card_defeated": {
@@ -6552,7 +7136,7 @@
 		}
 	},
 	"The People's Hero": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"response": {
 			"event_name": "TODO",
 			"is_optional_board": true,

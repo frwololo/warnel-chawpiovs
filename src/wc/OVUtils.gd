@@ -86,7 +86,7 @@ func preprocess_subject_definition(script: ScriptObject):
 
 		"enemy_team_boardseek_and_choose":
 			script_definition[SP.KEY_SUBJECT] = "boardseek"
-			script_definition[SP.KEY_SORT_BY] = "random" 
+			script_definition[SP.KEY_SUBJECT_INDEX] = "random" 
 			script_definition[SP.KEY_SUBJECT_COUNT] = 1
 						
 						

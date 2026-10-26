@@ -185,7 +185,7 @@
 			"all": [
 				{
 					"name": "mod_tokens",
-					"amount": 3,
+					"modification": 3,
 					"subject": "Energy Channel",
 					"token_name": "energy"
 				}
@@ -1024,7 +1024,10 @@
 				{
 					"name": "host_card",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
 					"filter_state_tutor": "Energy Channel"
 				},
 				{
@@ -1058,7 +1061,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"amount": 1,
+					"modification": 1,
 					"subject": "Energy Channel",
 					"token_name": "energy"
 				}
@@ -1108,7 +1111,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"amount": 1,
+					"modification": 1,
 					"subject": "Energy Channel",
 					"token_name": "energy"
 				}
@@ -1121,7 +1124,10 @@
 				{
 					"name": "host_card",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
 					"filter_state_tutor": "Energy Channel"
 				},
 				{
@@ -1155,7 +1161,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"amount": 1,
+					"modification": 1,
 					"subject": "Energy Channel",
 					"token_name": "energy"
 				}
@@ -1205,7 +1211,7 @@
 			"board": [
 				{
 					"name": "mod_tokens",
-					"amount": 1,
+					"modification": 1,
 					"subject": "Energy Channel",
 					"token_name": "energy"
 				}
@@ -1769,7 +1775,7 @@
 					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "retaliate",
@@ -2169,7 +2175,7 @@
 	"Energy Channel": {
 		"response_attack_happened": {
 			"event_filters": {
-				"target": "self"
+				"target": "host"
 			},
 			"filter_state_attacker": [
 				{
@@ -2505,7 +2511,7 @@
 			"all": [
 				{
 					"name": "mod_tokens",
-					"modification": "1",
+					"modification": 1,
 					"token_name": "stunned",
 					"subject": "target",
 					"filter_state_subject": "minion"
@@ -2987,8 +2993,8 @@
 		},
 		"response_identity_changed_form": {
 			"trigger": "my_identity",
-			"is_optional_hand": true,
-			"hand": [
+			"is_optional_board": true,
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -3172,6 +3178,18 @@
 				"upgrade",
 				"filter_same_controller"
 			],
+			"condition_board": {
+				"func_name": "count_cards>1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"trait_shapeshift",
+						"upgrade",
+						"filter_same_controller"
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "discard",
@@ -3715,11 +3733,11 @@
 				{
 					"name": "exhaust_card",
 					"subject": "boardseek_and_choose",
-					"is_cost": "true",
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_same_controller": true,
-							"filter_is_exhausted": "false",
+							"filter_is_exhausted": false,
 							"filter_properties": {
 								"type_code": "ally"
 							},
@@ -3774,11 +3792,11 @@
 				{
 					"name": "exhaust_card",
 					"subject": "boardseek_and_choose",
-					"is_cost": "true",
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_same_controller": true,
-							"filter_is_exhausted": "false",
+							"filter_is_exhausted": false,
 							"filter_properties": {
 								"type_code": "ally"
 							},
@@ -4589,7 +4607,7 @@
 							"subject": "self",
 							"filter_state_attachment": [
 								{
-									"filter_faceup": "false"
+									"filter_faceup": false
 								}
 							]
 						},
@@ -7047,44 +7065,46 @@
 			"__name__": "__shape_changer"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"modification": -1,
-					"token_name": "__shape_changer",
-					"subject": "self"
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "hand",
-					"subject": "tutor_and_choose",
-					"src_container": [
-						"deck",
-						"discard"
-					],
-					"filter_state_tutor": [
-						"trait_shapeshift",
-						"upgrade"
-					]
-				}
-			]
+			"board": {
+				"Shape Changer": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__shape_changer",
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "hand",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck",
+							"discard"
+						],
+						"filter_state_tutor": [
+							"trait_shapeshift",
+							"upgrade"
+						]
+					}
+				]
+			}
 		},
-		"card_moved_to_board": {
+		"response_card_moved_to_board": {
 			"filter_state_trigger": [
 				"trait_shapeshift",
 				"upgrade",
 				"filter_same_controller"
 			],
 			"condition_board": {
-				"name": "count_cards>1",
+				"func_name": "count_cards>1",
 				"func_params": {
 					"subject": "boardseek",
 					"subject_count": "all",
@@ -7606,7 +7626,8 @@
 								"faction_code": "hero"
 							}
 						}
-					]
+					],
+					"is_cost": true,
 				},
 				{
 					"name": "discard",

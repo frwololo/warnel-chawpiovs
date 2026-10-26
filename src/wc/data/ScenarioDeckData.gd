@@ -373,7 +373,7 @@ func load_from_dict(_scenario:Dictionary):
 	
 	#Preload
 	_villains = []
-	load_villains()
+	load_villains(scheme_card_id)
 	
 	set_aside = []
 	set_aside_index = {}
@@ -561,15 +561,17 @@ func setup_grid():
 func get_extra_decks():
 	return extra_decks		
 		
-func load_villains():
+func load_villains(scheme_id = ""):
 	if (!scenario_data):
 		print_debug("data not loaded in ScenarioDeckData")
 		return []
 	if (not _villains.empty()):
 		return _villains
-		
-	var first_scheme = schemes[0]
-	_villains = get_villains_from_scheme(first_scheme["_code"], is_expert_mode)
+	
+	if !scheme_id:	
+		var first_scheme = schemes[0]
+		scheme_id = first_scheme["_code"]
+	_villains = get_villains_from_scheme(scheme_id, is_expert_mode)
 	return _villains
 
 func villain_is_in_scenario(villain_data):

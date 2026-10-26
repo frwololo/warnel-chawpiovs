@@ -783,6 +783,10 @@ static func script_definitions_pre_processing(script_definition):
 	match typeof(script_definition):
 		TYPE_DICTIONARY:
 			for key in script_definition.keys():
+				if !script_definition.has(key):
+					#we might have erased some keys in other parts of the loop
+					continue
+					
 				var value = script_definition[key]
 				if key.begins_with("filter_state_"):
 					var filter_array = value
@@ -820,6 +824,9 @@ static func script_definitions_pre_processing(script_definition):
 							"nested_tasks": script_definition["then"]
 						}
 					]
+					script_definition.erase("func_name")
+					script_definition.erase("func_params")
+					script_definition.erase("then")
 				else:
 					script_definitions_pre_processing(script_definition[key])
 		TYPE_ARRAY:	

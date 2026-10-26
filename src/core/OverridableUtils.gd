@@ -147,5 +147,5 @@ func compare_string_properties(property_filters, card, property, comparison_type
 func check_validity_post_selection(_card, _script):
 	return true
 
-func parse_additional_script_replacements(script:ScriptObject):
+func parse_additional_script_replacements(_script:ScriptObject):
 	return

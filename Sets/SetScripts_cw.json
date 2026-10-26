@@ -87,7 +87,7 @@
 			"__name__": "fuel",
 			"__amount__": 2
 		},
-		"card_moved_to_board": {
+		"response_card_moved_to_board": {
 			"filter_state_trigger": "minion",
 			"is_optional_board": true,
 			"board": [
@@ -844,6 +844,24 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": "Cap's Shield"
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -917,6 +935,24 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": "Cap's Shield"
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -990,6 +1026,24 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": "Energy Channel"
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -1069,6 +1123,24 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": "Energy Channel"
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -1657,6 +1729,13 @@
 					}
 				}
 			],
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"token_name": "__player_token_active_player",
+					"subject": "self"
+				}
+			},
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -2191,6 +2270,12 @@
 			]
 		},
 		"boost": {
+			"condition_all": {
+				"func_name": "get_scenario_option_value",
+				"func_params": {
+					"option_name": "competitive_mode"
+				}
+			},
 			"all": [
 				{
 					"name": "add_script",
@@ -2200,7 +2285,7 @@
 						"enemy_activation_finished": {
 							"all": [
 								{
-									"name": "enemy_activates_against_you",
+									"name": "todo_attack_other_leader",
 									"subject": "villain",
 									"tags": [
 										"no_boost"
@@ -2220,7 +2305,8 @@
 					"name": "add_threat",
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_seek": "group_schemes"
+					"filter_state_seek": "group_schemes",
+					"amount": 2
 				},
 				{
 					"name": "if",
@@ -2682,6 +2768,7 @@
 					},
 					{
 						"name": "move_card_to_container",
+						"dest_container": "hand",
 						"subject": "tutor_and_choose",
 						"src_container": [
 							"deck",
@@ -3116,6 +3203,12 @@
 					],
 					"filter_state_tutor": "minion",
 					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "previous",
+					"token_name": "stunned",
+					"modification": 1
 				},
 				{
 					"name": "save_variable",
@@ -3667,8 +3760,32 @@
 					"subject": "enemy_team_tutor_and_choose",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
-						"attachment",
-						"trait_tech"
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"card_set_code": "iron_man_leader"
+							}
+						}
+					]
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
 					]
 				}
 			]
@@ -3755,8 +3872,32 @@
 					"subject": "enemy_team_tutor_and_choose",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
-						"attachment",
-						"trait_tech"
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"card_set_code": "iron_man_leader"
+							}
+						}
+					]
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
 					]
 				}
 			]
@@ -4367,14 +4508,8 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "ally"
-					}
-				}
-			],
+		"card_defeated": {
+			"filter_state_trigger": "ally",
 			"filter_tags": [
 				"attack"
 			],
@@ -5387,7 +5522,7 @@
 					"end_condition": "attack_happened",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
@@ -5933,6 +6068,24 @@
 					"subject": "enemy_team_tutor_and_choose",
 					"src_container": "deck_villain",
 					"filter_state_tutor": "Finesse"
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -6038,6 +6191,24 @@
 					"subject": "enemy_team_tutor_and_choose",
 					"src_container": "deck_villain",
 					"filter_state_tutor": "Finesse"
+				},
+				{
+					"_comments": "move leader player cards to set aside",
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[villain_card_set_code]"
+							},
+							"filter_properties2": {
+								"faction_code": "basic"
+							}
+						}
+					]
 				}
 			]
 		},
@@ -6147,8 +6318,14 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						"attachment",
-						"trait_tech"
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_properties2": {
+								"card_set_code": "iron_man_leader"
+							}
+						}
 					]
 				}
 			]
@@ -6474,7 +6651,7 @@
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "enemy_attacks",
+					"name": "enemy_attacks_you",
 					"subject": "Iron Man",
 					"tags": {
 						"if": {
@@ -7182,6 +7359,16 @@
 			"event_filters": {
 				"step_name": "PLAYER_TURN"
 			},
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						"minion",
+						"group_enemies_my_hero"
+					]
+				}
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -7217,7 +7404,8 @@
 							"filter_state_seek": [
 								"minion",
 								"group_enemies_my_hero"
-							]
+							],
+							"multiplier": -1
 						}
 					}
 				}
@@ -7358,8 +7546,21 @@
 					],
 					"else": [
 						{
-							"name": "enemy_activates_against_you",
-							"subject": "self"
+							"name": "add_script",
+							"subject": "self",
+							"end_condition": "enemy_activation_finished",
+							"script": {
+								"card_moved_to_board": {
+									"trigger": "self",
+									"board": [
+										{
+											"name": "enemy_activates_against_you",
+											"subject": "self",
+										}
+									]
+								}
+							},
+							"_comments": "calling enemy_attacks_you directly here doesn't work because the enemy is still in the encounters_revealed pile. So instead we make the attack once it comes into play"
 						}
 					]
 				}

@@ -2595,7 +2595,6 @@ func move_to_next_villain(current_villain):
 		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
 			yield(sceng_return,"completed")	
 		for potential_villain in sceng.all_subjects_so_far:
-			var type_code = potential_villain.get_property("type_code")
 			if potential_villain.is_card_type("villain"):
 				ckey = potential_villain.get_property("_code")	
 		if !ckey:

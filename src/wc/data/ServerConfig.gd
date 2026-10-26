@@ -63,7 +63,7 @@ func _file_downloaded(url, destination):
 
 	config_is_loaded = true
 
-func _download_error(url, filename):
+func _download_error(url, _filename):
 	#ignore if not for us
 	if url != get_remote_config_url():
 		return

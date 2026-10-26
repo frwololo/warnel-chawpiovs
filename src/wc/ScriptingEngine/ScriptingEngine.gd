@@ -280,7 +280,6 @@ func move_card_to_board(script: ScriptTask) -> int:
 			card._clear_attachment_status()
 			script.script_definition[SP.KEY_TAGS] = ["force_emit_card_moved_signal"] +  script.get_property(SP.KEY_TAGS)
 
-		var type_code = card.get_property("type_code", "")
 		var set_properties =  script.get_property("set_properties", {})	
 		if card.is_card_type("villain"):
 			cfc.NMAP.board.load_villain(card.canonical_id)

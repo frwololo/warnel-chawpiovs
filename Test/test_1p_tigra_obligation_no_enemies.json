@@ -1,0 +1,261 @@
+{
+	"_comments": [
+		"Bug: Tigra's obligation doesn't discard+surge if no enemy in play"
+	],
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "56001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Mighty Avengers #56076"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},				
+				{
+					"card": "In Too Deep"
+				}
+			],
+			"villain": [
+				{
+					"card": "Iron Man - 1 #56059",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Cut Off Support - 1B #56063b",
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1
+					}
+				},
+			],
+			"set_aside": [
+				{
+					"card": "Tigra #56001a"
+				},
+				{
+					"card": "The Hood #56024"
+				},
+				{
+					"card": "Criminal Underworld #56025"
+				},
+				{
+					"card": "The Hood's Mantle #56026"
+				},
+				{
+					"card": "Madame Masque #56027"
+				},
+				{
+					"card": "Jigsaw #56028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Iron Man - 2 #56060"
+				},
+				{
+					"card": "Pro-Registration Tactics - 2A #56064a"
+				},
+				{
+					"card": "Negative Zone Prison - 2B #56064b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Registration Act - 1A #56063a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Savage Strike #56017",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+							{
+					"card": "Hellcat #56079",
+					"tokens": {
+						"stunned": 1
+					}
+				},
+			],
+			"identity1": [
+				{
+					"card": "Tigra #56001a",
+					"exhausted": true
+				}
+			],
+			"allies1": [
+				{
+					"card": "Moon Knight #56002"
+				}
+			],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Audacity #56018"
+				}
+			],
+			"others": [
+				{
+					"card": "Arc Reactor #56068",
+					"owner_hero_id": 0,
+					"host": "56059"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "choose",
+			"value": "Each Minion Activates",
+			"_comments": "card will discard and surge since no minion on board"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "choose",
+			"value": "No",
+			"_comments": "don't activate draw"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "56001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+							{
+					"card": "In Too Deep"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Mighty Avengers #56076"
+				},
+			
+			],
+			"villain": [
+				{
+					"card": "Iron Man - 1 #56059",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Cut Off Support - 1B #56063b",
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1
+					}
+				},
+			],
+			"set_aside": [
+				{
+					"card": "Tigra #56001a"
+				},
+				{
+					"card": "The Hood #56024"
+				},
+				{
+					"card": "Criminal Underworld #56025"
+				},
+				{
+					"card": "The Hood's Mantle #56026"
+				},
+				{
+					"card": "Madame Masque #56027"
+				},
+				{
+					"card": "Jigsaw #56028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Iron Man - 2 #56060"
+				},
+				{
+					"card": "Pro-Registration Tactics - 2A #56064a"
+				},
+				{
+					"card": "Negative Zone Prison - 2B #56064b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Registration Act - 1A #56063a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Savage Strike #56017",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+							{
+					"card": "Hellcat #56079",
+					"tokens": {
+						"stunned": 0
+					}
+				},			
+							{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Tigra #56001a",
+					"exhausted": true
+				}
+			],
+			"allies1": [
+				{
+					"card": "Moon Knight #56002"
+				}
+			],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Audacity #56018"
+				}
+			],
+			"others": [
+				{
+					"card": "Arc Reactor #56068",
+					"owner_hero_id": 0,
+					"host": "56059"
+				}
+			]
+		}
+	}
+}

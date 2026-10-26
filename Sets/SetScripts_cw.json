@@ -3430,24 +3430,48 @@
 						"filter_state_seek": [
 							"minion",
 							"group_enemies_my_hero"
-						],
-						"is_cost": true
+						]
 					},
 					{
 						"name": "discard",
 						"subject": "self"
 					},
 					{
-						"is_else": true,
-						"name": "surge"
-					},
-					{
-						"is_else": true,
-						"name": "discard",
-						"subject": "self"
+						"_comments": "poor man's way to check if something activated at all: check if there any non confused minion",
+						"name": "if",
+						"func_name": "!count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_group": "group_enemies_my_hero",
+									"filter_func": {
+										"func_name": "!is_confused",
+										"func_params": {
+											"subject": "trigger"
+										}
+									}
+								}
+							]
+						},
+						"then": [
+							{
+								"name": "surge"
+							}
+						]
 					}
 				],
 				"Each Minion Activates": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_form"
+						]
+					},
 					{
 						"name": "enemy_activates_against_you",
 						"subject": "boardseek",
@@ -3455,21 +3479,87 @@
 						"filter_state_seek": [
 							"minion",
 							"group_enemies_my_hero"
-						],
-						"is_cost": true
+						]
 					},
 					{
 						"name": "discard",
 						"subject": "self"
 					},
 					{
-						"is_else": true,
-						"name": "surge"
+						"_comments": "poor man's way to check if something activated at all: check if there any non confused minion",
+						"name": "if",
+						"func_name": "!count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_group": "group_enemies_my_hero",
+									"filter_func": {
+										"func_name": "!is_confused",
+										"func_params": {
+											"subject": "trigger"
+										}
+									}
+								}
+							]
+						},
+						"then": [
+							{
+								"name": "surge"
+							}
+						]
+					}
+				],
+				"Each Minion Activates": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
 					},
 					{
-						"is_else": true,
+						"name": "enemy_activates_against_you",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							"minion",
+							"group_enemies_my_hero"
+						]
+					},
+					{
 						"name": "discard",
 						"subject": "self"
+					},
+					{
+						"_comments": "poor man's way to check if something activated at all: check if there any non confused minion",
+						"name": "if",
+						"func_name": "!count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_group": "group_enemies_my_hero",
+									"filter_func": {
+										"func_name": "!is_stunned",
+										"func_params": {
+											"subject": "trigger"
+										}
+									}
+								}
+							]
+						},
+						"then": [
+							{
+								"name": "surge"
+							}
+						]
 					}
 				]
 			}
@@ -7555,7 +7645,7 @@
 									"board": [
 										{
 											"name": "enemy_activates_against_you",
-											"subject": "self",
+											"subject": "self"
 										}
 									]
 								}

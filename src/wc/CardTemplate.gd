@@ -4508,6 +4508,20 @@ func get_hero_id(params, script:ScriptTask = null) -> int:
 	
 	return hero_card.get_controller_hero_id()	
 
+func count_card_types(params, script:ScriptObject = null) -> int:
+	var subjects = get_param_subjects(params, script)
+	if !subjects:
+		return 0
+	var results = {}
+	for subject in subjects:
+		var value = subject.get_property("type_code", "")
+		if not results.has(value):
+			results[value] = 0
+		results[value] += 1
+	
+	return results.size()
+			
+
 func count_different_aspects(params, script:ScriptObject = null) -> int:
 	var subjects = get_param_subjects(params, script)
 	if !subjects:

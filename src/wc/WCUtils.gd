@@ -815,7 +815,7 @@ static func script_definitions_pre_processing(script_definition):
 						{
 							"condition": {
 								"func_name": script_definition["func_name"],
-								"func_params": script_definition["func_params"]
+								"func_params": script_definition.get("func_params", {})
 							},
 							"nested_tasks": script_definition["then"]
 						}

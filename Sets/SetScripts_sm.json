@@ -3169,8 +3169,7 @@
 					],
 					"else": [
 						{
-							"name": "move_card_to_container",
-							"dest_container": "discard",
+							"name": "discard",
 							"is_cost": true,
 							"subject": "boardseek",
 							"subject_count": 1,
@@ -4053,6 +4052,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
+					"grid_name": "enemies_current_hero_target",
 					"subject": "self"
 				}
 			]

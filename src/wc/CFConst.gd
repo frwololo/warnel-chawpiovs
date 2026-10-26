@@ -825,6 +825,7 @@ const AUTO_KEYWORDS := {
 	"cannot_be_canceled": "int",
 	"cannot_be_confused": "int",
 	"cannot_be_healed_by_player_cards": "int",	
+	"cannot_be_pierced": "int",
 	"cannot_be_stunned": "int",	
 	"cannot_be_thwarted": "int",	
 	"cannot_change_form": "int",

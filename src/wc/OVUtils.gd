@@ -81,12 +81,12 @@ func preprocess_subject_definition(script: ScriptObject):
 		#in the meantime we replace those with automated decisions by the engine
 		"enemy_team_tutor_and_choose":
 			script_definition[SP.KEY_SUBJECT] = "tutor"
-			script_definition[SP.KEY_SUBJECT_INDEX] = "random" 
+			script_definition[SP.KEY_SORT_BY] = "random" 
 			script_definition[SP.KEY_SUBJECT_COUNT] = 1
 
 		"enemy_team_boardseek_and_choose":
 			script_definition[SP.KEY_SUBJECT] = "boardseek"
-			script_definition[SP.KEY_SUBJECT_INDEX] = "random" 
+			script_definition[SP.KEY_SORT_BY] = "random" 
 			script_definition[SP.KEY_SUBJECT_COUNT] = 1
 						
 						

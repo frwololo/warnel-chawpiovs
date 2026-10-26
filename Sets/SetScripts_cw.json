@@ -163,7 +163,7 @@
 		}
 	},
 	"Alpha Flight Recruit": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -368,12 +368,19 @@
 		}
 	},
 	"Arrest Order": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_encounter",
+					"target_identity": "event_source_hero",
+					"subject": "tutor",
+					"sort_descending": true,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						"minion",
+						"trait_s.h.i.e.l.d"
+					]
 				}
 			]
 		}
@@ -402,31 +409,95 @@
 		}
 	},
 	"Atlantean Guard": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": 3,
+					"sort_descending": true,
+					"up_to": true,
+					"src_container": "deck_my_hero"
 				}
 			]
 		}
 	},
 	"Atlanteans": {
-		"TODO": "",
-		"reveal": {
+		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": 3,
+					"sort_descending": true,
+					"tags": [
+						"immediate"
+					],
+					"up_to": true,
+					"src_container": "deck_my_hero"
+				},
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"func_name": "count_card_types",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": 3,
+					"sort_descending": true,
+					"tags": [
+						"immediate"
+					],
+					"up_to": true,
+					"src_container": "deck_my_hero"
+				},
+				{
+					"name": "indirect_damage",
+					"subject": "my_hero",
+					"amount": {
+						"func_name": "count_card_types",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
 				}
 			]
 		}
 	},
 	"Atlantis Attacks": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": "1p",
+					"sort_descending": true,
+					"tags": [
+						"immediate"
+					],
+					"up_to": true,
+					"src_container": "deck_my_hero"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": {
+						"func_name": "count_card_types",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"token_name": "acceleration"
 				}
 			]
 		}
@@ -452,57 +523,105 @@
 		}
 	},
 	"Black Panther": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"group_upgrade_support_current_hero_target",
+						"upgrade"
+					]
 				}
 			]
 		}
 	},
 	"Bounty Hunting": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "has_trait",
+					"func_params": {
+						"subject": "my_identity",
+						"trait": "unregistered"
+					},
+					"then": [
+						{
+							"name": "discard",
+							"subject": "tutor",
+							"src_container": "hand_my_hero",
+							"sort_by": "random"
+						},
+						{
+							"name": "add_threat",
+							"subject": "main_scheme",
+							"amount": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous"
+								}
+							}
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "tutor_and_choose",
+							"src_container": "hand_my_hero"
+						},
+						{
+							"name": "add_threat",
+							"subject": "main_scheme",
+							"amount": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous"
+								}
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Bring Them In": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
-		},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"group_identities",
+						"trait_unregistered"
+					],
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "deal_encounter",
+					"subject": "enemy_team_tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": "Unregistered Super"
 				}
 			]
 		}
@@ -583,82 +702,285 @@
 		}
 	},
 	"Cap's Helmet": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Captain America"
 				}
 			]
 		},
-		"response": {
-			"event_name": "TODO",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"trigger": "Captain Marvel",
+					"alteration": 1
+				}
+			]
+		},
+		"response_basic_attack_happened": {
+			"event_filters": {
+				"target": "host"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "hero"
+					}
+				}
+			],
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_response"
-					]
+					"name": "pay_cost",
+					"cost": {
+						"unc": 3,
+						"type_constraint": "same"
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "reveal_encounter",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"Cap's Shield": {
-		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_pierced",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Captain America"
+				}
+			]
+		},
+		"response_card_damaged": {
+			"trigger": "host",
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"damage": ">0",
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"shortname": "Captain America"
+						}
+					},
+					{
+						"filter_properties": {
+							"type_code": "hero"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "trigger_details_attacker"
 				}
 			]
 		}
 	},
 	"Cape-Killer": {
-		"TODO": "",
-		"quickstrike": {},
-		"alterants": {
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"filter_state_event_target": "trait_unregistered",
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 2
+								}
+							]
 						}
-					],
-					"alteration": 1
+					}
 				}
 			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
 		}
 	},
 	"Captain America - 1": {
-		"TODO": "TODO"
+		"setup": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": "Cap's Shield"
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "Cap's Shield",
+			"event_filters": {
+				"host_card": "Self"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "tough",
+					"modification": 1
+				}
+			]
+		}
 	},
 	"Captain America - 2": {
-		"TODO": "TODO"
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "invincible",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"card_attached": {
+			"trigger": "Cap's Shield",
+			"event_filters": {
+				"host_card": "Self"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "tough",
+					"modification": 1
+				}
+			]
+		}
 	},
 	"Captain America - 3": {
-		"TODO": "TODO"
+		"setup": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": "Cap's Shield"
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "Cap's Shield",
+			"event_filters": {
+				"host_card": "Self"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "tough",
+					"modification": 1
+				}
+			]
+		}
 	},
 	"Captain America - 4": {
-		"TODO": "TODO"
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "invincible",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"card_attached": {
+			"trigger": "Cap's Shield",
+			"event_filters": {
+				"host_card": "Self"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "tough",
+					"modification": 1
+				}
+			]
+		}
 	},
 	"Captain Marvel - 1": {
 		"setup": {
@@ -934,7 +1256,7 @@
 		}
 	},
 	"Choosing Sides": {
-		"TODO": ""
+		"_comments": "TODO. PVP mode not supported"
 	},
 	"Cloak": {
 		"TODO": "",
@@ -965,11 +1287,35 @@
 		}
 	},
 	"Colleen Wing": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "has_trait",
+					"func_params": {
+						"subject": "my_identity",
+						"trait": "unregistered"
+					},
+					"then": [
+						{
+							"name": "discard",
+							"subject": "enemy_team_boardseek_and_choose",
+							"filter_state_seek": [
+								"ally",
+								"filter_same_controller"
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": [
+								"ally",
+								"filter_same_controller"
+							]
+						}
+					]
 				}
 			]
 		}
@@ -1038,25 +1384,69 @@
 		}
 	},
 	"Contaminant Immunity": {
-		"manual": {
-			"hand": [
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
+					"name": "attach_to_card",
+					"subject": "Spider-Woman"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "Spider-Woman",
+			"filter_count_difference": "increase",
+			"filter_token_name": "stunned",
+			"board": [
 				{
-					"name": "heal",
-					"amount": 3,
-					"subject": "my_hero"
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "stunned",
+					"subject": "Spider-Woman"
 				},
 				{
 					"name": "mod_tokens",
 					"modification": 1,
 					"token_name": "tough",
-					"subject": "my_hero"
+					"subject": "Spider-Woman"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_added": {
+			"trigger": "Spider-Woman",
+			"event_filters": {
+				"token_name": "confused"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "confused",
+					"subject": "Spider-Woman"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "tough",
+					"subject": "Spider-Woman"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
 				}
 			]
 		}
@@ -1745,19 +2135,58 @@
 		}
 	},
 	"Falcon": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "forget_variable",
+					"var_name": "my_boost"
+				},
+				{
+					"name": "if",
+					"func_name": "is_confused",
+					"func_params": {
+						"subject": "current_hero_target"
+					},
+					"then": [
+						{
+							"name": "save_variable",
+							"var_name": "my_boost",
+							"var_type": "int",
+							"value": 2
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "current_hero_target",
+							"modification": 1,
+							"token_name": "confused"
+						}
+					]
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": "my_boost"
 				}
 			]
 		}
@@ -1828,40 +2257,18 @@
 		}
 	},
 	"Fearless Determination": {
-		"manual": {
-			"hand": [
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					"name": "host_card",
+					"host": "Captain America",
+					"subject": "Cap's Shield"
 				},
 				{
-					"name": "temporary_effect",
-					"end_condition": "phase_ended",
-					"effect": {
-						"alterants": {
-							"all": [
-								{
-									"filter_task": "get_property",
-									"filter_property_name": "thwart",
-									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"Name": "Captain America"
-											}
-										}
-									],
-									"alteration": 1
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "draw_cards",
-					"amount": 1
+					"name": "i_attack",
+					"action_owner": "Captain Aerica",
+					"subject": "event_source_hero"
 				}
 			]
 		}
@@ -1913,85 +2320,212 @@
 		}
 	},
 	"Finesse": {
-		"resource": {
+		"card_token_modified": {
+			"_comment": "not more than 3 skill tokens",
+			"trigger": "self",
+			"filter_count_difference": "increase",
 			"condition_board": {
-				"func_name": "get_aspect_name",
+				"func_name": "count_tokens>3",
 				"func_params": {
-					"subject": "trigger"
+					"subject": "self",
+					"token_name": "skill"
 				}
 			},
 			"board": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_resource"
-					]
-				},
+					"name": "mod_tokens",
+					"modification": 3,
+					"set_to_mod": true,
+					"token_name": "skill",
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt_reveal_encounter": {
+			"filter_state_trigger": [
 				{
-					"name": "exhaust_card",
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"condition_board": {
+				"func_name": "count_tokens<3",
+				"func_params": {
 					"subject": "self",
-					"is_cost": true
-				},
+					"token_name": "skill"
+				}
+			},
+			"board": [
 				{
-					"name": "add_resource",
-					"amount": 1,
-					"resource_name": "wild"
+					"name": "mod_tokens",
+					"token_name": "skill",
+					"subject": "self",
+					"modification": 1
 				}
 			]
 		}
 	},
 	"Freedom Fighters": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "boost",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "minion",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "sequence",
+					"sequence_ability": "boost",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"minion",
+						"group_enemies_current_hero_target"
+					]
 				}
 			]
 		}
 	},
 	"Gathering Support - 1B": {
-		"TODO": "",
-		"reveal": {
+		"on_load": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
+					}
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter": [
+					{
+						"name": "deal_encounter",
+						"target_identity": "my_identity",
+						"subject": "enemy_team_tutor_and_choose",
+						"src_container": "deck_villain",
+						"filter_state_tutor": "minion"
+					}
+				]
+			}
+		}
+	},
+	"Going Underground - 1B": {
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
+					}
 				}
 			]
 		}
 	},
-	"Going Underground - 1B": {
-		"TODO": ""
-	},
 	"Goliath": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "forget_variable",
+					"var_name": "my_boost"
+				},
+				{
+					"name": "if",
+					"func_name": "count_tokens",
+					"func_params": {
+						"subject": "villain",
+						"token_name": "tough"
+					},
+					"then": [
+						{
+							"name": "save_variable",
+							"var_name": "my_boost",
+							"var_type": "int",
+							"value": 2
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "villain",
+							"modification": 1,
+							"token_name": "tough"
+						}
+					]
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": "my_boost"
 				}
 			]
 		}
 	},
 	"Government Contractor": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_unregistered",
+					"filter_state_trigger": "group_identities",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Greer Nelson": {
 		"once_per_round": {
@@ -2046,22 +2580,16 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "if",
+					"func_name": "is_stunned",
+					"func_params": {
+						"subject": "my_identity"
+					},
+					"then": [
 						{
-							"condition": {
-								"func_name": "is_stunned",
-								"func_params": {
-									"subject": "my_identity"
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "indirect_damage",
-									"subject": "my_identity",
-									"amount": 2
-								}
-							]
+							"name": "indirect_damage",
+							"subject": "my_identity",
+							"amount": 2
 						}
 					],
 					"else": [
@@ -2087,73 +2615,110 @@
 		}
 	},
 	"Hercules": {
-		"alterants": {
-			"hand": [
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
 				{
-					"trigger": "self",
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_boost"
+				},
+				{
+					"name": "if",
+					"func_name": "is_stunned",
+					"func_params": {
+						"subject": "current_hero_target"
+					},
+					"then": [
+						{
+							"name": "save_variable",
+							"var_name": "my_boost",
+							"var_type": "int",
+							"value": 2
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "current_hero_target",
+							"modification": 1,
+							"token_name": "stunned"
+						}
+					]
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
+				{
 					"filter_task": "get_property",
-					"filter_property_name": "cost",
-					"alteration": "per_boardseek",
-					"per_boardseek": {
-						"subject": "boardseek",
-						"subject_count": "all",
-						"filter_state_seek": [
-							{
-								"filter_group": "group_enemies_my_hero"
-							}
-						],
-						"is_inverted": true
-					}
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": "my_boost"
 				}
 			]
 		}
 	},
 	"Heroes for Hire": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "deal_encounter",
+					"target_identity": "event_source_hero",
+					"subject": "enemy_team_tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": "Unregistered Super"
 				}
 			]
 		}
 	},
 	"Heroic Strike": {
-		"manual": {
-			"hand": [
+		"reveal_alter_ego": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
-				{
-					"name": "attack",
-					"subject": "target",
-					"amount": 6,
-					"needs_subject": true,
-					"filter_state_subject": [
+					"name": "discard",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
 						{
-							"filter_group": "group_enemies"
-						}
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"modification": {
-						"if": {
-							"func_name": "paid_with_includes",
-							"func_params": {
-								"physical": 1
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "ally"
 							}
 						},
-						"then": 1,
-						"else": 0
-					},
-					"token_name": "stunned",
-					"subject": "previous"
+						{
+							"filter_same_controller": true,
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Captain America",
+					"tags": [
+						"stun_if_damage"
+					]
 				}
 			]
 		}
@@ -2196,7 +2761,7 @@
 		}
 	},
 	"High-Tech Suit": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -2219,16 +2784,60 @@
 		}
 	},
 	"Homeland Security - 1B": {
-		"TODO": ""
+		"on_load": {
+			"all": [
+				{
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
+					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"filter_state_trigger": "minion",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"Horn of Proteus": {
-		"TODO": "",
+		"interrupt_enemy_initiates_scheme": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"subject": "host",
+					"modification": 1
+				}
+			]
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Namor",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
 				}
 			]
 		},
@@ -2240,12 +2849,20 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
 		}
 	},
 	"Hulk Shape": {
@@ -2381,6 +2998,29 @@
 					"alteration": 1
 				}
 			]
+		},
+		"_comments": "super hardcoded here, need something better in the future",
+		"card_moved_to_board": {
+			"trigger": "Government Contractor",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": "hero"
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "Unregistered Super",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "trigger_details_host_card"
+				}
+			]
 		}
 	},
 	"Imitation Shape": {
@@ -2429,18 +3069,34 @@
 		}
 	},
 	"Imperius Rex!": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "card_is_in_play",
+					"func_params": {
+						"card_name": "Namor"
+					},
+					"then": [
+						{
+							"name": "enemy_activates_against_you",
+							"subject": "Namor"
+						}
+					],
+					"else": [
+						{
+							"name": "enemy_activates_against_you",
+							"subject": "villain"
+						}
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "draw_boost",
+					"subject": "host"
 				}
 			]
 		}
@@ -2557,29 +3213,58 @@
 		}
 	},
 	"Inconspicuous": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
 				},
+				"Discard": [
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": 1,
+						"sort_by": "function",
+						"sort_name": "get_subject_int_printed_property",
+						"func_params": {
+							"property": "cost"
+						},
+						"sort_descending": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero"
+							},
+							{
+								"filter_group": "group_allies_my_hero"
+							}
+						]
+					}
+				],
+				"Spider-Woman Schemes": [
+					{
+						"name": "enemy_schemes",
+						"subject": "Spider-Woman"
+					}
+				]
+			}
+		},
+		"boost_alterants": {
+			"all": [
 				{
-					"name": "thwart",
-					"amount": 1,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": 3,
-					"selection_type": "as_much_as_possible",
-					"selection_what_to_count": "remove_threat",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_schemes"
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "current_hero_target",
+							"token_name": [
+								"stunned",
+								"confused",
+								"tough"
+							]
 						}
-					]
+					}
 				}
 			]
 		}
@@ -3283,11 +3968,24 @@
 		}
 	},
 	"Namor": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"card_moved_to_board": {
+							"trigger": "self",
+							"board": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "self"
+								}
+							]
+						}
+					},
+					"_comments": "calling enemy_attacks_you directly here doesn't work because the enemy is still in the encounters_revealed pile. So instead we make the attack once it comes into play"
 				}
 			]
 		}
@@ -3347,23 +4045,41 @@
 		}
 	},
 	"Neighborhood Protectors - 2B": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter": [
+					{
+						"name": "deal_encounter",
+						"target_identity": "my_identity",
+						"subject": "enemy_team_tutor_and_choose",
+						"src_container": "deck_villain",
+						"filter_state_tutor": "side_scheme"
+					}
+				]
+			}
 		}
 	},
 	"Neptune's Trident": {
-		"TODO": "",
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing"
+		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Namor",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
 				}
 			]
 		},
@@ -3375,23 +4091,47 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
 	},
 	"New Avengers": {
-		"TODO": "",
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "shuffle_card_into_container",
+					"dest_container": "deck_villain",
+					"src_container": "discard_villain",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": "minion"
 				}
 			]
 		}
 	},
 	"No Going Back - 2B": {
-		"TODO": ""
+		"card_moved_to_board": {
+			"filter_state_trigger": "ally",
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "trigger"
+				}
+			]
+		}
 	},
 	"No, You Move!": {
 		"TODO": "",
@@ -3401,7 +4141,7 @@
 		}
 	},
 	"Now It's Personal": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"board": [
 				{
@@ -3415,51 +4155,118 @@
 		}
 	},
 	"Open Rebellion - 1B": {
-		"TODO": "",
-		"manual": {
-			"board": [
+		"on_load": {
+			"all": [
 				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"modification": -1,
-					"token_name": "__TODO",
-					"subject": "self"
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
+					}
 				}
 			]
 		},
-		"once_per_phase": {
-			"__name__": "__TODO"
-		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"once_per_phase_per_player": {},
+		"interrupt_reveal_encounter": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__player_token_active_player",
+					"subject": "self",
+					"modification": -1,
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Paladin": {
-		"TODO": "",
-		"quickstrike": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "if",
+					"func_name": "has_trait",
+					"func_params": {
+						"subject": "my_identity",
+						"trait": "unregistered"
+					},
+					"then": [
+						{
+							"name": "discard",
+							"subject": "tutor",
+							"src_container": "hand_my_hero",
+							"sort_by": "random"
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "tutor_and_choose",
+							"src_container": "hand_my_hero"
+						}
+					]
 				}
 			]
 		}
 	},
 	"Paladin's Pistol": {
-		"TODO": "",
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "TODO"
+					"subject": "Paladin",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "attach_to_card",
+					"subject": "villain"
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"ranged",
+							"overkill"
+						]
+					}
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"Patriot - Elijah Bradley": {
@@ -3486,32 +4293,52 @@
 		}
 	},
 	"Pheromones": {
-		"manual": {
-			"hand": [
+		"reveal": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"modification": 1,
+					"token_name": "stunned"
 				},
 				{
 					"name": "mod_tokens",
+					"subject": "my_identity",
 					"modification": 1,
-					"token_name": "stunned",
-					"needs_subject": true,
-					"subject": "target",
-					"filter_state_subject": [
+					"token_name": "confused"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "Finesse",
+					"modification": 1,
+					"token_name": "skill"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "is_stunned",
+					"func_params": {
+						"subject": "current_target_hero"
+					},
+					"then": [
 						{
-							"filter_group": "group_enemies"
+							"name": "mod_tokens",
+							"subject": "my_identity",
+							"modification": 1,
+							"token_name": "confused"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"subject": "my_identity",
+							"modification": 1,
+							"token_name": "stunned"
 						}
 					]
-				},
-				{
-					"name": "mod_tokens",
-					"modification": 1,
-					"token_name": "confused",
-					"subject": "previous"
 				}
 			]
 		}
@@ -3666,34 +4493,7 @@
 			]
 		}
 	},
-	"Pro-Registration Tactics - 2A #56064a": {
-		"reveal": {
-			"all": [
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		}
-	},
-	"Pro-Registration Tactics - 2A #56097a": {
-		"reveal": {
-			"all": [
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		}
-	},
-	"Pro-Registration Tactics - 2A #560123a": {
-		"reveal": {
-			"all": [
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		}
-	},
-	"Pro-Registration Tactics - 2A #560124a": {
+	"Pro-Registration Tactics - 2A": {
 		"reveal": {
 			"all": [
 				{
@@ -3714,64 +4514,137 @@
 		}
 	},
 	"Provoked Response": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"interrupt": {
 			"event_name": "TODO",
 			"board": []
 		}
 	},
 	"Public Outrage - 1B": {
-		"TODO": ""
-	},
-	"Rallying Call - 1B": {
-		"TODO": ""
-	},
-	"Rapid Response": {
-		"manual": {
-			"hand": [
+		"on_load": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"max_per_hero": 1
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
+					}
 				}
 			]
 		},
-		"response_card_defeated": {
-			"filter_state_trigger": [
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard 3": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": 3,
+						"sort_descending": true,
+						"up_to": true,
+						"src_container": "deck_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Rallying Call - 1B": {
+		"on_load": {
+			"all": [
 				{
-					"filter_same_controller": true,
-					"filter_properties": {
-						"type_code": "ally"
+					"name": "init_properties",
+					"subject": "self",
+					"set_properties": {
+						"hinder": {
+							"precompute": {
+								"if": {
+									"func_name": "get_team_size>1"
+								},
+								"then": "2p",
+								"else": 0
+							}
+						}
 					}
 				}
-			],
-			"is_optional_board": true,
-			"board": [
+			]
+		}
+	},
+	"Rapid Response": {
+		"reveal": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_response"
-					]
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"dest_container": "discard_villain",
+					"filter_state_grab_until": "minion"
 				},
 				{
 					"name": "discard",
-					"subject": "self"
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
 				},
 				{
-					"name": "move_card_to_board",
-					"subject": "trigger"
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "previous",
+					"force_run_at_prime": true
 				},
 				{
-					"name": "deal_damage",
-					"amount": 1,
-					"subject": "trigger"
+					"name": "if",
+					"func_name": "is_hero_form",
+					"func_params": {
+						"subject": "my_hero"
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"subject": "main_scheme",
+							"amount": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_minion",
+									"property": "scheme"
+								}
+							}
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"subject": "my_hero",
+							"amount": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_minion",
+									"property": "attack"
+								}
+							}
+						}
+					]
 				}
 			]
 		}
 	},
 	"Raw Power": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"response": {
 			"event_name": "TODO",
 			"is_optional_board": true,
@@ -3872,14 +4745,31 @@
 		}
 	},
 	"Resistance Tactics - 2A": {
-		"TODO": ""
-	},
-	"Righteous Cause": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Righteous Cause": {
+		"reveal": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_team_size>1",
+					"then": [
+						{
+							"name": "draw_boost_card",
+							"subject": "villain"
+						}
+					]
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
 				}
 			]
 		}
@@ -3941,7 +4831,19 @@
 		}
 	},
 	"Ruler of Atlantis": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "invincible",
+					"filter_state_trigger": [
+						"minion",
+						"trait_atlantis"
+					],
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"S.H.I.E.L.D. Helicarrier": {
 		"card_defeated": {
@@ -3967,7 +4869,16 @@
 		}
 	},
 	"S.H.I.E.L.D. Patrol": {
-		"TODO": ""
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"filter_state_trigger": "minion",
+					"alteration": 1
+				}
+			]
+		}
 	},
 	"S.H.I.E.L.D. Recruits - 1B": {
 		"on_load": {
@@ -4008,18 +4919,27 @@
 		}
 	},
 	"S.H.I.E.L.D. Soldier": {
-		"TODO": "",
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"grid_name": "enemies_my_hero",
+					"subject": "tutor",
+					"sort_descending": true,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						"minion",
+						"trait_s.h.i.e.l.d"
+					]
 				}
 			]
 		},
 		"boost": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "move_card_to_board",
+					"grid_name": "enemies_current_hero_target",
+					"subject": "self"
 				}
 			]
 		}
@@ -4070,30 +4990,59 @@
 			]
 		}
 	},
-	"Secret Avengers": {
-		"TODO": "",
+	"Secret Avengers #56159": {
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
 				{
-					"name": "TODO"
+					"name": "nop",
+					"subject": "enemy_team_tutor_and_choose",
+					"sort_descending": true,
+					"subject_count": 5,
+					"up_to": true,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "previous",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		}
 	},
 	"Secret Avengers - 2B": {
-		"TODO": "",
-		"alterants": {
+		"interrupt_receive_damage": {
+			"trigger": "villain",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
 				}
 			]
 		}
@@ -4115,34 +5064,58 @@
 		}
 	},
 	"Self-propelled Glide": {
-		"TODO": "",
 		"interrupt": {
-			"event_name": "TODO",
-			"board": []
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Finesse",
+							"token_name": "skill"
+						}
+					}
+				}
+			]
 		}
 	},
 	"Shang-Chi": {
-		"response": {
-			"event_name": "card_played",
-			"trigger": "self",
-			"is_optional_board": true,
-			"board": [
+		"reveal": {
+			"all": [
 				{
-					"name": "pay_cost",
-					"cost": {
-						"energy": 1
+					"name": "if",
+					"func_name": "has_trait",
+					"func_params": {
+						"subject": "my_identity",
+						"trait": "unregistered"
 					},
-					"is_cost": true
-				},
-				{
-					"name": "mod_tokens",
-					"modification": 1,
-					"token_name": "stunned",
-					"needs_subject": true,
-					"subject": "target",
-					"filter_state_subject": [
+					"then": [
 						{
-							"filter_group": "group_enemies"
+							"name": "discard",
+							"subject": "enemy_team_boardseek_and_choose",
+							"filter_state_seek": [
+								"upgrade",
+								"filter_same_controller"
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "discard",
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": [
+								"upgrade",
+								"filter_same_controller"
+							]
 						}
 					]
 				}
@@ -4285,80 +5258,75 @@
 		}
 	},
 	"Shield Block": {
-		"interrupt": {
-			"event_name": "receive_damage",
-			"event_filters": {
-				"target": "my_hero"
-			},
-			"is_optional_hand": true,
-			"hand": [
+		"reveal": {
+			"all": [
 				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": 1,
-					"filter_state_seek": [
+					"name": "if",
+					"func_name": "count_attachments",
+					"func_params": {
+						"subject": "Captain America",
+						"filter_state_attachment": "Cap's Shield"
+					},
+					"then": [
 						{
-							"filter_properties": {
-								"Name": "Captain America's Shield"
-							}
+							"name": "mod_tokens",
+							"subject": "Captain America",
+							"modification": 1,
+							"token_name": "tough"
+						}
+					],
+					"else": [
+						{
+							"name": "host_card",
+							"host": "Captain America",
+							"subject": "Cap's Shield"
 						}
 					]
 				},
 				{
-					"name": "prevent",
-					"subject": "interrupted_event"
+					"name": "draw_boost_card",
+					"subject": "Captain America"
 				}
 			]
 		}
 	},
 	"Shield Toss": {
-		"manual": {
-			"hand": [
+		"reveal_alter_ego": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
+					"name": "enemy_schemes",
+					"subject": "Iron Man"
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "hand",
-					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": 1,
-					"filter_state_seek": [
+					"name": "sequence",
+					"sequence_ability": "do_confuse",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "count_attachments",
+					"func_params": {
+						"subject": "Captain America",
+						"filter_state_attachment": "Cap's Shield"
+					},
+					"then": [
 						{
-							"filter_properties": {
-								"Name": "Captain America's Shield"
-							}
+							"name": "deal_damage",
+							"amount": 2,
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": "group_friendly_my_hero"
 						}
-					]
-				},
-				{
-					"name": "move_card_to_container",
-					"dest_container": "discard",
-					"src_container": "hand",
-					"is_cost": true,
-					"subject": "index",
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "min",
-					"selection_ignore_self": true,
-					"needs_selection": true
-				},
-				{
-					"name": "attack",
-					"amount": 4,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"selection_count": "count_previous_subjects",
-					"selection_type": "max",
-					"needs_selection": true,
-					"filter_state_seek": [
+					],
+					"else": [
 						{
-							"filter_group": "group_enemies"
+							"name": "host_card",
+							"host": "Captain America",
+							"subject": "Cap's Shield"
 						}
 					]
 				}
@@ -4392,16 +5360,31 @@
 		}
 	},
 	"Spectrum": {
-		"response": {
-			"event_name": "identity_changed_form",
-			"event_filters": {
-				"after": "hero"
-			},
+		"card_defeated": {
 			"trigger": "self",
-			"board": [
+			"all": [
 				{
-					"name": "change_form",
-					"form_family": "energy"
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target",
+							"filter_is_exhausted": false
+						}
+					]
 				}
 			]
 		}
@@ -4466,16 +5449,214 @@
 		}
 	},
 	"Spider-Woman - 1": {
-		"TODO": "TODO"
+		"setup": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "enemy_team_tutor_and_choose",
+					"src_container": "deck_villain",
+					"filter_state_tutor": "Finesse"
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_boost",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Finesse",
+							"token_name": "skill"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "skill",
+					"subject": "Finesse",
+					"modification": 0,
+					"set_to_mod": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": "my_boost"
+				}
+			]
+		}
 	},
 	"Spider-Woman - 2": {
-		"TODO": "TODO"
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "invincible",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_boost",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Finesse",
+							"token_name": "skill"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "skill",
+					"subject": "Finesse",
+					"modification": 0,
+					"set_to_mod": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": "my_boost"
+				}
+			]
+		}
 	},
 	"Spider-Woman - 3": {
-		"TODO": "TODO"
+		"setup": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "enemy_team_tutor_and_choose",
+					"src_container": "deck_villain",
+					"filter_state_tutor": "Finesse"
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_boost",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Finesse",
+							"token_name": "skill"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "skill",
+					"subject": "Finesse",
+					"modification": 0,
+					"set_to_mod": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": "my_boost"
+				}
+			]
+		}
 	},
 	"Spider-Woman - 4": {
-		"TODO": "TODO"
+		"reveal": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_hero"
+					},
+					{
+						"name": "add_script",
+						"subject": "self",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "invincible",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_boost",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Finesse",
+							"token_name": "skill"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "skill",
+					"subject": "Finesse",
+					"modification": 0,
+					"set_to_mod": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": "my_boost"
+				}
+			]
+		}
 	},
 	"Stark Tower": {
 		"card_defeated": {
@@ -4507,75 +5688,7 @@
 		}
 	},
 	"Suit Up": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"alter_ego_action"
-					]
-				},
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"is_cost": true,
-					"subject_count": "all",
-					"src_container": [
-						"deck",
-						"discard"
-					],
-					"dest_container": "hand",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"selection_optional": false,
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"is_cost": true,
-					"subject_count": "all",
-					"src_container": [
-						"deck",
-						"discard"
-					],
-					"dest_container": "hand",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"selection_optional": false,
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_func": {
-								"func_name": "property_contains",
-								"func_params": {
-									"subject": "trigger",
-									"property": "real_text",
-									"value": [
-										"attach to"
-									]
-								}
-							}
-						}
-					]
-				},
-				{
-					"name": "shuffle_container",
-					"dest_container": "deck"
-				}
-			]
-		}
+		"_comments": "TODO. PVP mode not supported"
 	},
 	"Super Skrull": {
 		"interrupt_enemy_initiates_attack": {
@@ -4677,17 +5790,33 @@
 		}
 	},
 	"Super-Soldier Serum": {
-		"resource": {
+		"card_moved_to_board": {
+			"trigger": "self",
 			"board": [
 				{
-					"name": "exhaust_card",
-					"subject": "self",
-					"is_cost": true
-				},
+					"name": "attach_to_card",
+					"subject": "Captain America"
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "overkill"
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
 				{
-					"name": "add_resource",
-					"amount": 1,
-					"resource_name": "physical"
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
 				}
 			]
 		}
@@ -4695,137 +5824,41 @@
 	"Superhero Jailbreak - 2B": {
 		"TODO": ""
 	},
-	"Superhero Registration Act - 1A #56063a": {
-		"setup_competitive": {
-			"all": [
-				{
-					"name": "nop",
-					"_comments": "TODO"
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		},
+	"Superhero Registration Act - 1A": {
 		"setup": {
 			"all": [
 				{
-					"name": "reveal_encounter",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
 						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"card_set_code": "[villain_card_set_code]"
-							}
+							"name": "reveal_encounter",
+							"subject": "tutor",
+							"src_container": "deck_villain",
+							"filter_state_tutor": [
+								"side_scheme",
+								"Choosing Sides"
+							]
 						}
-					]
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		}
-	},
-	"Superhero Registration Act - 1A #56096a": {
-		"setup_competitive": {
-			"all": [
-				{
-					"name": "nop",
-					"_comments": "TODO"
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		},
-		"setup": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
+					],
+					"else": [
 						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"card_set_code": "[villain_card_set_code]"
-							}
-						}
-					]
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		}
-	},
-	"Superhero Registration Act - 1A #56121a": {
-		"setup_competitive": {
-			"all": [
-				{
-					"name": "nop",
-					"_comments": "TODO"
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		},
-		"setup": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"card_set_code": "[villain_card_set_code]"
-							}
-						}
-					]
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		}
-	},
-	"Superhero Registration Act - 1A #56122a": {
-		"setup_competitive": {
-			"all": [
-				{
-					"name": "nop",
-					"_comments": "TODO"
-				},
-				{
-					"name": "flip_doublesided_card"
-				}
-			]
-		},
-		"setup": {
-			"all": [
-				{
-					"name": "reveal_encounter",
-					"subject": "tutor",
-					"src_container": "deck_villain",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"card_set_code": "[villain_card_set_code]"
-							}
+							"name": "reveal_encounter",
+							"subject": "tutor",
+							"src_container": "deck_villain",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "side_scheme"
+									},
+									"filter_properties2": {
+										"card_set_code": "[villain_card_set_code]"
+									}
+								}
+							]
 						}
 					]
 				},
@@ -4836,7 +5869,48 @@
 		}
 	},
 	"Superhero Resistance - 1A": {
-		"TODO": ""
+		"setup": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "reveal_encounter",
+							"subject": "tutor",
+							"src_container": "deck_villain",
+							"filter_state_tutor": [
+								"side_scheme",
+								"Choosing Sides"
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "reveal_encounter",
+							"subject": "tutor",
+							"src_container": "deck_villain",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "side_scheme"
+									},
+									"filter_properties2": {
+										"card_set_code": "[villain_card_set_code]"
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card"
+				}
+			]
+		}
 	},
 	"Supersonic Punch": {
 		"reveal_alter_ego": {
@@ -4939,12 +6013,33 @@
 		}
 	},
 	"Switching Sides": {
-		"TODO": "",
-		"_surge": {},
 		"reveal": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "discard",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"ally",
+						"filter_same_controller"
+					],
+					"is_cost": true
+				},
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
+						{
+							"name": "nop",
+							"_comments": "TODO. competitive mode unsupported"
+						}
+					]
+				},
+				{
+					"is_else": true,
+					"name": "surge"
 				}
 			]
 		}
@@ -5012,7 +6107,7 @@
 		}
 	},
 	"Target Lock": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"interrupt": {
 			"event_name": "TODO",
 			"is_optional_hand": true,
@@ -5052,31 +6147,23 @@
 		}
 	},
 	"Targeted Strike": {
-		"manual": {
-			"hand": [
+		"_comments": "TODO. PVP mode not supported",
+		"reveal": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
+					"name": "nop"
+				}
+			]
+		},
+		"boost_alterants": {
+			"all": [
 				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"modification": -1,
-					"token_name": "ammo",
-					"subject": "War Machine"
-				},
-				{
-					"name": "thwart",
-					"subject": "target",
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					],
-					"amount": 3
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "get_team_size"
+					}
 				}
 			]
 		}
@@ -5202,7 +6289,7 @@
 		}
 	},
 	"The Futurist": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"hand": [
 				{
@@ -5286,13 +6373,22 @@
 		}
 	},
 	"The Initiative - 2B": {
-		"TODO": "",
 		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter": [
+					{
+						"name": "deal_encounter",
+						"target_identity": "my_identity",
+						"subject": "enemy_team_tutor_and_choose",
+						"src_container": "deck_villain",
+						"filter_state_tutor": "side_scheme"
+					}
+				]
+			}
 		}
 	},
 	"The Night Nurse": {
@@ -5610,7 +6706,25 @@
 		}
 	},
 	"Unregistered Super": {
-		"TODO": "",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_unregistered",
+					"filter_state_trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
 		"manual": {
 			"board": [
 				{
@@ -5619,6 +6733,22 @@
 					"tags": [
 						"alter_ego_action"
 					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
 				}
 			]
 		}
@@ -5631,21 +6761,15 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "competitive_mode"
+					},
+					"then": [
 						{
-							"condition": {
-								"func_name": "get_scenario_option_value",
-								"func_params": {
-									"option_name": "competitive_mode"
-								},
-								"nested_tasks": [
-									{
-										"name": "nop",
-										"_comments": "TODO. competitive mode unsupported"
-									}
-								]
-							}
+							"name": "nop",
+							"_comments": "TODO. competitive mode unsupported"
 						}
 					],
 					"else": [
@@ -5659,25 +6783,58 @@
 		}
 	},
 	"Venom Blast": {
-		"manual": {
-			"hand": [
+		"reveal_alter_ego": {
+			"all": [
 				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
+					"name": "surge"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
 				{
-					"name": "attack",
-					"subject": "target",
-					"amount": 5,
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
+					"name": "enemy_attacks_you",
+					"subject": "Spider-Woman",
+					"tags": {
+						"if": {
+							"func_name": "count_tokens>=3",
+							"func_params": {
+								"subject": "Finesse",
+								"token_name": "skill"
+							}
+						},
+						"then": [
+							"ranged",
+							"piercing",
+							"overkill"
+						],
+						"else": {
+							"if": {
+								"func_name": "count_tokens==2",
+								"func_params": {
+									"subject": "Finesse",
+									"token_name": "skill"
+								}
+							},
+							"then": [
+								"ranged",
+								"piercing"
+							],
+							"else": {
+								"if": {
+									"func_name": "count_tokens=1",
+									"func_params": {
+										"subject": "Finesse",
+										"token_name": "skill"
+									}
+								},
+								"then": [
+									"ranged"
+								],
+								"else": []
+							}
 						}
-					]
+					}
 				}
 			]
 		}
@@ -5706,18 +6863,19 @@
 		}
 	},
 	"Whatever It Takes": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"reveal_alter_ego": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "nop"
 				}
 			]
 		},
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "TODO"
+					"name": "enemy_attacks_you",
+					"subject": "villain"
 				}
 			]
 		}
@@ -5873,7 +7031,7 @@
 		}
 	},
 	"You Started This": {
-		"TODO": "",
+		"_comments": "TODO. PVP mode not supported",
 		"manual": {
 			"hand": [
 				{

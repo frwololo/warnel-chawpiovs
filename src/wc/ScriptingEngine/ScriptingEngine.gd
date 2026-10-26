@@ -1193,11 +1193,15 @@ func pre_receive_damage(script: ScriptTask) -> int:
 
 		if (amount and script.has_tag("piercing")):
 			var tough = card.tokens.get_token_count("tough")
-			card.tokens.mod_token("tough", 0, true)
+
 			if tough:
-				card.hint("Piercing!", Color8(255,50,50))
-		var tough = card.tokens.get_token_count("tough")
+				if card.get_property("cannot_be_pierced", 0, true):
+					card.hint("Immune!", Color8(255,50,50))
+				else:
+					card.tokens.mod_token("tough", 0, true)	
+					card.hint("Piercing!", Color8(255,50,50))
 		
+		var tough = card.tokens.get_token_count("tough")		
 		if script.has_tag("ignore_tough"):
 			tough = 0
 

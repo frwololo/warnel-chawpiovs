@@ -1,0 +1,324 @@
+{
+	"_comments": [
+		"Bug: Hulkling's Cuts both ways prevents me from using a basic defense"
+	],
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "56029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Caught Off Guard #01188",
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "S.H.I.E.L.D. Soldier #56109",
+				},
+				{
+					"card": "Hydra Mercenary",
+				},
+				{
+					"card": "Assault #01187",
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain Marvel - 1 #56092",
+					"tokens": {
+						"damage": 3
+					},
+				}
+			],
+			"schemes": [
+				{
+					"card": "Cut Off Support - 1B #56063b",
+					"tokens": {
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1,
+						"threat": 3,
+						"__player_token1": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Hulkling #56029a",
+					"owner_hero_id": 1,
+				},
+				{
+					"card": "Super Skrull #56055",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Skrull Business #56056",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Fantastic Powers #56057",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "You're Coming With Me! #56058",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "You're Coming With Me! #56058",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Captain Marvel - 2 #56093",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Superhero Registration Act - 1A #56096a",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Superhero Registration Act - 1A #56121a",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Superhero Registration Act - 1A #56122a",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "S.H.I.E.L.D. Recruits - 1B #56096b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Homeland Security - 1B #56121b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Public Outrage - 1B #56122b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Pro-Registration Tactics - 2A #56064a",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Negative Zone Prison - 2B #56064b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Hunting Rebel Heroes - 2B #56097b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "The Initiative - 2B #56123b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "No Going Back - 2B #56124b",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Provoked Response #56133",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "You Started This #56134",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Raw Power #56136",
+					"owner_hero_id": 0,
+				},
+				{
+					"card": "Alpha Flight Recruit #56135",
+					"owner_hero_id": 0,
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Registration Act - 1A #56063a",
+					"owner_hero_id": 0,
+				}
+			],
+			"deck1": [
+				{
+					"card": "Wiccan - William Kaplan #56030",
+					"owner_hero_id": 1,
+				}
+			],
+			"discard1": [
+				{
+					"card": "Altman Residence #56031",
+					"owner_hero_id": 1,
+				}
+			],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "Hulkling #56029a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1,
+						"damage": 2
+					},
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Hidden Base #56043",
+					"owner_hero_id": 1,
+					"tokens": {
+						"stronghold": 2
+					},
+				},
+				{
+					"card": "Winged Shape #56032",
+					"owner_hero_id": 1,
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Cuts Both Ways #56050",
+					"owner_hero_id": 1,
+				},
+			],
+			"others": [
+				{
+					"card": "Energy Channel #56098",
+					"owner_hero_id": 0,
+					"tokens": {
+						"energy": 3
+					},
+					"host": "56092",
+				},
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Cuts both ways",
+			"_comments": "get retaliate as enemy attacks"
+		},
+		{
+			"type": "select",
+			"value": "Hulkling"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"owner": 1,
+					"hero": "56029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Caught Off Guard #01188",
+				},
+				{
+					"card": "Assault #01187",
+				}				
+			],
+			"deck_villain": [
+				{
+					"card": "S.H.I.E.L.D. Soldier #56109",
+				},
+
+
+			],
+			"villain": [
+				{
+					"card": "Captain Marvel - 1 #56092",
+					"tokens": {
+						"damage": 4
+					},
+				}
+			],
+			"schemes": [
+				{
+					"card": "Cut Off Support - 1B #56063b",
+					"tokens": {
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1,
+						"threat": 3,
+						"__player_token1": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Wiccan - William Kaplan #56030",
+					"owner_hero_id": 1,
+				}
+			],
+			"discard1": [
+				{
+					"card": "Altman Residence #56031",
+					"owner_hero_id": 1,
+				},
+				{
+					"card": "Cuts Both Ways #56050",
+					"owner_hero_id": 1,
+				},				
+			],
+			"enemies1": [
+							{
+					"card": "Hydra Mercenary",
+				},
+			],
+			"identity1": [
+				{
+					"card": "Hulkling #56029a",
+					"owner_hero_id": 1,
+					"exhausted": true,
+					"tokens": {
+						"__can_change_form": 1,
+						"damage": 2
+					},
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Hidden Base #56043",
+					"owner_hero_id": 1,
+					"tokens": {
+						"stronghold": 2
+					},
+				},
+				{
+					"card": "Winged Shape #56032",
+					"owner_hero_id": 1,
+					"exhausted": true
+				}
+			],
+			"others": [
+				{
+					"card": "Energy Channel #56098",
+					"owner_hero_id": 0,
+					"tokens": {
+						"energy": 3
+					},
+					"host": "56092",
+				},
+			]
+		}
+	}
+}

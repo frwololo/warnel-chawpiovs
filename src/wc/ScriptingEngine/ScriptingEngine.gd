@@ -2434,37 +2434,54 @@ func enemy_attack(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
 	var attacker = script.owner
+	
+	
 	#this is a pre_initialized activity script, designed to allow for
 	#defense abilities to modify the attack before it begins
 	#see set_defender() and gameData.enemy_activates()
 	var activity_script = attacker.activity_script
+
+	var defender = null
+	var is_basic_defense = false
+
+	if script.subjects:
+		#this is a basic defense (there might be other things involved,
+		#but here we know that a basic defender was chosen and needs to exhaust
+		defender = script.subjects[0]
+		is_basic_defense = true
+		#force the exhaust here because most card abilities set it to false,
+		#possibly by mistake
+		#If we have subjects here, it means we went through the basic defense selection screen,
+		#the character HAS to exhaust
+		if activity_script:	
+			activity_script.script_definition["exhaust_defenders"] = true
+	
 	#check if subjects have been "inserted" into the activity script instead of the new attack script
 	#e.g. with Mutant Protectors
 	var non_basic_defender = null
 	if activity_script:	
 		if activity_script.subjects:
 			script.set_subjects(activity_script.subjects)
+			is_basic_defense = true
+			defender = script.subjects[0]
 		elif activity_script.script_definition.has("chosen_defender"):
 			non_basic_defender = activity_script.script_definition["chosen_defender"]
 			script.script_definition["chosen_defender"] = non_basic_defender
-	
+
+
+	if non_basic_defender and !is_basic_defense:
+		defender = non_basic_defender
+		is_basic_defense = false	
+		script.set_subjects([defender])
+		
+	#Everything is computed, stop here for cost checks
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		for card in script.subjects:
 			if (not card.can_defend()):
 				return CFConst.ReturnCode.FAILED
 		return retcode
 		
-	
-	var defender = null
-	var is_basic_defense = false
-	if script.subjects:
-		defender = script.subjects[0]
-		is_basic_defense = true
-	elif non_basic_defender:
-		defender = non_basic_defender
-		is_basic_defense = false	
-		script.set_subjects([defender])
-		
+			
 	if defender:
 		if activity_script:
 			if activity_script.script_definition.get("exhaust_defenders", true):

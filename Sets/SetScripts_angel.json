@@ -1,0 +1,1707 @@
+{
+	"Adaptive Plumage": {
+		"manual": {
+			"hand": {
+				"Thwart": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Angel"
+								}
+							}
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 3,
+						"subject": "a_scheme"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "confused",
+						"subject": "an_enemy",
+						"needs_subject": false
+					}
+				],
+				"Attack": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Archangel"
+								}
+							}
+						]
+					},
+					{
+						"name": "attack",
+						"amount": 4,
+						"subject": "an_enemy"
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "stunned",
+						"subject": "previous"
+					}
+				]
+			}
+		}
+	},
+	"Aerial Agility": {
+		"interrupt_enemy_initiates_attack": {
+			"is_optional_hand": true,
+			"hand": {
+				"Ignore Boost": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_interrupt"
+						],
+						"constraints": [
+							{
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Angel"
+								}
+							}
+						]
+					},
+					{
+						"name": "replacement_effects",
+						"subject": "interrupted_event",
+						"replacements": {
+							"additional_tags": [
+								"skip_boost_icons",
+								"skip_boost_ability"
+							]
+						}
+					}
+				],
+				"Tough & Retaliate": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						],
+						"constraints": [
+							{
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Archangel"
+								}
+							}
+						]
+					},
+					{
+						"name": "add_script",
+						"end_condition": "enemy_attack_happened",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "retaliate",
+										"trigger": "my_identity",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "mod_tokens",
+						"modification": 1,
+						"token_name": "tough",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Aerial Intervention": {
+		"interrupt_receive_damage": {
+			"filter_state_trigger": "group_characters",
+			"event_filters": {
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek_and_choose",
+					"is_cost": true,
+					"filter_state_seek": [
+						"trait_aerial",
+						"group_friendly_my_hero"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 3
+				}
+			]
+		}
+	},
+	"Angel": {
+		"once_per_phase": {
+			"__name__": "__angel_of_life"
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				"filter_same_controller",
+				"event",
+				"trait_aerial"
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "__angel_of_life",
+					"subject": "self"
+				},
+				{
+					"name": "draw_card",
+					"amount": 1
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#42001b",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Archangel)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#42001c",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
+		}
+	},
+	"Angel's Aerie": {
+		"response_defense_happened": {
+			"trigger": "my_identity",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "fatigue",
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "fatigue"
+						}
+					},
+					"subject": "my_identity"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"token_name": "fatigue",
+					"subject": "self",
+					"set_to_mod": true
+				}
+			]
+		}
+	},
+	"Apocalyptic Influence": {
+		"give_obligation": {
+			"__to__": "Warren Worthington III"
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_subject_int_property",
+					"func_params": {
+						"subject": "my_identity",
+						"property": "shortname",
+						"property_value": "Archangel"
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"amount": 2,
+							"subject": "main_scheme"
+						}
+					],
+					"else": [
+						{
+							"name": "change_form",
+							"subject": "my_identity",
+							"change_to": "#42001c"
+						}
+					]
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "deal_encounter",
+					"target_identity": "first_player"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Archangel": {
+		"once_per_phase": {
+			"__name__": "__angel_of_death"
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				"event",
+				"trait_aerial",
+				"filter_same_controller"
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self",
+					"token_name": "__angel_of_death"
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "trigger",
+							"property": "cost"
+						}
+					},
+					"subject": "an_enemy"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#42001b",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Angel)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#42001a",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				]
+			}
+		}
+	},
+	"Avian Anatomy": {
+		"card_played": {
+			"filter_state_trigger": [
+				"event",
+				"trait_aerial"
+			],
+			"condition_all": {
+				"func_name": "paid_with_includes",
+				"func_params": {
+					"subject": "trigger",
+					"filter_state_source": [
+						{
+							"is_script_owner": true
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "trigger",
+					"dest_container": "hand"
+				}
+			]
+		}
+	},
+	"Bombs Away": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_is_exhausted": false,
+							"filter_group": "group_friendly_my_hero",
+							"filter_properties": {
+								"trait_aerial": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": "group_identities"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"group_enemies_previous_subject",
+						"minion"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Cannonball - Sam Guthrie": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"src_container": "hand_my_hero",
+					"filter_state_tutor": "trait_aerial"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__reduce_consequential",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"amount": {
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand_my_hero",
+							"filter_state_tutor": "trait_aerial"
+						}
+					},
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Containment Strategy": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					},
+					"filter_properties2": {
+						"permanent": 0
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"response_defense_happened": {
+			"filter_state_trigger": "hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"subject": "host",
+					"amount": {
+						"if": {
+							"func_name": "get_trigger_details_property==0",
+							"func_params": {
+								"property": "damage"
+							}
+						},
+						"then": 2,
+						"else": 1
+					}
+				}
+			]
+		}
+	},
+	"Elixir - Josh Foley": {
+		"response": {
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "target",
+					"subject_exclude": "self",
+					"filter_state_subject": "group_friendly"
+				}
+			]
+		}
+	},
+	"Ever Vigilant": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Eyes in the Sky": {
+		"interrupt_about_to_reveal": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 0
+					}
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"group_friendly_my_hero",
+						"trait_aerial",
+						"!filter_is_exhausted"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "cancel_current_encounter"
+				},
+				{
+					"name": "reveal_encounter",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Flying Formation": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek_and_choose",
+					"selection_count": 3,
+					"selection_type": "max",
+					"filter_state_seek": [
+						"trait_aerial",
+						"group_characters",
+						"filter_is_exhauted"
+					]
+				}
+			]
+		}
+	},
+	"Harpoon": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_my_hero",
+					"filter_state_grab_until": "event"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_my_hero"
+				},
+				{
+					"name": "indirect_damage",
+					"subject": "my_identity",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "cost"
+						}
+					}
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"event_filters": {
+				"filter_state_event_target": "trait_aerial"
+			},
+			"board": [
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Harpoon's Harpoon": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": "Armadillo"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_attach"
+				}
+			]
+		},
+		"do_attach": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "Harpoon",
+					"is_cost": true
+				},
+				{
+					"is_else": true,
+					"name": "surge"
+				},
+				{
+					"is_else": true,
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"response_enemy_attack_happened": {
+			"trigger": "Harpoon",
+			"board": [
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_target_hero"
+				}
+			]
+		}
+	},
+	"Hook, Line, and Sinker": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_indirect_damage",
+					"filter_state_trigger": [
+						"group_enemies",
+						"trait_brute"
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"response_card_damaged": {
+			"filter_state_trigger": "group_friendly",
+			"event_filters": {
+				"tags": [
+					"indirect_damage"
+				],
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Metamorphosis": {
+		"manual": {
+			"hand": {
+				"Change Form (Alter-Ego)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						],
+						"constraints": [
+							{
+								"func_name": "!get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Warren Worthington III"
+								}
+							}
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_identity",
+						"change_to": "#42001b",
+						"is_cost": true
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_action"
+					}
+				],
+				"Change Form (Archangel)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						],
+						"constraints": [
+							{
+								"func_name": "!get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Archangel"
+								}
+							}
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_identity",
+						"change_to": "#42001c",
+						"is_cost": true
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_action"
+					}
+				],
+				"Change Form (Angel)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						],
+						"constraints": [
+							{
+								"func_name": "!get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Angel"
+								}
+							}
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_identity",
+						"change_to": "#42001a",
+						"is_cost": true
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_action"
+					}
+				]
+			}
+		},
+		"do_action": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Warren Worthington III"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "shortname",
+									"property_value": "Angel"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "remove_threat",
+									"amount": 2,
+									"subject": "a_scheme"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": 3,
+							"subject": "an_enemy"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Natural Flight": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "a_scheme",
+					"tags": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "shortname",
+								"property_value": "Angel"
+							}
+						},
+						"then": [
+							"bypass_crisis",
+							"bypass_patrol"
+						],
+						"else": []
+					}
+				}
+			]
+		}
+	},
+	"Psylocke - Betsy Braddock": {
+		"response_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "if",
+					"func_name": "get_subject_int_property",
+					"func_params": {
+						"subject": "my_identity",
+						"property": "shortname",
+						"property_value": "Angel"
+					},
+					"then": [
+						{
+							"name": "heal",
+							"amount": 1,
+							"subject": "self"
+						}
+					],
+					"else": [
+						{
+							"name": "ready_card",
+							"subject": "my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Razor Dive": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 6,
+					"subject": "an_enemy",
+					"tags": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "shortname",
+								"property_value": "Archangel"
+							}
+						},
+						"then": [
+							"overkill",
+							"piercing"
+						],
+						"else": []
+					}
+				}
+			]
+		}
+	},
+	"Render Medical Aid": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Heal": [
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"selection_count": 5,
+						"selection_type": "as_much_as_possible",
+						"selection_assign_mode": true,
+						"selection_what_to_count": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"token_name": "damage"
+							}
+						},
+						"needs_selection": true,
+						"filter_state_seek": "group_friendly_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Siryn - Theresa Cassidy": {
+		"response_attack_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": "minion"
+				}
+			]
+		}
+	},
+	"Soaring Acrobatics": {
+		"give_to_player_max1": {},
+		"interrupt_attack_started": {
+			"filter_state_trigger": [
+				"group_friendly_my_hero",
+				"trait_aerial"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "trigger",
+					"end_condition": "attack_happened",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_thwart_started": {
+			"filter_state_trigger": [
+				"group_friendly_my_hero",
+				"trait_aerial"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "trigger",
+					"end_condition": "thwart_happened",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_recovery": {
+			"filter_state_trigger": [
+				"group_friendly_my_hero",
+				"trait_aerial"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "trigger",
+					"end_condition": "recovery_happened",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "recover",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_enemy_attack": {
+			"event_filters": {
+				"filter_state_event_target": [
+					"group_friendly_my_hero",
+					"trait_aerial"
+				],
+				"tags": [
+					"basic_defense"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "trigger",
+					"end_condition": "defense_happened",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Soaring Hearts": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_ego_action"
+					],
+					"team_up": [
+						"Angel",
+						"Psylocke"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"src_container": "discard",
+					"subject": "tutor",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							}
+						}
+					],
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Angel"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Psylocke"
+				}
+			]
+		}
+	},
+	"Spear Shot": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_my_hero",
+					"filter_state_grab_until": "event"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_my_hero"
+				},
+				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_event",
+					"type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "indirect_damage",
+					"subject": "my_identity",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "my_event",
+							"property": "cost"
+						}
+					}
+				},
+				{
+					"name": "surge",
+					"amount": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_event",
+								"property": "trait_aerial"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_target_hero"
+				}
+			]
+		}
+	},
+	"Taunt": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "draw_cards",
+									"amount": 3
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Techno-Organic Wings": {
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__cost",
+					"subject": "self",
+					"modification": 0,
+					"set_to_mod": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "if",
+					"func_name": "get_subject_int_property",
+					"func_params": {
+						"subject": "my_identity",
+						"property": "shortname",
+						"property_value": "Angel"
+					},
+					"then": [
+						{
+							"name": "ready_card",
+							"subject": "my_hero"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "__cost",
+							"subject": "self",
+							"modification": 1,
+							"set_to_mod": true
+						},
+						{
+							"name": "add_script",
+							"subject": "self",
+							"end_condition": "card_played",
+							"event_filters": {
+								"filter_state_event_source": [
+									"filter_same_controller",
+									"event",
+									"trait_aerial"
+								]
+							},
+							"script": {
+								"alterants": {
+									"board": [
+										{
+											"filter_task": "get_property",
+											"filter_property_name": "cost",
+											"alteration": {
+												"if": {
+													"func_name": "count_tokens",
+													"func_params": {
+														"subject": "self",
+														"token_name": "__cost"
+													}
+												},
+												"then": -2,
+												"else": 0
+											},
+											"filter_state_trigger": [
+												"filter_same_controller",
+												"event",
+												"trait_aerial"
+											]
+										}
+									]
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"The Power of Flight": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_aerial": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "energy"
+				}
+			]
+		}
+	},
+	"Warpath - James Proudstar": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		},
+		"response_defense_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_func": {
+								"func_name": "property_contains",
+								"func_params": {
+									"subject": "trigger",
+									"property": "real_text",
+									"value": [
+										"hero action"
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "force_play_card",
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Warren Worthington III": {
+		"once_per_round": {
+			"__name__": "__regrowth"
+		},
+		"manual": {
+			"board": {
+				"Change Form (Angel)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#42001a",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Change Form (Archangel)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"as_action"
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "self",
+						"change_to": "#42001c",
+						"is_cost": true,
+						"tags": [
+							"player_initiated"
+						]
+					}
+				],
+				"Regrowth": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__regrowth",
+						"subject": "self"
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Worthington Industries": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor_and_choose",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"filter_state_tutor": [
+						"trait_aerial"
+					]
+				},
+				{
+					"name": "if",
+					"func_name": "is_alter_ego_form",
+					"func_params": {
+						"subject": "my_identity"
+					},
+					"then": [
+						{
+							"name": "draw_cards",
+							"amount": 1
+						}
+					]
+				}
+			]
+		}
+	},
+	"X-Force Recruit": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_friendly",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_x-force",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		}
+	}
+}

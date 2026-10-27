@@ -2560,20 +2560,26 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 
 	match current_step:
 		"boost_ability":
-
-			var func_return = boost_card.execute_scripts(boost_card, "boost", boost_trigger_details)
-			if func_return is GDScriptFunctionState && func_return.is_valid():
-				yield(func_return, "completed")	
+			if script.has_tag("skip_boost_ability"):
+				pass
+			else:
+				var func_return = boost_card.execute_scripts(boost_card, "boost", boost_trigger_details)
+				if func_return is GDScriptFunctionState && func_return.is_valid():
+					yield(func_return, "completed")	
 	
 			script_definition["current_boost_card"] = boost_card
 		"boost_icons":
-			boost_amount += cfc.NMAP.board.count_amplify_icons()
-			if script.has_tag("amplify"):
-				attacker.hint("Amplify", Color8(100,255,150))
-				boost_amount += 1
-			if boost_amount:
-				boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
-			script_definition["boost"].append(boost_amount)
+			if script.has_tag("skip_boost_icons"):
+				pass
+			else:			
+				boost_amount += cfc.NMAP.board.count_amplify_icons()
+				if script.has_tag("amplify"):
+					attacker.hint("Amplify", Color8(100,255,150))
+					boost_amount += 1
+				if boost_amount:
+					boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
+				script_definition["boost"].append(boost_amount)
+			
 			script_definition.erase("current_boost_card")
 
 
@@ -3156,6 +3162,8 @@ func thwart_started(script: ScriptTask) -> int:
 	if (costs_dry_run()):
 		return retcode	
 	
+	var tags = script.get_property("tags", [])
+	
 	for card in script.subjects:
 		var script_modifications = {
 			"additional_tags" : ["thwart"],
@@ -3165,7 +3173,7 @@ func thwart_started(script: ScriptTask) -> int:
 		retcode = CFConst.ReturnCode.CHANGED
 	
 		#emit signals if this was e.g. a thwart that bypassed patrol
-		var patrol_check = SP.thwart_unpatroled( card, owner,script.owner)
+		var patrol_check = SP.thwart_unpatroled( card, owner,script.owner, tags)
 		if patrol_check:
 			var signals = patrol_check.get("signals", [])
 			if signals:

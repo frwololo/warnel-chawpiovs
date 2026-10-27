@@ -814,8 +814,8 @@
 	"Cape-Killer": {
 		"interrupt_enemy_initiates_attack": {
 			"trigger": "self",
-			"event_filters": { 
-				"filter_state_event_target": "trait_unregistered",
+			"event_filters": {
+				"filter_state_event_target": "trait_unregistered"
 			},
 			"board": [
 				{
@@ -3144,7 +3144,7 @@
 					"filter_property_name": "defense",
 					"trigger": "Hulkling",
 					"alteration": 1
-				},
+				}
 			]
 		},
 		"response_card_played": {
@@ -7623,7 +7623,7 @@
 							}
 						}
 					],
-					"is_cost": true,
+					"is_cost": true
 				},
 				{
 					"name": "discard",

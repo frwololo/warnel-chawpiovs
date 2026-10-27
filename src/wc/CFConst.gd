@@ -1114,7 +1114,7 @@ const DEFAULT_SETTINGS:= {
 #cycle 7
 		"next_evol": "https://marvelcdb.com/api/public/cards/next_evol.json", #Next Evolution Expansion Box	
 		"psylocke": "https://marvelcdb.com/api/public/cards/psylocke.json", #Psylocke Hero Pack		
-#		"angel": "https://marvelcdb.com/api/public/cards/angel.json", #Angel Hero Pack	
+		"angel": "https://marvelcdb.com/api/public/cards/angel.json", #Angel Hero Pack	
 		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
 #		"deadpool": "https://marvelcdb.com/api/public/cards/deadpool.json", #Deadpool Hero Pack		
 #cycle 8
@@ -1122,7 +1122,7 @@ const DEFAULT_SETTINGS:= {
 #		"iceman": "https://marvelcdb.com/api/public/cards/iceman.json", #Iceman Hero Pack	
 #		"jubilee": "https://marvelcdb.com/api/public/cards/jubilee.json", #Jubilee Hero Pack	
 		"ncrawler": "https://marvelcdb.com/api/public/cards/ncrawler.json", #NightCrawler Hero Pack	
-#		"magneto": "https://marvelcdb.com/api/public/cards/magneto.json", #Magneto Hero Pack	
+		"magneto": "https://marvelcdb.com/api/public/cards/magneto.json", #Magneto Hero Pack	
 #cycle 9
 		"aos": "https://marvelcdb.com/api/public/cards/aos.json", #Agents of Shield Expansion
 #		"bp": "https://marvelcdb.com/api/public/cards/bp.json", #Black Panther Hero Pack	
@@ -1242,7 +1242,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
 const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261026-1629"
+const BUILD_NUMBER := "20261027-1629"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

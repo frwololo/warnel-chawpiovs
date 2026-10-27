@@ -3173,10 +3173,9 @@
 		"setup": {
 			"all": [
 				{
-					"name": "move_card_to_container",
+					"name": "discard",
 					"subject": "grab_until",
 					"src_container": "deck_villain",
-					"dest_container": "discard_villain",
 					"filter_state_grab_until": [
 						{
 							"filter_properties": {

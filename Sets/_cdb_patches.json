@@ -497,6 +497,12 @@
 		"resource_energy": 0,
 		"resource_mental": 1
 	},
+	"42015": {
+		"alternate_art": true
+	},
+	"42016": {
+		"alternate_art": true
+	},		
 	"43017": {
 		"alternate_art": true
 	},

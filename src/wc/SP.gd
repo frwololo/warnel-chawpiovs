@@ -413,12 +413,13 @@ static func check_attachment_validity(host, hosted):
 			
 	return true	
 
-static func thwart_unpatroled(card, action_character, owner_card):
+static func thwart_unpatroled(card, action_character, owner_card, tags = []):
 	var result = {
 		"result": "ok",
 		"signals": [] 
 	}		
 	var bypass_patrol = action_character.get_property("bypass_patrol", 0, true) if action_character else 0		
+	bypass_patrol = bypass_patrol or ("bypass_patrol" in tags)
 	#check for special patrol condition	on thwart	
 	if card in gameData.get_main_schemes():
 		var all_cards = cfc.NMAP.board.get_all_cards()
@@ -637,7 +638,7 @@ static func check_validity(card, card_scripts, type := "trigger", owner_card = n
 				return false	
 						
 		#thwart is patroled and cannot proceed
-		if !thwart_unpatroled(card, action_character, owner_card):
+		if !thwart_unpatroled(card, action_character, owner_card, tags):
 			return false	
 
 	var card_matches = true

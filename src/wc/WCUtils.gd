@@ -797,8 +797,15 @@ static func script_definitions_pre_processing(script_definition):
 						var values = {}
 						var properties_count = 1
 						for filter in filter_array:
+							var inverted = false
+							if filter.begins_with("!"):
+								filter = filter.substr(1)
+								inverted = true
 							if filter.begins_with("trait_"):
-								values["filter_properties" + str(properties_count)] =  {filter: 1, "comparison": "ge"}
+								var comparison =  {filter: 1, "comparison": "ge"}
+								if inverted:
+									comparison =  {filter: 0}
+								values["filter_properties" + str(properties_count)] = comparison
 								properties_count += 1
 							elif filter.begins_with("group_"):
 								values["filter_group"] = filter
@@ -806,7 +813,7 @@ static func script_definitions_pre_processing(script_definition):
 								values["filter_properties" + str(properties_count)] = {"type_code": filter}
 								properties_count += 1
 							elif filter.begins_with("filter_"):
-								values[filter] = true
+								values[filter] = !inverted
 							else:
 								values["filter_properties" + str(properties_count)] = {"shortname": filter}
 								properties_count += 1

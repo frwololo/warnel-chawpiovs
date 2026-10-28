@@ -69,79 +69,61 @@
 	"Aerial Agility": {
 		"interrupt_enemy_initiates_attack": {
 			"is_optional_hand": true,
-			"hand": {
-				"Ignore Boost": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"hero_interrupt"
-						],
-						"constraints": [
-							{
-								"func_name": "get_subject_int_property",
-								"func_params": {
-									"subject": "my_identity",
-									"property": "shortname",
-									"property_value": "Angel"
-								}
-							}
-						]
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "if",
+					"func_name": "get_subject_int_property",
+					"func_params": {
+						"subject": "my_identity",
+						"property": "shortname",
+						"property_value": "Angel"
 					},
-					{
-						"name": "replacement_effects",
-						"subject": "interrupted_event",
-						"replacements": {
-							"additional_tags": [
-								"skip_boost_icons",
-								"skip_boost_ability"
-							]
-						}
-					}
-				],
-				"Tough & Retaliate": [
-					{
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [
-							"hero_action"
-						],
-						"constraints": [
-							{
-								"func_name": "get_subject_int_property",
-								"func_params": {
-									"subject": "my_identity",
-									"property": "shortname",
-									"property_value": "Archangel"
-								}
-							}
-						]
-					},
-					{
-						"name": "add_script",
-						"end_condition": "enemy_attack_happened",
-						"subject": "self",
-						"script": {
-							"alterants": {
-								"all": [
-									{
-										"filter_task": "get_property",
-										"filter_property_name": "retaliate",
-										"trigger": "my_identity",
-										"alteration": 1
-									}
+					"then": [
+						{
+							"name": "replacement_effects",
+							"subject": "interrupted_event",
+							"replacements": {
+								"additional_tags": [
+									"skip_boost_icons",
+									"skip_boost_ability"
 								]
 							}
 						}
-					},
-					{
-						"name": "mod_tokens",
-						"modification": 1,
-						"token_name": "tough",
-						"subject": "my_identity"
-					}
-				]
-			}
+					],
+					"else": [
+						{
+							"name": "add_script",
+							"end_condition": "enemy_attack_happened",
+							"subject": "self",
+							"script": {
+								"alterants": {
+									"all": [
+										{
+											"filter_task": "get_property",
+											"filter_property_name": "retaliate",
+											"trigger": "my_identity",
+											"alteration": 1
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "mod_tokens",
+							"modification": 1,
+							"token_name": "tough",
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
 		}
 	},
 	"Aerial Intervention": {
@@ -1577,7 +1559,7 @@
 			{
 				"card": "Archangel #42001c"
 			}
-		],	
+		],
 		"once_per_round": {
 			"__name__": "__regrowth"
 		},

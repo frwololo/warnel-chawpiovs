@@ -1,0 +1,199 @@
+{
+	"_comments": "Bug:Recovery not healing Sidekick",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "X-23"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Laura Kinney",
+					"tokens": {
+						"damage": 7
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Honey Badger",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Sidekick"
+				},
+				{
+					"card": "Side-by-Side"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Sidekick"
+		},
+		{
+			"type": "target",
+			"value": "Honey Badger"
+		},
+		{
+			"type": "activate",
+			"value": "Laura Kinney"
+		},
+		{
+			"type": "choose",
+			"value": "Recover"
+		},
+		{
+			"type": "activate",
+			"value": "Sidekick"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "X-23"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Unus - 2"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors",
+					"tokens": {
+						"threat": 5
+					}
+				},
+				{
+					"card": "Gene Pool",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Infinite Hunter"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Stored Energy"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Advanced Suit"
+				},
+				{
+					"card": "Side-by-Side"
+				}				
+			],
+			"deck1": [
+				{
+					"card": "Team Training"
+				},
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Laura Kinney",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Honey Badger",
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"others": [
+				{
+					"card": "Sidekick",
+					"host": "Honey Badger"
+				}
+			]
+		}
+	}
+}

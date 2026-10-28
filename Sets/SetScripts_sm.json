@@ -5911,7 +5911,7 @@
 					"selection_count": 1,
 					"filter_state_seek": [
 						{
-							"filter_group": "group_characters_current_hero_target",
+							"filter_group": "group_friendly_current_hero_target",
 							"filter_tokens": [
 								{
 									"filter_token_name": "stunned",

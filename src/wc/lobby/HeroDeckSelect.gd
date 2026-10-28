@@ -109,7 +109,7 @@ func set_players_mode(value = 0):
 	if deck_id:
 		#Refresh everything
 		#aggressive but ensures proper size
-		load_deck_contents(decks_index[deck_id])
+		load_deck_contents(decks_index.get(deck_id, {}))
 	resize()
 
 func select_tab(tab_name):

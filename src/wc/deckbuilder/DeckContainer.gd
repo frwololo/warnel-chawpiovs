@@ -265,8 +265,9 @@ func reorganize_deck():
 	total_cards -=1 #removing hero card from count
 	stats_label.text = "Cards in deck: " + str(total_cards) +" (" +str(hero_cards)+ " hero cards, " + str(total_cards-hero_cards) + " others)"
  
-	var avg_cmc:float = stepify(float(total_cost) / float(total_cards_counted_for_cost), 0.1)
-	stats_label.text += " - AVG Cost: " + str(avg_cmc)
+	if total_cards_counted_for_cost:
+		var avg_cmc:float = stepify(float(total_cost) / float(total_cards_counted_for_cost), 0.1)
+		stats_label.text += " - AVG Cost: " + str(avg_cmc)
 
 
 func compute_max_types():
@@ -278,6 +279,8 @@ func compute_max_types():
 	
 	for card_id in slots:
 		var card_data = cfc.get_card_by_id(card_id)
+		if !card_data:
+			continue
 		var type_code = card_data["type_code"]
 		var quantity = slots[card_id]
 		if quantity > 2:
@@ -310,12 +313,14 @@ func display_deck_data():
 		
 	deck_name_label.text = deck_name
 	var slots = deck_data
-	slots[hero_code] = 1	
+	if hero_code:
+		slots[hero_code] = 1	
 	init_deck_container()
 	
 	for card_id in slots:
 		var card_data = cfc.get_card_by_id(card_id)
-			
+		if !card_data:
+			continue	
 		var card = new_deck_card(card_data)
 		add_card_to_deck_container(card, card_data)
 

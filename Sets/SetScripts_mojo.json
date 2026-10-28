@@ -1,0 +1,3786 @@
+{
+	"MaGog - A": {
+		"attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": 1,
+					"subject": "The Champion"
+				}
+			],
+			"_comments": "after MaGog attacks and damages a character"
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "damage",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": "3p",
+					"subject": "The Challengers"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_deal"
+				}
+			]
+		},
+		"do_deal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"TODO": "reset hit points to 10[per_hero] (printed 10); verify health per hero; signal 'hit points reset' for Jolt of Adrenaline/Surge of Aggression"
+	},
+	"MaGog - B": {
+		"attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": 2,
+					"subject": "The Champion"
+				}
+			],
+			"_comments": "after MaGog attacks and damages a character"
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "damage",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": "2p",
+					"subject": "The Challengers"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_deal"
+				}
+			]
+		},
+		"do_deal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"TODO": "reset hit points to 10[per_hero] (printed 10); verify health per hero; signal 'hit points reset' for Jolt of Adrenaline/Surge of Aggression"
+	},
+	"Melee in the Mojo-seum - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "The Champion",
+								"trait_booing_crowd": 1
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "The Challengers",
+								"trait_booing_crowd": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Melee in the Mojo-seum - 1B": {
+		"interrupt_stage_completed": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": "2p",
+					"subject": "The Champion"
+				},
+				{
+					"name": "remove_threat",
+					"amount": "all",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "The players cannot win the game unless they wow the crowd as The Challengers"
+	},
+	"The Champion #39003a": {
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "ratings",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "ratings"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Champion #39003b": {
+		"TODO": "After flipping to this side, each player draws 1 card; at 10[per_hero] ratings counters the players lose",
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "ratings",
+			"condition_board": {
+				"func_name": "count_tokens>=10p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "ratings"
+				}
+			},
+			"board": [
+				{
+					"name": "defeat"
+				}
+			]
+		}
+	},
+	"The Challengers #39004a": {
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "ratings",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "ratings"
+				}
+			},
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Challengers #39004b": {
+		"TODO": "After flipping, fetch Surprise Contender engaged with first player (or tough if in play)",
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "ratings",
+			"condition_board": {
+				"func_name": "count_tokens>=10p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "ratings"
+				}
+			},
+			"board": [
+				{
+					"name": "victory"
+				}
+			]
+		}
+	},
+	"Jolt of Adrenaline": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "After MaGog's hit points are reset, place 1[per_hero] ratings counters on The Challengers and discard this card"
+	},
+	"Surge of Aggression": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "After MaGog's hit points are reset, place 1[per_hero] ratings counters on The Challengers and discard this card"
+	},
+	"Surprise Contender": {
+		"attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": 1,
+					"subject": "The Champion"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": "2p",
+					"subject": "The Challengers"
+				}
+			]
+		}
+	},
+	"Pump Up the Crowd": {
+		"reveal": {
+			"condition_all": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "The Champion",
+								"trait_cheering_crowd": 1
+							}
+						}
+					]
+				}
+			},
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "1p",
+					"subject": "self"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": "1p",
+					"subject": "The Challengers"
+				}
+			]
+		}
+	},
+	"Break a Leg": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_champ",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "The Champion",
+							"token_name": "ratings"
+						}
+					}
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens>my_champ",
+							"func_params": {
+								"subject": "The Challengers",
+								"token_name": "ratings"
+							}
+						},
+						"then": 4,
+						"else": 2
+					},
+					"subject": "my_identity"
+				}
+			]
+		},
+		"TODO": "You may place ratings counters on The Champion to reduce this damage by 1 each; verify comparator with variable"
+	},
+	"Defend the Title": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ratings",
+					"modification": 2,
+					"subject": "The Champion"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		},
+		"TODO": "If a hero defends against this attack and takes no damage, place 2 ratings counters on The Challengers"
+	},
+	"Stage Fright": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_champ",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "The Champion",
+							"token_name": "ratings"
+						}
+					}
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"if": {
+							"func_name": "count_tokens>my_champ",
+							"func_params": {
+								"subject": "The Challengers",
+								"token_name": "ratings"
+							}
+						},
+						"then": 4,
+						"else": 2
+					},
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Spiral - 1 #39012a": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_stunned",
+					"alteration": 1,
+					"trigger": "self",
+					"_comments": "TODO verify property name"
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "main_scheme"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify event filter syntax"
+		},
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spiral - 1 #39012b": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "teleport",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "teleport",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=3p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "teleport"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "teleport",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spiral - 2 #39013a": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_stunned",
+					"alteration": 1,
+					"trigger": "self",
+					"_comments": "TODO verify property name"
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "main_scheme"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify event filter syntax"
+		},
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spiral - 2 #39013b": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "teleport",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "teleport",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=2p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "teleport"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "teleport",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spiral - 3 #39014a": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_stunned",
+					"alteration": 1,
+					"trigger": "self",
+					"_comments": "TODO verify property name"
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "main_scheme"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify event filter syntax"
+		},
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Spiral - 3 #39014b": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "teleport",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "teleport",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=3p",
+				"func_params": {
+					"subject": "self",
+					"token_name": "teleport"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "teleport",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Attack": [
+					{
+						"name": "villain_attacks_you",
+						"_comments": "even in alter-ego form"
+					}
+				]
+			}
+		}
+	},
+	"Across the Mojoverse - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "The Search for Spiral"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "1 random Show environment into play; build the show deck (other Show environments + Cornered!); flip Spiral to Escaped"
+	},
+	"Across the Mojoverse - 1B": {
+		"TODO": "When a Show environment would be discarded, place it on the bottom of the show deck instead"
+	},
+	"The Search for Spiral": {
+		"last_threat_removed": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "3p",
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO reveal the top card of the show deck"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Cornered!": {
+		"reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "villain",
+					"_comments": "TODO only if Spiral is on her Escaped side"
+				}
+			]
+		},
+		"TODO": "Reveal the top card of the show deck. Shuffle this card into the show deck"
+	},
+	"Spiral's Swords": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"uses": {
+			"__name__": "sword",
+			"__amount__": 3
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "sword"
+						}
+					},
+					"trigger": "host"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "villain",
+								"property": "trait_cornered"
+							}
+						}
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "sword",
+					"modification": -1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Erratic Teleportation": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "villain",
+									"property": "trait_cornered"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "teleport",
+									"modification": 1,
+									"subject": "villain"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO Escaped side: may spend [mental] to look at the top card of the show deck"
+	},
+	"The Show Must Go On": {
+		"TODO": "each player fetches a card from the same encounter set as the current Show environment"
+	},
+	"Well-Armed": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Spiral's Swords"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "villain_attacks_you",
+									"_comments": "even in alter-ego form"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "host_card",
+							"host": "villain",
+							"subject": "tutor",
+							"src_container": [
+								"deck_villain",
+								"discard_villain"
+							],
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"shortname": "Spiral's Swords"
+									}
+								}
+							]
+						},
+						{
+							"name": "shuffle_container",
+							"dest_container": "deck_villain"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Mojo - 1": {
+		"response": {
+			"event_name": "phase_ended",
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "forget_variable",
+									"var_name": "my_non_mojo"
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "do_discard",
+									"subject": "self",
+									"count": 3,
+									"delay_until_no_activity": true
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "do_threat",
+									"subject": "self",
+									"delay_until_no_activity": true
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_discard": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"card_set_code": "mojo"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_non_mojo",
+									"var_type": "int",
+									"mode": "add",
+									"value": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_threat": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": "my_non_mojo",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"_comments": "TODO verify 'after your turn ends' signal and per-player turn handling"
+	},
+	"Mojo - 2": {
+		"response": {
+			"event_name": "phase_ended",
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "forget_variable",
+									"var_name": "my_non_mojo"
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "do_discard",
+									"subject": "self",
+									"count": 4,
+									"delay_until_no_activity": true
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "do_threat",
+									"subject": "self",
+									"delay_until_no_activity": true
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_discard": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"card_set_code": "mojo"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_non_mojo",
+									"var_type": "int",
+									"mode": "add",
+									"value": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_threat": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": "my_non_mojo",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"_comments": "TODO verify 'after your turn ends' signal and per-player turn handling",
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Mojo - 3": {
+		"response": {
+			"event_name": "phase_ended",
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "forget_variable",
+									"var_name": "my_non_mojo"
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "do_discard",
+									"subject": "self",
+									"count": 5,
+									"delay_until_no_activity": true
+								},
+								{
+									"name": "sequence",
+									"sequence_ability": "do_threat",
+									"subject": "self",
+									"delay_until_no_activity": true
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_discard": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"card_set_code": "mojo"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "save_variable",
+									"var_name": "my_non_mojo",
+									"var_type": "int",
+									"mode": "add",
+									"value": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_threat": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": "my_non_mojo",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"_comments": "TODO verify 'after your turn ends' signal and per-player turn handling",
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"MojoMania - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Wheel of Genres",
+								"trait_spinning": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Choose 1 + 1[per_hero] modular sets from the MojoMania pack and set them aside"
+	},
+	"MojoMania - 1B": {
+		"TODO": "When Revealed: reveal a random set-aside set's Show environment, shuffle the rest in. When a character flips or leaves play, move its threat here"
+	},
+	"Wheel of Genres #39026a": {
+		"TODO": "After the encounter deck resets: lose if no set-aside modular sets remain; otherwise flip"
+	},
+	"Wheel of Genres #39026b": {
+		"TODO": "Start of villain step 3: reveal a random set-aside set's Show environment, put the rest on top of the deck, deal first player 2 facedown encounter cards, flip"
+	},
+	"Major Domo": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"subject_count": "trigger_details_damage",
+					"_comments": "TODO verify damage detail name"
+				}
+			]
+		}
+	},
+	"Stinger Tail": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 2,
+					"trigger": "host"
+				}
+			]
+		},
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"tags": [
+						"Init"
+					],
+					"subject": "self",
+					"set_properties": {
+						"health": 5
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": "trigger_details_amount",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"_comments": "pattern from Psionic Force Field (health 5 so it is discarded at 5 damage)",
+		"boost": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Supporting Actor": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 2,
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Paparazzi": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 10,
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Exhaust a character": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly_my_hero"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "threat",
+						"modification": {
+							"if": {
+								"func_name": "is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"then": -3,
+							"else": -2
+						},
+						"subject": "self"
+					}
+				],
+				"Discard 1 card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "tutor_and_choose",
+						"src_container": "hand",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "threat",
+						"modification": {
+							"if": {
+								"func_name": "is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"then": -3,
+							"else": -2
+						},
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "threat"
+						}
+					},
+					"subject": "main_scheme"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "Hinder 10 handled as 10 threat tokens on the obligation; TODO verify"
+	},
+	"Undercover Mojo": {
+		"hinder": {
+			"__amount__": 2
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain"
+			},
+			"board": [
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": "trigger_details_amount"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Curtain Call": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"sort_descending": true,
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters",
+							"filter_func": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "trigger",
+									"token_name": "threat"
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_char",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_move"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					],
+					"is_else": true
+				}
+			]
+		},
+		"do_move": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "my_char",
+							"token_name": "threat"
+						}
+					},
+					"subject": "main_scheme"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "my_char"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Director's Directions": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 2 different resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true,
+						"_comments": "TODO 2 different resource types"
+					}
+				],
+				"Mojo schemes": [
+					{
+						"name": "enemy_schemes",
+						"subject": "villain"
+					}
+				],
+				"Take 1 damage per threat on your identity": [
+					{
+						"name": "deal_damage",
+						"amount": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "my_identity",
+								"token_name": "threat"
+							}
+						},
+						"subject": "my_identity"
+					},
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "count_tokens<2",
+									"func_params": {
+										"subject": "my_identity",
+										"token_name": "threat"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "surge"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Top Billing": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Dial M for Mojo": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_setting": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO gains surge only if revealed from the encounter deck",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		},
+		"TODO": "Each other encounter card gains incite 1"
+	},
+	"Build the Case": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"card_defeated": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					}
+				}
+			],
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "clue",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "clue",
+			"condition_board": {
+				"func_name": "count_tokens>=3",
+				"func_params": {
+					"subject": "self",
+					"token_name": "clue"
+				}
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Crime Scene Investigation": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ask_integer",
+					"min": 1,
+					"max": 10,
+					"is_cost": true,
+					"_comments": "TODO X selection; verify ask_integer usage"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": "retrieve_integer"
+					},
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": "retrieve_integer"
+				}
+			]
+		},
+		"TODO": "Threat cannot be removed from other schemes"
+	},
+	"Law & Order": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ask_integer",
+					"min": 1,
+					"max": 10,
+					"is_cost": true,
+					"_comments": "TODO X selection; verify ask_integer usage"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": "retrieve_integer"
+					},
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": "retrieve_integer"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": -2,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Dragnet": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ask_integer",
+					"min": 1,
+					"max": 10,
+					"is_cost": true,
+					"_comments": "TODO X selection; verify ask_integer usage"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": "retrieve_integer"
+					},
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": "retrieve_integer"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Elementary, My Dear Mojo": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Move all threat from a side scheme to the main scheme": [
+					{
+						"name": "nop",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_scheme",
+						"var_type": "subject",
+						"value": "previous"
+					},
+					{
+						"name": "add_threat",
+						"amount": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "my_scheme",
+								"token_name": "threat"
+							}
+						},
+						"subject": "main_scheme"
+					},
+					{
+						"name": "remove_threat",
+						"amount": "all",
+						"subject": "my_scheme"
+					}
+				],
+				"Reveal a side scheme from the encounter deck": [
+					{
+						"name": "discard",
+						"subject": "grab_until",
+						"src_container": "deck_villain",
+						"filter_state_grab_until": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "reveal_encounter",
+						"subject": "index",
+						"subject_count": 1,
+						"subject_index": "retrieve_integer",
+						"src_container": "deck_villain"
+					}
+				]
+			}
+		}
+	},
+	"A Game of Mojo's": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_setting": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO gains surge only if revealed from the encounter deck",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Dragon": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"amount": ">0"
+			},
+			"condition_board": {
+				"func_name": "count_printed_resources",
+				"func_params": {
+					"subject": "trigger_details_source",
+					"resource_type": "energy"
+				}
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": "trigger_details_amount"
+				}
+			],
+			"_comments": "TODO verify source/printed resource detection"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_draw"
+				}
+			]
+		},
+		"do_draw": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Draw": [
+					{
+						"name": "draw_cards",
+						"amount": 4
+					}
+				]
+			}
+		}
+	},
+	"Goblin": {
+		"_surge": {},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "!count_printed_resources",
+				"func_params": {
+					"subject": "trigger_details_source",
+					"resource_type": "physical"
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Troll": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "count_printed_resources",
+				"func_params": {
+					"subject": "trigger_details_source",
+					"resource_type": "mental"
+				}
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			],
+			"_comments": "TODO verify"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "discard_event_source_hero",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_optional": true,
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Fetch Quest": {
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "When Defeated: each player may search their deck for a card and play it ignoring its resource cost"
+	},
+	"Mana Drain": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Choose energy": [
+					{
+						"name": "sequence",
+						"sequence_ability": "do_energy"
+					}
+				],
+				"Choose mental": [
+					{
+						"name": "sequence",
+						"sequence_ability": "do_mental"
+					}
+				],
+				"Choose physical": [
+					{
+						"name": "sequence",
+						"sequence_ability": "do_physical"
+					}
+				]
+			}
+		},
+		"do_energy": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Draw and discard": [
+					{
+						"name": "draw_cards",
+						"amount": 2
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"do_mental": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Draw and discard": [
+					{
+						"name": "draw_cards",
+						"amount": 2
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"resource_mental": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"do_physical": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Draw and discard": [
+					{
+						"name": "draw_cards",
+						"amount": 2
+					},
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"resource_physical": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_current_hero_target"
+				}
+			]
+		}
+	},
+	"The Mojo Files": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_setting": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO gains surge only if revealed from the encounter deck",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "quickstrike",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "Each ally takes -1 consequential damage after attacking a minion"
+	},
+	"Bandolier of Stakes": {
+		"_surge": {},
+		"uses": {
+			"__name__": "stake",
+			"__amount__": 3
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 1 resource to attach": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "attach_to_card",
+						"subject": "my_identity"
+					}
+				],
+				"Discard": [
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stake",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Cultist": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"grid_name": "enemies_active_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "The Kraken"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The Kraken": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Vampire": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"piercing"
+				]
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": "trigger_details_amount"
+				}
+			],
+			"_comments": "TODO verify piercing tag on damage event"
+		},
+		"attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "self",
+									"token_name": "damage"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "heal",
+									"amount": "all",
+									"subject": "self"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "tough",
+							"modification": 1,
+							"subject": "self"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Werewolf Pack": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"host": "self",
+					"subject": "previous",
+					"tags": [
+						"facedown"
+					],
+					"_comments": "TODO 'defeat an ally and place it facedown under Werewolf Pack'"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "self"
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"subject_count": 1
+				},
+				{
+					"name": "heal",
+					"amount": "all",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Mojo Runner": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_setting": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO gains surge only if revealed from the encounter deck",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "toughness",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Avalanche 9.0": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Blob 3.14": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"amount": ">2",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"amount": 2
+					}
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Magneto 2.6": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "magnetic",
+					"modification": 1,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand_current_hero_target",
+					"needs_selection": true,
+					"selection_type": "equal",
+					"selection_count": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "magnetic"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Pyro 4.0": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Toad 2.0": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "host_card",
+					"host": "self",
+					"tags": [
+						"facedown"
+					],
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "return_attachments_to_owner",
+					"subject": "self",
+					"_comments": "TODO verify returns to owner's hand"
+				}
+			]
+		}
+	},
+	"ICE-Teroid M": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "patrol",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"grid_name": "enemies_first_player",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			],
+			"_comments": "TODO verify timing relative to first player token passing"
+		}
+	},
+	"Mojo in the Middle": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_setting": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO gains surge only if revealed from the encounter deck",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "acceleration_icon",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "obligation"
+							}
+						}
+					],
+					"_comments": "TODO verify property"
+				}
+			]
+		},
+		"TODO": "After a player discards an obligation, that player draws 1 card"
+	},
+	"Family Matters": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Treat the printed text box of each support you control as blank"
+	},
+	"Growing Pains": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": 2,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Discard an upgrade you control": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_check"
+					}
+				],
+				"Discard an upgrade from your hand": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "tutor_and_choose",
+						"src_container": "hand",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "sequence",
+						"sequence_ability": "do_check"
+					}
+				]
+			}
+		},
+		"do_check": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards>my_in_play",
+								"func_params": {
+									"subject": "tutor",
+									"subject_count": "all",
+									"src_container": "discard_my_hero",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "TODO compute my_in_play (upgrades in play)"
+		}
+	},
+	"The Odd Couple": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "max_allies",
+					"alteration": -2,
+					"trigger": "my_identity",
+					"_comments": "TODO verify ally limit property name"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor_and_choose",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"The One with the Breakup": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "hand",
+					"needs_selection": true,
+					"selection_count": 3,
+					"selection_type": "equal",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "a_player"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Each encounter card gains peril"
+	},
+	"Watch Me Play": {
+		"incite": {
+			"__amount__": 3
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": -1,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "Looking up a rule is out of scope"
+	},
+	"Wild Wild Mojo": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "environment"
+							},
+							"filter_properties2": {
+								"trait_setting": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify attacks_gain trigger for 'each enemy'",
+		"attacks_gain": {
+			"__trigger__": "enemy",
+			"__tags__": "overkill"
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_characters"
+				}
+			],
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Dead or Alive": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "printed_health",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": "3p",
+					"trigger": "host",
+					"_comments": "TODO verify '3p' alteration"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_return"
+				}
+			]
+		},
+		"do_return": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Return": [
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor_and_choose",
+						"src_container": "discard_my_hero",
+						"dest_container": "hand_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Card Shark": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_current_hero_target"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_discarded",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "indirect_damage",
+									"amount": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "indirect_damage",
+									"amount": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "indirect_damage",
+									"amount": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "indirect_damage",
+									"amount": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_discarded"
+				}
+			],
+			"_comments": "1 indirect damage per different printed resource type discarded (one check per type)"
+		}
+	},
+	"Gunslinger": {
+		"interrupt": {
+			"event_name": "card_moved_to_board",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "current_hero_target",
+							"property": "attack"
+						}
+					},
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO verify timing before quickstrike"
+		}
+	},
+	"A Game of Cards": {
+		"reveal": {
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 5
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": "all",
+					"src_container": "hand_my_hero",
+					"needs_selection": true,
+					"selection_count": 5,
+					"selection_type": "equal"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_discarded",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_discarded",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_discarded"
+				}
+			]
+		},
+		"_comments": "one upgrade/support discarded per different printed resource type among the 5 discarded cards"
+	},
+	"Longshot": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"_comments": "TODO put into play under your control"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		}
+	}
+}

@@ -2,10 +2,12 @@ extends VBoxContainer
 
 onready var lobby = find_parent("TeamSelection")
 onready var hero_picture: TextureButton = get_node("%HeroPicture")
+onready var info_picture: TextureRect = get_node("%InfoTexture")
 onready var hero_name_label: Label = get_node("%HeroName")
 #onready var playerName := $PlayerName
 #onready var kick := $Kick
 var hero_id
+var is_beta = false
 var grayscale_tex = null
 var color_tex = null
 var available = true
@@ -22,6 +24,11 @@ var shader_active = false
 var shader_progress = 0.0
 
 func _ready():
+	is_beta = cfc.is_beta_card(hero_id)
+	if is_beta:
+		info_picture.visible = true
+	else:
+		info_picture.visible = false	
 	if color_tex:
 		hero_picture.texture_normal = color_tex
 		resize()
@@ -36,7 +43,9 @@ func _ready():
 	use_shader =  (animate_menu == 2)
 	#animation
 	if animate:
-
+		var target_modulate = Color(1.0,1.0,1.0,1.0)
+		if is_beta:
+			target_modulate = Color(0.5,0.5,0.5,1.0)
 		if use_shader:
 			self.modulate.a = 0
 			var reverse_delay = id_in_container
@@ -51,11 +60,16 @@ func _ready():
 			self.modulate.a = 1
 
 			hero_picture.modulate = CFConst.TRANSITION_HIGHLIGHT_COLORS["default"]
+			info_picture.modulate = CFConst.TRANSITION_HIGHLIGHT_COLORS["default"]
 
 			$Tween.interpolate_property(
 					hero_picture,'modulate', hero_picture.modulate,
-					Color(1.0,1.0,1.0,1.0),
+					target_modulate,
 					0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			$Tween.interpolate_property(
+					info_picture,'modulate', info_picture.modulate,
+					target_modulate,
+					0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)					
 			$Tween.start()	
 
 			var material = load(CFConst.PATH_CUSTOM + "shaders/transition.gdshader")
@@ -95,7 +109,7 @@ func _ready():
 						
 			$Tween.interpolate_property(
 					self,'modulate', self.modulate,
-					Color(1.0,1.0,1.0,1.0),
+					target_modulate,
 					1, Tween.TRANS_LINEAR, Tween.EASE_OUT)								
 			$Tween.start()	
 
@@ -198,6 +212,7 @@ func load_hero(_hero_id):
 	if !(hero_id in hero_unlocks) and cfc.get_locked_heroes():
 		hero_name = "*"	+ hero_name
 	get_node("%HeroName").set_text(hero_name)
+	
 
 	reload_texture(self)
 

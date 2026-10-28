@@ -131,6 +131,10 @@ func _ready():
 		v_folder_label.text = ""
 	else:
 		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+		#clip_content doesn't seem to work the way I want, so reducing the size of the string here
+		if v_folder_label.text.length() > 70:
+			v_folder_label.text = v_folder_label.text.substr(0, 67) + "..."
+
 
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")	
 	get_viewport().connect("size_changed", self, '_on_Menu_resized')

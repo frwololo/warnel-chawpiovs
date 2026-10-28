@@ -1,0 +1,1523 @@
+{
+	"Black Panther": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened",
+				"basic_defense_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Shuri": {
+		"once_per_round": {
+			"__name__": "_inventor"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "_inventor",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "tutor",
+					"src_container": "deck",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade",
+								"trait_black_panther": 1
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "upgrade",
+								"trait_tech": 1
+							}
+						}
+					],
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -2,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "deck",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "pattern from Team-Building Exercise; TODO verify playing from deck"
+				}
+			]
+		}
+	},
+	"T'Challa": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Clawed Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"On the Prowl": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Wakanda Forever!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"_comments": "TODO 'in any order'"
+				}
+			]
+		}
+	},
+	"The Elephant's Trunk": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": 2,
+					"subject_exclude": "self",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_wakanda": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": false
+						},
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "support",
+								"trait_wakanda": 1
+							},
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "previous",
+							"plus": 1
+						}
+					},
+					"_comments": "TODO verify counting previous subjects"
+				}
+			]
+		}
+	},
+	"Queen Ramonda": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities",
+							"filter_properties": {
+								"type_code": "alter_ego",
+								"trait_wakanda": 1
+							}
+						}
+					],
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "recover"
+						}
+					},
+					"_comments": "TODO verify subject/amount pairing"
+				}
+			]
+		}
+	},
+	"Aja-Adanna": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor_and_choose",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Kimoyo Beads": {
+		"special": {
+			"board": [
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard_opt"
+				}
+			]
+		},
+		"do_discard_opt": {
+			"board": {
+				"_rules": {},
+				"Discard for bonus": [
+					{
+						"name": "discard",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "an_enemy"
+					}
+				],
+				"Keep": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Panther Claws": {
+		"special": {
+			"board": [
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard_opt"
+				}
+			]
+		},
+		"do_discard_opt": {
+			"board": {
+				"_rules": {},
+				"Discard for bonus": [
+					{
+						"name": "discard",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "attack",
+						"amount": 3,
+						"subject": "my_enemy",
+						"tags": [
+							"piercing"
+						]
+					}
+				],
+				"Keep": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		},
+		"_comments": "TODO the 3 additional damage should be part of the same attack"
+	},
+	"Spider Bites": {
+		"special": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "a_player"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_player",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_player",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"_comments": "TODO verify group for minions engaged with the chosen player"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard_opt"
+				}
+			]
+		},
+		"do_discard_opt": {
+			"board": {
+				"_rules": {},
+				"Discard for bonus": [
+					{
+						"name": "discard",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "villain"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies_my_player",
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				],
+				"Keep": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Vibranium Suit": {
+		"special": {
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy",
+					"tags": [
+						"attack"
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard_opt"
+				}
+			]
+		},
+		"do_discard_opt": {
+			"board": {
+				"_rules": {},
+				"Discard for bonus": [
+					{
+						"name": "discard",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": 1,
+						"subject": "my_hero"
+					}
+				],
+				"Keep": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Manifold - Eden Fesi": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "a_player"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck_previous_subject",
+						"discard_previous_subject"
+					],
+					"dest_container": "hand_previous_subject",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "player_side_scheme"
+							}
+						}
+					],
+					"_comments": "TODO verify *_previous_subject containers"
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Infiltration": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ask_integer",
+					"min": 1,
+					"max": 5,
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": "retrieve_integer",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "thwart",
+					"amount": "retrieve_integer",
+					"subject": "a_scheme"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "discard_villain",
+					"grid_name": "enemies_active_player",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_is_included_in": "previous"
+						}
+					],
+					"_comments": "TODO only among the discarded cards"
+				}
+			]
+		}
+	},
+	"Going Undercover": {
+		"TODO": "When Defeated: look at the top 5 encounter cards, may add 1 non-scenario-specific card to the victory display, reorder the rest"
+	},
+	"Show of Empathy": {
+		"TODO": "threat removed from here is placed on a non-Elite minion; Redemption when threat >= remaining hit points"
+	},
+	"The Raft": {
+		"response": {
+			"event_name": "card_leaves_play",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "tuck_card_under_me",
+					"host": "self",
+					"subject": "trigger"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "trigger",
+							"property": "scheme"
+						}
+					}
+				}
+			]
+		},
+		"TODO": "If there are at least 4 minions here, deal 1 random minion here to any player as a facedown encounter card"
+	},
+	"Invisibility Gear": {
+		"give_to_player_max1": {},
+		"interrupt_enemy_would_attack": {
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Sonic Rifle": {
+		"uses": {
+			"__name__": "charge",
+			"__amount__": 2
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"subject": "self",
+					"modification": -1,
+					"token_name": "charge"
+				},
+				{
+					"name": "nop",
+					"subject": "an_enemy"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "previous",
+					"amount": {
+						"if": {
+							"func_name": "is_confused",
+							"func_params": {
+								"subject": "previous"
+							}
+						},
+						"then": 3,
+						"else": 0
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "previous",
+					"modification": 1,
+					"token_name": "confused"
+				}
+			]
+		}
+	},
+	"Sting Operation": {
+		"response_enemy_scheme_happened": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 0
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Aneka": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"subject_exclude": "self"
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Ayo": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"subject_exclude": "self"
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Okoye": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"subject_exclude": "self"
+				}
+			]
+		},
+		"special": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_wakanda": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "previous",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": 1,
+									"trigger": "self"
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Heart of the Panther": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Black Panther",
+						"Black Panther"
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade",
+								"trait_black_panther": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": 4,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO team-up check between the two Black Panther heroes"
+	},
+	"Build Support": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Fetch Support": [
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "max",
+						"selection_optional": true,
+						"src_container": [
+							"deck_my_hero",
+							"discard_my_hero"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "support"
+								},
+								"filter_properties3": {
+									"cost": 3,
+									"comparison": "le"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Dora Milaje": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_wakanda"
+							}
+						},
+						"then": -3,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "special",
+					"trigger_identity": "my_identity",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "previous",
+					"_comments": "TODO verify previous is the chosen ally"
+				}
+			]
+		}
+	},
+	"T'Challa's Shadow": {
+		"give_obligation": {
+			"__to__": "Shuri"
+		},
+		"uses": {
+			"__name__": "doubt",
+			"__amount__": 4
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": 1,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "support"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"thwart_happened",
+				"attack_happened",
+				"defense_happened"
+			],
+			"trigger": "my_hero",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "doubt",
+					"modification": -1,
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO with Uses, the card is discarded at 0 counters; Victory 0 should send it to the victory display instead"
+	},
+	"Klaw": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Manipulated M.U.S.I.C.": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "find",
+					"grid_name": "enemies_active_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "M.U.S.I.C."
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "M.U.S.I.C."
+				}
+			]
+		}
+	},
+	"M.U.S.I.C.": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Manipulated M.U.S.I.C."
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Manipulated M.U.S.I.C.",
+							"token_name": "threat"
+						}
+					},
+					"subject": "main_scheme"
+				},
+				{
+					"name": "remove_threat",
+					"amount": "all",
+					"subject": "Manipulated M.U.S.I.C."
+				}
+			]
+		}
+	},
+	"The Scream": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero",
+							"filter_func": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "current_hero_target"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 1,
+									"subject": "current_hero_target"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Redemption": {
+		"TODO": "take control of attached minion as a Redeemed ally"
+	},
+	"White Wolf - Hunter": {
+		"attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Target Spotter": {
+		"uses": {
+			"__name__": "target",
+			"__amount__": 2
+		},
+		"TODO": "When a minion would engage a player, remove a counter → it cannot activate this phase; engage it"
+	},
+	"Joystick": {
+		"interrupt": {
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Extra boost card and draw 1": [
+					{
+						"name": "draw_boost_card",
+						"subject": "self"
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1,
+						"subject": "current_hero_target"
+					}
+				],
+				"Tough status card": [
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": 1,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Energy Truncheon": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Joystick",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "piercing"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "host"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_after",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_after": {
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Playing for Keeps": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "trigger"
+				}
+			],
+			"_comments": "TODO verify trigger is the activating enemy"
+		}
+	},
+	"Extreme Risk": {
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Joystick"
+		},
+		"boost": {
+			"all": {
+				"_rules": {},
+				"Give an additional boost card and draw 1": [
+					{
+						"name": "draw_boost_card",
+						"subject": "host"
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1,
+						"subject": "current_hero_target"
+					}
+				],
+				"Decline": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,360 +1,308 @@
 {
-	"\"You Got This!\"": {
-		"TODO": "",
-		"manual": {
-			"hand": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
+	"Magneto": {
+		"once_per_round": {
+			"__name__": "_magnetic_pull"
 		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_hand": true,
-			"hand": [
+		"manual": {
+			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"hero_response"
+						"action_ability"
 					]
-				}
-			]
-		}
-	},
-	"Angry Acolyte": {
-		"TODO": "",
-		"reveal": {
-			"all": [
+				},
 				{
-					"name": "TODO"
+					"name": "mod_tokens",
+					"token_name": "_magnetic_pull",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"trait_magnetic": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_pull_cards",
+					"var_type": "subject",
+					"value": "previous",
+					"_comments": "remember all discarded cards for Magneto's Armor / Old Grievances; TODO verify previous holds every grab_until card"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck",
+					"dest_container": "hand",
+					"_comments": "pattern from Underground Distribution: the matching card stays at retrieve_integer"
 				}
 			]
 		}
 	},
-	"Anole - Victor Borkowski": {
-		"TODO": "",
-		"alterants": {
+	"Erik Lehnsherr": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"trigger": "self",
 			"board": [
 				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"name": "shuffle_card_into_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "discard",
+					"dest_container": "deck",
+					"_comments": "TODO 'top' of the discard pile = most recently discarded"
 				}
 			]
 		}
 	},
 	"Asteroid M": {
-		"TODO": "",
 		"manual": {
 			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"alter_ego_action"
 					]
-				}
-			]
-		}
-	},
-	"Bling! - Roxanne Washington": {
-		"TODO": ""
-	},
-	"Children of the Atom": {
-		"TODO": ""
-	},
-	"Cyclops - Scott Summers": {
-		"self_moved_to_board": {
-			"board": [
-				{
-					"name": "mod_tokens",
-					"token_name": "power",
-					"subject": "Phoenix Force",
-					"modification": 2
-				}
-			]
-		},
-		"card_leaves_play": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "mod_tokens",
-					"token_name": "power",
-					"subject": "Phoenix Force",
-					"modification": -2
-				}
-			]
-		}
-	},
-	"Deft Focus": {
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"max_per_hero": 1
-				}
-			],
-			"condition_board": {
-				"func_name": "has_trait",
-				"func_params": {
-					"trait": "superpower",
-					"subject": "tutor",
-					"subject_count": "all",
-					"src_container": "hand_my_hero"
-				}
-			},
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
 				},
 				{
 					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
+					"subject": "self",
+					"is_cost": true
 				},
 				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": 1,
-					"set_to_mod": true,
-					"token_name": "__focus"
-				}
-			]
-		},
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cost",
-					"filter_state_trigger": [
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"sort_descending": true,
+					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"trait_superpower": 1,
+								"trait_magnetic": 1,
 								"comparison": "ge"
 							}
 						}
 					],
-					"alteration": "per_token_self",
-					"per_token_self": {
-						"token_name": "__focus",
-						"is_inverted": true
-					}
-				}
-			]
-		},
-		"card_played": {
-			"trigger": "another",
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"trait_superpower": 1,
-						"comparison": "ge"
-					}
-				}
-			],
-			"board": [
-				{
-					"name": "mod_tokens",
-					"modification": 0,
-					"subject": "self",
-					"set_to_mod": true,
-					"token_name": "__focus"
-				}
-			]
-		},
-		"phase_ended": {
-			"board": [
-				{
-					"name": "mod_tokens",
-					"modification": 0,
-					"subject": "self",
-					"set_to_mod": true,
-					"token_name": "__focus"
-				}
-			]
-		}
-	},
-	"Electromagnetic Blast": {
-		"reveal": {
-			"all": [
-				{
-					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero"
-						}
-					]
+					"_comments": "TODO 'topmost' ordering in the discard pile"
 				},
 				{
-					"name": "mod_tokens",
-					"token_name": "magnet",
-					"modification": 1,
-					"subject": "main_scheme"
-				}
-			]
-		},
-		"boost": {
-			"all": [
-				{
-					"name": "exhaust_card",
-					"subject": "current_hero_target"
+					"name": "heal",
+					"amount": 1,
+					"subject": "my_identity"
 				}
 			]
 		}
 	},
-	"Erik Lehnsherr": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		}
-	},
-	"Exodus": {
-		"reveal": {
-			"all": [
-				{
-					"name": "host_card",
-					"subject": "tutor",
-					"src_container": [
-						"deck_villain",
-						"discard_villain"
-					],
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"Name": "Psionic Shield"
-							}
-						}
-					],
-					"tags": [
-						"disable_attach_trigger"
-					]
-				}
-			]
-		}
-	},
-	"Fabian Cortez": {
-		"teamwork": {
-			"__trait__": "acolyte"
-		},
-		"card_defeated": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "grab_until",
-					"src_container": "deck_villain",
-					"dest_container": "discard_villain",
-					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"trait_acolyte": 1
-							},
-							"filter_properties2": {
-								"type_code": "minion"
-							}
-						}
-					]
-				},
-				{
-					"name": "move_card_to_board",
-					"grid_name": "enemies_event_source_hero",
-					"subject": "index",
-					"subject_count": 1,
-					"subject_index": "retrieve_integer",
-					"src_container": "deck_villain"
-				}
-			]
-		}
-	},
-	"Face the Past": {
-		"TODO": "",
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
-		}
-	},
-	"Frenzy": {
-		"TODO": "",
-		"quickstrike": {},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		}
-	},
-	"Hellfire Pawn": {
-		"_surge": {},
-		"boost": {
-			"all": [
-				{
-					"name": "move_card_to_board",
-					"subject": "self"
-				}
-			]
-		}
-	},
-	"Indra - Paras Gavaskar": {
-		"TODO": "",
+	"Magneto's Helmet": {
 		"alterants": {
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
+					"filter_property_name": "steady",
+					"alteration": 1,
+					"trigger": "Magneto"
 				}
 			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_magnetic": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			],
+			"_comments": "pattern from The Power of the Mind (only for a Magnetic card)"
 		}
 	},
-	"Kid Omega - Quentin Quire": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+	"Magneto's Armor": {
+		"response_script_executed": {
+			"event_filters": {
+				"script_executed_trigger": "manual",
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"shortname": "Magneto",
+							"type_code": "hero"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_pull_cards",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"subject": "Magneto",
+									"end_condition": "round_ended",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "thwart",
+													"alteration": 1,
+													"trigger": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_pull_cards",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"subject": "Magneto",
+									"end_condition": "round_ended",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"alteration": 1,
+													"trigger": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "my_pull_cards",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"subject": "Magneto",
+									"end_condition": "round_ended",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "defense",
+													"alteration": 1,
+													"trigger": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "after Magnetic Pull resolves; TODO verify script_executed filters (pattern from Black Widow's Gauntlet)"
 		}
 	},
-	"M - Monet St. Croix": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
+	"Magneto's Cape": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": 1,
+					"trigger": "Magneto"
+				}
+			]
+		},
+		"response_script_executed": {
+			"event_filters": {
+				"script_executed_trigger": "manual",
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"shortname": "Magneto",
+							"type_code": "hero"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "Magneto"
+				}
+			],
+			"_comments": "after Magnetic Pull resolves; TODO verify script_executed filters (pattern from Black Widow's Gauntlet)",
+			"is_optional_board": true
 		}
 	},
 	"Magnetic Bubble": {
@@ -363,18 +311,13 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "retaliate",
-					"trigger": "host",
-					"alteration": 1
+					"alteration": 1,
+					"trigger": "Magneto"
 				}
 			]
 		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "attach_to_card",
-					"subject": "Magneto"
-				},
+		"on_load": {
+			"all": [
 				{
 					"name": "modify_properties",
 					"tags": [
@@ -382,7 +325,7 @@
 					],
 					"subject": "self",
 					"set_properties": {
-						"health": 8
+						"health": 6
 					}
 				}
 			]
@@ -390,13 +333,14 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"target": "host"
+				"target": "my_identity",
+				"amount": ">0"
 			},
 			"board": [
 				{
 					"name": "deal_damage",
-					"subject": "self",
-					"amount": "trigger_details_amount"
+					"amount": "trigger_details_amount",
+					"subject": "self"
 				},
 				{
 					"name": "prevent",
@@ -404,332 +348,1223 @@
 					"amount": "all"
 				}
 			]
-		}
+		},
+		"_comments": "pattern from Psionic Force Field (health 6 = discard threshold)"
 	},
-	"Magnetic Missile": {
-		"_surge": {},
-		"reveal": {
-			"all": [
+	"Wrapped in Metal": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
 				{
-					"name": "conditional_script",
-					"options": [
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 0
+					}
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "attached minion cannot activate"
+		},
+		"TODO": "Treat its printed text box as if it were blank; 'Hero form only' play restriction"
+	},
+	"Electromagnetic Blast": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
 						{
-							"condition": {
-								"func_name": "count_cards",
-								"func_params": {
-									"subject": "boardseek",
-									"filter_state_seek": [
-										{
-											"filter_properties": {
-												"type_code": "minion"
-											},
-											"filter_properties2": {
-												"trait_sentinel": 1,
-												"comparison": "ge"
-											}
-										}
-									]
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "card_dies",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_optional": false,
-									"selection_type": "equal",
-									"filter_state_seek": [
-										{
-											"filter_properties": {
-												"type_code": "minion"
-											},
-											"filter_properties2": {
-												"trait_sentinel": 1,
-												"comparison": "ge"
-											}
-										}
-									]
-								},
-								{
-									"name": "sequence",
-									"sequence_ability": "missile",
-									"subject": "self"
-								}
-							]
+							"filter_group": "group_schemes"
 						}
 					]
 				}
 			]
 		},
-		"missile": {
-			"all": {
-				"Discard 5, Take 0 Damage": [
+		"last_threat_removed": {
+			"event_filters": {
+				"source": "self"
+			},
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							}
+						}
+					],
+					"_comments": "TODO only attachments with 'Hero Action' or 'Hero Response' text"
+				}
+			]
+		},
+		"_comments": "pattern from Creole Charmer"
+	},
+	"Metal Shards": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 7,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			]
+		},
+		"_comments": "pattern from Hard Knocks"
+	},
+	"Magnetic Missile": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Wrapped in Metal"
+											}
+										}
+									]
+								}
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 5,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "previous"
+				}
+			]
+		},
+		"_comments": "TODO verify 'previous' is the damaged enemy"
+	},
+	"M - Monet St. Croix": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "defeat_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_func": {
+								"func_name": "get_remaining_damage<my_m_hp",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					],
+					"_comments": "TODO compute my_m_hp = M's remaining hit points"
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Kid Omega - Quentin Quire": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": {
+				"Spend [energy]: 1 damage to each enemy": [
 					{
-						"name": "discard",
-						"subject": "tutor",
-						"src_container": "hand_my_hero",
-						"subject_count": "all",
-						"needs_selection": true,
-						"is_cost": true,
-						"selection_optional": false,
-						"selection_count": 5,
-						"selection_type": "equal"
-					}
-				],
-				"Discard 4, Take 1 Damage": {
-					"_magnetic_missile": {
-						"__damage__": 1,
-						"__discard__": 4
-					}
-				},
-				"Discard 3, Take 2 Damage": {
-					"_magnetic_missile": {
-						"__damage__": 2,
-						"__discard__": 3
-					}
-				},
-				"Discard 2, Take 3 Damage": {
-					"_magnetic_missile": {
-						"__damage__": 3,
-						"__discard__": 2
-					}
-				},
-				"Discard 1, Take 4 Damage": {
-					"_magnetic_missile": {
-						"__damage__": 4,
-						"__discard__": 1
-					}
-				},
-				"Take 5 Damage": [
+						"name": "pay_cost",
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
+					},
 					{
 						"name": "deal_damage",
-						"amount": 5,
-						"subject": "my_identity"
+						"amount": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				],
+				"Spend [mental]: remove 1 threat from each scheme": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "remove_threat",
+						"amount": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
 					}
 				]
 			}
 		}
 	},
-	"Magneto": {
-		"TODO": "",
-		"manual": {
+	"Phoenix - Jean Grey": {
+		"self_moved_to_board": {
 			"board": [
 				{
-					"name": "mod_tokens",
-					"is_cost": true,
-					"modification": -1,
-					"token_name": "__TODO",
-					"subject": "self"
-				},
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				}
-			]
-		},
-		"once_per_round": {
-			"__name__": "__TODO"
-		}
-	},
-	"Magneto's Armor": {
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_be_stunned",
-					"trigger": "host",
-					"alteration": 1
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "attach_to_card",
-					"subject": "Magneto"
-				}
-			]
-		},
-		"response_basic_attack_happened": {
-			"event_filters": {
-				"target": "host"
-			},
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "hero"
-					}
-				}
-			],
-			"is_optional_board": true,
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
-				},
-				{
-					"name": "pay_cost",
-					"cost": {
-						"energy": 1,
-						"mental": 1,
-						"physical": 1
-					},
-					"is_cost": true
-				},
-				{
-					"name": "discard",
-					"subject": "self"
-				}
-			]
-		}
-	},
-	"Magneto's Cape": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				}
-			]
-		},
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		}
-	},
-	"Magneto's Helmet": {
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_be_confused",
-					"trigger": "host",
-					"alteration": 1
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "attach_to_card",
-					"subject": "Magneto"
-				}
-			]
-		},
-		"response_basic_attack_happened": {
-			"event_filters": {
-				"target": "host"
-			},
-			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "hero"
-					}
-				}
-			],
-			"is_optional_board": true,
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
-				},
-				{
-					"name": "pay_cost",
-					"cost": {
-						"energy": 1,
-						"mental": 1,
-						"physical": 1
-					},
-					"is_cost": true
-				},
-				{
-					"name": "discard",
-					"subject": "self"
-				}
-			]
-		}
-	},
-	"Martyr for Mutants": {
-		"TODO": "",
-		"card_defeated": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		}
-	},
-	"Master of Magnetism": {
-		"reveal": {
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"is_cost": true,
-					"sort_descending": true,
-					"src_container": "discard_villain",
-					"dest_container": "deck_villain",
-					"filter_state_tutor": [
+					"name": "ready_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
 						{
 							"filter_properties": {
-								"trait_magnetic": 1
+								"type_code": "ally",
+								"trait_x-men": 1,
+								"comparison": "ge"
 							}
 						}
 					]
 				},
 				{
-					"name": "draw_boost_card",
-					"subject": "Magneto"
+					"name": "heal",
+					"amount": 1,
+					"subject": "previous"
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Cyclops - Scott Summers": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "an_enemy"
 				},
 				{
-					"name": "enemy_activates",
-					"subject": "villain"
+					"name": "add_script",
+					"subject": "previous",
+					"end_condition": "phase_ended",
+					"script": {
+						"interrupt_receive_damage": {
+							"event_filters": {
+								"target": "self",
+								"tags": [
+									"attack"
+								]
+							},
+							"board": [
+								{
+									"name": "increase",
+									"subject": "interrupted_event",
+									"amount": 1
+								}
+							]
+						}
+					},
+					"_comments": "TODO verify add_script with an interrupt on the chosen enemy"
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Won't Stay Down": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
 				},
 				{
-					"name": "enemy_activates",
-					"subject": "villain",
-					"is_else": true,
-					"_comments": "if the facedown boost card could not be given, the villain still activates"
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": "discard",
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally",
+								"trait_x-men": 1
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally",
+								"trait_x-force": 1
+							}
+						}
+					]
 				}
 			]
 		}
 	},
-	"Metal Shards": {
+	"Squared Off": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"grid_name": "enemies_active_player",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					],
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -3,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "hand",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "pattern from Team-Building Exercise"
+				}
+			]
+		}
+	},
+	"Noble Sacrifice": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "previous",
+							"property": "health"
+						}
+					},
+					"subject": "my_hero"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_hero"
+				}
+			]
+		},
+		"_comments": "TODO verify 'previous' still points at the discarded ally"
+	},
+	"\"You Got This!\"": {
+		"TODO": "after exhausting your hero for a basic thwart/attack, discard an ally → add its matching power; ready your hero"
+	},
+	"New Recruits": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_fetch"
+				}
+			]
+		},
+		"do_fetch": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Add a New ally": [
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor_and_choose",
+						"src_container": "set_aside",
+						"dest_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "ally",
+									"trait_new": 1
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"White Queen - Emma Frost": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": {
+				"Discard a stunned status card": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_characters",
+								"filter_func": {
+									"func_name": "is_stunned",
+									"func_params": {
+										"subject": "trigger"
+									}
+								}
+							}
+						]
+					}
+				],
+				"Discard a confused status card": [
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_characters",
+								"filter_func": {
+									"func_name": "is_confused",
+									"func_params": {
+										"subject": "trigger"
+									}
+								}
+							}
+						]
+					}
+				],
+				"Discard a tough status card": [
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_characters",
+								"filter_func": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"subject": "trigger",
+										"token_name": "tough"
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Face the Past": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "reveal_nemesis",
+					"subject": "my_identity",
+					"_comments": "TODO verify reveal_nemesis searches deck/discard/set-aside for the nemesis minion",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 3
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "You cannot attack the villain this phase"
+	},
+	"Deft Focus": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				}
+			]
+		},
+		"TODO": "reduce the cost of the next Superpower card you play this turn by 1"
+	},
+	"Old Grievances": {
+		"give_obligation": {
+			"__to__": "Erik Lehnsherr"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"response_script_executed": {
+			"event_filters": {
+				"script_executed_trigger": "manual",
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"shortname": "Magneto",
+							"type_code": "hero"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "my_pull_cards"
+						},
+						"_comments": "TODO verify counting a subject variable"
+					},
+					"subject": "my_identity"
+				}
+			],
+			"_comments": "after Magnetic Pull resolves; TODO verify script_executed filters (pattern from Black Widow's Gauntlet)"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "Erik Lehnsherr",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Exodus": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_current_hero_target",
+					"subject_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "self",
+							"property": "attack"
+						}
+					},
+					"_comments": "TODO 'total ATK' including boost icons"
+				}
+			]
+		}
+	},
+	"Martyr for Mutants": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 9,
+					"src_container": "deck_event_source_hero"
+				}
+			]
+		}
+	},
+	"Fabian Cortez": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 4,
+					"src_container": "deck_event_source_hero"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 4,
+					"src_container": "deck_current_hero_target"
+				}
+			]
+		}
+	},
+	"Frenzy": {
+		"quickstrike": {},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_current_hero_target"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 4,
+					"src_container": "deck_current_hero_target"
+				}
+			]
+		}
+	},
+	"Angry Acolyte": {
 		"reveal": {
 			"all": [
 				{
-					"name": "deal_damage",
-					"amount": 1,
+					"name": "enemy_activates",
+					"is_cost": true,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_friendly_my_hero"
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_acolyte": 1
+							}
+						}
+					],
+					"_comments": "each Acolyte minion activates against the player it is engaged with (pattern from Battle for Limbo)"
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_acolyte": 1
+							}
+						}
+					],
+					"is_else": true
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Surge - Noriko Ashida": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "condition: identity has Mutant or X-Men trait (sum of trait properties)"
+	},
+	"Anole - Victor Borkowski": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "condition: identity has Mutant or X-Men trait (sum of trait properties)"
+	},
+	"Bling! - Roxanne Washington": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "toughness",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "condition: identity has Mutant or X-Men trait (sum of trait properties)"
+	},
+	"Indra - Paras Gavaskar": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 2,
+						"else": 0
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_mutant",
+								"plus": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_x-men"
+									}
+								}
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "condition: identity has Mutant or X-Men trait (sum of trait properties)"
+	},
+	"Children of the Atom": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_x-factor",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-factor": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-force": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							}
 						}
 					]
 				},
 				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_x-force",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-factor": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-force": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_x-men",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-factor": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-force": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO trait alterants may stack (gain = at least 1)"
+	},
+	"Sebastian Shaw": {
+		"attack_happened": {
+			"event_filters": {
+				"target": "self"
+			},
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "He cannot be attacked again this phase"
+	},
+	"Selene": {
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_current_hero_target"
+						}
+					]
+				}
+			]
+		},
+		"TODO": "Allies cannot attack Selene"
+	},
+	"Hellfire Pawn": {
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_active_player"
+				}
+			]
+		}
+	},
+	"The Inner Circle": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_hellfire": 1,
+										"comparison": "ge"
+									}
+								}
+							],
+							"multiplier": 2
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Power and Decadence": {
+		"reveal": {
+			"all": [
+				{
 					"name": "mod_tokens",
-					"token_name": "magnet",
+					"token_name": "tough",
 					"modification": 1,
-					"subject": "main_scheme"
+					"subject": "villain"
+				},
+				{
+					"name": "move_boost_cards",
+					"subject": "self",
+					"_comments": "TODO give this card to the villain as a facedown boost card"
 				}
 			]
 		},
@@ -738,288 +1573,23 @@
 				{
 					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
-					"subject": "host",
+					"subject": "self",
 					"script": {
-						"interrupt_card_dies": {
-							"event_filters": {
-								"tags": [
-									"attack"
-								]
-							},
-							"filter_state_trigger": [
+						"enemy_activation_finished": {
+							"all": [
 								{
-									"filter_properties": {
-										"type_code": "ally"
-									}
-								}
-							],
-							"board": [
-								{
-									"name": "mod_tokens",
-									"modification": 1,
-									"token_name": "magnet",
-									"subject": "main_scheme"
+									"name": "enemy_activates_against_you",
+									"subject": "host",
+									"tags": [
+										"no_boost"
+									]
 								}
 							]
 						}
 					}
 				}
-			]
-		}
-	},
-	"New Recruits": {
-		"TODO": "",
-		"card_defeated": {
-			"trigger": "self",
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		}
-	},
-	"Noble Sacrifice": {
-		"TODO": "",
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
-		}
-	},
-	"Old Grievances": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"alter_ego_action"
-					]
-				}
-			]
-		}
-	},
-	"Phoenix - Jean Grey": {
-		"self_moved_to_board": {
-			"board": [
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"subject_count": "all",
-					"src_container": "discard",
-					"dest_container": "hand",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "max",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"faction_code": "hero"
-							}
-						}
-					]
-				}
-			]
-		}
-	},
-	"Power and Decadence": {
-		"TODO": "",
-		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		}
-	},
-	"Sebastian Shaw": {
-		"TODO": ""
-	},
-	"Selene": {
-		"TODO": "",
-		"quickstrike": {},
-		"boost": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		}
-	},
-	"Squared Off": {
-		"TODO": "",
-		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				}
-			]
-		}
-	},
-	"Surge - Noriko Ashida": {
-		"TODO": "",
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "TODO",
-					"filter_state_trigger": [
-						{
-							"TODO": "TODO"
-						}
-					],
-					"alteration": 1
-				}
-			]
-		}
-	},
-	"The Inner Circle": {
-		"TODO": "",
-		"reveal": {
-			"all": [
-				{
-					"name": "TODO"
-				}
-			]
-		}
-	},
-	"White Queen - Emma Frost": {
-		"TODO": "",
-		"response": {
-			"event_name": "TODO",
-			"is_optional_board": true,
-			"board": []
-		}
-	},
-	"Won't Stay Down": {
-		"TODO": "",
-		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"alter_ego_action"
-					]
-				}
-			]
-		}
-	},
-	"Wrapped in Metal": {
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_attack",
-					"trigger": "host",
-					"alteration": 1
-				},
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_thwart",
-					"trigger": "host",
-					"alteration": 1
-				},
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_defend",
-					"trigger": "host",
-					"alteration": 1
-				},
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cannot_recover",
-					"trigger": "host",
-					"alteration": 1
-				}
-			]
-		},
-		"card_moved_to_board": {
-			"trigger": "self",
-			"board": [
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
-								"func_name": "count_attachments",
-								"func_params": {
-									"subject": "my_identity",
-									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"Name": "Wrapped in Metal"
-											}
-										}
-									]
-								}
-							},
-							"nested_tasks": [
-								{
-									"name": "discard",
-									"subject": "self"
-								}
-							]
-						}
-					],
-					"else": [
-						{
-							"name": "attach_to_card",
-							"subject": "my_identity"
-						}
-					]
-				}
-			]
-		},
-		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "my_identity"
-				},
-				{
-					"name": "pay_cost",
-					"cost": {
-						"physical": 1
-					},
-					"is_cost": true
-				},
-				{
-					"name": "discard",
-					"subject": "self"
-				}
-			]
+			],
+			"_comments": "pattern from Horseman of Death"
 		}
 	}
 }

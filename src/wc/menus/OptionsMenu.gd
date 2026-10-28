@@ -103,7 +103,8 @@ func on_button_pressed(_button_name : String) -> void:
 			delete_custom_gfx()									
 		"EnableModsButton":
 			enable_disable_mods()
-			
+		"EnableBetaButton":
+			enable_disable_beta()			
 							
 		"RestartButton":
 			restart_game()	
@@ -264,11 +265,18 @@ func save_options():
 
 	cfc.save_settings()
 
-const NON_ADVANCED_OPTIONS = [
-	"sfx_volume", 
-	"music_volume", 
-	"adventure_mode", 
-	"notifications_level"]
+#these options already have menus/buttons to access them and
+#should not be surfaced in advanced settings
+const NON_ADVANCED_OPTIONS = [ 
+	"adventure_mode",
+	"enable_beta_sets",	
+	"enable_fanmade_sets",
+	"fullscreen",
+	"lang",
+	"music_volume", 	 
+	"notifications_level",
+	"sfx_volume",	
+]
 	
 func load_advanced_settings():
 	for child in advanced_settings_container.get_children():
@@ -431,19 +439,33 @@ func show_me(container_to_disable = null, subpage = ""):
 		select_tab(subpage)
 
 func enable_disable_mods():
-	if cfc.get_setting('enable_fanmade_sets'):
-		cfc.set_setting('enable_fanmade_sets', false)	
+	enable_disable_cached_feature('enable_fanmade_sets')
+	return
+
+func enable_disable_beta():
+	enable_disable_cached_feature('enable_beta_sets')
+	return
+
+func enable_disable_cached_feature(feature_name):
+	if cfc.get_setting(feature_name):
+		cfc.set_setting(feature_name, false)	
 	else:
-		cfc.set_setting('enable_fanmade_sets',true)
+		cfc.set_setting(feature_name,true)
 	update_mods_button_text()
 	cfc.clear_cards_cache($PanelContainer)
-	return
+	return		
+	
 
 func update_mods_button_text():
 	if cfc.get_setting('enable_fanmade_sets'):
 		get_node("%EnableModsButton").text = "Disable Fanmade Sets"
 	else:
 		get_node("%EnableModsButton").text = "Enable Fanmade Sets"
+
+	if cfc.get_setting('enable_beta_sets'):
+		get_node("%EnableBetaButton").text = "Disable Beta Sets"
+	else:
+		get_node("%EnableBetaButton").text = "Enable Beta Sets"
 	
 func restart_game():
 	var path = "user://Saves/_restart.json"

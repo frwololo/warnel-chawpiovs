@@ -497,6 +497,11 @@
 		"resource_energy": 0,
 		"resource_mental": 1
 	},
+	"42001c": {
+		"wc_meta": {
+			"art_render": "wide"
+		}
+	},	
 	"42015": {
 		"alternate_art": true
 	},

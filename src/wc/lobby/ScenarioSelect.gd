@@ -2,10 +2,12 @@ extends VBoxContainer
 
 onready var lobby = find_parent("TeamSelection")
 onready var the_picture: TextureButton = get_node("%ScenarioPicture")
+onready var info_picture: TextureRect = get_node("%InfoTexture")
 onready var scenario_name: Label = get_node("%ScenarioName")
 #onready var playerName := $PlayerName
 #onready var kick := $Kick
 var scenario_id
+var is_beta = false
 var _options:= []
 var villain_id
 var _rotation = 0
@@ -24,7 +26,11 @@ var shader_progress = 0.0
 func _ready():
 
 	attempt_load_texture()
-
+	is_beta = cfc.is_beta_card(scenario_id)
+	if is_beta:
+		info_picture.visible = true
+	else:
+		info_picture.visible = false	
 	
 	# warning-ignore:return_value_discarded
 	get_viewport().connect("gui_focus_changed", self, "gui_focus_changed")
@@ -45,6 +51,10 @@ func _ready():
 
 func do_animate(delay_offset = 0):
 	if animate:
+		var target_modulate = Color(1.0,1.0,1.0,1.0)
+		if is_beta:
+			target_modulate = Color(0.5,0.5,0.5,1.0)		
+		
 		if use_shader:
 			self.modulate.a = 0
 			var delay = randi() % delay_offset 
@@ -53,11 +63,16 @@ func do_animate(delay_offset = 0):
 			#this uses https://github.com/cashew-olddew/Universal-Transition-Shader
 			self.modulate.a = 1
 			the_picture.modulate = CFConst.TRANSITION_HIGHLIGHT_COLORS["villain"]
+			info_picture.modulate = CFConst.TRANSITION_HIGHLIGHT_COLORS["villain"]
 
 			$Tween.interpolate_property(
 					the_picture,'modulate', the_picture.modulate,
-					Color(1.0,1.0,1.0,1.0),
+					target_modulate,
 					0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+			$Tween.interpolate_property(
+					info_picture,'modulate', info_picture.modulate,
+					target_modulate,
+					0.5, Tween.TRANS_LINEAR, Tween.EASE_OUT)					
 			$Tween.start()				
 			
 			#this uses https://github.com/cashew-olddew/Universal-Transition-Shader

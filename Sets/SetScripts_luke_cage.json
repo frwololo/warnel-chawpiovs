@@ -1,0 +1,1300 @@
+{
+	"Luke Cage #62001a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "max_tough",
+					"alteration": 99,
+					"trigger": "self",
+					"_comments": "TODO verify property for 'any number of tough status cards'"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"piercing"
+				],
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"remove_tags": [
+							"piercing"
+						]
+					},
+					"_comments": "TODO verify tag removal in replacement_effect"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "self",
+					"tags": [
+						"unpreventable",
+						"ignore_tough"
+					],
+					"_comments": "TODO unpreventable damage ignoring tough"
+				}
+			],
+			"filter_token_name": "tough",
+			"filter_count_difference": "decreased"
+		}
+	},
+	"Luke Cage #62001b": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "max_tough",
+					"alteration": 99,
+					"trigger": "self",
+					"_comments": "TODO verify property for 'any number of tough status cards'"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"piercing"
+				],
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"remove_tags": [
+							"piercing"
+						]
+					},
+					"_comments": "TODO verify tag removal in replacement_effect"
+				}
+			]
+		},
+		"once_per_phase": {
+			"__name__": "_burstein"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "_burstein",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Burstein Process"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Jessica Jones": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "my_identity",
+							"token_name": "tough",
+							"max": 4
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Harlem's Hero": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "Luke Cage"
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Luke Cage",
+							"token_name": "tough"
+						}
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Knuckle Sandwich": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_opt"
+				}
+			]
+		},
+		"do_opt": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard a tough status card to return this event to your hand": [
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": -1,
+						"subject": "Luke Cage",
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "self",
+						"dest_container": "hand",
+						"_comments": "TODO after resolution"
+					}
+				],
+				"Keep the tough status card": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"\"Stand with Me!\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "Luke Cage"
+				},
+				{
+					"name": "thwart",
+					"subject": "a_scheme",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Luke Cage",
+							"token_name": "tough",
+							"max": 5
+						}
+					}
+				}
+			]
+		}
+	},
+	"\"Sweet Christmas!\"": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Luke Cage",
+							"token_name": "tough",
+							"multiplier": -1
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "villain"
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_hero",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Fogwell's Gym": {
+		"card_token_modified": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_characters",
+					"filter_properties": {
+						"trait_defender": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "trigger"
+				}
+			],
+			"filter_token_name": "tough",
+			"filter_count_difference": "decreased"
+		}
+	},
+	"Burstein Process": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"subject": "Luke Cage",
+					"modification": {
+						"if": {
+							"func_name": "!count_tokens",
+							"func_params": {
+								"subject": "Luke Cage",
+								"token_name": "tough"
+							}
+						},
+						"then": 2,
+						"else": 1
+					}
+				}
+			]
+		}
+	},
+	"Cruisin' for a Bruisin'": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 2
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "engage_player",
+					"subject": "host",
+					"target_identity": "my_identity"
+				}
+			]
+		}
+	},
+	"Metal Bracer": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 1,
+					"trigger": "Luke Cage"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "Luke Cage",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Power Man": {
+		"card_token_modified": {
+			"trigger": "Luke Cage",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			],
+			"filter_token_name": "tough",
+			"filter_count_difference": "decreased"
+		}
+	},
+	"Iron Fist - Danny Rand": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"attack"
+				],
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "self",
+							"property": "attack"
+						}
+					}
+				}
+			],
+			"_comments": "TODO only when Iron Fist defends"
+		}
+	},
+	"Misty Knight": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "self",
+								"token_name": "tough"
+							}
+						},
+						"then": 2,
+						"else": 0
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": {
+						"if": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "self",
+								"token_name": "tough"
+							}
+						},
+						"then": 2,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Valkyrie - Brunnhilde": {
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "trigger",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "trigger",
+							"property": "health",
+							"plus": -1
+						}
+					}
+				}
+			],
+			"_comments": "TODO exclude Valkyrie herself"
+		}
+	},
+	"Take a Stand": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": 1,
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_allies_my_hero"
+										}
+									]
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 1,
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_allies_my_hero"
+										}
+									]
+								}
+							]
+						}
+					},
+					"_comments": "TODO until the end of the player phase"
+				}
+			]
+		}
+	},
+	"Innovation": {
+		"response_paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				}
+			],
+			"_comments": "pattern from Determination/Molecular Acceleration"
+		}
+	},
+	"The Power of Leadership": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "leadership"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Defensive Formation": {
+		"uses": {
+			"__name__": "block",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "block",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "ally",
+								"trait_defender": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Righteous Purpose": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 2,
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_func": {
+								"func_name": "get_remaining_damage==1",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 2,
+					"filter_state_trigger": [
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_friendly",
+							"filter_func": {
+								"func_name": "get_remaining_damage==1",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify get_remaining_damage returns remaining hit points"
+	},
+	"Hulk - Bruce Banner": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "rage"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "villain",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "rage",
+					"modification": 1,
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO 'attacks you' (any of your characters)"
+		}
+	},
+	"She-Hulk - Jennifer Walters": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Dynamic Duo": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"team-up": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		},
+		"TODO": "also an ally named by that card's Team-Up keyword"
+	},
+	"Power Man and Iron Fist": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Iron Fist",
+						"Luke Cage"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Unbreakable Bond": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Jessica Jones",
+						"Luke Cage"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Jessica Jones"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Luke Cage"
+							}
+						}
+					],
+					"_comments": "TODO split healing among both"
+				}
+			]
+		}
+	},
+	"Internal Injury": {
+		"give_obligation": {
+			"__to__": "Luke Cage"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "my_identity",
+					"tags": [
+						"unpreventable",
+						"ignore_tough"
+					],
+					"_comments": "TODO unpreventable"
+				}
+			]
+		},
+		"recovery_happened": {
+			"trigger": "my_identity",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Cottonmouth": {
+		"once_per_phase": {
+			"__name__": "_cotton"
+		},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "_cotton"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "_cotton",
+					"modification": -1,
+					"subject": "self"
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO attack the same character"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "self",
+					"target_identity": "Luke Cage",
+					"_comments": "TODO deal to the Luke Cage player"
+				}
+			]
+		}
+	},
+	"Venomous Whispers": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_attacked",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_serpent_society": 1
+							}
+						}
+					],
+					"_comments": "TODO verify property"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_serpent_society": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Augmented Jaws": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Cottonmouth",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"interrupt_enemy_attack": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "current_hero_target",
+					"_comments": "TODO the attacked character"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Asp": {
+		"enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Sidewinder": {
+		"quickstrike": {},
+		"interrupt_attack_started": {
+			"event_filters": {
+				"target": "self"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_printed_script",
+								"func_params": {
+									"subject": "previous",
+									"script_name": "boost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_encounter",
+									"subject": "self",
+									"target_identity": "my_identity",
+									"_comments": "TODO the attacking player"
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "TODO verify has_printed_script params"
+		}
+	},
+	"Size Advantage": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "an_enemy",
+					"amount": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_hero",
+								"property": "trait_giant"
+							}
+						},
+						"then": 6,
+						"else": 3
+					},
+					"_comments": "TODO 6 also if you have more remaining hit points than that enemy"
+				}
+			]
+		}
+	},
+	"Observe": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Toughen Up": {
+		"recovery_happened": {
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "!count_tokens",
+				"func_params": {
+					"subject": "my_identity",
+					"token_name": "damage"
+				},
+				"_comments": "TODO remaining >= base hit points"
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Black Belt": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_friendly",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_martial_artist",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"TODO": "Play only if any player controls a Martial Artist card"
+	}
+}

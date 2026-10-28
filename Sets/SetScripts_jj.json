@@ -1,0 +1,1888 @@
+{
+	"Jessica Jones #61001a": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened",
+				"basic_defense_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": 1,
+					"subject": "Alias Investigations"
+				}
+			]
+		}
+	},
+	"Jessica Jones #61001b": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"hand"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Alias Investigations"
+							}
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "change_form",
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "my_identity",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cannot_change_form",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"_comments": "TODO verify add_script survives the form change"
+				}
+			]
+		}
+	},
+	"Alias Investigations": {
+		"response_card_defeated": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": 2,
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_defeat"
+				}
+			]
+		},
+		"do_defeat": {
+			"board": {
+				"Remove evidence equal to the villain's remaining hit points to defeat its stage": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"constraints": [
+							{
+								"func_name": "count_tokens>=my_villain_hp",
+								"func_params": {
+									"subject": "self",
+									"token_name": "evidence"
+								}
+							}
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "evidence",
+						"is_inverted": true,
+						"subject": "self",
+						"modification": {
+							"func_name": "get_remaining_damage",
+							"func_params": {
+								"subject": "villain"
+							}
+						}
+					},
+					{
+						"name": "defeat_card",
+						"subject": "villain"
+					}
+				],
+				"Keep the counters": [
+					{
+						"name": "nop"
+					}
+				]
+			},
+			"_comments": "TODO compute my_villain_hp (villain remaining hit points) before the constraint"
+		}
+	},
+	"Luke Cage": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"\"Big Mistake\"": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "an_enemy",
+					"tags": [
+						"attack"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_opt"
+				}
+			]
+		},
+		"do_opt": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"+2 damage and overkill (1 evidence)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "evidence",
+						"modification": -1,
+						"subject": "Alias Investigations",
+						"is_cost": true
+					},
+					{
+						"name": "attack",
+						"amount": 5,
+						"subject": "my_enemy",
+						"tags": [
+							"overkill"
+						]
+					}
+				],
+				"+2 damage and piercing (1 evidence)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "evidence",
+						"modification": -1,
+						"subject": "Alias Investigations",
+						"is_cost": true
+					},
+					{
+						"name": "attack",
+						"amount": 5,
+						"subject": "my_enemy",
+						"tags": [
+							"piercing"
+						]
+					}
+				],
+				"No evidence": [
+					{
+						"name": "attack",
+						"amount": 3,
+						"subject": "my_enemy"
+					}
+				]
+			}
+		}
+	},
+	"Breakthrough": {
+		"response": {
+			"event_name": "card_token_added",
+			"filter_token_name": "evidence",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"shortname": "Alias Investigations"
+					}
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "ready_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck"
+				}
+			],
+			"_comments": "TODO verify card_token_added signal usage"
+		}
+	},
+	"Snooping Around": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": 2,
+					"subject": "Alias Investigations"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										},
+										{
+											"filter_properties": {
+												"type_code": "side_scheme"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "previous"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Piecing It All Together": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "draw_cards",
+					"amount": 3,
+					"subject": "event_source_hero"
+				}
+			]
+		},
+		"_comments": "does not count against the player side scheme limit (TODO)"
+	},
+	"Calling in Favors": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": -2,
+					"subject": "Alias Investigations",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "card_played",
+					"subject": "tutor",
+					"src_container": "deck",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					],
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -2,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "deck",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "pattern from Team-Building Exercise"
+				}
+			]
+		}
+	},
+	"4K Digital Camcorder": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"subject": "Alias Investigations",
+					"is_inverted": true,
+					"modification": {
+						"func_name": "get_remaining_damage",
+						"func_params": {
+							"subject": "my_minion",
+							"plus": -2,
+							"min": 0
+						}
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "my_minion"
+				}
+			],
+			"_comments": "TODO verify cost fails if not enough evidence counters"
+		}
+	},
+	"Circumstantial Evidence": {
+		"response_card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": 1,
+					"subject": "Alias Investigations"
+				}
+			]
+		}
+	},
+	"Leather Jacket": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": 2,
+					"trigger": "Jessica Jones"
+				}
+			]
+		},
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": 1,
+					"subject": "Alias Investigations"
+				}
+			]
+		}
+	},
+	"\"Now I'm Ticked Off!\"": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "change_form",
+									"subject": "my_identity"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 5,
+					"subject": "villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 5,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_current_hero_target",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Reluctant Flier": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_hero",
+				"amount": ">2",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_dmg",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_dmg": {
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Stakeout": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"permanent": 0
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_thwart_started": {
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 2
+				}
+			]
+		},
+		"last_threat_removed": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "evidence",
+					"modification": 2,
+					"subject": "Alias Investigations"
+				}
+			],
+			"_comments": "TODO only if that thwart defeated it"
+		}
+	},
+	"Captain Marvel - Carol Danvers": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 4,
+					"src_container": "deck"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_energy",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "energy"
+						}
+					}
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_variable",
+								"func_params": {
+									"subject": "self",
+									"variable": "my_energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "remove_threat",
+									"amount": 2,
+									"subject": "a_scheme"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_variable>1",
+								"func_params": {
+									"subject": "self",
+									"variable": "my_energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					]
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Spider-Woman - Mattie Franklin": {
+		"response": {
+			"event_name": "thwart_happened",
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true
+				}
+			],
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens<8",
+								"func_params": {
+									"subject": "self",
+									"token_name": "limb"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "limb",
+									"modification": 1,
+									"subject": "self"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_opt"
+				}
+			]
+		},
+		"do_opt": {
+			"board": {
+				"Discard to deal damage": [
+					{
+						"name": "save_variable",
+						"var_name": "my_limbs",
+						"var_type": "int",
+						"value": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "self",
+								"token_name": "limb"
+							}
+						}
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "deal_damage",
+						"amount": "my_limbs",
+						"subject": "an_enemy"
+					}
+				],
+				"Keep": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Squirrel Girl - Doreen Green": {
+		"card_played": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "squirrel",
+					"subject": "self",
+					"modification": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"subject_count": "all",
+							"src_container": "hand",
+							"max": 4
+						}
+					}
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "squirrel",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Lay Down the Law": {
+		"identity_changed_form": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"after": "hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"mental": 1
+							}
+						},
+						"then": 4,
+						"else": 3
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Strategy Session": {
+		"manual": {
+			"hand": {
+				"Alter-Ego: search for a player side scheme": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "nop",
+						"subject": "a_player"
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor_and_choose",
+						"src_container": "deck_previous_subject",
+						"dest_container": "hand_previous_subject",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "player_side_scheme"
+								}
+							}
+						]
+					}
+				],
+				"Hero: remove 3 threat from a player side scheme": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "player_side_scheme"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Run Them to Ground": {
+		"TODO": "When Defeated: skip the next villain phase; deal each player 1 facedown encounter card; villain cannot take damage until next villain phase"
+	},
+	"Lay the Trap": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": "5p",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Determination": {
+		"paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Grapnel Launcher": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"subject": "my_hero",
+					"end_condition": "basic_thwart_happened",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "thwart",
+					"subject": "a_scheme",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "thwart"
+						}
+					},
+					"tags": [
+						"basic power"
+					],
+					"_comments": "TODO basic thwart without exhausting, ignoring patrol and crisis"
+				}
+			]
+		}
+	},
+	"Entrapment": {
+		"response_enemy_scheme_happened": {
+			"trigger": "villain",
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "is_alter_ego_form",
+				"func_params": {
+					"subject": "my_identity"
+				}
+			},
+			"board": [
+				{
+					"name": "change_form",
+					"subject": "my_identity"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"subject": "villain",
+					"amount": "trigger_details_amount",
+					"_comments": "TODO amount of threat placed by that activation"
+				}
+			]
+		}
+	},
+	"Hellcat - Patsy Walker": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					],
+					"constraints": [
+						{
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "trait_defender"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "phase_ended",
+					"script": {
+						"phase_ended": {
+							"board": [
+								{
+									"name": "discard",
+									"subject": "self"
+								}
+							]
+						}
+					},
+					"_comments": "TODO discard at the end of the phase"
+				}
+			]
+		}
+	},
+	"Joys of Life": {
+		"manual": {
+			"hand": {
+				"Exhaust a Civilian alter-ego → ready a hero or ally": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities",
+								"filter_properties": {
+									"type_code": "alter_ego",
+									"trait_civilian": 1
+								}
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "ready_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_heroes"
+							},
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								}
+							}
+						]
+					}
+				],
+				"Exhaust a hero or ally → ready a Civilian alter-ego": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_heroes"
+							},
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								}
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "ready_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities",
+								"filter_properties": {
+									"type_code": "alter_ego",
+									"trait_civilian": 1
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"_comments": "Alliance"
+	},
+	"Unbreakable Bond": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Jessica Jones",
+						"Luke Cage"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Jessica Jones"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Luke Cage"
+							}
+						}
+					],
+					"_comments": "TODO split healing among both"
+				}
+			]
+		}
+	},
+	"Second Chance": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_shuffle"
+				}
+			]
+		},
+		"do_shuffle": {
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Shuffle identity-specific cards": [
+					{
+						"name": "shuffle_card_into_container",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "discard_my_hero",
+						"dest_container": "deck_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
+							}
+						]
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Defend Our City": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_fetch"
+				}
+			]
+		},
+		"do_fetch": {
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Fetch Team-Up": [
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck_my_hero",
+							"discard_my_hero"
+						],
+						"dest_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"team-up": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_my_hero"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		},
+		"TODO": "reduce Team-Up costs by 1 until end of phase; Prerequisite (Defender)"
+	},
+	"Work-Life Balance": {
+		"give_obligation": {
+			"__to__": "Jessica Jones"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Remove an ally from the game": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "removed_from_game",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_allies_my_hero"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "removed_from_game",
+						"subject": "self"
+					}
+				],
+				"Confuse your identity": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "my_identity"
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"TODO": "As an additional cost to change forms, discard 1 card from your hand"
+	},
+	"Purple Man": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "boardseek",
+							"sort_by": "property",
+							"sort_name": "scheme",
+							"sort_descending": true,
+							"filter_state_seek": [
+								{
+									"filter_group": "group_characters"
+								}
+							],
+							"property": "scheme"
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "boardseek",
+							"sort_by": "property",
+							"sort_name": "attack",
+							"sort_descending": true,
+							"filter_state_seek": [
+								{
+									"filter_group": "group_characters"
+								}
+							],
+							"property": "attack"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "TODO SCH = highest SCH or THW; verify sorted boardseek inside func params; printed values are 0"
+	},
+	"Indomitable Will": {
+		"hinder": {
+			"__amount__": 3
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "pheromone",
+					"modification": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Suggestion"
+							}
+						}
+					]
+				}
+			]
+		},
+		"response_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"shortname": "Suggestion"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "pheromone",
+					"modification": 2,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Suggestion ([energy])": {
+		"uses": {
+			"__name__": "pheromone",
+			"__amount__": 3
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Play a card with a printed energy resource": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "pheromone",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "nop",
+						"_comments": "TODO play a card with a printed energy resource (paying its costs)"
+					}
+				],
+				"Add 2 threat to the main scheme": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "pheromone",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "main_scheme"
+					}
+				]
+			},
+			"_comments": "TODO Forced Action"
+		}
+	},
+	"Suggestion ([mental])": {
+		"uses": {
+			"__name__": "pheromone",
+			"__amount__": 3
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Play a card with a printed mental resource": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "pheromone",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "nop",
+						"_comments": "TODO play a card with a printed mental resource (paying its costs)"
+					}
+				],
+				"Add 2 threat to the main scheme": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "pheromone",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "main_scheme"
+					}
+				]
+			},
+			"_comments": "TODO Forced Action"
+		}
+	},
+	"Suggestion ([physical])": {
+		"uses": {
+			"__name__": "pheromone",
+			"__amount__": 3
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Play a card with a printed physical resource": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "pheromone",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "nop",
+						"_comments": "TODO play a card with a printed physical resource (paying its costs)"
+					}
+				],
+				"Add 2 threat to the main scheme": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "pheromone",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "main_scheme"
+					}
+				]
+			},
+			"_comments": "TODO Forced Action"
+		}
+	},
+	"Innate Aggression": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		},
+		"_comments": "Starting keyword not supported"
+	},
+	"Shakedown": {
+		"give_to_player_max1": {},
+		"response_card_dies": {
+			"event_filters": {
+				"source": "my_hero"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
+					"amount": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "trigger",
+							"property": "scheme"
+						}
+					}
+				}
+			],
+			"_comments": "TODO 'exactly defeat'"
+		}
+	},
+	"Innate Perception": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		},
+		"_comments": "Starting keyword not supported"
+	},
+	"Innate Inspiration": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "Starting keyword not supported"
+	},
+	"Echo - Maya Lopez": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"attack"
+				],
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "defense"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Lay Low": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_each"
+				}
+			]
+		},
+		"do_each": {
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Change to alter-ego and heal": [
+					{
+						"name": "change_form",
+						"subject": "my_identity",
+						"_comments": "TODO only if in hero form"
+					},
+					{
+						"name": "heal",
+						"amount": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "recover"
+							}
+						},
+						"subject": "my_identity"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Mitigated Threat": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_schemes"
+				},
+				{
+					"filter_group": "group_enemies"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_acceleration",
+					"alteration": -9,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_amplify",
+					"alteration": -9,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_crisis",
+					"alteration": -9,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_hazard",
+					"alteration": -9,
+					"trigger": "host"
+				}
+			]
+		},
+		"TODO": "end of round: each player may spend 1 resource; if any player does not, discard this card; verify icon properties"
+	}
+}

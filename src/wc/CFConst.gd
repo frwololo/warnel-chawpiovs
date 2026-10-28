@@ -1068,8 +1068,8 @@ const DEFAULT_SETTINGS:= {
 	'database': {
 #cycle 1	
 		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box
-#		"gob": "https://marvelcdb.com/api/public/cards/gob.json", #Green Goblin Scenario Pack	
-#		"twc": "https://marvelcdb.com/api/public/cards/twc.json", #The Wrecking Crew Scenario Pack
+		"gob": "https://marvelcdb.com/api/public/cards/gob.json", #Green Goblin Scenario Pack	
+		"twc": "https://marvelcdb.com/api/public/cards/twc.json", #The Wrecking Crew Scenario Pack
 		"cap" : "https://marvelcdb.com/api/public/cards/cap.json", #Captain America Hero Pack
 		"msm" : "https://marvelcdb.com/api/public/cards/msm.json", #Ms Marvel Hero Pack
 		"thor" : "https://marvelcdb.com/api/public/cards/thor.json", #Thor Hero Pack
@@ -1078,7 +1078,7 @@ const DEFAULT_SETTINGS:= {
 		"hlk" : "https://marvelcdb.com/api/public/cards/hlk.json", #Hulk Hero Pack
 #cycle 2
 		"trors" : "https://marvelcdb.com/api/public/cards/trors.json", #The Rise of Red Skull Expansion Box
-#		"toafk": "https://marvelcdb.com/api/public/cards/toafk.json", #The Once and Future Kang Scenario Pack
+		"toafk": "https://marvelcdb.com/api/public/cards/toafk.json", #The Once and Future Kang Scenario Pack
 		"ant" : "https://marvelcdb.com/api/public/cards/ant.json", #Ant-Man Hero Pack
 		"wsp" : "https://marvelcdb.com/api/public/cards/wsp.json", #Wasp Hero Pack
 		"qsv" : "https://marvelcdb.com/api/public/cards/qsv.json", #Quicksilver Hero Pack						
@@ -1093,7 +1093,7 @@ const DEFAULT_SETTINGS:= {
 		"mts" : "https://marvelcdb.com/api/public/cards/mts.json", #Mad Titan's Shadow Expansion Box
 		"nebu": "https://marvelcdb.com/api/public/cards/nebu.json", #Nebula Hero Pack	
 		"warm" : "https://marvelcdb.com/api/public/cards/warm.json", #War Machine Hero Pack
-#		"hood": "https://marvelcdb.com/api/public/cards/hood.json", #The Hood scenario pack	
+		"hood": "https://marvelcdb.com/api/public/cards/hood.json", #The Hood scenario pack	
 		"valk": "https://marvelcdb.com/api/public/cards/valk.json", #Valkyrie Hero Pack	
 		"vision": "https://marvelcdb.com/api/public/cards/vision.json", #Vision Hero Pack	
 #cycle 5
@@ -1101,7 +1101,7 @@ const DEFAULT_SETTINGS:= {
 		"nova": "https://marvelcdb.com/api/public/cards/nova.json", #Nova Hero Pack	
 		"ironheart": "https://marvelcdb.com/api/public/cards/ironheart.json", #Ironheart Hero Pack	
 		"spiderham": "https://marvelcdb.com/api/public/cards/spiderham.json", #Spiderham Hero Pack	
-#		"spdr": "https://marvelcdb.com/api/public/cards/spdr.json", #SP//DR Hero Pack	
+		"spdr": "https://marvelcdb.com/api/public/cards/spdr.json", #SP//DR Hero Pack	
 #cycle 6
 		"mut_gen": "https://marvelcdb.com/api/public/cards/mut_gen.json", #Mutant Genesis Expansion Box	
 		"cyclops": "https://marvelcdb.com/api/public/cards/cyclops.json", #Cyclops Hero Pack
@@ -1109,36 +1109,36 @@ const DEFAULT_SETTINGS:= {
 		"wolv": "https://marvelcdb.com/api/public/cards/wolv.json", #Wolverine Hero Pack	
 		"storm": "https://marvelcdb.com/api/public/cards/storm.json", #Storm Hero Pack	
 		"gambit": "https://marvelcdb.com/api/public/cards/gambit.json", #Gambit Hero Pack	
-#		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
-#		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	
+		"rogue": "https://marvelcdb.com/api/public/cards/rogue.json", #Rogue Hero Pack
+		"mojo": "https://marvelcdb.com/api/public/cards/mojo.json",  #Mojo Scenario Pack	
 #cycle 7
 		"next_evol": "https://marvelcdb.com/api/public/cards/next_evol.json", #Next Evolution Expansion Box	
 		"psylocke": "https://marvelcdb.com/api/public/cards/psylocke.json", #Psylocke Hero Pack		
 		"angel": "https://marvelcdb.com/api/public/cards/angel.json", #Angel Hero Pack	
 		"x23": "https://marvelcdb.com/api/public/cards/x23.json", #X-23 Hero Pack	
-#		"deadpool": "https://marvelcdb.com/api/public/cards/deadpool.json", #Deadpool Hero Pack		
+		"deadpool": "https://marvelcdb.com/api/public/cards/deadpool.json", #Deadpool Hero Pack		
 #cycle 8
 		"aoa": "https://marvelcdb.com/api/public/cards/aoa.json", #Age of Apocalypse Expansion Box	
-#		"iceman": "https://marvelcdb.com/api/public/cards/iceman.json", #Iceman Hero Pack	
-#		"jubilee": "https://marvelcdb.com/api/public/cards/jubilee.json", #Jubilee Hero Pack	
+		"iceman": "https://marvelcdb.com/api/public/cards/iceman.json", #Iceman Hero Pack	
+		"jubilee": "https://marvelcdb.com/api/public/cards/jubilee.json", #Jubilee Hero Pack	
 		"ncrawler": "https://marvelcdb.com/api/public/cards/ncrawler.json", #NightCrawler Hero Pack	
 		"magneto": "https://marvelcdb.com/api/public/cards/magneto.json", #Magneto Hero Pack	
 #cycle 9
 		"aos": "https://marvelcdb.com/api/public/cards/aos.json", #Agents of Shield Expansion
-#		"bp": "https://marvelcdb.com/api/public/cards/bp.json", #Black Panther Hero Pack	
-#		"silk": "https://marvelcdb.com/api/public/cards/silk.json", #Silk Hero Pack	
-#		"falcon": "https://marvelcdb.com/api/public/cards/falcon.json", #Falcon Hero Pack	
+		"bp": "https://marvelcdb.com/api/public/cards/bp.json", #Black Panther Hero Pack	
+		"silk": "https://marvelcdb.com/api/public/cards/silk.json", #Silk Hero Pack	
+		"falcon": "https://marvelcdb.com/api/public/cards/falcon.json", #Falcon Hero Pack	
 		"winter": "https://marvelcdb.com/api/public/cards/winter.json", #Winter Soldier Hero Pack	
-#		"tt": "https://marvelcdb.com/api/public/cards/tt.json", #Trickster Takeover Scenario Pack
+		"tt": "https://marvelcdb.com/api/public/cards/tt.json", #Trickster Takeover Scenario Pack
 #cycle 10
 		"cw": "https://marvelcdb.com/api/public/cards/cw.json", #Civil War Expansion
-#		"synthezoid": "https://marvelcdb.com/api/public/cards/synthezoid.json", #Synthezoid smackdown Scenario Pack
-#		"wonder_man": "https://marvelcdb.com/api/public/cards/wonder_man.json", #Wonder Man Hero Pack
-#		"hercules": "https://marvelcdb.com/api/public/cards/hercules.json", #Hercules Hero Pack
+		"synthezoid": "https://marvelcdb.com/api/public/cards/synthezoid.json", #Synthezoid smackdown Scenario Pack
+		"wonder_man": "https://marvelcdb.com/api/public/cards/wonder_man.json", #Wonder Man Hero Pack
+		"hercules": "https://marvelcdb.com/api/public/cards/hercules.json", #Hercules Hero Pack
 #cycle 11
-#		"fne": "https://marvelcdb.com/api/public/cards/fne.json", #Fear No Evil Expansion
-#		"jj": "https://marvelcdb.com/api/public/cards/jj.json", #Jessica Jones Hero Pack
-#		"luke_cage": "https://marvelcdb.com/api/public/cards/luke_cage.json", #Luke Cage Hero Pack
+		"fne": "https://marvelcdb.com/api/public/cards/fne.json", #Fear No Evil Expansion
+		"jj": "https://marvelcdb.com/api/public/cards/jj.json", #Jessica Jones Hero Pack
+		"luke_cage": "https://marvelcdb.com/api/public/cards/luke_cage.json", #Luke Cage Hero Pack
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
@@ -1158,8 +1158,33 @@ const DEFAULT_SETTINGS:= {
 	'adventure_mode': true,
 	'unlocked_heroes': ["01001a"], #default unlocked character
 	'unlocked_villains': ["01097"], #default unlocked villain
+	'enable_beta_sets': false,
 	
 }
+
+const BETA_SETS:= [
+	"gob",
+	"twc",
+	"toafk",
+	"hood",
+	"spdr",
+	"rogue",
+	"mojo",
+	"deadpool",
+	"iceman",
+	"jubilee",
+	"magneto",
+	"bp",
+	"silk",
+	"falcon",
+	"tt",
+	"synthezoid",
+	"wonder_man",
+	"hercules",
+	"fne",
+	"jj",
+	"luke_cage"
+]
 
 const SERVER_RESOURCES_URL = "/wc/resources/"
 const SERVER_REMOTE_CONFIG_URL = "/wc/resources/remote_settings.json"
@@ -1242,7 +1267,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
 
 
 const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261027-1629"
+const BUILD_NUMBER := "20261028-1336"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

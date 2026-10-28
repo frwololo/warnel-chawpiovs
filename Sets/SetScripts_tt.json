@@ -1,0 +1,3714 @@
+{
+	"Enchantress - 1": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Enchantress - 2": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		},
+		"reveal": {
+			"condition_all": {
+				"func_name": "!get_scenario_option_value",
+				"func_params": {
+					"option_name": "expert_mode"
+				}
+			},
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Future of Despair"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": "3p",
+					"subject": "Future of Despair"
+				}
+			]
+		}
+	},
+	"Enchantress - 3": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Future of Despair"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": "4p",
+					"subject": "Future of Despair"
+				}
+			]
+		}
+	},
+	"Prime Real Estate - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Future of Despair"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_gaze"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"do_gaze": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Hypnotic Gaze": [
+					{
+						"name": "host_card",
+						"host": "my_identity",
+						"subject": "tutor",
+						"src_container": [
+							"deck_villain",
+							"set_aside"
+						],
+						"sort_by": "random",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Hypnotic Gaze"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"TODO": "set remaining Hypnotic Gaze aside"
+	},
+	"Prime Real Estate - 1B": {
+		"interrupt": {
+			"event_name": "card_token_added",
+			"filter_token_name": "charm",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_enchantment": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO only if your identity has the Enthralled trait; verify token interrupt"
+		}
+	},
+	"Sovereign Sorceress - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Crown of the Enchantress"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_identities"
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "reveal_encounter",
+							"subject": "tutor",
+							"src_container": [
+								"deck_villain",
+								"discard_villain"
+							],
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"shortname": "Crown of the Enchantress"
+									}
+								}
+							]
+						},
+						{
+							"name": "shuffle_container",
+							"dest_container": "deck_villain"
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sovereign Sorceress - 2B": {
+		"interrupt": {
+			"event_name": "card_token_added",
+			"filter_token_name": "charm",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_enchantment": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO only if your identity has the Enthralled trait; verify token interrupt"
+		}
+	},
+	"Future of Despair": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": 1,
+					"trigger": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Hypnotic Gaze #55007a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "charm",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5",
+				"func_params": {
+					"subject": "self",
+					"token_name": "charm"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Trance of Envy": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_enthralled",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": -1,
+					"trigger": "host",
+					"_comments": "TODO verify trait removal on flip"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero"
+						},
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 8,
+					"src_container": "deck_my_hero",
+					"is_else": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_identity"
+				}
+			],
+			"_comments": "TODO 'Forced Action': must be used each round"
+		},
+		"_comments": "TODO the When Revealed should resolve when Hypnotic Gaze flips to this side"
+	},
+	"Hypnotic Gaze #55008a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "charm",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5",
+				"func_params": {
+					"subject": "self",
+					"token_name": "charm"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Trance of Greed": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_enthralled",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": -1,
+					"trigger": "host",
+					"_comments": "TODO verify trait removal on flip"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "my_identity",
+					"is_else": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				},
+				{
+					"name": "nop",
+					"_comments": "TODO then play that card (paying its cost). If you cannot, take 1 damage"
+				}
+			],
+			"_comments": "TODO 'Forced Action': must be used each round"
+		},
+		"_comments": "TODO the When Revealed should resolve when Hypnotic Gaze flips to this side"
+	},
+	"Hypnotic Gaze #55009a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "charm",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5",
+				"func_params": {
+					"subject": "self",
+					"token_name": "charm"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Trance of Pride": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_enthralled",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": -1,
+					"trigger": "host",
+					"_comments": "TODO verify trait removal on flip"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1,
+					"src_container": "hand_my_hero",
+					"is_else": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			],
+			"_comments": "TODO 'Forced Action': must be used each round"
+		},
+		"_comments": "TODO the When Revealed should resolve when Hypnotic Gaze flips to this side"
+	},
+	"Hypnotic Gaze #55010a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "charm",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5",
+				"func_params": {
+					"subject": "self",
+					"token_name": "charm"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Trance of Sloth": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_enthralled",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": -1,
+					"trigger": "host",
+					"_comments": "TODO verify trait removal on flip"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme",
+					"is_else": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "villain"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand"
+				}
+			],
+			"_comments": "TODO 'Forced Action': must be used each round"
+		},
+		"_comments": "TODO the When Revealed should resolve when Hypnotic Gaze flips to this side"
+	},
+	"Hypnotic Gaze #55011a": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "charm",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5",
+				"func_params": {
+					"subject": "self",
+					"token_name": "charm"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Trance of Wrath": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_enthralled",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_defiant",
+					"alteration": -1,
+					"trigger": "host",
+					"_comments": "TODO verify trait removal on flip"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor_and_choose",
+					"src_container": "deck_villain",
+					"is_cost": true,
+					"_comments": "TODO only the top 5 cards"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "indirect_damage",
+					"amount": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			],
+			"_comments": "TODO 'Forced Action': must be used each round"
+		},
+		"_comments": "TODO the When Revealed should resolve when Hypnotic Gaze flips to this side"
+	},
+	"Alluring Call": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Forced Action": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "my_identity"
+							}
+						]
+					},
+					{
+						"name": "nop",
+						"_comments": "TODO play a card from your hand reducing its cost by 1"
+					}
+				],
+				"Alter-Ego Action: discard": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			},
+			"_comments": "TODO 'Forced Action' must be used each round"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Kiss of Temptation": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Forced Action": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "my_identity"
+							}
+						]
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					},
+					{
+						"name": "discard",
+						"subject": "tutor_and_choose",
+						"src_container": "hand"
+					}
+				],
+				"Alter-Ego Action: discard": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			},
+			"_comments": "TODO 'Forced Action' must be used each round"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Love Concoction": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Forced Action": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "my_identity"
+							}
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "my_identity"
+					}
+				],
+				"Alter-Ego Action: discard": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			},
+			"_comments": "TODO 'Forced Action' must be used each round"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Seduced": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_attack",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_play",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_attack": 1,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							},
+							"filter_same_controller": true
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"energy": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Crown of the Enchantress": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "host"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO each player must be able to exhaust (cost)"
+		}
+	},
+	"Enthralled Lackey": {
+		"quickstrike": {},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 charm counter": [
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "current_hero_target"
+							}
+						]
+					}
+				],
+				"Confuse your identity": [
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "current_hero_target"
+					}
+				]
+			}
+		}
+	},
+	"Enthralled Brute": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "current_hero_target",
+								"property": "trait_enthralled"
+							}
+						},
+						"then": 3,
+						"else": 0
+					},
+					"trigger": "self",
+					"_comments": "TODO identity of the player this minion is engaged with"
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 charm counter": [
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "current_hero_target"
+							}
+						]
+					}
+				],
+				"Exhaust your identity": [
+					{
+						"name": "exhaust_card",
+						"subject": "current_hero_target"
+					}
+				]
+			}
+		}
+	},
+	"Sindr": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "indirect"
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "trait_defiant"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_activates_against_you",
+									"subject": "self"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "trait_enthralled"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "tough",
+									"modification": 1,
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ulik": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "toughness",
+					"alteration": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"response_card_damaged": {
+			"trigger": "villain",
+			"board": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self",
+					"_comments": "TODO attack the player who dealt the damage"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 1,
+									"trigger": "villain"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "villain_attacks_you",
+					"_comments": "TODO attack the player who defeated Ulik"
+				}
+			]
+		}
+	},
+	"Law of Attraction": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_enthralled": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Spellbound": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_each"
+				}
+			]
+		},
+		"do_each": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Resolve": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_defiant"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "mod_tokens",
+										"token_name": "charm",
+										"modification": 1,
+										"subject": "boardseek",
+										"filter_state_seek": [
+											{
+												"filter_properties": {
+													"trait_enchantment": 1,
+													"comparison": "ge"
+												},
+												"filter_is_hosted_by": "my_identity"
+											}
+										]
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "get_subject_int_property",
+									"func_params": {
+										"subject": "my_identity",
+										"property": "trait_enthralled"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "discard",
+										"subject": "boardseek",
+										"subject_count": "all",
+										"needs_selection": true,
+										"selection_count": 1,
+										"selection_type": "equal",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_upgrade_support_my_hero"
+											},
+											{
+												"filter_group": "group_allies_my_hero"
+											}
+										]
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"\"Do My Bidding\"": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "trait_enthralled"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "tutor_and_choose",
+									"src_container": [
+										"deck_villain",
+										"discard_villain"
+									],
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									]
+								},
+								{
+									"name": "shuffle_container",
+									"dest_container": "deck_villain"
+								},
+								{
+									"name": "reveal_encounter",
+									"subject": "tutor_and_choose",
+									"src_container": [
+										"deck_villain",
+										"discard_villain"
+									],
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "side_scheme"
+											}
+										}
+									]
+								},
+								{
+									"name": "shuffle_container",
+									"dest_container": "deck_villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_choose"
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Reveal a minion": [
+					{
+						"name": "reveal_encounter",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_villain"
+					}
+				],
+				"Reveal a side scheme": [
+					{
+						"name": "reveal_encounter",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_villain"
+					}
+				]
+			}
+		},
+		"_comments": "Enthralled: both (fixed order); otherwise (Defiant) choose one"
+	},
+	"Magical Restraints": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "trait_enthralled"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "my_identity"
+								},
+								{
+									"name": "mod_tokens",
+									"token_name": "charm",
+									"modification": 1,
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_enchantment": 1,
+												"comparison": "ge"
+											},
+											"filter_is_hosted_by": "my_identity"
+										}
+									]
+								},
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "my_identity"
+								},
+								{
+									"name": "mod_tokens",
+									"token_name": "charm",
+									"modification": 1,
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_properties": {
+												"trait_enchantment": 1,
+												"comparison": "ge"
+											},
+											"filter_is_hosted_by": "my_identity"
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_choose"
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Stunned + charm": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "my_identity"
+							}
+						]
+					}
+				],
+				"Confused + charm": [
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charm",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_enchantment": 1,
+									"comparison": "ge"
+								},
+								"filter_is_hosted_by": "my_identity"
+							}
+						]
+					}
+				]
+			}
+		},
+		"_comments": "Enthralled: both (fixed order); otherwise (Defiant) choose one"
+	},
+	"Spell Blast": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "trait_enthralled"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "scheme",
+													"alteration": {
+														"if": {
+															"func_name": "get_scenario_option_value",
+															"func_params": {
+																"option_name": "expert_mode"
+															}
+														},
+														"then": 1,
+														"else": 0
+													},
+													"trigger": "villain"
+												}
+											]
+										}
+									}
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "villain"
+								},
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"alteration": {
+														"if": {
+															"func_name": "get_scenario_option_value",
+															"func_params": {
+																"option_name": "expert_mode"
+															}
+														},
+														"then": 1,
+														"else": 0
+													},
+													"trigger": "villain"
+												}
+											]
+										}
+									}
+								},
+								{
+									"name": "villain_attacks_you"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_choose"
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Enchantress schemes": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "scheme",
+										"alteration": {
+											"if": {
+												"func_name": "get_scenario_option_value",
+												"func_params": {
+													"option_name": "expert_mode"
+												}
+											},
+											"then": 1,
+											"else": 0
+										},
+										"trigger": "villain"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "enemy_schemes",
+						"subject": "villain"
+					}
+				],
+				"Enchantress attacks you": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"alteration": {
+											"if": {
+												"func_name": "get_scenario_option_value",
+												"func_params": {
+													"option_name": "expert_mode"
+												}
+											},
+											"then": 1,
+											"else": 0
+										},
+										"trigger": "villain"
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "villain_attacks_you"
+					}
+				]
+			}
+		},
+		"_comments": "Enthralled: both (fixed order); otherwise (Defiant) choose one"
+	},
+	"Spell Shards": {
+		"reveal": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": 3,
+					"subject": "my_identity"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charm",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_enchantment": 1,
+								"comparison": "ge"
+							},
+							"filter_is_hosted_by": "current_hero_target"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO charm only if your identity took damage this way"
+	},
+	"Loki, God of Lies - 1": {
+		"TODO": "flip at 10[per_hero] or fewer remaining hit points; multi-group scenario"
+	},
+	"Loki, God of Lies - 2": {
+		"TODO": "multi-group scenario (Intense Focus / Total Focus)"
+	},
+	"Worlds Collide - A": {
+		"TODO": "Create a separate game area for each player group"
+	},
+	"Worlds Collide - B": {
+		"TODO": "multi-group scenario"
+	},
+	"Loki the Rascal - A1": {
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": "5p",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "after resolving a treachery boost card: deal it facedown to yourself or spend 1 resource"
+	},
+	"Fading Figment - A2": {
+		"TODO": "Shatter the illusion; choose a group and place synergy counters on their Unified Front environment (multiple game areas)"
+	},
+	"Loki the Miscreant - B1": {
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": "5p",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"response_card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"filter_destination": "discard_villain",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			],
+			"_comments": "TODO 'after you resolve a treachery'"
+		}
+	},
+	"Fading Figment - B2": {
+		"TODO": "Shatter the illusion; choose a group and place synergy counters on their Mounting Resistance environment (multiple game areas)"
+	},
+	"Loki the Knave - C1": {
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": "5p",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"response_card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"filter_destination": "discard_villain",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				}
+			],
+			"_comments": "TODO 'after you resolve a treachery'"
+		}
+	},
+	"Fading Figment - C2": {
+		"TODO": "Shatter the illusion; choose a group and place synergy counters on their Domineering Force environment (multiple game areas)"
+	},
+	"Loki the Wretch - D1": {
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": "5p",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"board": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "scheme",
+													"alteration": 1,
+													"trigger": "self"
+												},
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"alteration": 1,
+													"trigger": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Fading Figment - D2": {
+		"TODO": "Shatter the illusion; choose a group and place synergy counters on their Feigned Retreat environment (multiple game areas)"
+	},
+	"Mischief and Mayhem - 1A": {
+		"TODO": "random Avatar of Loki villain into play; Synergy environments; Intense Focus"
+	},
+	"Mischief and Mayhem - 1B": {
+		"TODO": "completion and identity defeat replaced by placing threat on Worlds Collide"
+	},
+	"Intense Focus": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": "2p",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "steady",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify '2p' alteration; When Revealed in standard mode"
+	},
+	"Total Focus": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": "3p",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "steady",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": "2p",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_mill"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"is_cost": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Dark Scepter"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					],
+					"is_else": true
+				}
+			]
+		},
+		"do_mill": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Mill 5": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 5,
+						"src_container": "deck_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Wrapped in Chains": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_ready",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"energy": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "shatter",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "villain",
+									"trait_avatar_of_loki": 1
+								}
+							}
+						]
+					}
+				],
+				"mental": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "shatter",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "villain",
+									"trait_avatar_of_loki": 1
+								}
+							}
+						]
+					}
+				],
+				"physical": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "shatter",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "villain",
+									"trait_avatar_of_loki": 1
+								}
+							}
+						]
+					}
+				],
+				"wild": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"wild": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "shatter",
+						"modification": 1,
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "villain",
+									"trait_avatar_of_loki": 1
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Dark Scepter": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"TODO": "Treacheries cannot be canceled; Hero Response after you resolve a treachery: spend 2 same-type resources → discard"
+	},
+	"Draugr Buddy": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_encounter",
+									"subject": "self",
+									"target_identity": "event_source_hero"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Grendell": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_bonus",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "previous",
+							"filter_state_subject": [
+								{
+									"filter_properties": {
+										"type_code": "treachery"
+									}
+								}
+							]
+						}
+					},
+					"_comments": "TODO verify counting treacheries among previous"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": "my_bonus",
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Malekith": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_encounter",
+									"subject": "previous",
+									"target_identity": "current_hero_target"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 2,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Minotaur": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards>=5",
+								"func_params": {
+									"subject": "tutor",
+									"subject_count": "all",
+									"src_container": "discard_villain",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_activates_against_you",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 2,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"The Mangog": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "multi-group: attackable from any game area; synergy counters"
+	},
+	"Fenris Wolf": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": 1,
+					"subject": "Mounting Resistance"
+				}
+			]
+		},
+		"_comments": "choose a group: single group assumed"
+	},
+	"Hraesvelgr": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_subject": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "indirect_damage",
+									"amount": 2,
+									"subject": "my_identity"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": 1,
+					"subject": "Domineering Force"
+				}
+			]
+		}
+	},
+	"Laufey": {
+		"attack_happened": {
+			"event_filters": {
+				"target": "self"
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "trigger"
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "TODO verify trigger is the attacker"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": 1,
+					"subject": "Unified Front"
+				}
+			]
+		}
+	},
+	"Aura of Stasis": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 3,
+						"else": 2
+					},
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_subject": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "exhaust_card",
+									"subject": "my_identity"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Door Between Worlds": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "multi-group: thwartable from any game area; synergy counter"
+	},
+	"Lofty Goals": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 2,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_friendly_current_hero_target"
+								}
+							]
+						}
+					},
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"New Jotunheim": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": 3,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": 1,
+					"subject": "Feigned Retreat"
+				}
+			]
+		}
+	},
+	"Dark Arts": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor_and_choose",
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "main_scheme",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_friendly_current_hero_target"
+								}
+							]
+						}
+					},
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"_comments": "TODO expert mode incite 1"
+	},
+	"Dirty Trick": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "shatter",
+					"modification": -1,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 3,
+						"else": 2
+					},
+					"subject": "my_identity"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_friendly_current_hero_target"
+								}
+							]
+						}
+					},
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Stories and Lies": {
+		"reveal": {
+			"all": [
+				{
+					"name": "swap_villain",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"sort_by": "random",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_avatar_of_loki": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_act",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_act": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Loki the Knave"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "villain"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Loki the Miscreant"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "villain"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "villain_attacks_you"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO +1 SCH/ATK in expert mode; verify swap_villain with tutor"
+	},
+	"Domineering Force": {
+		"_comments": "TODO Max 1[per_hero] synergy counters here",
+		"interrupt_attack_started": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "attack_happened",
+					"subject": "trigger",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 4,
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"_comments": "TODO 4 additional damage"
+				}
+			]
+		}
+	},
+	"Feigned Retreat": {
+		"_comments": "TODO Max 1[per_hero] synergy counters here",
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_identities"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 4
+				}
+			]
+		}
+	},
+	"Mounting Resistance": {
+		"_comments": "TODO Max 1[per_hero] synergy counters here",
+		"interrupt_thwart_started": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 4
+				}
+			]
+		}
+	},
+	"Unified Front": {
+		"_comments": "TODO Max 1[per_hero] synergy counters here",
+		"resource": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "synergy",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Absorbing Man": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "get_subject_int_printed_property",
+						"func_params": {
+							"subject": "boardseek",
+							"sort_by": "property",
+							"sort_name": "cost",
+							"sort_descending": true,
+							"filter_state_seek": [
+								{
+									"filter_group": "group_upgrade_support_current_hero_target"
+								},
+								{
+									"filter_group": "group_allies_current_hero_target"
+								}
+							],
+							"property": "cost"
+						},
+						"_comments": "TODO verify sort inside a func subject"
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "allies_event_source_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Absorbing Man",
+								"type_code": "ally"
+							}
+						}
+					],
+					"_comments": "TODO put into play under the control of the defeating player"
+				}
+			]
+		}
+	},
+	"Titania": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "allies_event_source_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Titania",
+								"type_code": "ally"
+							}
+						}
+					],
+					"_comments": "TODO put into play under the control of the defeating player"
+				}
+			]
+		}
+	},
+	"Whirlwind": {
+		"quickstrike": {},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "side_scheme"
+									}
+								}
+							]
+						}
+					},
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "allies_event_source_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Whirlwind",
+								"type_code": "ally"
+							}
+						}
+					],
+					"_comments": "TODO put into play under the control of the defeating player"
+				}
+			]
+		}
+	},
+	"Zzzax #55059": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 4,
+					"src_container": "deck_my_hero"
+				},
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "energy"
+						}
+					},
+					"subject": "my_identity"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "allies_event_source_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Zzzax",
+								"type_code": "ally"
+							}
+						}
+					],
+					"_comments": "TODO put into play under the control of the defeating player"
+				}
+			]
+		}
+	},
+	"The Trickster Tango": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": 1,
+					"trigger": "villain"
+				}
+			]
+		},
+		"TODO": "Boost: if this activation is an attack, it gains overkill"
+	},
+	"Puppet Master": {
+		"TODO": "Allies cannot thwart this scheme or defend against the villain's attacks; expert hinder 1[per_hero]"
+	},
+	"Love Triangle": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero"
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "host",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Attached ally cannot attack the villain or defend against the villain's attacks"
+	},
+	"Absorbing Man - Carl Creel": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"TODO": "exhaust an upgrade or support → +X to that power (printed cost, max +3)"
+	},
+	"Titania - Mary MacPherran": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill\",\"piercing"
+		}
+	},
+	"Whirlwind - David Cannon": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"TODO": "When Whirlwind attacks, remove 1 threat from each scheme, +1 ATK per threat removed"
+	},
+	"Zzzax #55066": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "exclude_from_ally_limit",
+					"alteration": 1,
+					"trigger": "self"
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": "deck",
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_energy": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"_comments": "TODO only the top 5 cards"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			],
+			"is_optional_board": true
+		}
+	}
+}

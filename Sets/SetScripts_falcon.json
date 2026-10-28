@@ -1,0 +1,1555 @@
+{
+	"Falcon": {
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_aerial": 1,
+						"comparison": "ge"
+					},
+					"filter_same_controller": true
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				}
+			]
+		},
+		"TODO": "During the player phase, play with the top card of the encounter deck faceup"
+	},
+	"Sam Wilson": {
+		"once_per_round": {
+			"__name__": "_birds"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "_birds",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck",
+						"discard"
+					],
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_bird": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Redwing": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "return_card_to_owner_hand",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_icons",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous",
+							"plus": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "boost_star"
+								}
+							}
+						},
+						"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+					}
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Deal X damage to an enemy": [
+					{
+						"name": "deal_damage",
+						"amount": "my_icons",
+						"subject": "an_enemy"
+					}
+				],
+				"Remove X threat from a scheme": [
+					{
+						"name": "remove_threat",
+						"amount": "my_icons",
+						"subject": "a_scheme"
+					}
+				]
+			}
+		}
+	},
+	"Bird of Prey": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "an_enemy",
+					"tags": [
+						"attack"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_icons"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_opt"
+				}
+			]
+		},
+		"do_opt": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard the top encounter card for extra damage": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_villain"
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_icons",
+						"var_type": "int",
+						"value": {
+							"func_name": "count_boost_icons",
+							"func_params": {
+								"subject": "previous",
+								"plus": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "previous",
+										"property": "boost_star"
+									}
+								}
+							},
+							"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+						}
+					},
+					{
+						"name": "attack",
+						"amount": 4,
+						"plus_amount": "my_icons",
+						"subject": "my_enemy"
+					}
+				],
+				"No extra damage": [
+					{
+						"name": "attack",
+						"amount": 4,
+						"subject": "my_enemy"
+					}
+				]
+			}
+		},
+		"_comments": "plus_amount pattern from Molecular Decay"
+	},
+	"Bird's-Eye View": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "a_scheme"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_opt"
+				}
+			]
+		},
+		"do_opt": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard the top encounter card for extra threat removal": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_villain"
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_icons",
+						"var_type": "int",
+						"value": {
+							"func_name": "count_boost_icons",
+							"func_params": {
+								"subject": "previous",
+								"plus": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "previous",
+										"property": "boost_star"
+									}
+								}
+							},
+							"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+						}
+					},
+					{
+						"name": "thwart",
+						"amount": 3,
+						"plus_amount": "my_icons",
+						"subject": "my_scheme"
+					}
+				],
+				"No extra": [
+					{
+						"name": "thwart",
+						"amount": 3,
+						"subject": "my_scheme"
+					}
+				]
+			}
+		}
+	},
+	"Up, Up, and Away": {
+		"TODO": "look at the facedown boost card and the top encounter card, may swap, draw 1 per icon"
+	},
+	"Falcon's Flock": {
+		"uses": {
+			"__name__": "bird",
+			"__amount__": 5
+		},
+		"resource": {
+			"_comments": "TODO verify 'resource' on a board card uses board container; limit once per card",
+			"board": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_aerial": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "bird",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "energy"
+				}
+			]
+		}
+	},
+	"Soup Kitchen": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "Sam Wilson",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "Sam Wilson",
+							"property": "recover"
+						}
+					},
+					"subject": "Sam Wilson"
+				}
+			]
+		},
+		"TODO": "reduce the cost of the next ally or support played this phase by 2"
+	},
+	"Aerial Evacuation": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "change_form",
+					"subject": "my_identity"
+				}
+			],
+			"_comments": "TODO exclude own hero; if that character is a hero, they also change to alter-ego form"
+		}
+	},
+	"Aerial Recon": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "a_player",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "recon",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "deal_encounter",
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "recon"
+				}
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "recon",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "TODO verify event name for being dealt an encounter card"
+		}
+	},
+	"Battlefield Awareness": {
+		"interrupt_attack_started": {
+			"trigger": "Falcon",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_icons",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous",
+							"plus": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "boost_star"
+								}
+							}
+						},
+						"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": "my_icons",
+									"trigger": "Falcon"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_thwart_started": {
+			"trigger": "Falcon",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_icons",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous",
+							"plus": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "boost_star"
+								}
+							}
+						},
+						"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_thwart_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": "my_icons",
+									"trigger": "Falcon"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "TODO basic defense"
+	},
+	"Draw Their Fire": {
+		"step_started": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "my_hero",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "no_exhaust_on_defense",
+									"alteration": 1,
+									"trigger": "self",
+									"_comments": "TODO verify property"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Talon Line": {
+		"TODO": "After Eagle-Eyed: discard → per icon, ready a character you control or stun an enemy"
+	},
+	"Vibranium Microweave": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": 1,
+					"trigger": "Falcon"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "Falcon",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 1
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Adam Warlock": {
+		"response": {
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "physical"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "remove_threat",
+									"amount": 3,
+									"subject": "target",
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_schemes"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "energy"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "heal",
+									"amount": 3,
+									"subject": "boardseek",
+									"needs_subject": true,
+									"filter_state_seek": [
+										{
+											"filter_group": "group_identities"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "mental"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 3,
+									"subject": "target",
+									"needs_subject": true,
+									"filter_state_subject": [
+										{
+											"filter_group": "group_enemies"
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_printed_resources",
+								"func_params": {
+									"subject": "previous",
+									"resource_type": "wild"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "sequence",
+									"sequence_ability": "choose_action",
+									"subject": "self"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"choose_action": {
+			"all": {
+				"Remove 3 Threat": [
+					{
+						"name": "remove_threat",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"Heal 3": [
+					{
+						"name": "heal",
+						"amount": 3,
+						"subject": "boardseek",
+						"needs_subject": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_identities"
+							}
+						]
+					}
+				],
+				"Deal 3 Damage": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Aero": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 1,
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}",
+											"filter_properties": {
+												"trait_aerial": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "adapted from Cloud 9"
+	},
+	"Cloud 9 - Abby Boylen": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}",
+											"filter_properties": {
+												"trait_aerial": 1,
+												"comparison": "ge"
+											}
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Hugin & Munin": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"grid_name": "enemies_active_player",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"_comments": "TODO only the top 10 cards"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_icons",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous",
+							"plus": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "boost_star"
+								}
+							}
+						},
+						"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+					}
+				},
+				{
+					"name": "ready_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": "my_icons",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Spectrum - Monica Rambeau": {
+		"TODO": "tuck 1 card used to pay for her under her; bonuses by its printed resource"
+	},
+	"Strength in Diversity": {
+		"TODO": "for each different trait on friendly characters, remove 1 threat or deal 1 damage"
+	},
+	"Flight Squadron": {
+		"TODO": "If each of your allies has Aerial: +1 ally limit and response to ready an ally"
+	},
+	"Resource Reserve": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "tuck_card_under_me",
+					"host": "self",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "resource"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "any player may spend the tucked resource; max 1 tucked"
+	},
+	"The Triskelion": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "max_allies",
+					"alteration": 1,
+					"trigger": "my_identity",
+					"_comments": "TODO verify ally limit property"
+				}
+			]
+		}
+	},
+	"Captain America": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "find",
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Captain America's Shield"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "If the Shield leaves play this way, deal 4 damage to an enemy"
+	},
+	"Wingman": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "ally",
+						"trait_aerial": 1
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally",
+						"trait_aerial": 1
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "host",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			],
+			"_comments": "TODO exclude the attached ally itself; verify consequential tag"
+		}
+	},
+	"The Power of Flight": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_aerial": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "energy"
+				}
+			]
+		},
+		"_comments": "pattern from The Power of the Mind"
+	},
+	"Harlem's Protector": {
+		"give_obligation": {
+			"__to__": "Sam Wilson"
+		},
+		"uses": {
+			"__name__": "emergency",
+			"__amount__": 3
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "emergency",
+					"modification": -1,
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO Victory 0: should go to the victory display rather than discard"
+	},
+	"Viper": {
+		"quickstrike": {},
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 5,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Serpent Solutions": {
+		"card_discarded_from_top_of_deck": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion",
+						"trait_serpent_society": 1
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "trigger",
+					"target_identity": "first_player"
+				}
+			],
+			"_comments": "TODO verify signal card_discarded_from_top_of_deck for encounter deck"
+		}
+	},
+	"Serpent Soldier": {
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Adder-tisement": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_serpent_society": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Captain America's Shield": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": 1,
+					"trigger": "my_hero"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		}
+	},
+	"Winter Soldier - Bucky Barnes": {
+		"response_card_dies": {
+			"event_filters": {
+				"source": "self"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "a_scheme"
+				}
+			],
+			"_comments": "TODO verify defeat-by-attack filter"
+		}
+	},
+	"Misty Knight": {
+		"interrupt_thwart_started": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_count": 2,
+					"src_container": "deck_villain",
+					"subject_index": "top",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"_comments": "TODO look at top 2, discard 1"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_icons",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous",
+							"plus": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "boost_star"
+								}
+							}
+						},
+						"_comments": "icons in boost area = boost icons + star; TODO verify boost_star property"
+					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "thwart_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": "my_icons",
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Ops Room": {
+		"uses": {
+			"__name__": "alert",
+			"__amount__": 3
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "alert",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 1
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "a_scheme"
+				}
+			],
+			"_comments": "TODO only while defending"
+		}
+	},
+	"Fixer": {
+		"TODO": "non-scenario-specific Tech attachments that would attach to the villain attach to Fixer instead"
+	},
+	"Jet Pack": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Fixer",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host",
+				"amount": ">2"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Tech-Pac": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Fixer",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "host",
+							"filter_state_attachment": [
+								{
+									"filter_properties": {
+										"trait_tech": 1,
+										"comparison": "ge"
+									}
+								}
+							],
+							"plus": -1
+						}
+					},
+					"trigger": "host"
+				}
+			]
+		},
+		"TODO": "Hero Action: exhaust characters with combined THW greater than attached enemy's SCH → discard this card"
+	},
+	"Technological Innovation": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "attachment",
+								"trait_tech": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_tech": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Techno": {
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Fixer"
+		},
+		"TODO": "Boost: If this activation is an attack, it gains piercing"
+	}
+}

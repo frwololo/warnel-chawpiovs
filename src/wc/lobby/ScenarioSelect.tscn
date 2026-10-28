@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://src/wc/lobby/ScenarioSelect.gd" type="Script" id=1]
+[ext_resource path="res://assets/icons/beta.png" type="Texture" id=2]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 1, 1, 1, 1 )
@@ -53,6 +54,16 @@ margin_right = 200.0
 margin_bottom = 200.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 2 )
+
+[node name="InfoTexture" type="TextureRect" parent="Panel"]
+unique_name_in_owner = true
+margin_left = 152.0
+margin_top = 152.0
+margin_right = 200.0
+margin_bottom = 200.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = ExtResource( 2 )
 
 [node name="ScenarioName" type="Label" parent="."]
 unique_name_in_owner = true

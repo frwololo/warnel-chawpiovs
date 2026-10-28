@@ -1208,7 +1208,11 @@ func load_card_definitions() -> Dictionary:
 			
 		var i = 0
 		var linked_id_cache = {}
+		var load_beta_cards = get_setting("enable_beta_sets")
+		
 		for box_name in json_card_data.keys():
+			if !load_beta_cards and (box_name in CFConst.BETA_SETS):
+				continue
 			var fanmade = json_card_data[box_name]["fanmade"]
 			for card_data in (json_card_data[box_name]["data"]):
 				i+=1
@@ -1238,11 +1242,13 @@ func load_card_definitions() -> Dictionary:
 			
 		save_card_definitions_to_cache(set_files.keys())
 
-	
+			
 	#post load cleanup and config
 	load_card_definitions_extra_data()	
 	setup_traits_as_alterants()
 	scripting_bus.register_game_signals()
+	
+
 		
 	#done!
 	cards_loading = false
@@ -1252,6 +1258,17 @@ func load_card_definitions() -> Dictionary:
 	emit_signal("card_definitions_loaded")
 	return(combined_sets)
 
+func is_beta_card(card_data):
+	if typeof(card_data) == TYPE_STRING:
+		card_data = cfc.get_card_by_id(card_data)
+	if !card_data:
+		return false
+	if card_data["box_name"] in CFConst.BETA_SETS:
+		return true
+	return false
+
+	
+	
 func save_one_deck_to_file(json_deck_data, force_filename = ""):
 	if !(_is_deck_valid(json_deck_data)):
 		return

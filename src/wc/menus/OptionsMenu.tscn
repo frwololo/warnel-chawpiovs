@@ -320,7 +320,7 @@ custom_constants/margin_right = 20
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/advanced"]
 margin_right = 1896.0
 margin_bottom = 1076.0
-custom_constants/separation = 26
+custom_constants/separation = 50
 
 [node name="Label" type="Label" parent="PanelContainer/advanced/VBoxContainer"]
 margin_right = 1896.0
@@ -330,11 +330,13 @@ text = "Advanced Settings"
 align = 1
 valign = 1
 
-[node name="AdvancedSettingsContainer" type="VBoxContainer" parent="PanelContainer/advanced/VBoxContainer"]
+[node name="AdvancedSettingsContainer" type="HFlowContainer" parent="PanelContainer/advanced/VBoxContainer"]
 unique_name_in_owner = true
 margin_top = 82.0
 margin_right = 1896.0
 margin_bottom = 82.0
+rect_min_size = Vector2( 1070, 0 )
+custom_constants/hseparation = 50
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/advanced/VBoxContainer"]
 margin_top = 108.0
@@ -413,42 +415,50 @@ custom_constants/separation = 100
 
 [node name="EnableModsButton" type="Button" parent="PanelContainer/mods/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 217.0
+margin_top = 106.0
 margin_right = 1916.0
-margin_bottom = 292.0
+margin_bottom = 181.0
+size_flags_vertical = 10
+custom_fonts/font = SubResource( 2 )
+text = "Enable Fanmade Sets"
+
+[node name="EnableBetaButton" type="Button" parent="PanelContainer/mods/VBoxContainer"]
+unique_name_in_owner = true
+margin_top = 388.0
+margin_right = 1916.0
+margin_bottom = 463.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "Enable Fanmade Sets"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/mods/VBoxContainer"]
-margin_top = 392.0
+margin_top = 563.0
 margin_right = 1916.0
-margin_bottom = 684.0
+margin_bottom = 794.0
 size_flags_vertical = 3
 
 [node name="LoadBgButton" type="Button" parent="PanelContainer/mods/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 20.0
 margin_right = 1916.0
-margin_bottom = 95.0
+margin_bottom = 75.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "IMPORT WALLPAPER"
 
 [node name="LoadCardBackButton" type="Button" parent="PanelContainer/mods/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 118.0
+margin_top = 78.0
 margin_right = 1916.0
-margin_bottom = 193.0
+margin_bottom = 153.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "IMPORT CARD BACK"
 
 [node name="DeleteGfxButton" type="Button" parent="PanelContainer/mods/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 217.0
+margin_top = 156.0
 margin_right = 1916.0
-margin_bottom = 292.0
+margin_bottom = 231.0
 size_flags_vertical = 10
 custom_fonts/font = SubResource( 2 )
 text = "DELETE ALL CUSTOM GFX"

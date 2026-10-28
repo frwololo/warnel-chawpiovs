@@ -76,7 +76,7 @@
 					"_comments": "Magneto - Erik Lehnsherr"
 				},
 				{
-					"card": "Cannonball",
+					"card": "Cannonball #32091",
 					"tokens": {
 						"damage": 1
 					}
@@ -105,7 +105,7 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Cannonball"
+			"value": "Cannonball #32091"
 		},
 		{
 			"type": "choose",
@@ -189,7 +189,7 @@
 					"_comments": "Magneto - Erik Lehnsherr"
 				},
 				{
-					"card": "Cannonball",
+					"card": "Cannonball #32091",
 					"tokens": {
 						"damage": 1
 					}

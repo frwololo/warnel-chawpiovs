@@ -1,0 +1,7746 @@
+{
+	"Breakout - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "active_counter",
+					"source": "current",
+					"subject": "Wrecker"
+				},
+				{
+					"name": "set_active_villain",
+					"subject": "Wrecker"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "Needs a _scenarios.json entry with the 4 villains (each with their own encounter deck)."
+	},
+	"Breakout - 1B": {
+		"response": {
+			"event_name": "villain_step_one_threat_added",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_move_active",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_move_active": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "escalation_threat",
+					"alteration": "count_players",
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "TODO verify escalation 1[per_hero]*, event name villain_step_one_threat_added; ties: first player should choose"
+	},
+	"Wrecker - A": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Day of Reckoning"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Day of Reckoning"
+					}
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Wrecker - B": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Day of Reckoning"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Day of Reckoning"
+					}
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"board": [
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Day of Reckoning": {
+		"associated_villain": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Wrecker"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "threat",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=10",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 3,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO 'This card cannot leave play while Wrecker is in play' not enforced"
+	},
+	"Held Hostage #07005": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Wrecker"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Day of Reckoning"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderball"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Thunderstruck"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Piledriver"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Pile It On!"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Bulldozer"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Clear the Road"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "host",
+				"tags": [
+					"thwart"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify thwart tag filter"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Magic Crowbar": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Wrecker"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1,
+					"src_container": "hand",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Wrecker's Command": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Wrecker"
+				}
+			]
+		},
+		"enemy_scheme_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Corrupt Prison Guard #07008": {
+		"_comments": "Guard handled by keywords"
+	},
+	"Escaped Convict #07009": {
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Wrecker",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Thunderball",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Piledriver",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Bulldozer",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Buddy System #07010": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Wrecker's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Thunderball's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Piledriver's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Bulldozer's deck (top 2 if he is the only villain)"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Chaos In the Prison #07011": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero",
+											"filter_properties": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "sequence",
+									"sequence_ability": "do_choose"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard an upgrade you control": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				],
+				"Place threat on the active villain's side scheme": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Wrecker"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Day of Reckoning",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Thunderball"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Thunderstruck",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Piledriver"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Pile It On!",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Bulldozer"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Clear the Road",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_current_hero_target",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Crowbar Toss": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "Wrecker"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_move",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Wrecker"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_move",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_move": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Get Wrecked! #07013": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"I've Been Waiting For This! #07014": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Mystical Link": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 2 threat on Day of Reckoning": [
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "Day of Reckoning",
+						"is_cost": true
+					}
+				],
+				"Wrecker gets +3 ATK": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"alteration": 3,
+										"trigger": "Wrecker"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"You're Dead Meat!": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_heroes"
+						},
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_victim",
+					"var_type": "subject",
+					"value": "previous"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "my_victim",
+			"event_filters": {
+				"secondary_source": "self"
+			},
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "Day of Reckoning"
+				}
+			]
+		},
+		"_comments": "TODO verify defeat detection"
+	},
+	"Thunderball - A": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Thunderstruck"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Thunderstruck"
+					}
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					],
+					"_comments": "TODO verify group name for 'each character you control'"
+				}
+			]
+		}
+	},
+	"Thunderball - B": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Thunderstruck"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Thunderstruck"
+					}
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					],
+					"_comments": "TODO verify group name for 'each character you control'"
+				}
+			]
+		}
+	},
+	"Thunderstruck": {
+		"associated_villain": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Thunderball"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "threat",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=10",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 3,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO 'This card cannot leave play while Thunderball is in play' not enforced"
+	},
+	"Ball and Chain": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Thunderball"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1,
+					"src_container": "hand",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Held Hostage #07021": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Wrecker"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Day of Reckoning"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderball"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Thunderstruck"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Piledriver"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Pile It On!"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Bulldozer"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Clear the Road"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "host",
+				"tags": [
+					"thwart"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify thwart tag filter"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Radioactive Buildup": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Thunderball"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Excess damage dealt by Thunderball is placed as threat on Thunderstruck"
+	},
+	"Corrupt Prison Guard #07023": {
+		"_comments": "Guard handled by keywords"
+	},
+	"Escaped Convict #07024": {
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Wrecker",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Thunderball",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Piledriver",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Bulldozer",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Buddy System #07025": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Wrecker's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Thunderball's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Piledriver's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Bulldozer's deck (top 2 if he is the only villain)"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Chaos In the Prison #07026": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero",
+											"filter_properties": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "sequence",
+									"sequence_ability": "do_choose"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard an upgrade you control": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				],
+				"Place threat on the active villain's side scheme": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Wrecker"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Day of Reckoning",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Thunderball"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Thunderstruck",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Piledriver"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Pile It On!",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Bulldozer"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Clear the Road",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_current_hero_target",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Energy Projectiles": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero"
+						}
+					],
+					"_comments": "TODO verify group name"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "current_activation_target",
+					"_comments": "TODO verify subject for defending character"
+				}
+			]
+		}
+	},
+	"Get Wrecked! #07028": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"I've Been Waiting For This! #07029": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Lightning Blast": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Thunderball"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_undef",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"do_undef": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "Thunderstruck"
+				}
+			],
+			"_comments": "TODO activation status may be gone at this point"
+		}
+	},
+	"Tactical Prowess": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_most",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "move_token_to",
+					"token_name": "threat",
+					"source": {
+						"subject": "boardseek",
+						"sort_by": "function",
+						"sort_name": "count_tokens",
+						"func_params": {
+							"token_name": "threat"
+						},
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"shortname": "Day of Reckoning"
+								}
+							},
+							{
+								"filter_properties": {
+									"shortname": "Thunderstruck"
+								}
+							},
+							{
+								"filter_properties": {
+									"shortname": "Pile It On!"
+								}
+							},
+							{
+								"filter_properties": {
+									"shortname": "Clear the Road"
+								}
+							}
+						]
+					},
+					"subject": "my_most",
+					"amount": "all",
+					"_comments": "TODO move ALL threat from least to most; verify move_token_to params"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_most"
+				}
+			]
+		},
+		"TODO": "surge if the scheme's Forced Response is not triggered"
+	},
+	"Piledriver - A": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Pile It On!"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Pile It On!"
+					}
+				}
+			]
+		}
+	},
+	"Piledriver - B": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Pile It On!"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Pile It On!"
+					}
+				}
+			]
+		}
+	},
+	"Pile It On!": {
+		"associated_villain": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Piledriver"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "threat",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=10",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_pile"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 3,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO 'This card cannot leave play while Piledriver is in play' not enforced",
+		"do_pile": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"sort_by": "property",
+						"sort_name": "cost",
+						"sort_descending": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						],
+						"_comments": "TODO ties: player should choose"
+					}
+				]
+			}
+		}
+	},
+	"Distracting Taunts": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Piledriver"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 3,
+					"trigger": "host"
+				}
+			]
+		},
+		"attack_happened": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"target": "host"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Players cannot attack other villains"
+	},
+	"Held Hostage #07036": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Wrecker"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Day of Reckoning"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderball"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Thunderstruck"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Piledriver"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Pile It On!"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Bulldozer"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Clear the Road"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "host",
+				"tags": [
+					"thwart"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify thwart tag filter"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Corrupt Prison Guard #07037": {
+		"_comments": "Guard handled by keywords"
+	},
+	"Escaped Convict #07038": {
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Wrecker",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Thunderball",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Piledriver",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Bulldozer",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Buddy System #07039": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Wrecker's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Thunderball's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Piledriver's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Bulldozer's deck (top 2 if he is the only villain)"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Get Wrecked! #07040": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"I've Been Waiting For This! #07041": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Oversized Hands": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "property",
+					"sort_name": "cost",
+					"sort_descending": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_threat",
+					"is_else": true
+				}
+			]
+		},
+		"do_threat": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Wrecker"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"amount": 2,
+									"subject": "Day of Reckoning"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderball"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"amount": 2,
+									"subject": "Thunderstruck"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Piledriver"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"amount": 2,
+									"subject": "Pile It On!"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Bulldozer"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"amount": 2,
+									"subject": "Clear the Road"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_current_hero_target",
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Escape Plan": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_confused",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "villain",
+									"token_name": "tough"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "check_validity",
+												"func_params": {
+													"subject": "villain",
+													"filter_state_trigger": [
+														{
+															"filter_properties": {
+																"shortname": "Wrecker"
+															}
+														}
+													]
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_threat",
+													"amount": 2,
+													"subject": "Day of Reckoning"
+												}
+											]
+										},
+										{
+											"condition": {
+												"func_name": "check_validity",
+												"func_params": {
+													"subject": "villain",
+													"filter_state_trigger": [
+														{
+															"filter_properties": {
+																"shortname": "Thunderball"
+															}
+														}
+													]
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_threat",
+													"amount": 2,
+													"subject": "Thunderstruck"
+												}
+											]
+										},
+										{
+											"condition": {
+												"func_name": "check_validity",
+												"func_params": {
+													"subject": "villain",
+													"filter_state_trigger": [
+														{
+															"filter_properties": {
+																"shortname": "Piledriver"
+															}
+														}
+													]
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_threat",
+													"amount": 2,
+													"subject": "Pile It On!"
+												}
+											]
+										},
+										{
+											"condition": {
+												"func_name": "check_validity",
+												"func_params": {
+													"subject": "villain",
+													"filter_state_trigger": [
+														{
+															"filter_properties": {
+																"shortname": "Bulldozer"
+															}
+														}
+													]
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_threat",
+													"amount": 2,
+													"subject": "Clear the Road"
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "tough",
+							"modification": 1,
+							"subject": "villain"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Pummel": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"alteration": {
+										"if": {
+											"func_name": "count_tokens",
+											"func_params": {
+												"subject": "Piledriver",
+												"token_name": "tough"
+											}
+										},
+										"then": 2,
+										"else": 0
+									},
+									"trigger": "Piledriver"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "Piledriver"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": {
+										"if": {
+											"func_name": "count_tokens",
+											"func_params": {
+												"subject": "Piledriver",
+												"token_name": "tough"
+											}
+										},
+										"then": 2,
+										"else": 0
+									},
+									"trigger": "Piledriver"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Piledriver"
+				}
+			]
+		}
+	},
+	"Uncanny Resilience": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							},
+							"filter_func": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					]
+				}
+			],
+			"_comments": "TODO surge only if no status card at all was removed"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Bulldozer - A": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Clear the Road"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Clear the Road"
+					}
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill"
+		}
+	},
+	"Bulldozer - B": {
+		"interrupt_enemy_scheme_threat": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Clear the Road"
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"subject": "Clear the Road"
+					}
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill"
+		}
+	},
+	"Clear the Road": {
+		"associated_villain": {
+			"all": [
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Bulldozer"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "threat",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=10",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_mill"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": 3,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO 'This card cannot leave play while Bulldozer is in play' not enforced",
+		"do_mill": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard 10": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 10,
+						"src_container": "deck_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Bulldozer's Helmet": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Bulldozer"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_current_hero_target",
+					"subject_count": "trigger_details_damage",
+					"_comments": "TODO verify damage amount from attack details"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1,
+					"src_container": "hand",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Held Hostage #07050": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Wrecker"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Day of Reckoning"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderball"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Thunderstruck"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Piledriver"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Pile It On!"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "villain",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Bulldozer"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attach_to_card",
+									"subject": "Clear the Road"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "host",
+				"tags": [
+					"thwart"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO verify thwart tag filter"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "host",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Ramming Speed": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Bulldozer"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "must defend with an ally you control, if able"
+	},
+	"Corrupt Prison Guard #07052": {
+		"_comments": "Guard handled by keywords"
+	},
+	"Escaped Convict #07053": {
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Wrecker",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Thunderball",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Piledriver",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "conditional_script",
+									"options": [
+										{
+											"condition": {
+												"func_name": "!is_alter_ego_form",
+												"func_params": {
+													"subject": "current_hero_target"
+												}
+											},
+											"nested_tasks": [
+												{
+													"name": "add_script",
+													"end_condition": "enemy_activation_finished",
+													"subject": "self",
+													"script": {
+														"enemy_activation_finished": {
+															"all": [
+																{
+																	"name": "enemy_attacks_you",
+																	"subject": "Bulldozer",
+																	"tags": [
+																		"no_boost"
+																	]
+																}
+															]
+														}
+													}
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Buddy System #07054": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Wrecker's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Thunderball's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Piledriver's deck (top 2 if he is the only villain)"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "reveal_encounter",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_villain",
+									"_comments": "TODO each villain has their own deck: should reveal from Bulldozer's deck (top 2 if he is the only villain)"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Wrecker"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Thunderball"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Piledriver"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_token_to",
+									"token_name": "active_counter",
+									"source": "current",
+									"subject": "Bulldozer"
+								},
+								{
+									"name": "set_active_villain",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Bull Rush": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "Bulldozer"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Bulldozer"
+				}
+			]
+		},
+		"TODO": "discard top card of your deck for each threat placed / damage dealt"
+	},
+	"Chaos In the Prison #07056": {
+		"reveal": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero",
+											"filter_properties": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "sequence",
+									"sequence_ability": "do_choose"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard an upgrade you control": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				],
+				"Place threat on the active villain's side scheme": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Wrecker"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Day of Reckoning",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Thunderball"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Thunderstruck",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Piledriver"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Pile It On!",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							},
+							{
+								"condition": {
+									"func_name": "check_validity",
+									"func_params": {
+										"subject": "villain",
+										"filter_state_trigger": [
+											{
+												"filter_properties": {
+													"shortname": "Bulldozer"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "add_threat",
+										"subject": "Clear the Road",
+										"amount": {
+											"func_name": "count_cards",
+											"func_params": {
+												"subject": "boardseek",
+												"subject_count": "all",
+												"filter_state_seek": [
+													{
+														"filter_group": "group_upgrade_support_my_hero",
+														"filter_properties": {
+															"type_code": "upgrade"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_current_hero_target",
+							"filter_properties": {
+								"type_code": "upgrade"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Get Wrecked! #07057": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					],
+					"sort_descending": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_schemes",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"sort_by": "function",
+					"sort_name": "count_tokens",
+					"func_params": {
+						"token_name": "threat"
+					},
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Day of Reckoning"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Thunderstruck"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Pile It On!"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Clear the Road"
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Day of Reckoning"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Wrecker"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Thunderstruck"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Thunderball"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Pile It On!"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Piledriver"
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "my_scheme",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"shortname": "Clear the Road"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "Bulldozer"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_scheme"
+				}
+			]
+		}
+	},
+	"Headbutt": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_my_hero",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"subject": "Clear the Road",
+									"amount": {
+										"func_name": "get_subject_int_printed_property",
+										"func_params": {
+											"subject": "previous",
+											"property": "cost"
+										}
+									}
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": {
+								"func_name": "get_subject_int_printed_property",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"subject": "my_identity"
+						}
+					]
+				}
+			],
+			"_comments": "TODO verify 'previous' still refers to the discarded card inside conditional_script"
+		}
+	},
+	"Leading the Charge": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_my_hero",
+					"subject_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "Bulldozer",
+							"property": "attack"
+						}
+					}
+				},
+				{
+					"name": "add_threat",
+					"subject": "Clear the Road",
+					"amount": {
+						"func_name": "count_card_types",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"_comments": "count_card_types pattern from cw Atlanteans"
+				}
+			]
+		}
+	}
+}

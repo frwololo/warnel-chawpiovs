@@ -1,0 +1,1682 @@
+{
+	"Hercules #59001a": {
+		"once_per_phase": {
+			"__name__": "_atonement"
+		},
+		"response_card_moved_to_pile": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_labor": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"filter_destination": "victory_display",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "_atonement",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_gift",
+					"_comments": "TODO gift deck container name"
+				},
+				{
+					"name": "ready_card",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_flip"
+				}
+			]
+		},
+		"do_flip": {
+			"board": {
+				"Flip to alter-ego": [
+					{
+						"name": "change_form",
+						"subject": "self"
+					}
+				],
+				"Stay": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"Hercules #59001b": {
+		"extra_decks": [
+			{
+				"name": "deck_labor"
+			},
+			{
+				"name": "deck_gift"
+			}
+		],
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck",
+					"dest_container": "deck_labor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_labor": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck",
+					"dest_container": "deck_gift",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_gift": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_labor"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_gift"
+				}
+			],
+			"_comments": "TODO extra_decks pattern from Upgrading Adaptoids (main scheme); verify it works on a hero card"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					],
+					"constraints": [
+						{
+							"func_name": "!count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"trait_labor": 1,
+											"comparison": "ge"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_labor"
+				}
+			]
+		}
+	},
+	"Defeat the Hydra": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"grid_name": "enemies_active_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"printed_health": 6,
+								"comparison": "ge"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					],
+					"_comments": "TODO verify comparison on printed_health; 'find' also searches play"
+				},
+				{
+					"name": "heal",
+					"amount": "all",
+					"subject": "previous"
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "previous"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 6,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_elite",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"filter_state_event_source": [
+				{
+					"filter_properties": {
+						"shortname": "Hercules"
+					},
+					"_comments": "TODO verify"
+				}
+			],
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "TODO prevent unless from Hercules's attacks"
+		},
+		"_comments": "Victory 0: goes to the victory display when attached minion is defeated (TODO)"
+	},
+	"Embody Pathos": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "previous"
+				},
+				{
+					"name": "add_threat",
+					"amount": 6,
+					"subject": "previous"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "assault",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"TODO": "per_hero counted as 1; threat removable only by Hercules's thwarts"
+	},
+	"Protect Humanity": {
+		"uses": {
+			"__name__": "labor",
+			"__amount__": 3
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Amadeus Cho"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "villain attacks on Hercules redirected to a chosen ally; remove a counter if Hercules defended"
+	},
+	"Nemean Lion Skin": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 2,
+					"trigger": "Hercules"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "steady",
+					"alteration": 1,
+					"trigger": "Hercules"
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 4
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Shield of Perseus": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 1,
+					"trigger": "Hercules"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 1,
+					"trigger": "Hercules"
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 4
+				}
+			],
+			"is_optional_board": true
+		}
+	},
+	"Sword of Peleus": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 1,
+					"trigger": "Hercules"
+				}
+			]
+		},
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 4
+				}
+			],
+			"is_optional_board": true
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "Hercules",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Amadeus Cho": {
+		"interrupt_enemy_would_attack": {
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "set_defender",
+					"subject": "self",
+					"_comments": "TODO redirect the minion's attack to Amadeus Cho"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"The Gift of Battle": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"trait_gift": 1,
+										"comparison": "ge"
+									}
+								}
+							],
+							"multiplier": -1
+						},
+						"_comments": "TODO Appeal to Athena: count as 0"
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Son of Zeus": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "Hercules"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards>=1",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_same_controller": true,
+											"filter_properties": {
+												"trait_gift": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								},
+								"_comments": "TODO Appeal to Athena: count as 0"
+							},
+							"nested_tasks": [
+								{
+									"name": "ready_card",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_upgrade_support_my_hero",
+											"filter_properties": {
+												"type_code": "upgrade",
+												"faction_code": "hero"
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards>=2",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_same_controller": true,
+											"filter_properties": {
+												"trait_gift": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								},
+								"_comments": "TODO Appeal to Athena: count as 0"
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "tough",
+									"modification": 1,
+									"subject": "my_hero"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards>=3",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_same_controller": true,
+											"filter_properties": {
+												"trait_gift": 1,
+												"comparison": "ge"
+											}
+										}
+									]
+								},
+								"_comments": "TODO Appeal to Athena: count as 0"
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Wisdom of Athena": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"trait_gift": 1,
+										"comparison": "ge"
+									}
+								}
+							],
+							"multiplier": -1
+						},
+						"_comments": "TODO Appeal to Athena: count as 0"
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Olympus": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"trait_gift": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						},
+						"_comments": "TODO Appeal to Athena: count as 0"
+					},
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Gauntlets of Hercules": {
+		"interrupt_defender_chosen": {
+			"trigger": "Hercules",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "Hercules",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "retaliate",
+									"alteration": {
+										"func_name": "count_cards",
+										"func_params": {
+											"subject": "boardseek",
+											"subject_count": "all",
+											"filter_state_seek": [
+												{
+													"filter_same_controller": true,
+													"filter_properties": {
+														"trait_gift": 1,
+														"comparison": "ge"
+													}
+												}
+											]
+										},
+										"_comments": "TODO Appeal to Athena: count as 0"
+									},
+									"trigger": "Hercules"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Golden Mace": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "Hercules",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "increase",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"trait_gift": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						},
+						"_comments": "TODO Appeal to Athena: count as 0"
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			]
+		}
+	},
+	"Herc's Helm": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"filter_state_event_source": [
+				{
+					"filter_properties": {
+						"type_code": "villain"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": 1
+				}
+			],
+			"_comments": "TODO verify villain source filter"
+		}
+	},
+	"Lion of Olympus": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"trigger": "my_hero"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "my_hero"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		}
+	},
+	"Prince of Power": {
+		"response_card_dies": {
+			"event_filters": {
+				"source": "Hercules",
+				"excess_damage": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": "trigger_details_excess_damage",
+					"subject": "Hercules"
+				}
+			],
+			"_comments": "pattern from Moment of Triumph"
+		}
+	},
+	"Deathcry - Sharra Neramani": {
+		"TODO": "deal your hero 1 damage → -1 consequential damage for this basic attack"
+	},
+	"Namora - Aquaria Neptunia": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"plus": -1,
+							"filter_state_seek": [
+								{
+									"filter_group": "group_allies_my_hero"
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Thor - Odinson": {
+		"response_basic_thwart_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"grid_name": "enemies_active_player"
+				}
+			]
+		}
+	},
+	"Teamwork": {
+		"interrupt_attack_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"property": "attack",
+											"subject": "my_ally"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_thwart_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "thwart_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"property": "thwart",
+											"subject": "my_ally"
+										}
+									}
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Call for Backup": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Fetch Ally": [
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "max",
+						"selection_optional": true,
+						"src_container": [
+							"deck_my_hero",
+							"discard_my_hero"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_my_hero"
+					}
+				]
+			}
+		}
+	},
+	"Recruitment Drive": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					],
+					"constraints": [
+						{
+							"func_name": "is_alter_ego_form",
+							"func_params": {
+								"subject": "my_identity"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "nop",
+					"subject": "a_player"
+				}
+			]
+		},
+		"TODO": "reduce the cost of the next ally that player plays this phase to 0"
+	},
+	"\"Avenge Me!\"": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Gilgamesh": {
+		"card_played": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "!get_subject_int_property",
+								"func_params": {
+									"subject": "my_identity",
+									"property": "trait_eternal"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "my_identity"
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "additional cost approximated on play"
+		}
+	},
+	"Ancient Rivalry": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Hercules",
+						"Thor"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": "discard",
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade",
+								"faction_code": "hero"
+							}
+						}
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "Hercules"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Thor"
+				}
+			]
+		}
+	},
+	"Limitless Stamina": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "get_subject_int_printed_property>=14",
+							"func_params": {
+								"subject": "my_identity",
+								"property": "health"
+							}
+						}
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Evaluate Threat": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_fetch"
+				}
+			]
+		},
+		"do_fetch": {
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Fetch": [
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck_my_hero",
+							"discard_my_hero"
+						],
+						"dest_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_avenger": 1,
+									"comparison": "ge"
+								}
+							},
+							{
+								"filter_properties": {
+									"trait_s.h.i.e.l.d.": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_my_hero"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		},
+		"TODO": "reduce the cost of each of those cards by 2 until the end of the phase; verify S.H.I.E.L.D. trait key"
+	},
+	"Helicarrier": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_helicarrier",
+						"is_inverted": true
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		}
+	},
+	"Quincarrier": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Appeal to Athena": {
+		"give_obligation": {
+			"__to__": "Hercules"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Exhaust Hercules": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "my_identity",
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "removed_from_game",
+						"subject": "self"
+					}
+				],
+				"Spend [mental][mental]": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "removed_from_game",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"TODO": "When counting Gift cards you control, you are considered to control none"
+	},
+	"Ares": {
+		"enemy_scheme_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Lernean Hydra": {
+		"attack_happened": {
+			"event_filters": {
+				"target": "self",
+				"damage": ">0"
+			},
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend a [physical] resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Lernean Hydra heals 2 damage": [
+					{
+						"name": "heal",
+						"amount": 2,
+						"subject": "self"
+					}
+				]
+			},
+			"_comments": "TODO only characters you control"
+		}
+	},
+	"Olympic Feud": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_olympus": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Ares's Axe": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "Ares",
+					"is_cost": true
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"event_filters": {
+				"damage": "<1"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"God of War": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"_comments": "TODO each minion attacks the player it is engaged with"
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"is_else": true
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"All Versus All": {
+		"hinder": {
+			"__amount__": 2
+		},
+		"response_character_dies": {
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt_card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "discard",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside"
+				}
+			],
+			"_comments": "When Defeated: set aside instead of discarding"
+		}
+	},
+	"Hecate": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "All Versus All"
+							}
+						}
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "All Versus All"
+							}
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "All Versus All"
+				}
+			]
+		}
+	},
+	"Kyknos": {
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "All Versus All",
+					"is_cost": true
+				},
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Bewitched Officer": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing\",\"ranged"
+		}
+	},
+	"Roving Mobs": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "All Versus All"
+							}
+						}
+					]
+				}
+			]
+		}
+	}
+}

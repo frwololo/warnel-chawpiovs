@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://src/wc/lobby/HeroSelect.gd" type="Script" id=1]
 [ext_resource path="res://assets/icons/icon_256.png" type="Texture" id=2]
+[ext_resource path="res://assets/icons/beta.png" type="Texture" id=3]
 
 [sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 1, 1, 1, 1 )
@@ -50,6 +51,16 @@ margin_right = 100.0
 margin_bottom = 100.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 1 )
+
+[node name="InfoTexture" type="TextureRect" parent="Panel"]
+unique_name_in_owner = true
+margin_left = 52.0
+margin_top = 52.0
+margin_right = 100.0
+margin_bottom = 100.0
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = ExtResource( 3 )
 
 [node name="HeroName" type="Label" parent="."]
 unique_name_in_owner = true

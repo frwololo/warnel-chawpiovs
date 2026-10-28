@@ -1,0 +1,2158 @@
+{
+	"Green Goblin - 1 #02001b": {
+		"reveal": {
+			"all": [
+				{
+					"_rules": {
+						"forced": true,
+						"for_each_player": true
+					},
+					"Indirect Damage": [
+						{
+							"name": "conditional_script",
+							"options": [
+								{
+									"condition": {
+										"func_name": "!is_alter_ego_form",
+										"func_params": {
+											"subject": "my_identity"
+										}
+									},
+									"nested_tasks": [
+										{
+											"name": "indirect_damage",
+											"amount": 3,
+											"subject": "my_identity"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"interrupt_enemy_initiates_scheme": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness"
+				}
+			]
+		}
+	},
+	"Norman Osborn - 1": {
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"display_section": "forced interrupt",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 1,
+					"subject": "Criminal Enterprise"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": "trigger_details_amount",
+					"subject": "Criminal Enterprise",
+					"is_inverted": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Green Goblin - 2 #02002b": {
+		"reveal": {
+			"all": [
+				{
+					"_rules": {
+						"forced": true,
+						"for_each_player": true
+					},
+					"Indirect Damage": [
+						{
+							"name": "indirect_damage",
+							"amount": 3,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_enemy_initiates_scheme": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness"
+				}
+			]
+		}
+	},
+	"Norman Osborn - 2": {
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"display_section": "forced interrupt",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 2,
+					"subject": "Criminal Enterprise"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": "trigger_details_amount",
+					"subject": "Criminal Enterprise",
+					"is_inverted": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Green Goblin - 3 #02003b": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		},
+		"interrupt_enemy_initiates_scheme": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -2,
+					"subject": "State of Madness"
+				}
+			]
+		}
+	},
+	"Norman Osborn - 3": {
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"display_section": "forced interrupt",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 3,
+					"subject": "Criminal Enterprise"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self",
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": "trigger_details_amount",
+					"subject": "Criminal Enterprise",
+					"is_inverted": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Hostile Takeover - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Criminal Enterprise"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hostile Takeover - 1B": {
+		"stage_completed": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": "1p",
+					"subject": "Criminal Enterprise"
+				},
+				{
+					"_rules": {
+						"forced": true,
+						"for_each_player": true
+					},
+					"Discard": [
+						{
+							"name": "discard",
+							"subject": "index",
+							"subject_index": "top",
+							"src_container": "deck_my_hero",
+							"subject_count": {
+								"func_name": "count_tokens",
+								"func_params": {
+									"subject": "Criminal Enterprise",
+									"token_name": "infamy"
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "if Criminal Enterprise has flipped to State of Madness, the counters cannot be placed (count is 0)"
+	},
+	"Corporate Acquisition - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Corporate Acquisition - 2B": {
+		"_comments": "If this stage is completed, the players lose the game (default rule)"
+	},
+	"Criminal Enterprise": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": "2p",
+					"subject": "self"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "infamy",
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "villain"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": "2p",
+					"subject": "self"
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "villain",
+					"exec_trigger": "reveal",
+					"delayed": true,
+					"_comments": "Resolve Green Goblin's When Revealed after the flip"
+				}
+			]
+		}
+	},
+	"State of Madness": {
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "madness",
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "villain"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": "2p",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hired Gun": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Give the villain 1 facedown boost card": [
+					{
+						"name": "draw_boost_card",
+						"subject": "villain"
+					}
+				],
+				"Place 2 infamy counters on Criminal Enterprise": [
+					{
+						"name": "mod_tokens",
+						"token_name": "infamy",
+						"modification": 2,
+						"subject": "Criminal Enterprise",
+						"is_cost": true
+					}
+				]
+			}
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 1,
+					"subject": "Criminal Enterprise",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Private Security Specialist": {
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 1,
+					"subject": "Criminal Enterprise",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Collapsing Bridge": {
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 1,
+					"subject": "Criminal Enterprise",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Oscorp Manufacturing": {
+		"reveal": {
+			"condition_all": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Norman Osborn"
+				}
+			},
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": "1p",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Payoff": {
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 1,
+					"subject": "Criminal Enterprise",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"All in a Day's Work": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 2,
+					"subject": "Criminal Enterprise",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -2,
+					"subject": "State of Madness",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "infamy",
+					"modification": 1,
+					"subject": "Criminal Enterprise",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "madness",
+					"modification": -1,
+					"subject": "State of Madness",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Mad Genius": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Green Goblin"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "enemy_attacks_you",
+									"subject": "villain",
+									"is_cost": true,
+									"target_identity": {
+										"subject": "boardseek",
+										"subject_count": 1,
+										"sort_by": "function",
+										"sort_name": "get_remaining_damage",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_heroes"
+											}
+										]
+									},
+									"_comments": "TODO verify: attack targets the hero with the fewest remaining hit points"
+								},
+								{
+									"name": "surge",
+									"is_else": true
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "card_is_in_play",
+								"func_params": {
+									"card_name": "Norman Osborn"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "index",
+									"subject_index": "top",
+									"src_container": "deck_my_hero",
+									"subject_count": {
+										"func_name": "count_tokens",
+										"func_params": {
+											"subject": "Criminal Enterprise",
+											"token_name": "infamy"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Green Goblin - 1 #02014": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Green Goblin - 2 #02015": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter Cards": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					},
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Green Goblin - 3 #02016": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter Cards": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					},
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					},
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Unleashing the Mutagen - 1A": {
+		"setup": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Goblin Thrall": [
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"src_container": "deck_villain",
+						"grid_name": "enemies_active_player",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Goblin Thrall"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"post_setup": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO verify each player gets their own Goblin Thrall engaged (grid_name in for_each_player context)"
+	},
+	"Unleashing the Mutagen - 1B": {
+		"stage_completed": {
+			"trigger": "self",
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Find Goblin": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "!count_cards",
+									"func_params": {
+										"subject": "boardseek",
+										"filter_state_seek": [
+											{
+												"filter_group": "group_enemies_my_hero",
+												"filter_properties": {
+													"type_code": "minion"
+												},
+												"filter_properties2": {
+													"trait_goblin": 1,
+													"comparison": "ge"
+												}
+											}
+										]
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "discard",
+										"subject": "index",
+										"subject_index": "top",
+										"subject_count": 3,
+										"src_container": "deck_villain"
+									},
+									{
+										"name": "move_card_to_board",
+										"subject": "tutor",
+										"subject_count": 1,
+										"src_container": "discard_villain",
+										"grid_name": "enemies_active_player",
+										"filter_state_tutor": [
+											{
+												"filter_properties": {
+													"type_code": "minion"
+												},
+												"filter_properties2": {
+													"trait_goblin": 1,
+													"comparison": "ge"
+												},
+												"filter_is_included_in": "previous"
+											}
+										],
+										"_comments": "TODO verify: should only pick among the 3 cards just discarded"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Mutagen Cloud - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Mutagen Cloud - 2B": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "escalation_threat",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_enemies",
+									"filter_properties": {
+										"trait_goblin": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "X = number of Goblin enemies (incl. Green Goblin) in play; printed escalation is -1+X"
+	},
+	"Goblin Glider #02019": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "printed_health",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies",
+							"filter_func": {
+								"func_name": "!count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Goblin Glider"
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hysteria": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": [
+				"enemy_initiates_attack",
+				"enemy_initiates_scheme"
+			],
+			"trigger": "host",
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Pumpkin Bombs #02021": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Goblin Knight": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "previous",
+					"grid_name": "enemies_active_player",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_goblin": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"_comments": "TODO verify filter on previous subject"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "shuffle_card_into_container",
+									"subject": "self",
+									"dest_container": "deck_villain"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "boost: shuffle back into the encounter deck after the activation (unverified timing)"
+	},
+	"Goblin Soldier": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "event_source_hero",
+					"_comments": "engaged player"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_active_player"
+				}
+			]
+		}
+	},
+	"Goblin Thrall": {
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_active_player"
+				}
+			]
+		}
+	},
+	"Monster": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "my_identity"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "shuffle_card_into_container",
+									"subject": "self",
+									"dest_container": "deck_villain"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "boost: shuffle back into the encounter deck after the activation (unverified timing)"
+	},
+	"Goblin Reinforcements": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_goblin": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Goblin Nation": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_enemies",
+							"filter_properties": {
+								"trait_goblin": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Overrun": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"_rules": {
+						"forced": true,
+						"for_each_player": true
+					},
+					"Goblins": [
+						{
+							"name": "discard",
+							"subject": "index",
+							"subject_index": "top",
+							"subject_count": 2,
+							"src_container": "deck_villain"
+						},
+						{
+							"name": "move_card_to_board",
+							"subject": "previous",
+							"subject_count": "all",
+							"grid_name": "enemies_active_player",
+							"filter_state_subject": [
+								{
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_goblin": 1,
+										"comparison": "ge"
+									}
+								}
+							],
+							"_comments": "TODO verify filter on previous subjects"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Death from Above": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "villain",
+											"property": "stage_int"
+										}
+									},
+									"trigger": "villain"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "villain",
+											"property": "stage_int"
+										}
+									},
+									"trigger": "villain"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"I See You": {
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_alter_ego_form",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "villain_attacks_you",
+									"tags": [
+										"no_boost"
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "villain_attacks_you"
+						}
+					]
+				}
+			]
+		},
+		"boost_alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "group_enemies_my_hero",
+										"filter_properties": {
+											"type_code": "minion"
+										},
+										"filter_properties2": {
+											"trait_goblin": 1,
+											"comparison": "ge"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "TODO verify boost_alterants structure (+1 boost icon if a Goblin minion is engaged with you)"
+	},
+	"Overconfidence": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		},
+		"_comments": "TODO surge if at least 3 threat / 3 damage was placed by this activation"
+	},
+	"Wicked Ambitions": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"subject_count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "villain",
+							"property": "stage_int",
+							"multiplier": 2
+						}
+					}
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_goblin",
+					"subject": "previous",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_goblin": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"_comments": "TODO verify: for each Goblin minion discarded, choose"
+				}
+			]
+		},
+		"do_goblin": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Take 3 damage": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					}
+				],
+				"Put the minion into play engaged with you": [
+					{
+						"name": "move_card_to_board",
+						"subject": "previous",
+						"grid_name": "enemies_active_player"
+					}
+				]
+			}
+		}
+	},
+	"Goblin Glider #02033": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "printed_health",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies",
+							"filter_func": {
+								"func_name": "!count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "Goblin Glider"
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Pumpkin Bombs #02034": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Intimidation": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 2 resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Give the villain 1 facedown boost card": [
+					{
+						"name": "draw_boost_card",
+						"subject": "villain"
+					}
+				]
+			}
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Regenerative Healing": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "villain",
+							"property": "stage_int",
+							"multiplier": 2
+						}
+					},
+					"subject": "villain",
+					"is_cost": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "villain"
+				}
+			]
+		},
+		"_comments": "TODO verify heal fails (is_cost) when villain has no damage, triggering surge"
+	},
+	"A Mess of Things": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_friendly",
+									"filter_func": {
+										"func_name": "is_stunned",
+										"func_params": {
+											"subject": "trigger"
+										}
+									}
+								}
+							],
+							"multiplier": 2
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Scorpion": {
+		"quickstrike": {},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "stun_if_damage"
+		}
+	},
+	"Gang-Up": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_and_enemies_attack_you"
+				}
+			]
+		}
+	},
+	"Tail Sweep": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Scorpion",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_identity",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Power Drain": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_boost_count"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": 2,
+					"delay_until_no_activity": true
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard_resources",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"do_discard_resources": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard resources": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"src_container": "hand_my_hero",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_type": "equal",
+						"selection_count": "my_boost_count",
+						"up_to": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "resource"
+								}
+							}
+						],
+						"_comments": "TODO verify selection_count from variable; 'resource of any type' = resource cards"
+					}
+				]
+			}
+		}
+	},
+	"Electro": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_boost_count"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": 1,
+					"delay_until_no_activity": true
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_indirect",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"do_indirect": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": "my_boost_count",
+					"subject": "current_hero_target"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Electromagnetic Pulse": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 7,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "discard_villain",
+					"grid_name": "enemies_active_player",
+					"is_cost": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Electro"
+							},
+							"filter_is_included_in": "previous"
+						}
+					],
+					"_comments": "TODO verify Electro was among the 7 discarded cards"
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Lightning Bolt": {
+		"reveal": {
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_boost_count"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": 2,
+					"delay_until_no_activity": true
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_indirect",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"do_indirect": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": "my_boost_count",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Shock Therapy": {
+		"reveal": {
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_boost_count"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": "count_players",
+					"delay_until_no_activity": true
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_heal",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"do_heal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": "my_boost_count",
+					"subject": "villain"
+				}
+			]
+		},
+		"_comments": "TODO verify count 'count_players' accepted by sequence count",
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Running Interference": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Spend [mental] [physical]": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 1,
+							"physical": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Place 2 threat here": [
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Tombstone": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"event_filters": {
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"src_container": "hand_current_hero_target",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_mental": 1,
+								"comparison": "ge"
+							}
+						},
+						{
+							"filter_properties": {
+								"resource_physical": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"All Tied Up": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_ready",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_change_form",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Media Coverage": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Resolve each When Revealed ability that you reveal 1 additional time"
+	}
+}

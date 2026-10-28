@@ -801,23 +801,25 @@ func convert_image_for_game(filename, destination, card_key, url, overwrite = fa
 	
 	return true
 
-
+var cache_transparent_image = null
+var cache_transparent_image_horizontal = null
+var cache_mask_image = null
 func mask_image(image:Image, destination, card_key):
 	if not destination:
 		var _error = 1
 		return null
-		
-	var mask_filename = "res://assets/utils/wc_card_mask.png"	
-	var mask_tex = load(mask_filename)
-	var mask_image = mask_tex.get_data()	
 	
-	#var mask_image = Image.new()
-	#mask_image.load(mask_filename)
-	var transparent_filename = "res://assets/utils/wc_transparent.png"	
-	var transparent_tex = load(transparent_filename)
-	var transparent_image = transparent_tex.get_data()		
-	#var transparent_image = Image.new()
-	#transparent_image.load(transparent_filename)
+	if !cache_mask_image:	
+		var mask_filename = "res://assets/utils/wc_card_mask.png"	
+		var mask_tex = load(mask_filename)
+		cache_mask_image = mask_tex.get_data()	
+	var mask_image = cache_mask_image
+	
+	if !cache_transparent_image:
+		var transparent_filename = "res://assets/utils/wc_transparent.png"	
+		var transparent_tex = load(transparent_filename)
+		cache_transparent_image = transparent_tex.get_data()		
+	var transparent_image = cache_transparent_image
 	
 	var card_data = cfc.card_definitions[card_key]
 	if card_data and card_data.get("_horizontal", false):
@@ -829,14 +831,21 @@ func mask_image(image:Image, destination, card_key):
 			var _no_need_to_rotate = 1
 		else:	
 			image = WCUtils.rotate_90(image, false)
-		
+	
+	if card_data and (card_data.get("wc_meta", {}).get("art_render", "") == "wide"):
+		if !cache_transparent_image_horizontal:
+			var transparent_filename = "res://assets/utils/wc_transparent.png"	
+			var transparent_tex = load(transparent_filename)
+			cache_transparent_image_horizontal = transparent_tex.get_data()			
+			cache_transparent_image_horizontal = WCUtils.rotate_90(cache_transparent_image_horizontal, false)
+		transparent_image = cache_transparent_image_horizontal
+			
 	image.convert(transparent_image.get_format())
 	if image.get_size() != transparent_image.get_size():
 		var size = transparent_image.get_size()
 		image.resize(size.x, size.y, Image.INTERPOLATE_LANCZOS)
 	var rect = image.get_used_rect()
 	
-	#image.blit_rect(transparent_image, rect,Vector2(0,0))	
 	image.blit_rect_mask(transparent_image,mask_image, rect,Vector2(0,0))	
 	image.fix_alpha_edges()
 	image.save_png(destination)

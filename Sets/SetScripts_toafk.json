@@ -1,0 +1,1602 @@
+{
+	"Kang (The Conqueror) - 1 #11001": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 threat on the main scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				],
+				"Kang gets +2 ATK for this attack": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"alteration": 2,
+										"trigger": "villain"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"TODO": "When Defeated: Advance the main scheme to stage 2 at the end of the phase (multiple game areas unsupported)"
+	},
+	"Kang (Immortus) - 2 #11002": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"TODO": "When Defeated: Remove The Chronopolis from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (Iron Lad) - 2 #11003": {
+		"TODO": "When Defeated: Remove Inexorable Fate from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (Rama-Tut) - 2 #11004": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "obligation"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"TODO": "When Defeated: Remove The Realm of Rama-Tut from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (Scarlet Centurion) - 2 #11005": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"TODO": "When Defeated: Remove The Present Future War from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (The Conqueror) - 3 #11006": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 threat on the main scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				],
+				"Kang gets +2 ATK for this attack": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"alteration": 2,
+										"trigger": "villain"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"Kang's Arrival - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						},
+						{
+							"filter_properties": {
+								"shortname": "Kang's Dominion"
+							}
+						}
+					]
+				},
+				{
+					"name": "remove_card_from_game",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "obligation"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO remove_card_from_game on tutor subjects unverified"
+	},
+	"Kang's Arrival - 1B": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_deal"
+				}
+			]
+		},
+		"do_deal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal encounter": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"The Master of Time - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "acceleration",
+					"subject": "self",
+					"modification": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "side_scheme"
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Each player reveals a random stage 3A in turn order (multiple game areas unsupported)"
+	},
+	"The Master of Time - 2B": {
+		"TODO": "acceleration tokens redirected here; game areas; advance to 4A when all players joined"
+	},
+	"The Chronopolis - 3A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang (Immortus)",
+								"type_code": "villain"
+							}
+						}
+					],
+					"_comments": "TODO pick the right difficulty version"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Create your own game area and place this scheme in it"
+	},
+	"The Chronopolis - 3B": {
+		"TODO": "After this stage is completed, place 1 set-aside Kang's Dominion facedown under stage 4A; combine game areas"
+	},
+	"Inexorable Fate - 3A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang (Iron Lad)",
+								"type_code": "villain"
+							}
+						}
+					],
+					"_comments": "TODO pick the right difficulty version"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Create your own game area and place this scheme in it"
+	},
+	"Inexorable Fate - 3B": {
+		"TODO": "After this stage is completed, place 1 set-aside Kang's Dominion facedown under stage 4A; combine game areas"
+	},
+	"The Realm of Rama-Tut - 3A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang (Rama-Tut)",
+								"type_code": "villain"
+							}
+						}
+					],
+					"_comments": "TODO pick the right difficulty version"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Create your own game area and place this scheme in it"
+	},
+	"The Realm of Rama-Tut - 3B": {
+		"TODO": "After this stage is completed, place 1 set-aside Kang's Dominion facedown under stage 4A; combine game areas"
+	},
+	"The Present Future War - 3A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang (Scarlet Centurion)",
+								"type_code": "villain"
+							}
+						}
+					],
+					"_comments": "TODO pick the right difficulty version"
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "my_identity"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Create your own game area and place this scheme in it"
+	},
+	"The Present Future War - 3B": {
+		"TODO": "After this stage is completed, place 1 set-aside Kang's Dominion facedown under stage 4A; combine game areas"
+	},
+	"Kang's Wrath - 4A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"grid_name": "villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang (The Conqueror)",
+								"stage": "3",
+								"type_code": "villain"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounters",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang's Dominion"
+							}
+						}
+					],
+					"_comments": "TODO only the facedown ones under this stage"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Kang's Wrath - 4B": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_nemesis"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"do_nemesis": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Nemesis": [
+					{
+						"name": "engage_nemesis",
+						"subject": "my_identity",
+						"_comments": "TODO verify engage_nemesis searches deck/discard/set aside for the nemesis minion"
+					}
+				]
+			}
+		}
+	},
+	"Temporal Shield": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger",
+					"_comments": "TODO verify attacker subject"
+				}
+			]
+		}
+	},
+	"Future Weapon": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "host",
+			"__tags__": "overkill\",\"stun_if_damage"
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Frozen in Time": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "ready_card",
+			"trigger": "host",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO verify event name for 'would ready'"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "attach_to_card",
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Macrobots": {
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Weakened": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened",
+				"basic_defense_happened"
+			],
+			"trigger": "my_hero",
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "my_hero"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_physical": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Stolen Memories": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 8,
+					"src_container": "deck_my_hero",
+					"tags": [
+						"facedown"
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_mental": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"_comments": "discard each facedown card under this obligation"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Depowered": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"faction_code": "hero"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "You cannot play hero-specific cards"
+	},
+	"Time-Travel Hijinks": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "boardseek",
+					"sort_by": "property",
+					"sort_name": "cost",
+					"sort_descending": true,
+					"tags": [
+						"facedown"
+					],
+					"filter_state_seek": [
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_upgrade_support_my_hero"
+						},
+						{
+							"filter_same_controller": true,
+							"filter_group": "group_allies_my_hero"
+						}
+					],
+					"_comments": "TODO 'discard then place facedown under this card'; ties should let the player choose"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_energy": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "attachments"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Corrupted Timestream": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard 1 random card": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"subject_count": 1,
+						"src_container": "hand_my_hero",
+						"is_cost": true
+					}
+				],
+				"Place 2 threat here": [
+					{
+						"name": "add_threat",
+						"amount": 2,
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"TODO": "Players cannot trigger Alter-Ego Action abilities on obligations"
+	},
+	"Kang's Dominion": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "villain"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "event_source_hero"
+				}
+			]
+		}
+	},
+	"Pinned Down": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "obligation"
+									}
+								}
+							],
+							"multiplier": 2
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Rampage": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"grid_name": "enemies_active_player",
+					"_comments": "TODO: engage the player who defeated this scheme"
+				}
+			]
+		}
+	},
+	"Energy Blast": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						},
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"Manipulated Timestream": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand_my_hero",
+					"is_cost": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Time-Travel Tactics": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_indirect"
+				}
+			]
+		},
+		"do_indirect": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Indirect damage": [
+					{
+						"name": "indirect_damage",
+						"amount": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "obligation"
+										},
+										"filter_group": "play_area_my_hero"
+									}
+								]
+							}
+						},
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"boost_alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "boost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "obligation"
+									},
+									"filter_group": "play_area_current_hero_target"
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "TODO verify play_area_* group names"
+	},
+	"Past Machinations": {
+		"incite": {
+			"__amount__": 1
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_oblig"
+				}
+			]
+		},
+		"do_oblig": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Reveal obligation": [
+					{
+						"name": "reveal_encounter",
+						"subject": "tutor",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"subject_count": "all",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "obligation"
+								}
+							}
+						],
+						"_comments": "TODO 'a different obligation' per player"
+					}
+				]
+			}
+		},
+		"post_reveal": {
+			"all": [
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Ancient Warrior": {
+		"quickstrike": {},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Chitauri Soldier": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					},
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Tyrannosaurus Rex": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		}
+	},
+	"Time Portal": {
+		"interrupt_card_moved_to_pile": {
+			"trigger": "self",
+			"filter_destination": "discard",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			],
+			"_comments": "TODO verify defeated side scheme goes through card_moved_to_pile; pattern from Cybermods"
+		}
+	},
+	"Kang (The Conqueror) - 1 #11034": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 threat on the main scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				],
+				"Kang gets +2 ATK for this attack": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"alteration": 2,
+										"trigger": "villain"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"TODO": "When Defeated: Advance the main scheme to stage 2 at the end of the phase (multiple game areas unsupported)"
+	},
+	"Kang (Immortus) - 2 #11035": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"TODO": "When Defeated: Remove The Chronopolis from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (Iron Lad) - 2 #11036": {
+		"TODO": "When Defeated: Remove Inexorable Fate from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (Rama-Tut) - 2 #11037": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "obligation"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"TODO": "When Defeated: Remove The Realm of Rama-Tut from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (Scarlet Centurion) - 2 #11038": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"TODO": "When Defeated: Remove The Present Future War from the game. At the end of the phase, join another game area (game areas unsupported)"
+	},
+	"Kang (The Conqueror) - 3 #11039": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 threat on the main scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				],
+				"Kang gets +2 ATK for this attack": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"alteration": 2,
+										"trigger": "villain"
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"Apocryphus": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						},
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "support"
+							}
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		},
+		"_comments": "TODO verify 'host' is the activating enemy during boost and group name for characters you control"
+	},
+	"Deathunt 9000": {
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "host"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Sir Raston": {
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "current_hero_target"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Terminatrix": {
+		"quickstrike": {},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Wildrun": {
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_my_hero",
+					"subject_index": "random",
+					"subject_count": 1
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"src_container": "hand_current_hero_target",
+					"subject_index": "random",
+					"subject_count": 1
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"The Anachronauts": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_temporal": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Kang's Chosen": {
+		"incite": {
+			"__amount__": 1
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_temporal": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Kang (Master of Time)": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "obligation"
+									},
+									"filter_group": "play_area_current_hero_target"
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"type_code": "obligation"
+									},
+									"filter_group": "play_area_current_hero_target"
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"_comments": "TODO 'your play area' = the engaged player's; verify group"
+	},
+	"Time-Displaced Soldier": {
+		"incite": {
+			"__amount__": 1
+		},
+		"_surge": {},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_encounter",
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Fear of Kang": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "random",
+					"subject_count": 1,
+					"src_container": "hand",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "You cannot attack Kang"
+	},
+	"Light of Centuries Sphere": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"grid_name": "enemies_active_player",
+					"_comments": "TODO: engage the player who defeated this scheme"
+				}
+			]
+		}
+	},
+	"Ancient Grudge": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Kang (Master of Time)",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"grid_name": "enemies_active_player",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Kang (Master of Time)"
+							}
+						}
+					],
+					"is_else": true
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
+	}
+}

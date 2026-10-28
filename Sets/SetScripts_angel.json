@@ -192,7 +192,7 @@
 					"subject": "self"
 				},
 				{
-					"name": "draw_card",
+					"name": "draw_cards",
 					"amount": 1
 				}
 			]
@@ -1573,6 +1573,11 @@
 		}
 	},
 	"Warren Worthington III": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Archangel #42001c"
+			}
+		],	
 		"once_per_round": {
 			"__name__": "__regrowth"
 		},

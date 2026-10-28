@@ -1,0 +1,1594 @@
+{
+	"_macros": {
+		"__repurpose": [
+			{
+				"name": "constraints",
+				"is_cost": true,
+				"tags": [
+					"hero_action"
+				]
+			},
+			{
+				"name": "discard",
+				"is_cost": true,
+				"subject": "boardseek_and_choose",
+				"filter_state_seek": [
+					{
+						"filter_group": "group_upgrade_support_my_hero",
+						"filter_properties": {
+							"type_code": "upgrade"
+						},
+						"filter_properties2": {
+							"trait_tech": 1,
+							"comparison": "ge"
+						}
+					}
+				]
+			},
+			{
+				"name": "save_variable",
+				"var_name": "my_upgrade",
+				"var_type": "subject",
+				"value": "previous",
+				"force_run_at_prime": true
+			},
+			{
+				"name": "ready_card",
+				"subject": "my_hero"
+			},
+			{
+				"name": "add_script",
+				"subject": "self",
+				"end_condition": "round_ended",
+				"script": {
+					"alterants": {
+						"all": [
+							{
+								"filter_task": "get_property",
+								"filter_property_name": "__property__",
+								"trigger": "my_hero",
+								"alteration": {
+									"func_name": "get_subject_int_printed_property",
+									"func_params": {
+										"subject": "my_upgrade",
+										"property": "cost"
+									}
+								}
+							}
+						]
+					}
+				}
+			}
+		],
+		"__web_warrior_play_restriction": {
+			"manual": {
+				"hand": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"constraints": [
+							{
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										{
+											"filter_group": "play_area_my_hero"
+										}
+									],
+									"trait": "web-warrior"
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"__fourteen_hp_play_restriction": {
+			"name": "constraints",
+			"is_cost": true,
+			"constraints": [
+				{
+					"func_name": "get_subject_int_printed_property>=14",
+					"func_params": {
+						"subject": "my_identity",
+						"property": "health"
+					}
+				}
+			]
+		}
+	},
+	"SP//dr Suit #31001a": {
+		"_comments": "Sync Ratio: resources come from the exhausted Interface upgrade's printed resources. The paying source recorded by the engine is SP//dr Suit itself, which is what Rapid Deployment and Web-Trap check for.",
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"trait_interface": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": false
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"resource_name": "energy",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "energy"
+						}
+					}
+				},
+				{
+					"name": "add_resource",
+					"resource_name": "physical",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "physical"
+						}
+					}
+				},
+				{
+					"name": "add_resource",
+					"resource_name": "mental",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "mental"
+						}
+					}
+				},
+				{
+					"name": "add_resource",
+					"resource_name": "wild",
+					"amount": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "previous",
+							"resource_type": "wild"
+						}
+					}
+				}
+			]
+		}
+	},
+	"SP//dr Suit #31001b": {
+		"TODO": "Return to Base: when flipped to this side, flip SP//dr to Peni Parker, detach her and move counters/attachments to her. Blocked: Peni Parker (31002) is not in SetDefinition_spdr.json."
+	},
+	"VEN#m - Addy Brock": {
+		"TODO": "Hero Response (1 sym counter per Sync Ratio resource used to pay for her) not implemented: paid_with_includes can tell whether SP//dr Suit paid, but not how many resources it generated.",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "sym"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "sym"
+					}
+				}
+			]
+		}
+	},
+	"All Systems Go!": {
+		"manual": {
+			"hand": {
+				"Ready each Interface upgrade": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "ready_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"trait_interface": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				],
+				"Search for an Interface upgrade": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"src_container": [
+							"deck",
+							"discard"
+						],
+						"dest_container": "hand",
+						"subject": "tutor",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"trait_interface": 1,
+									"comparison": "ge"
+								},
+								"filter_properties2": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck"
+					}
+				]
+			}
+		}
+	},
+	"Rapid Deployment": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"filter_state_source": [
+										{
+											"filter_properties": {
+												"Name": "SP//dr Suit"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "thwart",
+									"tags": [
+										"collateral_thwart"
+									],
+									"amount": 3,
+									"subject": "a_scheme"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Web-Trap": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "previous",
+					"modification": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"filter_state_source": [
+									{
+										"filter_properties": {
+											"Name": "SP//dr Suit"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Aunt May & Uncle Ben": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"sort_descending": true,
+					"up_to": true,
+					"subject_count": {
+						"if": {
+							"func_name": "is_alter_ego_form",
+							"func_params": {
+								"subject": "my_identity"
+							}
+						},
+						"then": 3,
+						"else": 2
+					},
+					"src_container": "deck",
+					"dest_container": "discard"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "previous",
+					"subject_count": "all",
+					"filter_each_previous_subject": true,
+					"dest_container": "hand",
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"card_set_code": "spdr"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ejection Protocol": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"trait_interface": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_identity",
+							"property": "health",
+							"plus": -6
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "tough",
+					"modification": 1
+				},
+				{
+					"name": "change_form",
+					"subject": "my_identity",
+					"change_to": "alter_ego"
+				}
+			]
+		}
+	},
+	"SP//dr Command": {
+		"manual": {
+			"board": {
+				"Draw 1 card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"trait_interface": 1,
+									"comparison": "ge"
+								},
+								"filter_is_exhausted": false
+							}
+						]
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					}
+				],
+				"Discard 1 card, ready an Interface upgrade": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "tutor_and_choose",
+						"src_container": "hand_my_hero"
+					},
+					{
+						"name": "ready_card",
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"trait_interface": 1,
+									"comparison": "ge"
+								},
+								"filter_is_exhausted": true
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Host Spider": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Psychic Link": {
+		"interrupt_thwart_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "increase",
+					"amount": 2,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Speed-Metal Alloy": {
+		"interrupt_enemy_attack_damage": {
+			"event_filters": {
+				"defender": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Web-Fluid Compressor": {
+		"interrupt_attack_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "increase",
+					"amount": 2,
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Daredevil": {
+		"response_defense_happened": {
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger_details_attacker"
+				}
+			]
+		}
+	},
+	"Spider-Man Noir": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "self",
+							"filter_state_attachment": [
+								{
+									"filter_faceup": false
+								}
+							]
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "self",
+							"filter_state_attachment": [
+								{
+									"filter_faceup": false
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"encounter_complete": {
+			"filter_state_trigger": [
+				{
+					"filter_same_controller": true,
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"subject_exclude": "self",
+								"filter_state_seek": [
+									{
+										"filter_same_controller": true,
+										"filter_properties": {
+											"trait_web-warrior": 1,
+											"comparison": "ge"
+										}
+									}
+								]
+							}
+						},
+						{
+							"func_name": "count_attachments<3",
+							"func_params": {
+								"subject": "self",
+								"filter_state_attachment": [
+									{
+										"filter_faceup": false
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "host_card",
+					"host": "self",
+					"subject": "trigger",
+					"tags": [
+						"facedown",
+						"disable_attach_trigger"
+					]
+				}
+			]
+		}
+	},
+	"Repurpose": {
+		"manual": {
+			"hand": {
+				"+X THW": {
+					"__repurpose": {
+						"__property__": "thwart"
+					}
+				},
+				"+X ATK": {
+					"__repurpose": {
+						"__property__": "attack"
+					}
+				},
+				"+X DEF": {
+					"__repurpose": {
+						"__property__": "defense"
+					}
+				}
+			}
+		}
+	},
+	"Thwip Thwip!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero",
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "max",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Energy Barrier": {
+		"uses": {
+			"__name__": "reflection",
+			"__amount__": 3
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_identity",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "reflection",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Forcefield Generator": {
+		"_comments": "Unverified: counters are read before removal so the prevent amount matches what was removed, and the 'uses' macro discards the card when it hits 0.",
+		"give_to_player_max1": {},
+		"uses": {
+			"__name__": "energy",
+			"__amount__": 6
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_identity",
+				"amount": ">0"
+			},
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_counters",
+					"var_type": "int",
+					"force_run_at_prime": true,
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "energy"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "energy",
+					"modification": "trigger_details_amount",
+					"is_inverted": true
+				},
+				{
+					"name": "prevent",
+					"amount": "my_counters",
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Spider-Tingle": {
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero",
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				}
+			]
+		}
+	},
+	"Spider-Ham - Peter Porker": {
+		"__web_warrior_play_restriction": {},
+		"response": {
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		}
+	},
+	"Spider-Man - Otto Octavius": {
+		"__web_warrior_play_restriction": {},
+		"card_played": {
+			"trigger": "self",
+			"event_filters": {
+				"from": "hand_my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ready_card",
+					"is_cost": true,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_upgrade_support_my_hero",
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_is_exhausted": true
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "previous",
+									"trait": "tech"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Limitless Stamina": {
+		"manual": {
+			"hand": [
+				{
+					"__fourteen_hp_play_restriction": {}
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Unshakable": {
+		"manual": {
+			"hand": [
+				{
+					"__fourteen_hp_play_restriction": {}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "steady",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		}
+	},
+	"Inherited Burden": {
+		"_comments": "Blocked in practice: Peni Parker (31002) is not in SetDefinition_spdr.json, so give_obligation has no target.",
+		"give_obligation": {
+			"__to__": "Peni Parker"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Flip then remove from the game": {
+					"obligation_flip_remove": {}
+				},
+				"Remove from the game": {
+					"obligation_remove": {}
+				},
+				"Flip then Discard an Interface upgrade": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"trait_interface": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					},
+					{
+						"name": "change_form",
+						"subject": "my_hero"
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Discard an Interface upgrade": [
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_upgrade_support_my_hero",
+								"filter_properties": {
+									"trait_interface": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Giant Monster Attack": {
+		"_comments": "Unverified: modeled on Undermine Support (aos). Assumes thwart_started fires with this scheme as the event target.",
+		"interrupt_thwart_started": {
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"Name": "Giant Monster Attack"
+						}
+					}
+				]
+			},
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 1 energy": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Cancel thwart": [
+					{
+						"name": "prevent",
+						"subject": "interrupted_event"
+					}
+				]
+			}
+		}
+	},
+	"M.O.R.B.I.U.S.": {
+		"TODO": "Forced Response after the engaged hero generates resources: the paid_as_resource signal fires per paying card but does not carry the amount generated, so 'deal an equal amount of damage' cannot be computed yet."
+	},
+	"Energy Drain": {
+		"reveal_alter_ego": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 2 energy": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Exhaust identity": [
+					{
+						"name": "exhaust_card",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"reveal_hero": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 2 energy": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Take 3 damage": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Clarity of Purpose": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_friendly",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "host",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Grand Larceny": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_remove_threat",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"filter_state_seek": [
+								"minion",
+								"trait_criminal"
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Bombshell": {
+		"TODO": "Boost: 'exhaust each character damaged this way' not implemented (the indirect damage part is).",
+		"interrupt_pre_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "trigger_details_amount",
+					"selection_type": "as_evenly_as_possible",
+					"selection_what_to_count": "assign_any_damage",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					],
+					"_comments": "deal_damage without the attack tag, so this interrupt doesn't re-trigger itself"
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"1 Indirect Damage": [
+					{
+						"name": "indirect_damage",
+						"amount": 1,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Electro": {
+		"_comments": "Unverified: 'attachments' as a subject inside func_params for count_printed_resources.",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_printed_resources",
+						"func_params": {
+							"subject": "attachments",
+							"attachments_host": "self",
+							"resource_type": "energy"
+						}
+					}
+				}
+			]
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "host_card",
+					"host": "self",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_energy": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": [
+				"enemy_attack_happened",
+				"enemy_scheme_happened"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "host_card",
+					"host": "self",
+					"subject": "tutor_and_choose",
+					"src_container": "hand_current_hero_target",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"resource_energy": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
+				}
+			]
+		}
+	},
+	"Hobgoblin": {
+		"_comments": "Modeled on Full Auto (trors). Unverified: current_hero_target is still set after the attack is prevented.",
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_boost_count"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "discard_and_count",
+					"subject": "self",
+					"count": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "self",
+							"property": "attack"
+						}
+					}
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage",
+					"subject": "self",
+					"delay_until_no_activity": true
+				}
+			]
+		},
+		"discard_and_count": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_villain",
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_boost_count",
+					"var_type": "int",
+					"mode": "add",
+					"value": {
+						"func_name": "count_boost_icons",
+						"func_params": {
+							"subject": "previous"
+						}
+					}
+				}
+			]
+		},
+		"do_damage": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": "my_boost_count",
+					"subject": "current_hero_target"
+				}
+			]
+		}
+	},
+	"Iron Spider": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill"
+		}
+	},
+	"Sandman": {
+		"card_damaged": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"subject_count": 7,
+					"up_to": true,
+					"sort_descending": true
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"subject_count": 7,
+					"up_to": true,
+					"sort_descending": true
+				}
+			]
+		}
+	},
+	"Spot": {
+		"_comments": "Unverified: excess_damage is assumed to be in card_defeated's trigger details (it is for card_dies, see Moment of Triumph).",
+		"card_defeated": {
+			"trigger": "self",
+			"event_filters": {
+				"excess_damage": "<1"
+			},
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"grid_name": "enemies_current_hero_target",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Surge in Crime": {
+		"_surge": {},
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"reveal": {
+							"trigger": "self",
+							"all": [
+								{
+									"name": "surge"
+								}
+							]
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_criminal": 1,
+								"comparison": "ge"
+							},
+							"filter_func": {
+								"func_name": "!has_printed_script",
+								"func_params": {
+									"subject": "trigger",
+									"trigger_name": "reveal"
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "!count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									"minion",
+									"trait_criminal"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	}
+}

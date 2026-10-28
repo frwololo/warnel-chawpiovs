@@ -1,0 +1,1357 @@
+{
+	"Rogue": {
+		"once_per_round": {
+			"__name__": "_skin_contact"
+		},
+		"manual": {
+			"board": {
+				"Skin Contact": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_skin_contact",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"subject_exclude": "my_hero",
+						"filter_state_seek": [
+							{
+								"filter_group": "group_characters"
+							}
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_touched_host",
+						"var_type": "subject",
+						"value": "previous"
+					},
+					{
+						"name": "host_card",
+						"host": "my_touched_host",
+						"subject": "tutor",
+						"src_container": [
+							"set_aside",
+							"board"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Touched"
+								}
+							}
+						],
+						"_comments": "TODO move Touched from wherever it is (set aside or attached elsewhere) to the chosen character"
+					}
+				]
+			}
+		},
+		"step_started": {
+			"event_filters": {
+				"step_name": "PLAYER_TURN"
+			},
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": [
+						"board",
+						"deck",
+						"discard",
+						"hand"
+					],
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Touched"
+							}
+						}
+					],
+					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
+				}
+			]
+		},
+		"TODO": "You gain each of the attached character's traits until the end of the round"
+	},
+	"Anna Marie": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"hand"
+					],
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Touched"
+							}
+						}
+					]
+				}
+			]
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"src_container": [
+						"board",
+						"deck",
+						"discard",
+						"hand"
+					],
+					"dest_container": "set_aside",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Touched"
+							}
+						}
+					],
+					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
+				}
+			],
+			"_comments": "TODO verify 'after' value for alter-ego"
+		}
+	},
+	"Touched": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": {
+						"if": {
+							"func_name": "check_validity",
+							"func_params": {
+								"subject": "host",
+								"filter_state_trigger": [
+									{
+										"filter_properties": {
+											"type_code": "villain"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "Rogue"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": {
+						"if": {
+							"func_name": "check_validity",
+							"func_params": {
+								"subject": "host",
+								"filter_state_trigger": [
+									{
+										"filter_properties": {
+											"type_code": "ally"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "Rogue"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "stalwart",
+					"alteration": {
+						"if": {
+							"func_name": "check_validity",
+							"func_params": {
+								"subject": "host",
+								"filter_state_trigger": [
+									{
+										"filter_properties": {
+											"type_code": "hero"
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "Rogue"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "Rogue",
+			"condition_board": {
+				"func_name": "check_validity",
+				"func_params": {
+					"subject": "host",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			]
+		},
+		"_comments": "TODO verify 'trigger' is the attacker for pre_receive_damage (as in attacks_gain macro)"
+	},
+	"Gambit - Remy LeBeau": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": 3,
+					"subject": "self"
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "attack",
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Rogue's Jacket": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_group": "group_friendly",
+										"filter_func": {
+											"func_name": "count_attachments",
+											"func_params": {
+												"subject": "trigger",
+												"filter_state_attachment": [
+													{
+														"filter_properties": {
+															"shortname": "Touched"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "Rogue"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_group": "group_enemies",
+										"filter_func": {
+											"func_name": "count_attachments",
+											"func_params": {
+												"subject": "trigger",
+												"filter_state_attachment": [
+													{
+														"filter_properties": {
+															"shortname": "Touched"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"trigger": "Rogue"
+				}
+			]
+		}
+	},
+	"Goin' Rogue": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme",
+					"plus_amount": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "Rogue",
+								"property": "trait_aerial"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "Rogue",
+									"property": "retaliate"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "Rogue",
+									"property": "stalwart"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify plus_amount accepts a func"
+	},
+	"Southern Cross": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 6,
+					"subject": "an_enemy",
+					"plus_amount": {
+						"if": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"subject": "Rogue",
+								"property": "trait_aerial"
+							}
+						},
+						"then": 2,
+						"else": 0
+					}
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "Rogue",
+									"property": "retaliate"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "stunned",
+									"modification": 1,
+									"subject": "previous"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_property",
+								"func_params": {
+									"subject": "Rogue",
+									"property": "stalwart"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "draw_cards",
+									"amount": 1
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify 'previous' = attacked enemy after attack"
+	},
+	"Energy Transfer": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"subject_exclude": "my_hero",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_touched_host",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "host_card",
+					"host": "my_touched_host",
+					"subject": "tutor",
+					"src_container": [
+						"set_aside",
+						"board"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Touched"
+							}
+						}
+					],
+					"_comments": "TODO move Touched from wherever it is (set aside or attached elsewhere) to the chosen character"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "my_touched_host",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "my_hero"
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"TODO": "You gain each of the attached character's traits until the end of the round"
+	},
+	"Bulletproof Belle": {
+		"interrupt_enemy_initiates_attack": {
+			"is_optional_hand": true,
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "trigger",
+							"filter_state_attachment": [
+								{
+									"filter_properties": {
+										"shortname": "Touched"
+									}
+								}
+							]
+						}
+					}
+				}
+			],
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"interrupt_receive_damage": {
+							"event_filters": {
+								"tags": [
+									"attack"
+								]
+							},
+							"board": [
+								{
+									"name": "prevent",
+									"subject": "interrupted_event",
+									"amount": "all"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_hero"
+				}
+			],
+			"_comments": "TODO verify prevent all damage via add_script"
+		}
+	},
+	"Superpower Adaptation": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "boardseek",
+								"filter_state_seek": [
+									{
+										"filter_group": "group_friendly",
+										"filter_func": {
+											"func_name": "count_attachments",
+											"func_params": {
+												"subject": "trigger",
+												"filter_state_attachment": [
+													{
+														"filter_properties": {
+															"shortname": "Touched"
+														}
+													}
+												]
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "search the owner's discard pile for an event of the same classification as the Touched character"
+	},
+	"Iceman - Bobby Drake": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "freeze",
+					"modification": 3,
+					"subject": "self"
+				}
+			]
+		},
+		"response_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "freeze",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Karma - Xi'an Coy Manh": {
+		"TODO": "take control of a non-Elite minion as a Controlled ally"
+	},
+	"Unflappable": {
+		"give_to_player_max1": {},
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero",
+				"damage": "<1"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			],
+			"_comments": "copied from Gambit's Guild Armor event filters"
+		}
+	},
+	"Judoka Skill": {
+		"uses": {
+			"__name__": "judo",
+			"__amount__": 3
+		},
+		"interrupt_defender_chosen": {
+			"trigger": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "judo",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "current_activation",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": -2,
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"_comments": "TODO verify subject for attacking enemy"
+				}
+			]
+		}
+	},
+	"Preemptive Strike": {
+		"interrupt_boost_card_resolved": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "deal_damage",
+					"subject": "villain",
+					"amount": "trigger_details_boost_icons"
+				},
+				{
+					"name": "prevent",
+					"subject": "current_activation",
+					"amount": "trigger_details_boost_icons"
+				}
+			]
+		}
+	},
+	"Not Today!": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"defender": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"alteration": 2,
+									"trigger": "my_hero"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "remove_threat",
+								"amount": 2,
+								"subject": "a_scheme"
+							}
+						]
+					}
+				}
+			]
+		},
+		"_comments": "pattern from Riposte"
+	},
+	"Defensive Energy": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_defense": 1
+							},
+							"filter_properties2": {
+								"type_code": "event"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Moira MacTaggert": {
+		"interrupt_change_form": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "__mutant",
+					"modification": {
+						"func_name": "has_trait",
+						"func_params": {
+							"subject": "trigger",
+							"trait": "mutant"
+						}
+					},
+					"set_to_mod": true
+				}
+			]
+		},
+		"response_identity_changed_form": {
+			"event_filters": {
+				"before": "alter_ego",
+				"after": "hero"
+			},
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__mutant"
+				}
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "trigger"
+				}
+			]
+		},
+		"identity_changed_form": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"token_name": "__mutant",
+					"modification": 0,
+					"set_to_mod": true
+				}
+			]
+		}
+	},
+	"X-Gene": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			],
+			"_comments": "TODO only for an identity-specific event"
+		}
+	},
+	"Beauty and the Thief": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Gambit",
+						"Rogue"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Deadly Touch": {
+		"give_obligation": {
+			"__to__": "Anna Marie"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														{
+															"filter_properties": {
+																"shortname": "Touched"
+															}
+														}
+													]
+												}
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "deal_damage",
+									"amount": 2,
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														{
+															"filter_properties": {
+																"shortname": "Touched"
+															}
+														}
+													]
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"amount": 2,
+							"subject": "main_scheme"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Mystique": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"dest_container": "deck_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Misled"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Mystique's Manipulations": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"dest_container": "deck_event_source_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Misled"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Misled": {
+		"reveal": {
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_my_hero"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"card_moved_to_hand": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 2,
+					"subject": "main_scheme"
+				}
+			],
+			"_comments": "TODO verify trigger name for entering hand"
+		}
+	},
+	"Med Lab": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				}
+			]
+		},
+		"TODO": "store an ally defeated by consequential damage, then play it from here"
+	},
+	"Donald Pierce": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": "discard_villain",
+					"sort_descending": true,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_reaver": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"_comments": "TODO 'topmost' ordering"
+				}
+			]
+		}
+	},
+	"Skullbuster": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_enemies_my_hero",
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_reaver": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"Bonebreaker": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_enemies_my_hero",
+									"filter_properties": {
+										"type_code": "minion"
+									},
+									"filter_properties2": {
+										"trait_reaver": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Wade Cole": {
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Cybernetic Enhancements"
+							}
+						}
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Murray Reese": {
+		"reveal": {
+			"all": [
+				{
+					"name": "host_card",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Cybernetic Enhancements"
+							}
+						}
+					],
+					"tags": [
+						"disable_attach_trigger"
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"The Reavers": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_reaver": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"_comments": "TODO reveal for the player who defeated the scheme"
+				}
+			]
+		}
+	},
+	"Cybernetic Enhancements": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,1577 @@
+{
+	"Jubilee": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Jubilation Lee": {
+		"once_per_phase": {
+			"__name__": "_mall_rat"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "_mall_rat",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": "deck",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Shopping Spree"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Wolverine - Logan": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 3,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Shopping Spree": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO any player may trigger this ability"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck_event_source_hero",
+						"discard_event_source_hero"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_item": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "Threat cannot be removed from this scheme by heroes or allies"
+	},
+	"Jubilee's Coat": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"trigger": "Jubilee"
+				}
+			]
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event",
+						"trait_thwart": 1
+					},
+					"filter_same_controller": true
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"subject": "a_scheme",
+					"amount": {
+						"func_name": "paid_with_includes",
+						"func_params": {
+							"energy": 1,
+							"subject": "trigger"
+						}
+					},
+					"_comments": "TODO number of different resource types used to pay for the triggering event"
+				}
+			]
+		}
+	},
+	"Jubilee's Sunglasses": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"trigger": "Jubilee"
+				}
+			]
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event",
+						"trait_attack": 1
+					},
+					"filter_same_controller": true
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "an_enemy",
+					"amount": 1,
+					"_comments": "TODO number of different resource types used to pay for the triggering event"
+				}
+			]
+		}
+	},
+	"Blinding Flash": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "equal",
+					"selection_count": {
+						"func_name": "paid_with_includes",
+						"func_params": {
+							"energy": 1,
+							"plus": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"mental": 1,
+									"plus": {
+										"func_name": "paid_with_includes",
+										"func_params": {
+											"physical": 1,
+											"plus": {
+												"func_name": "paid_with_includes",
+												"func_params": {
+													"wild": 1
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemies",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_enemies"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_enemies"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_enemies"
+				}
+			]
+		}
+	},
+	"Firecracker #47007a": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "previous",
+					"modification": {
+						"if": {
+							"func_name": "paid_with_includes>=2",
+							"func_params": {
+								"energy": 1,
+								"plus": {
+									"func_name": "paid_with_includes",
+									"func_params": {
+										"mental": 1,
+										"plus": {
+											"func_name": "paid_with_includes",
+											"func_params": {
+												"physical": 1,
+												"plus": {
+													"func_name": "paid_with_includes",
+													"func_params": {
+														"wild": 1
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Firecracker #47007b": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "previous",
+					"modification": {
+						"if": {
+							"func_name": "paid_with_includes>=2",
+							"func_params": {
+								"energy": 1,
+								"plus": {
+									"func_name": "paid_with_includes",
+									"func_params": {
+										"mental": 1,
+										"plus": {
+											"func_name": "paid_with_includes",
+											"func_params": {
+												"physical": 1,
+												"plus": {
+													"func_name": "paid_with_includes",
+													"func_params": {
+														"wild": 1
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Firecracker #47007c": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "previous",
+					"modification": {
+						"if": {
+							"func_name": "paid_with_includes>=2",
+							"func_params": {
+								"energy": 1,
+								"plus": {
+									"func_name": "paid_with_includes",
+									"func_params": {
+										"mental": 1,
+										"plus": {
+											"func_name": "paid_with_includes",
+											"func_params": {
+												"physical": 1,
+												"plus": {
+													"func_name": "paid_with_includes",
+													"func_params": {
+														"wild": 1
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Flash of Light #47008a": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes>=2",
+								"func_params": {
+									"energy": 1,
+									"plus": {
+										"func_name": "paid_with_includes",
+										"func_params": {
+											"mental": 1,
+											"plus": {
+												"func_name": "paid_with_includes",
+												"func_params": {
+													"physical": 1,
+													"plus": {
+														"func_name": "paid_with_includes",
+														"func_params": {
+															"wild": 1
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Flash of Light #47008b": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes>=2",
+								"func_params": {
+									"energy": 1,
+									"plus": {
+										"func_name": "paid_with_includes",
+										"func_params": {
+											"mental": 1,
+											"plus": {
+												"func_name": "paid_with_includes",
+												"func_params": {
+													"physical": 1,
+													"plus": {
+														"func_name": "paid_with_includes",
+														"func_params": {
+															"wild": 1
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Flash of Light #47008c": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 3,
+					"subject": "a_scheme"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes>=2",
+								"func_params": {
+									"energy": 1,
+									"plus": {
+										"func_name": "paid_with_includes",
+										"func_params": {
+											"mental": 1,
+											"plus": {
+												"func_name": "paid_with_includes",
+												"func_params": {
+													"physical": 1,
+													"plus": {
+														"func_name": "paid_with_includes",
+														"func_params": {
+															"wild": 1
+														}
+													}
+												}
+											}
+										}
+									}
+								},
+								"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+							},
+							"nested_tasks": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Grande Finale": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_extra",
+					"count": {
+						"func_name": "paid_with_includes",
+						"func_params": {
+							"energy": 1,
+							"plus": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"mental": 1,
+									"plus": {
+										"func_name": "paid_with_includes",
+										"func_params": {
+											"physical": 1,
+											"plus": {
+												"func_name": "paid_with_includes",
+												"func_params": {
+													"wild": 1
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+					}
+				}
+			]
+		},
+		"do_extra": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "an_enemy"
+				}
+			]
+		},
+		"_comments": "TODO verify sequence count accepts a func"
+	},
+	"Chamber - Jono Starsmore": {
+		"TODO": "takes -1 consequential damage after he attacks a confused enemy"
+	},
+	"Husk - Paige Guthrie": {
+		"TODO": "Interrupt when Husk uses a basic power: spend up to 3 resources for bonuses"
+	},
+	"Disguise": {
+		"give_to_player_max1": {},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Waylay": {
+		"response": {
+			"event_name": "thwart_happened",
+			"trigger": "my_hero",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "an_enemy",
+					"_comments": "TODO 7 damage if that thwart removed the last threat from a scheme"
+				}
+			]
+		}
+	},
+	"Three Steps Ahead": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_thwart",
+					"count": {
+						"func_name": "paid_with_includes",
+						"func_params": {
+							"energy": 1,
+							"plus": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"mental": 1,
+									"plus": {
+										"func_name": "paid_with_includes",
+										"func_params": {
+											"physical": 1,
+											"plus": {
+												"func_name": "paid_with_includes",
+												"func_params": {
+													"wild": 1
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
+					}
+				}
+			]
+		},
+		"do_thwart": {
+			"all": [
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Generation X": {
+		"TODO": "X-Men characters get +1 THW making a basic thwart against this scheme",
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_fetch"
+				}
+			]
+		},
+		"do_fetch": {
+			"all": {
+				"_rules": {
+					"for_each_player": true
+				},
+				"Fetch event": [
+					{
+						"name": "move_card_to_container",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck_my_hero",
+							"discard_my_hero"
+						],
+						"dest_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event",
+									"faction_code": "hero"
+								}
+							}
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_my_hero"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		}
+	},
+	"The Power of Justice": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "justice"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Synch - Everett Thomas": {
+		"interrupt_attack_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": 1,
+									"trigger": "my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"interrupt_thwart_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_thwart_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"alteration": 1,
+									"trigger": "my_hero"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "TODO basic defense"
+	},
+	"Cell Phone": {
+		"uses": {
+			"__name__": "charge",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				}
+			]
+		},
+		"TODO": "chosen player makes a basic attack or thwart with a character they control (+1 THW/+1 ATK)"
+	},
+	"X-Gene": {
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			],
+			"_comments": "TODO only for an identity-specific event"
+		}
+	},
+	"Multitalented": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"physical": 1
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "attack",
+									"amount": 2,
+									"subject": "an_enemy"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"mental": 1
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "thwart",
+									"amount": 2,
+									"subject": "a_scheme"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "paid_with_includes",
+								"func_params": {
+									"energy": 1
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "heal",
+									"amount": 2,
+									"subject": "my_identity"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Unlikely Duo": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Jubilee",
+						"Wolverine"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "attack",
+					"amount": 4,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies",
+							"filter_func": {
+								"func_name": "is_confused",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Grounded": {
+		"give_obligation": {
+			"__to__": "Jubilation Lee"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				},
+				{
+					"name": "change_form",
+					"subject": "my_identity",
+					"_comments": "TODO only if in hero form"
+				}
+			]
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event",
+						"card_set_code": "jubilee"
+					},
+					"filter_same_controller": true
+				}
+			],
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "As an additional cost to change to hero form during your turn, spend 2 resources of the same type"
+	},
+	"Nanny": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_current_hero_target"
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "\"Lost\" Child"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Naughty Children": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "tutor",
+							"src_container": "hand_my_hero",
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"resource_energy": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						},
+						"_comments": "TODO number of different resource types in hand"
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Battle Suit": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "function",
+					"sort_name": "get_remaining_damage",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 3,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_aerial",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		}
+	},
+	"\"Lost\" Child": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"sort_by": "property",
+					"sort_name": "cost",
+					"sort_descending": true,
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "ally"
+							},
+							"filter_func": {
+								"func_name": "!count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										{
+											"filter_properties": {
+												"shortname": "\"Lost\" Child"
+											}
+										}
+									]
+								}
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				},
+				{
+					"name": "discard",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		},
+		"TODO": "Treat attached ally as a Regressed minion engaged with its controller, SCH = printed THW, blank text box"
+	},
+	"Mutant Mayhem": {
+		"TODO": "return an X-Force and an X-Men ally to hand and play them for free"
+	},
+	"Serve and Protect": {
+		"interrupt_add_threat": {
+			"event_filters": {
+				"subject": "main_scheme"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters",
+							"filter_properties": {
+								"trait_x-force": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": false
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_a",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters",
+							"filter_properties": {
+								"trait_x-men": 1,
+								"comparison": "ge"
+							},
+							"filter_is_exhausted": false
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "previous"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "my_a"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_a"
+				}
+			],
+			"_comments": "TODO verify add_threat event filter on main scheme"
+		}
+	},
+	"Arcade": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"trait_trap": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"trait_trap": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Welcome to Murderworld": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "event_source_hero"
+				}
+			]
+		}
+	},
+	"Arcade's Funhouse": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_stunned",
+								"func_params": {
+									"subject": "event_source_hero"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "boardseek",
+									"subject_count": "all",
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_allies_event_source_hero"
+										},
+										{
+											"filter_group": "group_upgrade_support_event_source_hero",
+											"filter_properties": {
+												"type_code": "upgrade"
+											}
+										}
+									]
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "event_source_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Hall of Mirrors": {
+		"hinder": {
+			"__amount__": 1
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "is_confused",
+								"func_params": {
+									"subject": "event_source_hero"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_threat",
+									"amount": 2,
+									"subject": "main_scheme"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "event_source_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Elaborate Trap": {
+		"reveal": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"exec_trigger": "card_defeated",
+					"is_cost": true,
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"trait_trap": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"delayed": true,
+					"_comments": "TODO resolve as if you defeated it"
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"trait_trap": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"is_else": true
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"is_else": true
+				}
+			]
+		}
+	}
+}

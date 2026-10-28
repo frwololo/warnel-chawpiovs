@@ -1,0 +1,1177 @@
+{
+	"Wonder Man": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "Ionic Physiology"
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"response_basic_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"subject_count": "all",
+					"host": "Ionic Physiology",
+					"_comments": "TODO discard each card tucked under Ionic Physiology"
+				}
+			]
+		}
+	},
+	"Simon Williams": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"src_container": [
+						"deck",
+						"hand"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Ionic Physiology"
+							}
+						}
+					]
+				}
+			]
+		},
+		"_comments": "deckbuilding rule (energy events from any aspect) out of scope"
+	},
+	"Ionic Physiology": {
+		"response_card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event",
+						"resource_energy": 1,
+						"comparison": "ge"
+					},
+					"filter_same_controller": true
+				}
+			],
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_attachments<3",
+				"func_params": {
+					"subject": "self"
+				}
+			},
+			"board": [
+				{
+					"name": "tuck_card_under_me",
+					"host": "self",
+					"subject": "trigger",
+					"_comments": "TODO tuck from the discard pile after it resolves"
+				},
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Active Altruism": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "a_scheme",
+					"plus_amount": {
+						"func_name": "get_overpaid_amount",
+						"func_params": {
+							"resource": "energy",
+							"max": 2,
+							"multiplier": 2
+						}
+					}
+				}
+			]
+		}
+	},
+	"Ionic Blast": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "an_enemy",
+					"plus_amount": {
+						"func_name": "get_overpaid_amount",
+						"func_params": {
+							"resource": "energy",
+							"max": 3,
+							"multiplier": 2
+						}
+					},
+					"_comments": "TODO verify order of max/multiplier"
+				}
+			]
+		}
+	},
+	"Starstruck": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "an_enemy",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "attack"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"subject": "previous",
+					"modification": {
+						"if": {
+							"func_name": "get_overpaid_amount",
+							"func_params": {
+								"resource": "energy"
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		}
+	},
+	"Energy Siphon": {
+		"interrupt_paid_as_resource": {
+			"trigger": "self",
+			"is_optional_all": true,
+			"all": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "ask_integer",
+					"min": 1,
+					"max": 3,
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": "retrieve_integer",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": "retrieve_integer",
+					"resource_name": "energy"
+				}
+			],
+			"_comments": "TODO verify adding resources during payment"
+		}
+	},
+	"Wonder Fans": {
+		"manual": {
+			"board": {
+				"Tuck an energy event": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "tuck_card_under_me",
+						"host": "Ionic Physiology",
+						"subject": "tutor_and_choose",
+						"src_container": "discard",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event",
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				],
+				"Draw 1 card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					}
+				]
+			}
+		}
+	},
+	"Jet Belt": {
+		"resource": {
+			"board": {
+				"For an event": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "nop",
+						"fail_cost_on_skip": true,
+						"is_cost": true,
+						"filter_state_trigger": [
+							{
+								"filter_properties": {
+									"type_code": "event"
+								}
+							}
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "add_resource",
+						"amount": 1,
+						"resource_name": "energy"
+					}
+				],
+				"Discard a tucked card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_form"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "attachments",
+						"host": "Ionic Physiology",
+						"subject_count": 1,
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"_comments": "TODO select a card tucked under Ionic Physiology",
+						"is_cost": true
+					},
+					{
+						"name": "add_resource",
+						"amount": 1,
+						"resource_name": "energy"
+					}
+				]
+			}
+		}
+	},
+	"Mr. Hollywood": {
+		"resource": {
+			"board": [
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "energy"
+				}
+			]
+		},
+		"TODO": "only to overpay for a card; limit once per card"
+	},
+	"Signature Sunglasses": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": {
+				"Tuck an energy event or resource": [
+					{
+						"name": "tuck_card_under_me",
+						"host": "Ionic Physiology",
+						"subject": "tutor_and_choose",
+						"src_container": "discard",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event",
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							},
+							{
+								"filter_properties": {
+									"type_code": "resource",
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							}
+						]
+					}
+				],
+				"Add a tucked card to your hand": [
+					{
+						"name": "return_card_to_owner_hand",
+						"subject": "attachments",
+						"host": "Ionic Physiology",
+						"subject_count": 1,
+						"_comments": "TODO select tucked card"
+					}
+				]
+			}
+		}
+	},
+	"\"What Are You?\"": {
+		"interrupt_card_dies": {
+			"trigger": "Wonder Man",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_hero",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "health",
+							"plus": -4
+						}
+					}
+				},
+				{
+					"name": "change_form",
+					"subject": "my_hero"
+				},
+				{
+					"name": "tuck_card_under_me",
+					"host": "Ionic Physiology",
+					"subject": "tutor",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "max",
+					"selection_count": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "Ionic Physiology",
+							"multiplier": -1,
+							"plus": 3
+						}
+					},
+					"src_container": "discard",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "event",
+								"resource_energy": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "pattern from Too Stubborn to Die"
+	},
+	"Firebird - Bonita Juarez": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "rebirth",
+					"subject": "self",
+					"modification": {
+						"if": {
+							"func_name": "get_overpaid_amount"
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"filter_tags": [
+				"consequential_damage"
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "rebirth",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "heal",
+					"amount": "all",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hawkeye - Clint Barton": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "arrow",
+					"modification": 4,
+					"subject": "self"
+				}
+			]
+		},
+		"response_basic_thwart_happened": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "arrow",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Scarlet Witch - Wanda Maximoff": {
+		"card_played": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "check_validity",
+								"func_params": {
+									"subject": "previous",
+									"filter_state_trigger": [
+										{
+											"filter_properties": {
+												"type_code": "treachery"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "execute_scripts",
+									"subject": "previous",
+									"exec_trigger": "reveal",
+									"delayed": true
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Sentry - Robert Reynolds": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"is_cost": true,
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"subject_count": "all",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": 6,
+					"subject": "main_scheme",
+					"is_else": true
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Battlefield Benevolence": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "an_enemy",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "previous"
+				}
+			]
+		}
+	},
+	"Bombs Away": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_my_hero",
+							"filter_properties": {
+								"trait_aerial": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "nop",
+					"subject": "a_player"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_player",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "villain"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies_my_player",
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"_comments": "TODO verify group for minions engaged with the chosen player"
+				}
+			]
+		}
+	},
+	"Everywhere All at Once": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "remove_threat",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_type": "equal",
+					"selection_count": {
+						"func_name": "count_paid_resources"
+					},
+					"filter_state_seek": [
+						{
+							"filter_group": "group_schemes"
+						}
+					],
+					"amount": {
+						"if": {
+							"func_name": "get_overpaid_amount"
+						},
+						"then": 3,
+						"else": 2
+					}
+				}
+			]
+		},
+		"_comments": "TODO X cost: X = resources paid; overpaid definition for X-cost cards; tag as thwart"
+	},
+	"Stronger Together": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_characters",
+					"filter_shares_trait_with_identity": true
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "defense"
+						}
+					}
+				}
+			],
+			"_comments": "TODO exclude your hero"
+		}
+	},
+	"Unified Strike": {
+		"TODO": "add your hero's matching power to an ally's basic power; no consequential damage"
+	},
+	"Heroic Conditioning": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 3,
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"trigger": "my_hero"
+				}
+			]
+		}
+	},
+	"Swordsman - Jacques Duquesne": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"TODO": "declare as defender after a boost card is turned faceup during an undefended attack"
+	},
+	"Jarvis": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "alter_ego"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_avenger": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": {
+				"+2 REC until end of phase": [
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "phase_ended",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "recover",
+										"alteration": 2,
+										"trigger": "self"
+									}
+								]
+							}
+						}
+					}
+				],
+				"Discard a status card": [
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": -1,
+						"subject": "trigger",
+						"_comments": "TODO choose stunned/confused/tough"
+					}
+				]
+			}
+		}
+	},
+	"Pacifism": {
+		"give_obligation": {
+			"__to__": "Simon Williams"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "can_attack",
+					"alteration": -1,
+					"trigger": "Wonder Man",
+					"_comments": "TODO verify 'cannot attack' property"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Exhaust Simon Williams": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "my_identity",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				],
+				"Discard 3 tucked cards": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "discard",
+						"subject": "attachments",
+						"host": "Ionic Physiology",
+						"subject_count": 3,
+						"_comments": "TODO",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Grim Reaper": {
+		"quickstrike": {},
+		"character_died": {
+			"filter_event_source": "self",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "current_hero_target",
+					"_comments": "TODO deal to that ally's controller"
+				}
+			]
+		}
+	},
+	"Brother vs. Brother": {
+		"TODO": "As an additional cost to attack Grim Reaper, discard 1 card from your hand"
+	},
+	"Scythe Strike": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "Grim Reaper",
+					"is_cost": true
+				},
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "my_identity",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Death Cannot Die": {
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Grim Reaper"
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Grim Reaper"
+				}
+			},
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "enemy_activates_against_you",
+									"subject": "Grim Reaper"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "thunderbolt macro adds surge if no enemy activated: card text instead says nothing; TODO"
+	},
+	"Caught in the Crossfire": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					},
+					"filter_properties2": {
+						"trait_elite": 0
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Cameo": {
+		"TODO": "search your collection for an identity-specific ally (outside the game)"
+	},
+	"Coordinated Effort": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_properties": {
+						"faction_code": "encounter"
+					},
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"TODO": "any player may help pay costs on attached card"
+	},
+	"Disarming Defense": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"defender": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"alteration": 2,
+									"trigger": "my_hero"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "discard",
+								"subject": "boardseek",
+								"subject_count": "all",
+								"needs_selection": true,
+								"selection_count": 1,
+								"selection_type": "equal",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"type_code": "attachment"
+										},
+										"filter_is_hosted_by": "trigger"
+									}
+								],
+								"_comments": "TODO only attachments with Hero Action/Hero Response text"
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+	"Avengers Compound": {
+		"manual": {
+			"board": {
+				"Tuck an ally from your hand": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"_comments": "TODO only if no ally is tucked here",
+						"is_cost": true
+					},
+					{
+						"name": "tuck_card_under_me",
+						"host": "self",
+						"subject": "tutor_and_choose",
+						"src_container": "hand",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								}
+							}
+						]
+					}
+				],
+				"Play the tucked ally": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "play_card",
+						"subject": "attachments",
+						"_comments": "TODO play the tucked ally as if it were in hand"
+					}
+				]
+			}
+		}
+	}
+}

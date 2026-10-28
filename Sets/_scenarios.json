@@ -83,6 +83,84 @@
 			]
 		}
 	},
+	"02004": {
+		"code": "02004",
+		"name": "Hostile Takeover",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Norman Osborn - 1",
+			"Norman Osborn - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Norman Osborn - 2",
+				"Norman Osborn - 3"
+			]
+		}
+	},
+	"02017": {
+		"code": "02017",
+		"name": "Unleashing the Mutagen",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Green Goblin - 1",
+			"Green Goblin - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Green Goblin - 2",
+				"Green Goblin - 3"
+			]
+		}
+	},
+	"07001": {
+		"code": "07001",
+		"name": "Breakout",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		}
+	},
 	"04061": {
 		"code": "04061",
 		"name": "Attack on Mount Athena",
@@ -286,6 +364,35 @@
 		"description": [
 			"You have liberated Zola's island and disarmed the mad doctor, but the Reality Gem still eludes you. You learn from Zola that the Gem resides with the true mastermind behind Hydra's ascendancy: the brilliant and nefarious Red Skull. The villain has taken up residence in Washington, D.C. and transformed the White House into his personal fortress.",
 			"But Red Skull's ambition for conquest does not end with the U.S.A. - he plans to bind every nation under Hydra rule with the power of the Reality Gem. His scientists work around the clock to make the necessary modifications to Zola's machine. Once completed, Red Skull will use the Reality Gem to conquer the whole world. If that happens, nobody will be safe from the types of atrocities you witnessed in Zola's labs. You cannot allow this to happen. You must defeat Red Skull and use the Reality Gem to set things right again."
+		]
+	},
+	"11007": {
+		"code": "11007",
+		"name": "Kang's Arrival",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Kang - 1",
+			"Kang - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Kang - 2",
+				"Kang - 3"
+			]
+		},
+		"description": [
+			"Kang the Conquerer has traveled here from the distant future in order to subdue Earth with his advanced technology. It's up to you to thwart his temporal invasion, but beware his power to manipulate time!"
 		]
 	},
 	"16061": {
@@ -778,6 +885,37 @@
 			"The heroes have defeated Hela and rescued Odin from the dungeons of Hel, but Loki still sits on the throne of Asgard with the Infinity Gauntlet. Heimdall can take you to the Golden Realm, and the All-Father can offer you some protection from Loki's magic, but it is up to you to defeat the trickster god and secure the Infinity Stones.",
 			"<b>The God of Mischief</b>\nLoki does not have ordinary villain stages. Instead, Loki has five different stage-I villain cards. When the players defeat Loki, instead of revealing the next villain stage, the players reveal one of the set-aside versions of Loki at random.",
 			"<b>Modular Difficulty</b>\nTo win the game, the players must defeat a certain number of Loki villains, determined by the players before the game begins (Team Selection screen)."
+		]
+	},
+	"24004": {
+		"code": "24004",
+		"name": "Making Connections",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"The Hood - 1",
+			"The Hood - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"The Hood - 2",
+				"The Hood - 3"
+			]
+		},
+		"description": [
+			"We've received intel that the Hood has been busy recruiting lowlifes from every nook and cranny of the city.",
+			"The villains he has reached out to aren't ones to scoff at. Among others, he's made contact with Mister Hyde, the Sinister Syndicate, and the Wrecking Crew. Additionally, there are reports that he may have raided one of our armories, although that is currently unverified. It's also likely that the recent string of emergencies-the fire, the shipyard disaster, the prison escape-are all connected to the Hood and his group in one way or another.",
+			"If the Hood is able to truly unite all of these criminals under one banner, he'll have a formidable empire that even the strongest of you will struggle against."
 		]
 	},
 	"27064": {
@@ -1326,6 +1464,101 @@
 			"Magneto sent his Brotherhood of Mutants against Xavier's school in order to draw the X-Men away while he escaped with Master Mold. The Master of Magnetism used that time to install Master Mold into his orbital fortress, Asteroid M. Now safely out of reach of the world's governments, Magneto begins reprogramming the Sentinel factory to create new M-Type Sentinels: human-hunting robots. Once complete, he will drop his Sentinels onto the planet below, clearing away human resistance and bringing about his dream of mutant dominion over the world.",
 			"Back at the X-Mansion, the mutant Forge finishes making upgrades to the X-Men's supersonic jet, the X-Jet, enabling it to escape Earth's gravity and reach Asteroid M. Professor X wishes his team luck as they blast off to confront his old friend and deadliest foe.",
 			"<b>Race against Magneto</b>\nSome side schemes have text that shield Magneto from taking fatal damage, preventing the players from defeating him until the side schemes are defeated. In order to win the scenario in standard mode, the players must defeat each of the side schemes before Magneto completes his main schemes. They must then take advantage of Magneto's weakened state to defeat him."
+		]
+	},
+	"39002": {
+		"code": "39002",
+		"name": "Melee in the Mojo-seum",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"You are sleeping soundly in your bed when the sound of a roaring crowd jolts you awake. You open your eyes to find yourself not in your bed, but in the center of a giant arena. Instead of seats with cheering fans, the arena is filled with electronic screens showing the digital faces of beings from across the galaxy. One giant yellow face on a massive screen looms larger than the rest.",
+			"\"Welcome one and all to the Mojo-seum!\" the giant face bellows. \"I, Mojo the Magnificent, proudly present 'the greatest fight in the history of the Mojoverse! TM Tonight's fight pits a scrappy bunch of challengers from a tiny, insignificant planet called Earth against our ninety-ninetime defending champion, the mighty MaGog!",
+			"\"Can these plucky upstarts pull off an upset? Or will they be ground into paste like the previous ninety-nine challengers? Stay tuned and find out!\""
+		]
+	},
+	"39015": {
+		"code": "39015",
+		"name": "Across the Mojoverse",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Spiral - 1",
+			"Spiral - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Spiral - 2",
+				"Spiral - 3"
+			]
+		},
+		"description": [
+			"\"Outstanding!\" Mojo shrieks with glee. \"These ratings are through the roof! Spiral, teleport our stars to the next show. My rabid viewers want more...MORE...MORE!!!\"",
+			"The screen showing Mojo pans to a dour woman with six arms who stands behind him. She begins a bizarre dance, waving her arms about. There is a flash of green energy and you find yourself in a strange new world. Hovering cameras orbit around you, recording your every move. You feel as if you are on the set of a television program, but the denizens of this show behave as if it is real life, giving new meaning to the phrase \"reality television.\"",
+			"There must be a way out of this madness. Perhaps this teleporter called Spiral is your ticket home. But first, you will have to to find her..."
+		]
+	},
+	"39025": {
+		"code": "39025",
+		"name": "MojoMania",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Mojo - 1",
+			"Mojo - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Mojo - 2",
+				"Mojo - 3"
+			]
+		},
+		"description": [
+			"\"You realize this was all for nothing,\" the defeated Spiral says with resignation. \"If I help you escape, Mojo will just force me to bring you back.\"",
+			"When you suggest that you will handle Mojo, Spiral looks skeptical.",
+			"\"If you can take down the spineless one, I'll send you home,\" she agrees. \"You better be fast, though. He feeds off attention, and you're bringing him huge ratings. If you can't defeat him quickly, he'll be unstoppable.\"",
+			"Once Spiral's sure you understand, she teleports you once again. You find yourself in yet another Mojovision program, this time face-to-face with the exploitative executive of excess himself, Mojo.",
+			"\"So, you think you can cancel me?\" Mojo sneers. \"I'm in charge around here. You'll do what I say or you'll be fired...into the sun! Come to think of it, that would make for a great finale!\""
 		]
 	},
 	"40077": {
@@ -2158,6 +2391,68 @@
 			"<b>The Accusation</b>:\nThe 'Response' on stage 1B of the main scheme also gives the players the opportunity to advance to stage 2A to make their accusation against the mole"
 		]
 	},
+	"55004": {
+		"code": "55004",
+		"name": "Prime Real Estate",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Enchantress - 1",
+			"Enchantress - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Enchantress - 2",
+				"Enchantress - 3"
+			]
+		},
+		"description": [
+			"Loki, God of Lies, approaches Amora the Enchantress with an offer: help him conquer Earth, avenging him against heroes who thwarted his schemes in the past, and he'll grant her a kingdom of her own in South America.",
+			"Needing little convincing, Enchantress rallies two of her allies, Ulik and Sindr, in turn promising them lordships once she's queen. With strong support and a small army of enthralled brutes under her control, Enchantress opens a portal to South America. She immediately gets to work, expanding her forces by turning some of the locals into her enthralled lackeys.",
+			"Within hours, the heroes rush to stop Enchantress's monarchical machinations, but, ever devious, the Asgardian sorceress is prepared. Focusing her enchantment magic, Enchantress casts a hypnotic gaze upon the heroes in an attempt to put each into a deep trance. The magic used to cast this spell is incredibly powerful, and if the heroes don't hurry, only a future of despair awaits them."
+		]
+	},
+	"55033": {
+		"code": "55033",
+		"name": "Mischief and Mayhem",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"While Enchantress is entangled in South America, Loki, God of Lies, seizes the opportunity to invade Europe. Knowing a direct assault will fail, Loki hides in a remote location while conjuring multiple illusions of himself, spreading mischief and mayhem to keep the heroes too busy to pinpoint the trickster. He also opens a door between worlds to unleash a massive wave of minions and villains, sending Malekith, the Mangog, Laufey, Fenris Wolf, and others through to wreak havoc across the continent.",
+			"Every time the heroes believe they've shattered Loki's illusions, another emerges, preventing the heroes from ever truly knowing what Loki has in store for them next. As a master of stories and lies, after all, Loki always has a dirty trick up his sleeve.",
+			"As the battle rages on and more allies join the mounting resistance against Loki's lofty goals, the heroes realize the only way to win is through synergy and coordination. Can the heroes come together as a unified front before it's too late, or will the God of Lies succeed in his trickster takeover?"
+		]
+	},
 	"56063": {
 		"code": "56063",
 		"name": "Superhero Registration Act",
@@ -2177,7 +2472,8 @@
 			"modular"
 		],
 		"schemes": [
-			"56063", "56064"
+			"56063",
+			"56064"
 		],
 		"villains": [
 			"Iron Man - 1",
@@ -2221,8 +2517,9 @@
 			"modular"
 		],
 		"schemes": [
-			"56096", "56097"
-		],		
+			"56096",
+			"56097"
+		],
 		"villains": [
 			"Captain Marvel - 1",
 			"Captain Marvel - 2"
@@ -2265,8 +2562,9 @@
 			"modular"
 		],
 		"schemes": [
-			"56141", "56142"
-		],		
+			"56141",
+			"56142"
+		],
 		"villains": [
 			"Captain America - 1",
 			"Captain America - 2"
@@ -2309,8 +2607,9 @@
 			"modular"
 		],
 		"schemes": [
-			"56172", "56173"
-		],		
+			"56172",
+			"56173"
+		],
 		"villains": [
 			"Spider-Woman - 1",
 			"Spider-Woman - 2"
@@ -2331,7 +2630,257 @@
 			]
 		},
 		"description": [
-			"As a former high-ranking S.H.I.E.L.D. agent, Spider-Woman has seen the global peace-keeping organization’s flaws first hand. When given the choice to reenlist or face arrest, she goes underground to help her superpowered colleagues fight for their freedom."
+			"As a former high-ranking S.H.I.E.L.D. agent, Spider-Woman has seen the global peace-keeping organization's flaws first hand. When given the choice to reenlist or face arrest, she goes underground to help her superpowered colleagues fight for their freedom."
+		]
+	},
+	"57005": {
+		"code": "57005",
+		"name": "Superhero Registration Act",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"A long time Avenger, Jennifer Walters is also an attorney in the state of New York and she believes strongly in the rule of law. When the Superhero Registration Act is first proposed, she endorses it. After it becomes law, she fights to enforce it as She-Hulk."
+		]
+	},
+	"57044": {
+		"code": "57044",
+		"name": "Superhero Resistance",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"Created by Ultron to be the ultimate artificial organism, Vision rebelled against his creator and joined the Avengers. Now free of Ultron's control, Vision is reluctant to submit to S.H.I.E.L.D.'s authority under the new registration law. Instead, he joins the growing superhero resistance in their fight for autonomy."
+		]
+	},
+	"60121": {
+		"code": "60121",
+		"name": "Art Museum Heist",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"*Calling all units. Silent alarm tripped at the art museum. On-site security is unresponsive. Security feeds show at least three suspects dressed in black with ski masks. All available units respond!*",
+			"Minutes after receiving the call over your police scanner, you're on the scene. It's impossible to miss the museum's smashed entrance. Whoever is behind this heist isn't bothering to cover their tracks. It's as if they want to be noticed.",
+			"Your guard up, you make your way through the smashed glass of the front door. You dispatch one masked thief with ease before hearing a voice from behind you.",
+			"\"Sorry, this is a private showing, and you're not on the guest list.\" "
+		]
+	},
+	"60128": {
+		"code": "60128",
+		"name": "The Getaway",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"*This is 10 Adam in pursuit of bank robbery suspect. Yellow sports car. South on 9th Avenue through Hell's Kitchen. Request backup!*",
+			"They must be heading for the tunnel. If they can get out of the city, they'll be much harder to follow. Better to cut them off.",
+			"You turn a corner to see the fleeing sports coupe barreling toward you. It's about to run you down when a garbage truck trundles out from an alley. The racing car swerves around it—and you—as the garbage truck skids to a halt. A quick glance shows the truck driver upset but unharmed, so you take off in pursuit of the getaway car."
+		]
+	},
+	"60134": {
+		"code": "60134",
+		"name": "Protection Racket",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"*9-1-1. What is your emergency?*",
+			"*Some guys in my dad's shop are threatening to hurt him if he doesn't pay! Please, send help quick!*",
+			"You arrive at the small mom-and-pop shop to find several goons with baseball bats smashing the place up as its proprietor takes cover behind the counter.",
+			"\"I told you, old man, protection money's due the first of the month,\" the biggest goon says. \"This is what we call a 'late fee'.\" The goon winds up his bat, and you catch it on the backswing and rip it from his grasp.",
+			"\"So, gramps called for some backup, eh?\" the goon says, taking a few steps back. Just then, the bell above the front door tinkles as the door opens. You glance over your shoulder at the new threat entering the store. \"Good thing I did, too.\""
+		]
+	},
+	"60142": {
+		"code": "60142",
+		"name": "The Raft Breakout",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"*This is the Raft Command Center calling all S.H.I.E.L.D. agents! An unidentified intruder breached security and appears to have the master key. Requesting backup immediately. They're releasing prisoners!*",
+			"You arrive at the supermax prison island known as the Raft to find it teeming with activity. Dozens of S.H.I.E.L.D. troopers fight a desperate battle against a handful of superpowered escapees, many of whom you put behind these bars. With a diving tackle, you shove a S.H.I.E.L.D. trooper clear of a charging Rhino.",
+			"\"Well, lookie who it is…\" Rhino snorts when he sees you. \"You put me in this place, so I'm gonna put you in the ground!\"",
+			"\"Now, now, Aleksei,\" says the ringleader, stepping out of the shadows. They've infiltrated the Raft and begun releasing prisoners. \"You should work together.\" With a nod, the prisoners turn against you.",
+			"\"You got it, boss,\" Rhino snarls."
+		]
+	},
+	"60151": {
+		"code": "60151",
+		"name": "Stop The Presses!",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"TODO - 1",
+			"TODO - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"TODO - 2",
+				"TODO - 3"
+			]
+		},
+		"description": [
+			"*Breaking news! The offices of the Daily Bugle are under attack by unknown forces. The respected news organization's vaunted publisher, J. Jonah Jameson, is believed to be inside with many of his staff, potentially being held hostage by the attackers. We will update you as this situation unfolds. We now return you to Arkon IV: The Goblin Pit featuring Arnold Schwarzburger and Simon Williams, already in progress.*",
+			"You ascend the Daily Bugle building, the stairwell strobing with the light of flashing fire alarms. Fortunately, the klaxons have been silenced, though the noise would have helped you go unnoticed. You reach the seventeenth floor, the Bugle's newsroom, and take a moment at the door to catch your breath and listen.",
+			"Muffled crashes and smashes rumble the door. Someone is enjoying themselves in there. There are no sobs or wails audible, which could be good or could be bad. When the noise dies down, you crack the stairwell door just enough to peek through and, seeing no one, you creep inside.",
+			"You make your way to the editor's office and spot J. Jonah Jameson, bound and gagged, seated on a couch. The high-backed chair behind the desk slowly swivels to face you, revealing the grinning face of the Bugle's attacker"
+		]
+	},
+	"60161": {
+		"code": "60161",
+		"name": "The King's Gambit",
+		"modular_default": [],
+		"encounter_sets": [
+			"TODO",
+			"Standard",
+			"Modular"
+		],
+		"villains": [
+			"Kingpin - A1",
+			"Kingpin - B1"
+		],
+		"expert": {
+			"encounter_sets": [
+				"TODO",
+				"Standard",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"Kingpin - B1",
+				"Kingpin - C1"
+			]
+		},
+		"description": [
+			"You find a secluded rooftop to rest, exhausted from nonstop battles. You did your best to turn back the crime wave, but you couldn't be everywhere at once.",
+			"Something about this crime wave feels manufactured, even calculated. It was too well orchestrated to be random. What's worse, people on the street have been blaming you for all the chaos and destruction. Someone is turning them against you. This kind of influence campaign points to one suspect: the Kingpin!",
+			"Just then, you hear an explosion from the street below, followed by the screams of fleeing bystanders. Not Kingpin, but someone else shouts your name, followed by \"Come out and plaaaaayyyyyy!\" You jump up and race to the ledge, but you know who it is before you even see them. It's the one person most obsessed with seeing you destroyed. The bane of your existence. Your nemesis."
 		]
 	}
 }

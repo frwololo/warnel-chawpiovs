@@ -1,0 +1,1268 @@
+{
+	"Silk": {
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments>4",
+								"func_params": {
+									"subject": "self"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "attachments",
+									"subject_count": 1,
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal"
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "TODO verify signal when a card is tucked under this identity"
+		},
+		"response_card_defeated": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "minion"
+					}
+				},
+				{
+					"filter_properties": {
+						"type_code": "side_scheme"
+					}
+				}
+			],
+			"event_filters": {
+				"source": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "tuck_card_under_me",
+					"host": "my_identity",
+					"subject": "trigger"
+				}
+			],
+			"_comments": "TODO verify defeat source filter"
+		},
+		"response_reveal_encounter": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "tuck_card_under_me",
+					"host": "my_identity",
+					"subject": "trigger"
+				}
+			],
+			"_comments": "TODO 'resolve a treachery card': should be after it reaches the encounter discard pile"
+		}
+	},
+	"Cindy Moon": {
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments>4",
+								"func_params": {
+									"subject": "self"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "attachments",
+									"subject_count": 1,
+									"needs_selection": true,
+									"selection_count": 1,
+									"selection_type": "equal"
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "TODO verify signal when a card is tucked under this identity"
+		},
+		"once_per_round": {
+			"__name__": "_cindy"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "_cindy",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"subject_count": 1,
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"Smooth as Silk": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						},
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"card_set_code": "compare_with_previous"
+							}
+						}
+					],
+					"_comments": "TODO verify compare_with_previous semantics (from Dark Beast)"
+				},
+				{
+					"name": "tuck_card_under_me",
+					"host": "my_identity",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck_villain",
+					"_comments": "TODO tuck the discarded card"
+				}
+			]
+		}
+	},
+	"Swinging Silk Kick": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 7,
+					"subject": "an_enemy"
+				}
+			]
+		},
+		"TODO": "may discard a tucked card from the same encounter set for +2 damage and overkill"
+	},
+	"Wallcrawl": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "a_scheme"
+				}
+			]
+		},
+		"TODO": "choose a scheme; may discard a tucked card from the same encounter set to remove 3 threat from it"
+	},
+	"Get the Scoop": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_identity",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "self"
+				}
+			],
+			"_comments": "TODO any player may trigger"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "tuck_card_under_me",
+					"host": "Cindy Moon",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain",
+					"_comments": "TODO look at top 2 and choose 1"
+				}
+			]
+		}
+	},
+	"Albert Moon": {
+		"manual": {
+			"board": {
+				"Tuck the top encounter card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "tuck_card_under_me",
+						"host": "Cindy Moon",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 1,
+						"src_container": "deck_villain"
+					}
+				],
+				"Heal 1 per tucked card": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "heal",
+						"amount": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "Cindy Moon"
+							}
+						},
+						"subject": "Cindy Moon"
+					}
+				]
+			}
+		}
+	},
+	"J. Jonah Jameson": {
+		"manual": {
+			"board": {
+				"Fetch Get the Scoop": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"src_container": [
+							"deck",
+							"discard"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Get the Scoop"
+								}
+							}
+						]
+					}
+				],
+				"Remove 2 threat from a side scheme": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Eidetic Memory": {
+		"TODO": "swap a revealed card with a tucked card from the same encounter set"
+	},
+	"Organic Webbing": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"alteration": 1,
+					"trigger": "Silk"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"subject_count": 1,
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"_comments": "TODO cards tucked under Silk, not this card",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "Silk"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "round_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "trait_aerial",
+									"alteration": 1,
+									"trigger": "Silk"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	},
+	"Outwit": {
+		"TODO": "+1 THW per tucked card from the same encounter set as the thwarted scheme"
+	},
+	"Spider Claws": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack",
+					"basic power"
+				]
+			},
+			"trigger": "Silk",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			]
+		},
+		"TODO": "+1 ATK per tucked card from the same encounter set as the attacked enemy"
+	},
+	"Spider Reflexes": {
+		"TODO": "+1 DEF per tucked card from the same encounter set as the attacker; then tuck top of encounter discard"
+	},
+	"Scarlet Spider - Ben Reilly": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"amount": ">0"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly",
+					"filter_properties": {
+						"trait_web-warrior": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "self"
+					}
+				}
+			],
+			"_comments": "TODO exclude Scarlet Spider himself"
+		}
+	},
+	"Spider-Byte - Margo Kess": {
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"multiplier": -1,
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_properties": {
+										"trait_tech": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		}
+	},
+	"Not Today!": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"defender": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "set_defender",
+					"is_cost": true,
+					"subject": "my_hero"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "my_hero",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "defense",
+									"alteration": 2,
+									"trigger": "my_hero"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"if_no_damage": [
+							{
+								"name": "remove_threat",
+								"amount": 2,
+								"subject": "a_scheme"
+							}
+						]
+					}
+				}
+			]
+		},
+		"_comments": "pattern from Riposte"
+	},
+	"\"Stop Hitting Yourself\"": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero",
+				"damage": "<1"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"subject": "trigger",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "defense"
+						}
+					},
+					"_comments": "TODO verify trigger is the attacking enemy"
+				}
+			]
+		}
+	},
+	"Dr. Sinclair": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_identity",
+							"property": "recover"
+						}
+					},
+					"subject": "my_identity"
+				}
+			]
+		},
+		"_comments": "TODO optional status card discard; any player may trigger"
+	},
+	"Energy Shield": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_characters",
+					"filter_max_per_host": 1
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "host",
+				"amount": ">0"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ask_integer",
+					"min": 1,
+					"max": "trigger_details_amount",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": "retrieve_integer"
+					},
+					"is_cost": true
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "retrieve_integer"
+				}
+			],
+			"_comments": "TODO verify ask_integer and dynamic pay_cost"
+		}
+	},
+	"Ready for a Fight": {
+		"interrupt_enemy_would_scheme": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "change_form",
+					"subject": "my_identity",
+					"_comments": "TODO only if in alter-ego"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Stun Gun": {
+		"uses": {
+			"__name__": "charge",
+			"__amount__": 2
+		},
+		"manual": {
+			"board": {
+				"1 charge: stun a minion": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charge",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						]
+					}
+				],
+				"2 charges: stun the villain": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "charge",
+						"modification": -2,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "villain"
+					}
+				]
+			}
+		}
+	},
+	"Madame Web - Julia Carpenter": {
+		"TODO": "look at the top X encounter cards, may discard 1 and reorder"
+	},
+	"Spider-Man - Peter Parker": {
+		"response": {
+			"event_name": [
+				"attack_happened",
+				"thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ready_card",
+					"subject_exclude": "self",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Across the Spider-Verse": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_same_controller": true
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor_and_choose",
+					"src_container": "discard",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "ally",
+								"trait_web-warrior": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "repeat for a chosen player spending 3 resources"
+	},
+	"Investigative Journalism": {
+		"interrupt_enemy_would_scheme": {
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					],
+					"team_up": [
+						"Cindy Moon",
+						"Peter Parker"
+					],
+					"_comments": "TODO alter-ego interrupt tag"
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "trigger"
+				}
+			]
+		}
+	},
+	"Silk Sense Overload": {
+		"give_obligation": {
+			"__to__": "Cindy Moon"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"TODO": "redirect cards tucked under your identity by player card effects here; discard/remove at 2/3 tucked"
+	},
+	"Morlun": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_identities"
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_identities"
+								}
+							]
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"shortname": "Hunting the Spider-Bride"
+							}
+						}
+					],
+					"_comments": "TODO tucked cards may not be found by boardseek"
+				}
+			]
+		},
+		"_comments": "TODO count only encounter cards tucked under each identity"
+	},
+	"The Great Hunt": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_identities"
+								}
+							]
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hunting the Spider-Bride": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments>=4",
+								"func_params": {
+									"subject": "my_identity"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "discard",
+									"subject": "attachments",
+									"subject_count": 1,
+									"subject_index": "random",
+									"_comments": "TODO random tucked card"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "tuck_card_under_me",
+					"host": "my_identity",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "After a player card effect discards this card from under an identity, that identity takes 2 damage"
+	},
+	"Spider-Man 2099 - Miguel O'Hara": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "return_card_to_owner_hand",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "ally",
+								"trait_web-warrior": 1
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"Spider-Woman - Jessica Drew": {
+		"response_card_moved_to_board": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally",
+						"trait_web-warrior": 1
+					}
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Quick Quip": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"is_cost": true,
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_web-warrior": 1,
+								"comparison": "ge"
+							},
+							"filter_group": "group_friendly_my_hero"
+						}
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "an_enemy"
+				}
+			]
+		},
+		"_comments": "same or different enemy (up to 2)"
+	},
+	"Atlas": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "growth",
+							"multiplier": 2
+						}
+					},
+					"trigger": "self"
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "villain_phase"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "growth",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Grow Invulnerable": {
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Atlas",
+							"token_name": "growth"
+						}
+					},
+					"subject": "self"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens>=10",
+								"func_params": {
+									"subject": "Atlas",
+									"token_name": "growth"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "defeat"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	},
+	"Growing Strong": {
+		"__thunderbolt_fetch_and_activate": {
+			"__name__": "Atlas"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Titanic Proportions": {
+		"reveal": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "Atlas",
+							"token_name": "growth"
+						}
+					},
+					"subject": "my_identity",
+					"_comments": "TODO players as a group"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens<3",
+								"func_params": {
+									"subject": "Atlas",
+									"token_name": "growth"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "surge"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"condition_all": {
+				"func_name": "card_is_in_play",
+				"func_params": {
+					"card_name": "Atlas"
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "growth",
+					"modification": 1,
+					"subject": "Atlas"
+				}
+			]
+		}
+	}
+}

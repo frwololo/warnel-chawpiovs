@@ -1,36 +1,34 @@
 {
 	"Green Goblin - 1 #02001b": {
 		"reveal": {
-			"all": [
-				{
-					"_rules": {
-						"forced": true,
-						"for_each_player": true
-					},
-					"Indirect Damage": [
-						{
-							"name": "conditional_script",
-							"options": [
-								{
-									"condition": {
-										"func_name": "!is_alter_ego_form",
-										"func_params": {
-											"subject": "my_identity"
-										}
-									},
-									"nested_tasks": [
-										{
-											"name": "indirect_damage",
-											"amount": 3,
-											"subject": "my_identity"
-										}
-									]
-								}
-							]
-						}
-					]
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Indirect Damage": [
+					{
+						"name": "conditional_script",
+						"options": [
+							{
+								"condition": {
+									"func_name": "!is_alter_ego_form",
+									"func_params": {
+										"subject": "my_identity"
+									}
+								},
+								"nested_tasks": [
+									{
+										"name": "indirect_damage",
+										"amount": 3,
+										"subject": "my_identity"
+									}
+								]
+							}
+						]
+					}
+				]
+			}
 		},
 		"interrupt_enemy_initiates_scheme": {
 			"trigger": "self",
@@ -89,21 +87,19 @@
 	},
 	"Green Goblin - 2 #02002b": {
 		"reveal": {
-			"all": [
-				{
-					"_rules": {
-						"forced": true,
-						"for_each_player": true
-					},
-					"Indirect Damage": [
-						{
-							"name": "indirect_damage",
-							"amount": 3,
-							"subject": "my_identity"
-						}
-					]
-				}
-			]
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Indirect Damage": [
+					{
+						"name": "indirect_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					}
+				]
+			}
 		},
 		"interrupt_enemy_initiates_scheme": {
 			"trigger": "self",
@@ -259,35 +255,33 @@
 	"Hostile Takeover - 1B": {
 		"stage_completed": {
 			"trigger": "self",
-			"all": [
-				{
-					"name": "mod_tokens",
-					"token_name": "infamy",
-					"modification": "1p",
-					"subject": "Criminal Enterprise"
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
 				},
-				{
-					"_rules": {
-						"forced": true,
-						"for_each_player": true
-					},
-					"Discard": [
-						{
-							"name": "discard",
-							"subject": "index",
-							"subject_index": "top",
-							"src_container": "deck_my_hero",
-							"subject_count": {
-								"func_name": "count_tokens",
-								"func_params": {
-									"subject": "Criminal Enterprise",
-									"token_name": "infamy"
-								}
+				"Discard": [
+					{
+						"name": "mod_tokens",
+						"token_name": "infamy",
+						"modification": "1",
+						"subject": "Criminal Enterprise"
+					},					
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck_my_hero",
+						"subject_count": {
+							"func_name": "count_tokens",
+							"func_params": {
+								"subject": "Criminal Enterprise",
+								"token_name": "infamy"
 							}
 						}
-					]
-				}
-			]
+					}
+				]
+			}
 		},
 		"_comments": "if Criminal Enterprise has flipped to State of Madness, the counters cannot be placed (count is 0)"
 	},

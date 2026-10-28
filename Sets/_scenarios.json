@@ -86,9 +86,11 @@
 	"02004": {
 		"code": "02004",
 		"name": "Hostile Takeover",
-		"modular_default": [],
+		"modular_default": [
+			"goblin_gimmicks"
+		],
 		"encounter_sets": [
-			"TODO",
+			"risky_business",
 			"Standard",
 			"Modular"
 		],
@@ -98,7 +100,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"risky_business",
 				"Standard",
 				"modular",
 				"expert"
@@ -107,14 +109,19 @@
 				"Norman Osborn - 2",
 				"Norman Osborn - 3"
 			]
-		}
+		},
+		"description": [
+			"As you know, Norman Osborn is a ruthless businessman and the head of the multinational corporation, Oscorp. We also have intel that he's fueling a large crime operation",
+			"Unfortunately, Osborn has set his sights on purchasing a failing brank of Stark Industries. Not only would this bring a surge to Oscropt stock, but we're certain he plans to use the Star tech to enhance his criminal enterprise",
+			"While directly taking down Osborn is out of the question we think that you can provoke Osborn by targeting his criminal enterprise, forcing his alter-ego, the Green Goblin, to come out to play."
+		]
 	},
 	"02017": {
 		"code": "02017",
 		"name": "Unleashing the Mutagen",
-		"modular_default": [],
+		"modular_default": ["goblin_gimmicks"],
 		"encounter_sets": [
-			"TODO",
+			"mutagen_formula",
 			"Standard",
 			"Modular"
 		],
@@ -124,7 +131,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+			"mutagen_formula",
 				"Standard",
 				"modular",
 				"expert"
@@ -133,33 +140,131 @@
 				"Green Goblin - 2",
 				"Green Goblin - 3"
 			]
-		}
+		},
+		"description": [
+			"Reports are in that Green Goblin is flying through New York City, dropping vials full of green gas onto the streets below.",
+			"The gas seems to contain some sort of mutagen agent. Civilians who have inhaled the fumes are transforming into hideous, goblin-like creatures. Worse yet, these creatures immediately go into a fit of rage, attacking anyone in sight who has not transformed.",
+			"There's not much time before Green Goblin and his goblin army overrun the city. Get down there an take back New York before it's too late!"
+		]
 	},
 	"07001": {
 		"code": "07001",
 		"name": "Breakout",
 		"modular_default": [],
 		"encounter_sets": [
-			"TODO",
-			"Standard",
-			"Modular"
+			"wrecker",
+			"piledriver",
+			"thunderball",
+			"bulldozer",
+			"Standard"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			[
+				"Wrecker - A"
+			],
+			[
+				"Thunderball - A"
+			],
+			[
+				"Piledriver - A"
+			],
+			[
+				"Bulldozer - A"
+			]
 		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop"
+						}
+					]
+				},
+				"card_token_modified": {
+					"filter_count": 1,
+					"filter_token_name": "active_counter",
+					"all": [
+						{
+							"name": "set_active_villain",
+							"subject": "trigger"
+						}
+					]
+				},
+				"card_moved_to_pile": {
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						}
+					],
+					"all": [
+						{
+							"name": "conditional_script",
+							"options": [
+								{
+									"condition": {
+										"func_name": "!count_tokens",
+										"func_params": {
+											"token_name": "active_counter",
+											"subject": "boardseek",
+											"subject_count": "all",
+											"filter_state_seek": [
+												{
+													"filter_properties": {
+														"type_code": "villain"
+													}
+												}
+											]
+										}
+									},
+									"nested_tasks": [
+										{
+											"name": "move_token_to",
+											"token_name": "active_counter",
+											"source": "current",
+											"subject": "function",
+											"subject_func_name": "next_activation_order_villain"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"grid_setup_overrides": {
+			"x_displacement_count_villains": 3
+		},
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"wrecker",
+				"piledriver",
+				"thunderball",
+				"bulldozer",
 				"Standard",
-				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				[
+					"Wrecker - B"
+				],
+				[
+					"Thunderball - B"
+				],
+				[
+					"Piledriver - B"
+				],
+				[
+					"Bulldozer - B"
+				]
 			]
-		}
+		},
+		"description": [
+			"There has been a riot at Ryker's Island penitentiary. The prisoners are loose and attempting escape. Among them are The Wrecking Crew. They broke free of their power-inhibitors and overpowered the guards. We need you to intervene!"
+		]
 	},
 	"04061": {
 		"code": "04061",
@@ -369,9 +474,11 @@
 	"11007": {
 		"code": "11007",
 		"name": "Kang's Arrival",
-		"modular_default": [],
+		"modular_default": [
+			"temporal"
+		],
 		"encounter_sets": [
-			"TODO",
+			"kang",
 			"Standard",
 			"Modular"
 		],
@@ -381,7 +488,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"kang",
 				"Standard",
 				"modular",
 				"expert"
@@ -892,9 +999,8 @@
 		"name": "Making Connections",
 		"modular_default": [],
 		"encounter_sets": [
-			"TODO",
+			"hood",
 			"Standard",
-			"Modular"
 		],
 		"villains": [
 			"The Hood - 1",
@@ -902,9 +1008,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"hood",
 				"Standard",
-				"modular",
 				"expert"
 			],
 			"villains": [
@@ -1469,26 +1574,34 @@
 	"39002": {
 		"code": "39002",
 		"name": "Melee in the Mojo-seum",
-		"modular_default": [],
+		"modular_default": [
+			"crime",
+			"fantasy",
+			"horror",
+			"sitcom",
+			"sci-fi",
+			"western"
+		],
+		"modular_rules": {
+			"count": 1
+		},
 		"encounter_sets": [
-			"TODO",
+			"magog",
 			"Standard",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"MaGog - A"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"magog",
 				"Standard",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"MaGog - B"
 			]
 		},
 		"description": [
@@ -1500,11 +1613,21 @@
 	"39015": {
 		"code": "39015",
 		"name": "Across the Mojoverse",
-		"modular_default": [],
+		"modular_default": [
+			"crime",
+			"fantasy",
+			"horror",
+			"sitcom",
+			"sci-fi",
+			"western"
+		],
+		"modular_rules": {
+			"count": 3
+		},
 		"encounter_sets": [
-			"TODO",
+			"spiral",
 			"Standard",
-			"Modular"
+			"Modulars"
 		],
 		"villains": [
 			"Spiral - 1",
@@ -1512,9 +1635,9 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"spiral",
 				"Standard",
-				"modular",
+				"modulars",
 				"expert"
 			],
 			"villains": [
@@ -1531,11 +1654,22 @@
 	"39025": {
 		"code": "39025",
 		"name": "MojoMania",
-		"modular_default": [],
+		"modular_default": [
+			"crime",
+			"fantasy",
+			"horror",
+			"sitcom",
+			"sci-fi",
+			"western"
+		],
+		"modular_rules": {
+			"count": "1p",
+			"plus_count": 1
+		},
 		"encounter_sets": [
-			"TODO",
+			"mojo",
 			"Standard",
-			"Modular"
+			"Modulars"
 		],
 		"villains": [
 			"Mojo - 1",
@@ -1543,9 +1677,9 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"mojo",
 				"Standard",
-				"modular",
+				"modulars",
 				"expert"
 			],
 			"villains": [
@@ -2394,9 +2528,11 @@
 	"55004": {
 		"code": "55004",
 		"name": "Prime Real Estate",
-		"modular_default": [],
+		"modular_default": [
+			"trickster_magic"
+		],
 		"encounter_sets": [
-			"TODO",
+			"enchantress_villain",
 			"Standard",
 			"Modular"
 		],
@@ -2406,7 +2542,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"enchantress_villain",
 				"Standard",
 				"modular",
 				"expert"
@@ -2425,26 +2561,55 @@
 	"55033": {
 		"code": "55033",
 		"name": "Mischief and Mayhem",
-		"modular_default": [],
+		"modular_default": [
+			"trickster_magic"
+		],
 		"encounter_sets": [
-			"TODO",
+			"god_of_lies",
 			"Standard",
 			"Modular"
 		],
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "villain"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Loki The Rascal - A1",
+			"Loki The Miscreant - B1",
+			"Loki The Knave - C1",
+			"Loki The Wretch - D1"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"god_of_lies",
 				"Standard",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Loki The Rascal - A1",
+				"Loki The Miscreant - B1",
+				"Loki The Knave - C1",
+				"Loki The Wretch - D1"
 			]
 		},
 		"description": [
@@ -2633,29 +2798,90 @@
 			"As a former high-ranking S.H.I.E.L.D. agent, Spider-Woman has seen the global peace-keeping organization's flaws first hand. When given the choice to reenlist or face arrest, she goes underground to help her superpowered colleagues fight for their freedom."
 		]
 	},
-	"57005": {
-		"code": "57005",
+	"56096": {
+		"code": "56096",
 		"name": "Superhero Registration Act",
-		"modular_default": [],
+		"scenario_display_name": "S.H.I.E.L.D. Recruits",
+		"modular_default": [
+			"cape_killer",
+			"martial_law",
+			"heroes_for_hire",
+			"paladin"
+		],
 		"encounter_sets": [
-			"TODO",
+			"captain_marvel_leader",
 			"Standard",
-			"Modular"
+			"modular",
+			"modular",
+			"modular",
+			"modular"
+		],
+		"schemes": [
+			"56096",
+			"56097"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Captain Marvel - 1",
+			"Captain Marvel - 2"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"captain_marvel_leader",
 				"Standard",
+				"modular",
+				"modular",
+				"modular",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Captain Marvel - 3",
+				"Captain Marvel - 4"
+			]
+		},
+		"description": [
+			"As a S.H.I.E.L.D. member and leader of Alpha Flight, Captain Marvel is a strong advocate for the chain of command. She believes superheroes should be properly trained and governed by S.H.I.E.L.D., and she agrees to arrest those who refuse."
+		]
+	},
+	"57005": {
+		"code": "57005",
+		"name": "Superhero Registration Act",
+		"scenario_display_name": "Enforce the Law",
+		"modular_default": [
+			"shield_ops",
+			"thunderbolts_modular",
+			"taskmaster_modular",
+			"deadly_duo"
+		],
+		"encounter_sets": [
+			"she_hulk_leader",
+			"Standard",
+			"modular",
+			"modular",
+			"modular",
+			"modular"
+		],
+		"schemes": [
+			"57005",
+			"57006"
+		],
+		"villains": [
+			"She-Hulk - 1",
+			"She-Hulk - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"she_hulk_leader",
+				"Standard",
+				"modular",
+				"modular",
+				"modular",
+				"modular",
+				"expert"
+			],
+			"villains": [
+				"She-Hulk - 3",
+				"She-Hulk - 4"
 			]
 		},
 		"description": [
@@ -2665,118 +2891,78 @@
 	"57044": {
 		"code": "57044",
 		"name": "Superhero Resistance",
-		"modular_default": [],
+		"scenario_display_name": "Protect Secret Identities",
+		"modular_default": [
+			"young_avengers",
+			"scarlet_twins",
+			"moon_knight_modular",
+			"royal_guard"
+		],
 		"encounter_sets": [
-			"TODO",
+			"vision_leader",
 			"Standard",
-			"Modular"
+			"modular",
+			"modular",
+			"modular",
+			"modular"
+		],
+		"schemes": [
+			"57044",
+			"57045"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Vision - 1",
+			"Vision - 2"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"vision_leader",
 				"Standard",
+				"modular",
+				"modular",
+				"modular",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Vision - 3",
+				"Vision - 4"
 			]
 		},
 		"description": [
 			"Created by Ultron to be the ultimate artificial organism, Vision rebelled against his creator and joined the Avengers. Now free of Ultron's control, Vision is reluctant to submit to S.H.I.E.L.D.'s authority under the new registration law. Instead, he joins the growing superhero resistance in their fight for autonomy."
 		]
 	},
-	"60121": {
-		"code": "60121",
-		"name": "Art Museum Heist",
-		"modular_default": [],
-		"encounter_sets": [
-			"TODO",
-			"Standard",
-			"Modular"
-		],
-		"villains": [
-			"TODO - 1",
-			"TODO - 2"
-		],
-		"expert": {
-			"encounter_sets": [
-				"TODO",
-				"Standard",
-				"modular",
-				"expert"
-			],
-			"villains": [
-				"TODO - 2",
-				"TODO - 3"
-			]
-		},
-		"description": [
-			"*Calling all units. Silent alarm tripped at the art museum. On-site security is unresponsive. Security feeds show at least three suspects dressed in black with ski masks. All available units respond!*",
-			"Minutes after receiving the call over your police scanner, you're on the scene. It's impossible to miss the museum's smashed entrance. Whoever is behind this heist isn't bothering to cover their tracks. It's as if they want to be noticed.",
-			"Your guard up, you make your way through the smashed glass of the front door. You dispatch one masked thief with ease before hearing a voice from behind you.",
-			"\"Sorry, this is a private showing, and you're not on the guest list.\" "
-		]
-	},
-	"60128": {
-		"code": "60128",
-		"name": "The Getaway",
-		"modular_default": [],
-		"encounter_sets": [
-			"TODO",
-			"Standard",
-			"Modular"
-		],
-		"villains": [
-			"TODO - 1",
-			"TODO - 2"
-		],
-		"expert": {
-			"encounter_sets": [
-				"TODO",
-				"Standard",
-				"modular",
-				"expert"
-			],
-			"villains": [
-				"TODO - 2",
-				"TODO - 3"
-			]
-		},
-		"description": [
-			"*This is 10 Adam in pursuit of bank robbery suspect. Yellow sports car. South on 9th Avenue through Hell's Kitchen. Request backup!*",
-			"They must be heading for the tunnel. If they can get out of the city, they'll be much harder to follow. Better to cut them off.",
-			"You turn a corner to see the fleeing sports coupe barreling toward you. It's about to run you down when a garbage truck trundles out from an alley. The racing car swerves around it—and you—as the garbage truck skids to a halt. A quick glance shows the truck driver upset but unharmed, so you take off in pursuit of the getaway car."
-		]
-	},
 	"60134": {
 		"code": "60134",
 		"name": "Protection Racket",
-		"modular_default": [],
+		"modular_default": [
+			"tracksuit_mafia_by_ffg",
+			"disasters_by_ffg"
+		],
 		"encounter_sets": [
-			"TODO",
+			"hammerhead_by_ffg",
+			"protection_racket_by_ffg",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Hammerhead - 1",
+			"Hammerhead - 2"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"hammerhead_by_ffg",
+				"protection_racket_by_ffg",
 				"Standard",
-				"modular",
+				"Modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Hammerhead - 2",
+				"Hammerhead - 3"
 			]
 		},
 		"description": [
@@ -2790,26 +2976,33 @@
 	"60142": {
 		"code": "60142",
 		"name": "The Raft Breakout",
-		"modular_default": [],
+		"modular_default": [
+			"the_owl_by_ffg",
+			"tombstone_by_ffg"
+		],
 		"encounter_sets": [
-			"TODO",
+			"the_raft_breakout_by_ffg",
+			"bullseye_by_ffg",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Bullseye - 1",
+			"Bullseye - 2"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"the_raft_breakout_by_ffg",
+				"bullseye_by_ffg",
 				"Standard",
 				"modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Bullseye - 2",
+				"Bullseye - 3"
 			]
 		},
 		"description": [
@@ -2820,29 +3013,113 @@
 			"\"You got it, boss,\" Rhino snarls."
 		]
 	},
-	"60151": {
-		"code": "60151",
-		"name": "Stop The Presses!",
-		"modular_default": [],
+	"60121": {
+		"code": "60121",
+		"name": "Art Museum Heist",
+		"modular_default": [
+			"cops_by_ffg",
+			"the_owl_by_ffg"
+		],
 		"encounter_sets": [
-			"TODO",
+			"art_museum_heist_by_ffg",
+			"electro_by_ffg",
 			"Standard",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
-			"TODO - 1",
-			"TODO - 2"
+			"Electro - 1",
+			"Electro - 2"
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
+				"art_museum_heist_by_ffg",
+				"electro_by_ffg",
 				"Standard",
+				"modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Electro - 2",
+				"Electro - 3"
+			]
+		},
+		"description": [
+			"*Calling all units. Silent alarm tripped at the art museum. On-site security is unresponsive. Security feeds show at least three suspects dressed in black with ski masks. All available units respond!*",
+			"Minutes after receiving the call over your police scanner, you're on the scene. It's impossible to miss the museum's smashed entrance. Whoever is behind this heist isn't bothering to cover their tracks. It's as if they want to be noticed.",
+			"Your guard up, you make your way through the smashed glass of the front door. You dispatch one masked thief with ease before hearing a voice from behind you.",
+			"\"Sorry, this is a private showing, and you're not on the guest list.\" "
+		]
+	},
+	"60128": {
+		"code": "60128",
+		"name": "The Getaway",
+		"modular_default": [
+			"cops_by_ffg",
+			"drive_by_ffg"
+		],
+		"encounter_sets": [
+			"the_getaway_by_ffg",
+			"purple_man_by_ffg",
+			"Standard",
+			"Modular",
+			"Modular"
+		],
+		"villains": [
+			"Purple Man - 1",
+			"Purple Man - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"the_getaway_by_ffg",
+				"purple_man_by_ffg",
+				"Standard",
+				"modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Purple Man - 2",
+				"Purple Man - 3"
+			]
+		},
+		"description": [
+			"*This is 10 Adam in pursuit of bank robbery suspect. Yellow sports car. South on 9th Avenue through Hell's Kitchen. Request backup!*",
+			"They must be heading for the tunnel. If they can get out of the city, they'll be much harder to follow. Better to cut them off.",
+			"You turn a corner to see the fleeing sports coupe barreling toward you. It's about to run you down when a garbage truck trundles out from an alley. The racing car swerves around it—and you—as the garbage truck skids to a halt. A quick glance shows the truck driver upset but unharmed, so you take off in pursuit of the getaway car."
+		]
+	},
+	"60151": {
+		"code": "60151",
+		"name": "Stop The Presses!",
+		"modular_default": [
+			"tombstone_by_ffg",
+			"tracksuit_mafia_by_ffg"
+		],
+		"encounter_sets": [
+			"stop_the_presses_by_ffg",
+			"typhoid_mary_by_ffg",
+			"Standard",
+			"Modular",
+			"modular"
+		],
+		"villains": [
+			"Typhoid Mary - 1",
+			"Typhoid Mary - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"stop_the_presses_by_ffg",
+				"typhoid_mary_by_ffg",
+				"Standard",
+				"Modular",
 				"modular",
 				"expert"
 			],
 			"villains": [
-				"TODO - 2",
-				"TODO - 3"
+				"Typhoid Mary - 2",
+				"Typhoid Mary - 3"
 			]
 		},
 		"description": [
@@ -2855,10 +3132,13 @@
 	"60161": {
 		"code": "60161",
 		"name": "The King's Gambit",
-		"modular_default": [],
+		"modular_default": [
+			"tombstone_by_ffg",
+			"tracksuit_mafia_by_ffg"
+		],
 		"encounter_sets": [
-			"TODO",
-			"Standard",
+			"kingpin_by_ffg",
+			"Modular",
 			"Modular"
 		],
 		"villains": [
@@ -2867,9 +3147,9 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"TODO",
-				"Standard",
-				"modular",
+				"kingpin_by_ffg",
+				"Modular",
+				"Modular",
 				"expert"
 			],
 			"villains": [

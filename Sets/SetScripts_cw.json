@@ -790,7 +790,7 @@
 					"attack"
 				],
 				"damage": ">0",
-				"filter_state_event_source": [
+				"filter_state_attacker": [
 					{
 						"filter_properties": {
 							"shortname": "Captain America"
@@ -844,7 +844,7 @@
 				{
 					"name": "host_card",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": ["set_aside", "deck_villain"],
 					"filter_state_tutor": "Cap's Shield"
 				},
 				{
@@ -870,7 +870,7 @@
 		"card_attached": {
 			"trigger": "Cap's Shield",
 			"event_filters": {
-				"host_card": "Self"
+				"host_card": "self"
 			},
 			"board": [
 				{
@@ -917,7 +917,7 @@
 		"card_attached": {
 			"trigger": "Cap's Shield",
 			"event_filters": {
-				"host_card": "Self"
+				"host_card": "self"
 			},
 			"board": [
 				{
@@ -935,7 +935,7 @@
 				{
 					"name": "host_card",
 					"subject": "tutor",
-					"src_container": "deck_villain",
+					"src_container": ["set_aside", "deck_villain"],
 					"filter_state_tutor": "Cap's Shield"
 				},
 				{
@@ -961,7 +961,7 @@
 		"card_attached": {
 			"trigger": "Cap's Shield",
 			"event_filters": {
-				"host_card": "Self"
+				"host_card": "self"
 			},
 			"board": [
 				{
@@ -1008,7 +1008,7 @@
 		"card_attached": {
 			"trigger": "Cap's Shield",
 			"event_filters": {
-				"host_card": "Self"
+				"host_card": "self"
 			},
 			"board": [
 				{

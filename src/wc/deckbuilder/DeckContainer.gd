@@ -68,11 +68,15 @@ func _process(_delta:float):
 		
 	if loaded == 2:	
 		display_deck_data()
-
+		var compress_needed = reorganize_deck()
 		resize()
+		
+		#TODO (HACK)
+		#not sure why but I need to call this a second time to
+		#retrigger the set_position
+		if compress_needed:
+			reorganize_deck()
 		loaded = 3
-	
-	
 	
 	WCUtils.large_card_preview_offset(large_picture, self)
 
@@ -214,14 +218,40 @@ func reorganize_deck():
 	var cards_by_type = {}
 	var total_cost = 0
 	var total_cards_counted_for_cost = 0
+	var compress_needed = false
+	
 	for container in deck_container.get_children():
 		var total_row_cards = 0
 		var offset_y = 0
+		
+		#if this plans to be too tall, we force reduce the size
+		var compress_height = false
+		for card in container.get_children():
+			if card as Label:
+				continue
+			var quantity = deck_data[card.canonical_id]
+			if quantity > 1:
+				quantity = 2
+			total_row_cards += quantity	
+
+		if total_row_cards > 9:
+			compress_height = true
+			compress_needed = true
+				
+		#reset temporary variable
+		total_row_cards  = 0
+		var card_height_offset = DECK_CARD_SPACING
+		if compress_height:
+			card_height_offset = card_height_offset / 2
+			
 		for card in container.get_children():
 			if card as Label:
 				if show_headers:
 					offset_y = card.rect_size.y + 5
 				continue
+				
+			if compress_height:
+				card.set_compress_height(true)				
 			var quantity = deck_data[card.canonical_id]
 			#update requird in some cases
 			card.set_quantity(quantity)
@@ -243,14 +273,14 @@ func reorganize_deck():
 						quantity = 0
 						card.visible = false
 				
-			card.set_target_position(Vector2(0, (DECK_CARD_SPACING * total_row_cards  * DECK_CARD_SCALE * global_scale) + offset_y))
+			card.set_target_position(Vector2(0, (card_height_offset * total_row_cards  * DECK_CARD_SCALE * global_scale) + offset_y))
 
 			if quantity > 1:
 				quantity = 2
 			if card == current_active_card:
 				quantity = 4
 			total_row_cards += quantity
-			container.rect_min_size.y = (MIN_SIZE_Y+ DECK_CARD_SPACING * total_row_cards) *DECK_CARD_SCALE * global_scale
+			container.rect_min_size.y = (MIN_SIZE_Y+ card_height_offset * total_row_cards) *DECK_CARD_SCALE * global_scale
 
 	for container in deck_container.get_children():
 		var type_code = container.name
@@ -269,6 +299,7 @@ func reorganize_deck():
 		var avg_cmc:float = stepify(float(total_cost) / float(total_cards_counted_for_cost), 0.1)
 		stats_label.text += " - AVG Cost: " + str(avg_cmc)
 
+	return compress_needed
 
 func compute_max_types():
 	if _max_types_cache:
@@ -325,7 +356,7 @@ func display_deck_data():
 		add_card_to_deck_container(card, card_data)
 
 	count_deck_aspects()
-	reorganize_deck()
+
 
 const key_to_label:= {
 	"player_side_scheme" : "Side Scheme"
@@ -432,7 +463,7 @@ func add_card_to_deck_container(card, card_data):
 	
 	container.add_child(card)
 	
-	card.position = Vector2(0, (total_cards * 40  *DECK_CARD_SCALE * global_scale) + offset_y) 
+	card.position = Vector2(0, (total_cards * DECK_CARD_SPACING  *DECK_CARD_SCALE * global_scale) + offset_y) 
 	var quantity = deck_data[card_id]
 	card.set_quantity(quantity)
 	if quantity > 1:

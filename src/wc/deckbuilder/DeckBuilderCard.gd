@@ -11,9 +11,11 @@ var quantity_scene = null
 var quantity = 0
 var deck_edit_hero_id = ""
 var enforce_rules = true
+var compress_height = false
 
 
-const QTY_DISPLAY_POS = Vector2(130, 30)	
+const QTY_DISPLAY_POS = Vector2(130, 30)
+const QTY_DISPLAY_POS_SMALL = Vector2(130, 5)	
 const QTY_EDIT_POS = Vector2(10, 30)
 
 func enforce_deckbuilding_rules(value):
@@ -46,9 +48,13 @@ func deactivate_quantity_editor():
 		
 	quantity_scene.display_mode()
 	quantity_scene.rect_position = QTY_DISPLAY_POS
+	if compress_height:
+		quantity_scene.rect_position = QTY_DISPLAY_POS_SMALL
 	
 func set_target_position(next_position):
 	_set_target_position(next_position)
+	if !position:
+		position = _target_position
 	_add_tween_position(position, _target_position,
 						to_container_tween_duration, Tween.TRANS_SINE, Tween.EASE_IN_OUT)
 	$Tween.start()
@@ -68,10 +74,18 @@ func init_quantity_scene():
 	if not quantity_scene:
 		quantity_scene = _QUANTITY_SCENE.instance()
 		add_child(quantity_scene)
-		quantity_scene.rect_position = QTY_DISPLAY_POS	
+		quantity_scene.rect_position = QTY_DISPLAY_POS
+		if compress_height:
+			quantity_scene.rect_position = QTY_DISPLAY_POS_SMALL			
 		quantity_scene.rect_scale = Vector2(0.7, 0.7)
 	quantity_scene.set_quantity(quantity)		
-	
+
+func set_compress_height(value:bool):
+	compress_height = value	
+	if quantity_scene:
+		quantity_scene.rect_position = QTY_DISPLAY_POS
+		if compress_height:
+			quantity_scene.rect_position = QTY_DISPLAY_POS_SMALL	
 
 func gain_focus():
 	main_scene.show_preview(self)

@@ -1761,12 +1761,11 @@ func enrich_window_title(selectionWindow, script, title:String) -> String:
 	var script_name = script_definitions.name
 	var forced_title = script_definitions.get("display_title", "")
 	var owner = script.owner
-	
+		
 	if (forced_title):
 		result = forced_title + " - " + result
-	else:
-	
-		result = owner.properties.get("shortname", owner.canonical_name) + " - " + result
+	else:	
+		result = owner.get_display_name() + " - " + result
 	
 	var additional_constraints_str = selectionWindow.additional_constraints_to_text()
 	if additional_constraints_str:
@@ -1786,7 +1785,7 @@ func enrich_window_title(selectionWindow, script, title:String) -> String:
 				suffix = suffix.replace("{defender_name}", defender_name)
 			result = owner.get_display_name() + " attacks" + target_str +". " + suffix
 		"pay_as_resource":
-			result = owner.canonical_name + " - Select at least " + str(selectionWindow.selection_count) + " resources" + additional_constraints_str + "." 
+			result = owner.get_display_name() + " - Select at least " + str(selectionWindow.selection_count) + " resources" + additional_constraints_str + "." 
 	match forced_title:
 		"__end_phase_discard__":
 			var cancel_str = "."

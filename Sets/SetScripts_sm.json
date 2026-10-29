@@ -385,7 +385,8 @@
 							"filter_properties": {
 								"trait_web-warrior": 1,
 								"comparison": "ge"
-							}
+							},
+							"filter_is_exhausted": false
 						}
 					],
 					"needs_selection": true,

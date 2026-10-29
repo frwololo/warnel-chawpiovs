@@ -47,8 +47,13 @@ var on_empty_modulate = 1.0
 var pre_sorted_order: Array
 
 var is_shuffling:= false
+# Animation-only randomness, for local stuff that shouldn't impact multiplayer RND
+var _cosmetic_rng := RandomNumberGenerator.new()
+
+
 
 func _ready():
+	_cosmetic_rng.randomize()
 	add_to_group("piles")
 	# warning-ignore:return_value_discarded
 	view_button.connect("pressed",self,'_on_View_Button_pressed')
@@ -72,6 +77,16 @@ func _ready():
 		panel_container.visible = false	
 		
 	$Control/Highlight.visible = false
+
+
+
+
+func _cosmetic_shuffle(array: Array) -> void:
+	for i in range(array.size() - 1, 0, -1):
+		var j = _cosmetic_rng.randi() % (i + 1)
+		var tmp = array[j]
+		array[j] = array[i]
+		array[i] = tmp
 	
 func _on_Pile_gui_input(event) -> void:
 	if !faceup_cards and !allow_facedown_popup:
@@ -391,6 +406,8 @@ func _slot_card_into_popup(card: Card) -> void:
 	card.set_state(card.CardState.IN_POPUP)
 
 
+
+
 # Randomly rearranges the order of the [Card] nodes.
 # Pile shuffling includes a fancy animation
 func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
@@ -398,6 +415,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 	disable_pile_activity_signals()
 	is_shuffling = true
 	if !shuffle_after_animation:
+		#this is where the real, network-syncronized shuffle happens
 		.shuffle_cards()
 	cfc.play_sfx("shuffle")
 	# Optimally the CFConst.ShuffleStyle enum should be defined in this class
@@ -447,8 +465,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 		# if the style is random, we select a random shuffle animation among
 		# the predefined ones.
 		elif shuffle_style == CFConst.ShuffleStyle.RANDOM:
-			cfc.LOG("{rng} shuffle")
-			style = CFUtils.randi_range(3, len(CFConst.ShuffleStyle) - 1)
+			style = _cosmetic_rng.randi_range(3, len(CFConst.ShuffleStyle) - 1)
 		else:
 			style = shuffle_style
 		if style == CFConst.ShuffleStyle.CORGI:
@@ -465,16 +482,15 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 			if anim_speed < 0.05:
 				anim_speed = 0.05
 			var random_cards = get_all_cards().duplicate()
-			CFUtils.shuffle_array(random_cards)
+			_cosmetic_shuffle(random_cards)
 			for card in random_cards:
 				card.animate_shuffle(anim_speed,CFConst.ShuffleStyle.CORGI)
 				yield(get_tree().create_timer(next_card_speed), "timeout")
-			# This is where the shuffle actually happens
-			# The effect looks like the cards shuffle in the middle of their
-			# animations
+
 			if shuffle_after_animation:
+				#this is where the real, network-syncronized shuffle happens
 				.shuffle_cards()
-			# This wait gives the carde enough time to return to
+			# This wait gives the cards enough time to return to
 			# their original position.
 			yield(get_tree().create_timer(anim_speed * 2.5), "timeout")
 		elif style == CFConst.ShuffleStyle.SPLASH:
@@ -491,6 +507,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 			# unnoticeable to the player
 			yield(get_tree().create_timer(anim_speed - 0.5), "timeout")
 			if shuffle_after_animation:
+				#this is where the real, network-syncronized shuffle happens
 				.shuffle_cards()
 			# The extra time is to give the cards enough time to return
 			# To the starting location, and let reorganize_stack() do its magic
@@ -501,16 +518,18 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 			_tween.start()
 			yield(_tween, "tween_all_completed")
 			anim_speed = 0.2
-			var card = get_random_card()
+			var all_cards = get_all_cards()
+			var card = all_cards[_cosmetic_rng.randi() % all_cards.size()]
 			card.animate_shuffle(anim_speed, CFConst.ShuffleStyle.SNAP)
 			yield(get_tree().create_timer(anim_speed * 2.5), "timeout")
 			if shuffle_after_animation:
+				#this is where the real, network-syncronized shuffle happens
 				.shuffle_cards()
 		elif style == CFConst.ShuffleStyle.OVERHAND:
 			anim_speed = 0.15
 			for _i in range(3):
 				var random_cards = get_all_cards().duplicate()
-				CFUtils.shuffle_array(random_cards)
+				_cosmetic_shuffle(random_cards)
 				# This calulcation prevents us from trying to tween too many
 				# cards at the same time,when the deck is too big
 				# The bigger the deck, the smallest the percentage of cards
@@ -523,6 +542,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 				# The shuffle after every jump in a face-up pile
 				# really sells it :)
 				if shuffle_after_animation:
+					#this is where the real, network-syncronized shuffle happens
 					.shuffle_cards()
 				reorganize_stack()
 		if position != init_position:
@@ -533,6 +553,7 @@ func shuffle_cards(animate = true, shuffle_after_animation = true) -> void:
 	else:
 		# if we're already running another animation, just shuffle
 		if shuffle_after_animation:
+			#this is where the real, network-syncronized shuffle happens
 			.shuffle_cards()
 	reorganize_stack()
 	

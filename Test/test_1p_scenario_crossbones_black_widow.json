@@ -3,6 +3,7 @@
 	"test_conditions": {
 		"ignore_order": [
 			"deck_villain",
+			"deck_experimental_weapons",
 			"set_aside",
 			"deck1",
 			"hand1"
@@ -332,9 +333,9 @@
 					"_comments": "Energy Shield"
 				},
 				{
-					"card": "04075",
+					"card": "04072",
 					"owner_hero_id": 0,
-					"_comments": "Exo-Suit"
+					"_comments": "Laser Rifle"
 				},
 				{
 					"card": "04074",
@@ -565,9 +566,9 @@
 			],
 			"others": [
 				{
-					"card": "04072",
+					"card": "04075",
 					"owner_hero_id": 0,
-					"_comments": "Laser Rifle",
+					"_comments": "Exo-Suit",
 					"host": "04058"
 				}
 			]

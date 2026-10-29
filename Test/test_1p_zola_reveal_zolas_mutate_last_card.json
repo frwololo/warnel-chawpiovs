@@ -21,6 +21,9 @@
 				},				
 				{
 					"card": "Advance"
+				},	
+				{
+					"card": "Hydra Soldier"
 				},					
 				{
 					"card": "Hydra Mercenary"
@@ -90,7 +93,10 @@
 				},			
 				{
 					"card": "Advance"
-				},								
+				},	
+				{
+					"card": "Hydra Soldier"
+				},				
 
 			],			
 			"schemes": [

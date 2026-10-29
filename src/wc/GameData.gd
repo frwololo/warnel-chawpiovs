@@ -581,7 +581,7 @@ func check_empty_decks(pile_to_check):
 			for card in all_discarded:
 				card.move_to(villain_deck)
 			display_debug("shuffle villain deck after empty")
-			villain_deck.shuffle_cards()
+			villain_deck.shuffle_cards(true, false)
 			#add acceleration to main scheme
 			var scheme = find_main_scheme()
 			if (scheme):
@@ -600,7 +600,7 @@ func check_empty_decks(pile_to_check):
 				for card in all_discarded:
 					card.move_to(deck)
 				display_debug("shuffle " + pile_to_check + " after empty")
-				deck.shuffle_cards()
+				deck.shuffle_cards(true, false)
 		return	
 	
 	elif (pile_to_check.begins_with("deck")): #player decks
@@ -613,7 +613,7 @@ func check_empty_decks(pile_to_check):
 			for card in all_discarded:
 				card.move_to(hero_deck)
 			display_debug("shuffle hero deck after empty:" + hero_id_str)
-			hero_deck.shuffle_cards()
+			hero_deck.shuffle_cards(true, false)
 			#deal a new encounter
 			deal_one_encounter_to(int(hero_id_str))
 		return		

@@ -111,11 +111,12 @@
 			],
 			"deck1": [
 				{
+					"card": "The Gardener"
+				},			
+				{
 					"card": "Summoning Spell"
 				},				
-				{
-					"card": "The Gardener"
-				},
+
 			],
 			"discard1": [
 				{

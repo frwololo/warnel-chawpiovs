@@ -264,7 +264,7 @@ func forget_card(c):
 		c.disconnect("card_texture_changed",self , "_on_texture_reloaded")	
 
 # Displays the card closeup in the Focus viewport
-func focus_card(card: Card, show_preview := true) -> void:
+func focus_card(card: Card, _show_preview := true) -> void:
 	if !show_card_focus:
 		return
 			

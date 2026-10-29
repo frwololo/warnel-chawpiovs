@@ -301,7 +301,7 @@ func get_first_card() -> Card:
 
 
 # Randomly rearranges the order of the Card nodes.
-func shuffle_cards(_animate = true, _shuffle_before_animation = false) -> void:
+func shuffle_cards(_animate = true, _shuffle_after_animation = true) -> void:
 	var cardsArray := []
 	for card in get_all_cards():
 		cardsArray.append(card)

@@ -562,8 +562,11 @@ func _runtime_properties_setup():
 
 func get_display_name(force_canonical = false):
 	if is_faceup:
-		return canonical_name
-	var shortname =  get_property("shortname", "---")
+		return 	get_translated_property("Name")
+	
+	var shortname =  get_translated_property("shortname")
+	if !shortname:
+		shortname = "---"
 	return shortname
 
 func get_duplicate(refresh_variables = true):
@@ -5442,7 +5445,26 @@ func get_printed_text(section = "", locale = ""):
 
 #override from parent
 func get_translated_property(property):
+	var original_value = get_property(property, "")
+	
+	var locale = TranslationServer.get_locale().to_lower()
+	#skip translation process for en
+	if locale == "en":
+		return original_value
+
+	var card_data = cfc.get_card_by_id(canonical_id)
+	if !card_data:
+		return original_value
+		
+	#if our current property differs from what's in the database,
+	#it means a runtime modification happened, in that case we don't want the hardcoded
+	#translation, we'll need something more clever (todo) 	
+	if card_data.get(property, "") != original_value:
+		return original_value
+
+	#we're good to go, go with the hardcoded translation
 	return WCUtils.get_translated_property(canonical_id, property)
+
 
 func queue_free():
 	reattach_removed_nodes()

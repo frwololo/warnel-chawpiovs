@@ -1,0 +1,152 @@
+{
+	"_comments": "Bug: ¨Psionic Ghost not triggering reveal",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				},
+				{
+					"card": "Psionic Ghost"
+				}
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a",
+										"tokens": {
+						"confused": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+			"_comments": "wait for player turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Rocket Raccoon #16029a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Armored Guard"
+				}
+			],
+			"villain": [
+				{
+					"card": "Collector - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Grand Collection",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"the_collection": [
+				{
+					"card": "Rocket's Pistol"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Rocket Raccoon #16029a",
+					"tokens": {
+						"confused": 1,
+						"damage": 1 
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "the Power of Aggression"
+				},
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Hand Cannon"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Psionic Ghost"
+				}
+			],
+			"hand1": [
+				{
+					"card": "01056"
+				}
+			]
+		}
+	}
+}

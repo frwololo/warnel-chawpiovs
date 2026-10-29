@@ -1223,7 +1223,7 @@
 	"Turn the Tide": {
 		"response_last_threat_removed": {
 			"event_filters": {
-				"source": "my_hero",
+				"actual_source": "my_hero",
 				"tags": [
 					"thwart"
 				]

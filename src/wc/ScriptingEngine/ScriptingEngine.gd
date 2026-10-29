@@ -4074,9 +4074,11 @@ static func script_constraints(subject, params, script = null) -> int:
 		match tag:
 			"hero_form" :
 				if !my_hero_card or !my_hero_card.is_hero_form():
+					subject.cant_pay_cost_report("identity", "Must be in hero form")
 					return CFConst.ReturnCode.FAILED
 			"alter_ego_form":
 				if !my_hero_card or !my_hero_card.is_alter_ego_form():
+					subject.cant_pay_cost_report("identity", "Must be in alter-ego form")
 					return CFConst.ReturnCode.FAILED
 			"action_ability":
 				if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:

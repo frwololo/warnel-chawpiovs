@@ -2250,6 +2250,10 @@ func animate_shuffle(anim_speed : float, style : int) -> void:
 	_tween.start()
 
 
+#call this function to let the card know why a cost cant be paid
+func cant_pay_cost_report(category, message):
+	pass
+	
 # This function can be overriden by any class extending Card, in order to provide
 # a way of checking if a card can be played before dragging it out of the hand.
 #

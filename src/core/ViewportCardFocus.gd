@@ -15,25 +15,30 @@ var _previously_focused_cards := {}
 # This var hold the currently focused card duplicate.
 var _current_focus_source : Card = null
 
-onready var card_focus := $VBC/Focus
-onready var focus_info := $VBC/FocusInfo
-onready var _focus_viewport := $VBC/Focus/Viewport
-onready var _focus_camera := $VBC/Focus/Viewport/Camera2D
+onready var left_container = $VBC/CardDisplay/Left
+onready var left_card_container = $VBC/CardDisplay/Left/Container
+onready var left_text_container = $VBC/CardDisplay/Left/MsgContainer
+onready var right_container = $VBC/CardDisplay/Right
+
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
 var viewport
 
 var canonical_size:= Vector2(0,0)
 var vbc_rect_offset:= Vector2(0,0)
 
-#I was having an impossible time getting the viewport/camera system to work
-#in 1280x720. Instead I'm using a different method there, adding the cards
-#directly into $VBC. It's gross but it works
-var vbc_position_mode = true
 var show_card_focus = true
 
 func _process(_delta:float):
 #	display_debug_info()
+	resize()
 	pass
+
+func resize():
+	if _current_focus_source and is_instance_valid(_current_focus_source):
+		var card = _previously_focused_cards[_current_focus_source]
+		card.get_parent().rect_min_size = 	card.card_size*card.scale
+	pass
+	
 
 func display_debug_info():
 	if !OS.has_feature("debug"):
@@ -66,6 +71,7 @@ func display_debug_info():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$VBC.visible = false
 	viewport = get_tree().get_root()
 	cfc.map_node(self)
 	var glow_enabled = cfc.game_settings.get('glow_enabled', true)
@@ -85,12 +91,37 @@ func _ready():
 	_on_Viewport_size_changed()
 	for container in get_tree().get_nodes_in_group("card_containers"):
 		container.re_place()
-	focus_info.info_panel_scene = info_panel_scene
-	focus_info.setup()
+
+func add_card(card, parent_card):
+	card.visible = true
+	if true:
+		for c in left_card_container.get_children():
+			left_card_container.remove_child(c)
+		left_card_container.rect_min_size = card.card_size * card.scale
+		left_card_container.rect_size = left_card_container.rect_min_size
+		left_card_container.add_child(card)
+
+	var msg = ""
+	if parent_card.get_state_exec() == "hand":
+		msg = parent_card.get_cant_pay_cost_status()
+
+	if msg:
+		left_text_container.visible = true
+		var label:Label = get_node("%InfoLabel")
+		label.text = msg
+	else:
+		left_text_container.visible = false	
+
+
 	
-	if vbc_position_mode:
-		card_focus.queue_free()
-		focus_info.queue_free()
+
+func remove_card():
+	pass
+
+func remove_all_cards():
+	for container in [left_card_container]:
+		for c in container.get_children():
+			container.remove_child(c)
 
 func reposition_vbc():
 	var mouse_pos: Vector2
@@ -106,9 +137,11 @@ func reposition_vbc():
 	var display_position = Vector2(0,0)
 	var view_size = get_viewport().size / cfc.screen_scale
 	var spacer = 15
+	$VBC.visible = false
+	
 	if _current_focus_source and is_instance_valid(_current_focus_source):	
-		var card = _current_focus_source
-		
+		var card = _previously_focused_cards[_current_focus_source]
+		$VBC.visible = true
 		#
 		#use cases where we don't want to show the preview
 		#
@@ -192,45 +225,8 @@ func reposition():
 	else:
 		$VBC.visible = false
 	
-	if vbc_position_mode:
-		reposition_vbc()
-		return
-		
-	var mouse_pos: Vector2
-	if gamepadHandler.is_mouse_input():
-		mouse_pos = get_global_mouse_position()	
-	else:
-		mouse_pos = gamepadHandler.get_approx_position()	
-	
-	var view_size = get_viewport().size / cfc.screen_scale
-			
-	if _current_focus_source and is_instance_valid(_current_focus_source)\
-			and _current_focus_source.get_state_exec() != "pile"\
-			and cfc.game_settings.focus_style == CFInt.FocusStyle.BOTH_INFO_PANELS_ONLY:
-		if mouse_pos.y + focus_info.rect_size.y/2 > view_size.y:
-			$VBC.rect_position.y = view_size.y - focus_info.rect_size.y
-		else:
-			$VBC.rect_position.y = mouse_pos.y - focus_info.rect_size.y / 2
-		if mouse_pos.x + focus_info.rect_size.x + 60 > view_size.x:
-			$VBC.rect_position.x = view_size.x - focus_info.rect_size.x
-			$VBC.rect_position.y = mouse_pos.y - 500
-		else:
-			$VBC.rect_position.x = mouse_pos.x + 60
-
-	elif _current_focus_source and is_instance_valid(_current_focus_source)\
-			and mouse_pos.x > view_size.x - canonical_size.x*2.5\
-			and mouse_pos.y < canonical_size.y*2:
-		$VBC.rect_position.x = 0
-		$VBC.rect_position.y = 0
-	elif _current_focus_source:
-		$VBC.rect_position.x = view_size.x - vbc_rect_offset.x
-		$VBC.rect_position.y = 0
-
-
-	if not is_instance_valid(_current_focus_source)\
-			and $VBC/Focus.modulate.a != 0\
-			and not $VBC/Focus/Tween.is_active():
-		$VBC/Focus.modulate.a = 0
+	reposition_vbc()
+	return
 
 func garbage_collection():
 	# The below performs some garbage collection on previously focused cards.
@@ -248,8 +244,7 @@ func garbage_collection():
 		# We don't delete old dupes, to avoid overhead to the engine
 		# insteas, we just hide them.
 		if _current_focus_source != c:
-			if vbc_position_mode or not $VBC/Focus/Tween.is_active():
-				current_dupe_focus.visible = false
+			current_dupe_focus.visible = false
 	for c in to_delete:
 		forget_card(c)
 
@@ -282,10 +277,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 			_current_focus_source.lose_focus()
 		
 		#remove children cards to always only keep one displayed
-		if vbc_position_mode:
-			for c in $VBC.get_children():
-				if c as Card:
-					$VBC.remove_child(c)
+		remove_all_cards()
 				
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world
@@ -294,8 +286,7 @@ func focus_card(card: Card, show_preview := true) -> void:
 		var dupe_focus: Card
 		if _previously_focused_cards.has(card) and is_instance_valid(_previously_focused_cards[card]):
 			dupe_focus = _previously_focused_cards[card]
-			if vbc_position_mode:
-				$VBC.add_child(dupe_focus)
+			add_card(dupe_focus, card)
 			# Not sure why, but sometimes the dupe card will report is_faceup
 			# while having the card back visible. Workaround until I figure it out.
 			if dupe_focus.get_node('Control/Back').visible == dupe_focus.is_faceup:
@@ -320,12 +311,11 @@ func focus_card(card: Card, show_preview := true) -> void:
 			#remove unecessary children
 			if dupe_focus.targeting_arrow:
 				dupe_focus.targeting_arrow.queue_free()
-			if vbc_position_mode:
-				dupe_focus.set_position(Vector2(0,0))						
-				$VBC.add_child(dupe_focus)
-			else:
-				_focus_viewport.add_child(dupe_focus)
+
+			dupe_focus.set_position(Vector2(0,0))						
+			add_card(dupe_focus, card)
 			_extra_dupe_ready(dupe_focus, card)
+
 			dupe_focus.is_faceup = card.is_faceup
 			dupe_focus.is_viewed = card.is_viewed
 			# We check that the card front was not left half-visible because it was duplicated
@@ -346,69 +336,29 @@ func focus_card(card: Card, show_preview := true) -> void:
 				c.visible = false
 			else:
 				c.visible = true
-		# If the card is facedown, we don't want the info panels
-		# giving away information
-		if is_instance_valid(focus_info):
-			if not dupe_focus.is_faceup:
-				focus_info.visible = false
-			else:
-				cfc.ov_utils.populate_info_panels(card,focus_info)
-				focus_info.visible = true
 		# We store all our previously focused cards in an array, and clean them
 		# up when they're not focused anymore
 		_previously_focused_cards[card] = dupe_focus
 
-		
-		if vbc_position_mode:					
-			garbage_collection()
-			reposition()
-
-			#hide everything and wait until display
-			for c in _previously_focused_cards.values():
-				if not is_instance_valid(c):
-					continue
-				c.visible = false		
-			yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")	
-			if is_instance_valid(_current_focus_source):
-				var c = _previously_focused_cards.get(_current_focus_source, null)
-				if is_instance_valid(c) and c == dupe_focus:
-					c.visible = true			
-			
-			return
-		
-		set_camera_position(dupe_focus)
-
-		# We always make sure to clean tweening conflicts
-		$VBC/Focus/Tween.remove_all()
-		# We do a nice alpha-modulate tween
-		$VBC/Focus/Tween.interpolate_property($VBC/Focus,'modulate',
-				$VBC/Focus.modulate, Color(1,1,1,1), 0.25,
-				Tween.TRANS_SINE, Tween.EASE_IN)
-		if focus_info.visible_details > 0:
-			$VBC/Focus/Tween.interpolate_property(focus_info,'modulate',
-					focus_info.modulate, Color(1,1,1,1), 0.25,
-					Tween.TRANS_SINE, Tween.EASE_IN)
-		else:
-			$VBC/Focus/Tween.interpolate_property(focus_info,'modulate',
-					focus_info.modulate, Color(1,1,1,0), 0.25,
-					Tween.TRANS_SINE, Tween.EASE_IN)
-		$VBC/Focus/Tween.start()
-		card_focus.visible = show_preview
-		# Now that the display panels can expand horizontally
-		# we need to set their parent container size to 0 here
-		# To ensure they are shown as expected on the screen
-		# I.e. the card doesn't appear mid-screen for no reason etc
-		card_focus.rect_size = Vector2(0,0)
-		$VBC.rect_size = Vector2(0,0)
-		
-		#handle rendering horizontal cards
-		if (card._horizontal and card.get_is_faceup()):
-			$VBC.rect_rotation = 90
-		else:
-			$VBC.rect_rotation = 0
-		
+							
 		garbage_collection()
-		reposition()		
+		reposition()
+
+		#hide everything and wait until display
+		$VBC.visible = false
+#		for c in _previously_focused_cards.values():
+#			if not is_instance_valid(c):
+#				continue
+#			c.visible = false		
+		yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")	
+		if is_instance_valid(_current_focus_source):
+			$VBC.visible = true
+#			var c = _previously_focused_cards.get(_current_focus_source, null)
+#			if is_instance_valid(c) and c == dupe_focus:
+#				c.visible = true			
+		
+		return
+			
 
 func _on_texture_reloaded(card):
 	if _previously_focused_cards.has(card):
@@ -418,39 +368,10 @@ func _on_card_reloaded(card, _details):
 	if _previously_focused_cards.has(card):
 		forget_card(card)
 
-func set_camera_position(dupe_focus):
-	if !_current_focus_source or !is_instance_valid(_current_focus_source):
-		return
-
-	# We have to copy these internal vars because they are reset
-	# see https://github.com/godotengine/godot/issues/3393
-	# We make the viewport camera focus on it
-	_focus_camera.position = dupe_focus.global_position
-	#horizontal case
-	if (_current_focus_source._horizontal) and _current_focus_source.get_state_exec() != "pile":
-		canonical_size = Vector2(_current_focus_source.canonical_size.y, _current_focus_source.canonical_size.x )	
-		vbc_rect_offset = Vector2 (30, $VBC.rect_size.x)
-		_focus_camera.set_offset(Vector2(0, -20))
-	#normal case
-	else:
-		vbc_rect_offset =  $VBC.rect_size
-		canonical_size = _current_focus_source.canonical_size 
-		_focus_camera.set_offset(Vector2(0, 0))
-
 # Hides the focus viewport when we're done looking at it
 func unfocus(card: Card) -> void:
 	if _current_focus_source == card:
 		_current_focus_source = null
-		if !vbc_position_mode:
-			$VBC/Focus/Tween.remove_all()
-			$VBC/Focus/Tween.interpolate_property($VBC/Focus,'modulate',
-					$VBC/Focus.modulate, Color(1,1,1,0), 0.25,
-					Tween.TRANS_SINE, Tween.EASE_IN)
-			if focus_info.modulate != Color(1,1,1,0):
-				$VBC/Focus/Tween.interpolate_property(focus_info,'modulate',
-						focus_info.modulate, Color(1,1,1,0), 0.25,
-						Tween.TRANS_SINE, Tween.EASE_IN)
-			$VBC/Focus/Tween.start()
 		garbage_collection()
 		reposition()
 
@@ -469,8 +390,7 @@ func _extra_dupe_preparation(dupe_focus: Card, card: Card) -> void:
 	dupe_focus.canonical_name = card.canonical_name
 	dupe_focus.canonical_id = card.canonical_id
 	dupe_focus.properties = card.properties.duplicate()
-	if is_instance_valid(focus_info):
-		focus_info.hide_all_info()
+
 
 
 # Overridable function for games to extend processing of dupe card
@@ -489,17 +409,7 @@ func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
 		dupe_focus.tokens.token_drawer(false, true)
 
 	dupe_focus.scale = Vector2(2,2) 
-func _input(event):
-	# We use this to allow the developer to take card screenshots
-	# for any number of purposes
-	if event.is_action_pressed("screenshot_card"):
-		var img = _focus_viewport.get_texture().get_data()
-		yield(get_tree(), "idle_frame")
-		yield(get_tree(), "idle_frame")
-		img.convert(Image.FORMAT_RGBA8)
-		img.flip_y()
-		img.save_png("user://" + _current_focus_source.canonical_name + ".png")
-				
+func _input(event):				
 	if event.is_action_pressed("ui_toggle_big_card"):	
 		show_card_focus = !show_card_focus
 		emit_signal("show_card_focus_changed", show_card_focus)
@@ -510,11 +420,6 @@ func _input(event):
 func _on_Viewport_size_changed() -> void:
 	resize()
 	
-func resize():
-#	var stretch_mode = cfc.get_screen_stretch_mode()
-#	if stretch_mode == SceneTree.STRETCH_MODE_2D:
-#		return
-	pass
 
 
 func toggle_glow(is_enabled := true) -> void:

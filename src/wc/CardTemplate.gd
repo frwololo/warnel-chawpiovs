@@ -13,11 +13,13 @@ signal card_texture_changed(card)
 
 var has_focus = false
 
+
 # -1 uninitialized, 0 Villain, any positive value: hero
 var _owner_hero_id  := -1
 var _controller_hero_id  := -1 setget set_controller_hero_id, get_controller_hero_id
 
 var _check_play_costs_cache: Dictionary = {}
+var cant_pay_cost_reasons:= {}
 var _cache_resource_value: = {}
 var _cache_refresh_needed:= false
 var _cached_all_traits = null
@@ -2669,6 +2671,8 @@ func exhaustme(toggle := false,
 			tags := ["Manual"]) :
 
 	if get_property("cannot_exhaust", 0, true):
+		if check:
+			cant_pay_cost_report("exhaust", "card cannot be exhausted")
 		return CFConst.ReturnCode.FAILED
 				
 	var rot = 90	
@@ -2681,10 +2685,15 @@ func exhaustme(toggle := false,
 		_set_target_rotation(rot)
 			
 	if 	(is_exhausted() or get_cost_context("exhausted"))	and not toggle:
+		if check:
+			cant_pay_cost_report("exhaust", "card already exhausted")		
 		return CFConst.ReturnCode.OK		
 					
 	var retcode = set_card_rotation(rot, toggle, start_tween, check, tags)
-	if retcode != CFConst.ReturnCode.FAILED:
+	if retcode == CFConst.ReturnCode.FAILED:
+		if check:
+			cant_pay_cost_report("exhaust", "rotation error??")			
+	else:
 		if check:
 			set_cost_context("exhausted", true)
 		else:
@@ -2980,8 +2989,27 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	var result = check_play_cost_refresh(hero_id, params, _debug)
 	return result["status"]
 
+func cant_pay_cost_report(category, message):
+	if 	!cant_pay_cost_reasons.has(category):
+		cant_pay_cost_reasons[category] = []
+	cant_pay_cost_reasons[category].append(message)
+
+func get_cant_pay_cost_status():
+	if !cant_pay_cost_reasons:
+		return ""
+	var msg = ""
+	var separator = ""
+	for key in cant_pay_cost_reasons:
+		for reason in cant_pay_cost_reasons[key]:
+			msg +=  separator + reason 
+			separator = "\n"
+	return msg
+
 func check_play_cost_refresh(hero_id, params:Dictionary = {}, _debug = false) -> Dictionary:
+	#init the result to "can't play" (IMPOSSIBLE) then move the status
+	#to "OK" only if all costs can be paid
 	_check_play_costs_cache[hero_id] = CFConst.CostsState.IMPOSSIBLE
+	cant_pay_cost_reasons = {}
 
 	#cards that can be played:
 	#cards in hand or on board
@@ -2989,6 +3017,7 @@ func check_play_cost_refresh(hero_id, params:Dictionary = {}, _debug = false) ->
 	#(that is, cards in piles that can exceptionally be played from outside of board/hand)
 	var all_states_allowed = (params.get("state_exec", "") == "all")
 	if !is_playable_card_state() and !all_states_allowed:
+		cant_pay_cost_report("card state", "card not in play or in hand")
 		return {
 				"reason": "is_playable_card_state",
 				"status" :_check_play_costs_cache[hero_id]

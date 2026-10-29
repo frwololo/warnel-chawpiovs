@@ -112,7 +112,8 @@ func add_card(card, parent_card):
 	else:
 		left_text_container.visible = false	
 
-
+	#attempt at fixing a nasty bug where card shows up rotated
+	reposition()
 	
 
 func remove_card():
@@ -140,8 +141,9 @@ func reposition_vbc():
 	$VBC.visible = false
 	
 	if _current_focus_source and is_instance_valid(_current_focus_source):	
-		var card = _previously_focused_cards[_current_focus_source]
-		$VBC.visible = true
+		var preview_card = _current_focus_source #_previously_focused_cards[_current_focus_source]
+		var card = _current_focus_source
+
 		#
 		#use cases where we don't want to show the preview
 		#
@@ -163,10 +165,10 @@ func reposition_vbc():
 			return
 		
 		
-			
+		$VBC.visible = true			
 		#We're showing the preview! keep processing	
-		var multiplier =  card.focused_scale #* cfc.curr_scale		
-		display_size = card.canonical_size * multiplier
+		var multiplier =  preview_card.focused_scale #* cfc.curr_scale		
+		display_size = preview_card.canonical_size * multiplier
 		var board_card_size = card.card_size * card.scale
 		var board_top_left_corner = card._control.get_global_position()
 		var source_bounding:Rect2 = Rect2(board_top_left_corner,board_card_size)
@@ -220,10 +222,10 @@ func reposition_vbc():
 
 
 func reposition():
-	if show_card_focus:
-		$VBC.visible = true
-	else:
-		$VBC.visible = false
+#	if show_card_focus:
+#		$VBC.visible = true
+#	else:
+#		$VBC.visible = false
 	
 	reposition_vbc()
 	return
@@ -278,7 +280,7 @@ func focus_card(card: Card, _show_preview := true) -> void:
 		
 		#remove children cards to always only keep one displayed
 		remove_all_cards()
-				
+		_current_focus_source = card		
 		# We make a duplicate of the card to display and add it on its own in
 		# our viewport world
 		# This way we can standardize its scale and look and not worry about
@@ -352,10 +354,10 @@ func focus_card(card: Card, _show_preview := true) -> void:
 #			c.visible = false		
 		yield(get_tree().create_timer(WAIT_BEFORE_PREVIEW), "timeout")	
 		if is_instance_valid(_current_focus_source):
-			$VBC.visible = true
-#			var c = _previously_focused_cards.get(_current_focus_source, null)
-#			if is_instance_valid(c) and c == dupe_focus:
-#				c.visible = true			
+			var c = _previously_focused_cards.get(_current_focus_source, null)
+			if is_instance_valid(c) and c == dupe_focus:
+				reposition()
+				#c.visible = true			
 		
 		return
 			

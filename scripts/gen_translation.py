@@ -21,7 +21,7 @@ for card in parsed_json:
     card_id = card["code"]
     print (card_id)
     fr_data = {}
-    fr_data["name"] = card["name"]
+    fr_data["Name"] = card["name"]
     fr_data["text"] = card.get("text", "")
     if card.get("flavor", ""):
       fr_data["flavor"] = card.get("flavor", "")

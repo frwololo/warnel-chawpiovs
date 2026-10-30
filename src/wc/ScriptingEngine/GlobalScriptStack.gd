@@ -1094,7 +1094,10 @@ master func master_check_fingerprint(fingerprint):
 				cfc.LOG_DICT(my_status, true)
 				cfc.LOG("Their Status:{" +str(k) +"}", true)
 				cfc.LOG_DICT(other_status, true)
-				cfc._rpc(self,"clients_schedule_resync")						
+				if gameData.testSuite:
+					gameData.testSuite.force_fail_current_test("clients out of sync" + JSON.print({"my_status": my_status, "their_status" : other_status}))
+				else:
+					cfc._rpc(self,"clients_schedule_resync")						
 		_ack_received.erase(checksum)
 
 

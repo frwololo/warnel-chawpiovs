@@ -77,6 +77,7 @@ var test_conditions: Dictionary
 var actions:Array
 var current_action:int = 0
 var current_playing_hero_id: int = 0
+var _force_failed = ""
 
 var game_loaded:bool = false
 
@@ -192,7 +193,8 @@ func reset_between_tests():
 	_current_selection_windows = []
 	_current_targeting_card = null
 	_current_targeted_card = null
-	_action_ongoing = 0	
+	_action_ongoing = 0
+	_force_failed = ""	
 	if cfc.is_game_master():
 		var my_seed = "test suite"
 		var my_state = 0
@@ -985,7 +987,14 @@ mastersync func test_finalized(result):
 		_allclients_finalized = {}
 		var _next = next_test()
 
+func force_fail_current_test(msg):
+	_force_failed = msg
+
 func check_test_passed(current_gamestate):
+	if _force_failed:
+		failed_reason.append(_force_failed)
+		return false
+		
 	if !(is_element1_in_element2(end_state, current_gamestate)):
 		return false
 	

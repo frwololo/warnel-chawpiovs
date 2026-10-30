@@ -289,6 +289,13 @@ func load_text():
 
 func load_from_event(event):
 	stack_event = event
+	var sceng = stack_event.get_sceng()
+	
+	#don't show the message if this was paid for manually
+	if sceng and sceng.trigger_details.get("network_prepaid", {}):
+		terminate()
+		return
+		
 	owner_card = stack_event.get_owner()
 	if !owner_card:
 		#There's an edge case where only irrelevant actions (e.g. only nop) are in the stack_event

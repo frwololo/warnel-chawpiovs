@@ -51,6 +51,7 @@ const RunModeStr := [
 	"PENDING_USER_INTERACTION", #I detected that another user interaction is required
 ]
 
+var _incoming_network_events := []
 var all_clients_status:= {}
 var run_mode = RUN_MODE.NOTHING_TO_RUN
 var interrupt_mode = InterruptMode.NONE
@@ -60,7 +61,6 @@ var _current_interrupting_cards:= []
 var throttle_after_no_brakes:int = 0
 var pending_stack_yield = {}
 const yield_max_wait_time : float= 5.0
-var yield_wait_time: float= 0
 var history := {}
 var pending_interaction_checksums := {}
 var sync_enabled = true
@@ -146,7 +146,6 @@ func _refresh_interrupt_cache():
 	_interrupt_cache["needs_refresh"] = true
 
 func add_yield_counter(name):
-	yield_wait_time = 0
 	if !pending_stack_yield.has(name):
 		pending_stack_yield[name] = 0
 	pending_stack_yield[name] +=1
@@ -158,7 +157,6 @@ func remove_yield_counter(name):
 	pending_stack_yield[name] -=1
 	if pending_stack_yield[name] <= 0:
 		pending_stack_yield.erase(name)
-	yield_wait_time = 0
 					
 func create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum):
 
@@ -324,7 +322,6 @@ mastersync func master_create_and_add_script(expected_run_mode, state_scripts, o
 	var client_id = cfc.get_rpc_sender_id() 
 	set_client_status(client_id, "run_mode", RUN_MODE.PENDING_REQUEST_ACK)	
 	var original_details = {
-		"type": "script",
 		"state_scripts": state_scripts,
 		"owner_uid": owner_uid, 
 		"trigger_card_uid": trigger_card_uid,  
@@ -396,52 +393,82 @@ func get_allowed_interrupting_cards():
 
 var _ack_received = {}
 master func from_client_script_received_ack(expected_run_mode, checksum):
+	var acks = _ack_received.get(checksum, {})
 	var client_id = cfc.get_rpc_sender_id()
-	_ack_received[client_id] = true
-	if _ack_received.size() == gameData.network_players.size():
-		_ack_received = {}
+	acks[client_id] = true
+	_ack_received[checksum] = acks
+	if acks.size() == gameData.network_players.size():
+		_ack_received.erase(checksum)
 		cfc._rpc(self,"resume_operations", expected_run_mode, checksum)
 	
 
+func add_incoming_network_event(data):
+	data["waited"] = 0.0
+	_incoming_network_events.append(data)
+
+	#if I'm the requester, process instantly. 
+	#TODO this might lead to errors?
+#	if data.requester == cfc.get_network_unique_id():
+#		_process_incoming_network_events(0.0)
+		
 remotesync func client_create_and_add_stackobject( original_requester_id, expected_run_mode, details, checksum):
 	var client_id = cfc.get_rpc_sender_id()
 					
-	var type = details["type"]
-	display_debug(str(client_id) + " wants me to add a " + type + "- " + checksum )
-	var stackEvent = null
-	match type:
-		"simplescript":
-			#TODO
-			#stackEvent = client_create_simplescript(details)
-			pass
-		"signal":
-			#TODO
-			#stackEvent = client_create_signal( details)
-			pass
-		_:	
-			stackEvent = client_create_script(details)
+	display_debug(str(client_id) + " wants me to add a script - " + checksum )
+	add_incoming_network_event({
+		"type": "add_stack_object",
+		"requester": original_requester_id,
+		"expected_run_mode": expected_run_mode,
+		"details": details, 
+		"checksum": checksum})	
+	
 
-	if !stackEvent:
-		var _error = 1
-		return
+func _process_incoming_network_events(delta):
+	if _incoming_network_events.empty():
+		return false
+	var ev = _incoming_network_events[0]
+	if ev.requester != cfc.get_network_unique_id() and sync_enabled \
+			and run_mode != ev.expected_run_mode:
+		ev.waited += delta
+		display_debug("yield for " + RunModeStr[ev.expected_run_mode] + " in " + ev.type)
+		if ev.waited < yield_max_wait_time:
+			return false  # keep waiting, and keep the order
+		send_error_to_master("{error} timeout waiting for " + RunModeStr[ev.expected_run_mode] + " - " + ev.checksum)
+	_incoming_network_events.pop_front()
+	match ev.type:
+		"add_stack_object":
+			var stackEvent = client_create_script(ev.details)
+			if stackEvent:
+				add_event_to_stack(stackEvent, ev.checksum)
+				if ev.details.get("trigger", "") == "manual":
+					emit_signal("manual_interaction_added_to_stack", ev.details)
+			cfc._rpc_id(self, 1, "from_client_script_received_ack", ev.expected_run_mode, ev.checksum)
+			return stackEvent
+		"resume_operations":
+			if ev.expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION:
+				if !pending_interaction_checksums.has(ev.checksum):
+					send_error_to_master("error in resume_operations, unaware of pending interaction " + ev.checksum)
+				pending_interaction_checksums.erase(ev.checksum)
+	
+			set_run_mode(RUN_MODE.NO_BRAKES, "resume_operations")			
+		"clients_pass_interrupt":
+			#TODO ensure that caller network id actually controls that hero
+			reset_phase_buttons()
+			_heroes_passed_optional_interrupt[ev.details["hero_id"]] = true
+			set_run_mode(RUN_MODE.NO_BRAKES, "clients_pass_interrupt")			
+		"clients_pass_interrupt_for_card":
+			add_card_already_played(ev.details["event_uid"], ev.details["card"])			
+		_:
+			#unsupported
+			return false
 
-	add_yield_counter("client_create_and_add_stackobject")
-	#the expectation here is that all clients will reach either 
-	# "NOTHING TO RUN" or "PENDING USER INTERACTION" and be in sync with the current ask
-	if original_requester_id != cfc.get_network_unique_id():	
-		while (yield_wait_time < yield_max_wait_time) and sync_enabled and run_mode != expected_run_mode:
-			display_debug("yield for " + RunModeStr[expected_run_mode] + " in client_create_and_add_stackobject for " + checksum)
-			yield(get_tree().create_timer(0.1), "timeout")
-			yield_wait_time+= 0.1
-	remove_yield_counter("client_create_and_add_stackobject")
-		
-	add_event_to_stack(stackEvent, checksum)
-	if details.get("trigger", "") == "manual":
-		emit_signal("manual_interaction_added_to_stack", details)	
-	cfc._rpc_id(self,1, "from_client_script_received_ack", expected_run_mode, checksum)
+func send_error_to_master(error_message):
+	#todo send error message to master to attempt recovery
+	display_debug(error_message)
 
 func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
 	add_yield_counter("set_pending_network_interaction")
+	var yield_wait_time = 0.0
 	while (yield_wait_time < yield_max_wait_time) and _pending_flush:
 		display_debug("flush ongoing in set_pending_network_interaction")
 		yield(get_tree().create_timer(0.1), "timeout")
@@ -465,22 +492,11 @@ remotesync func resume_operations(expected_run_mode, checksum):
 #	if stack.empty() or run_mode == RUN_MODE.NO_BRAKES:
 #		var _error = 1
 
-	add_yield_counter("resume_operations")
-	#the expectation here is that all clients will reach
-	# either "NOTHING" or PENDING USER INTERACTION" and be in sync with the current ask
-	if client_id != cfc.get_network_unique_id():	
-		while (yield_wait_time < yield_max_wait_time) and sync_enabled and run_mode != expected_run_mode :
-			display_debug("yield for " + RunModeStr[expected_run_mode] + " in resume_operations")
-			yield(get_tree().create_timer(0.1), "timeout")
-			yield_wait_time+= 0.1
-	remove_yield_counter("resume_operations")
-	
-	if expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION:
-		if !pending_interaction_checksums.has(checksum):
-			display_debug("error in resume_operations, unaware of pending interaction " + checksum)
-		pending_interaction_checksums.erase(checksum)
-	
-	set_run_mode(RUN_MODE.NO_BRAKES, "resume_operations")
+	add_incoming_network_event({
+		"type": "resume_operations",
+		"requester":client_id,
+		"expected_run_mode": expected_run_mode,
+		"checksum": checksum})	
 
 			
 func client_create_script(details):
@@ -728,8 +744,14 @@ func add_context_and_script(context_name, script):
 func add_script(stackEvent, context:= {}):
 	add_script_and_run(stackEvent, context)
 
+
+
+
 var _sent_about_to_execute_signal = {}
-func _process(_delta: float):
+func _process(delta: float):
+	if _process_incoming_network_events(delta):
+		return
+		
 	display_debug_info()
 	
 	show_server_activity()
@@ -827,6 +849,7 @@ func reset_phase_buttons():
 func activate_exclusive_hero(hero_id):
 	add_yield_counter("activate_exclusive_hero")
 	for network_id in all_clients_status:
+		var yield_wait_time = 0.0
 		while (yield_wait_time < yield_max_wait_time) and get_client_status(network_id, "run_mode") != RUN_MODE.PENDING_USER_INTERACTION:
 			display_debug("yield for other clients in activate_exclusive_hero")
 			yield(get_tree().create_timer(0.1), "timeout")
@@ -891,18 +914,13 @@ remotesync func clients_pass_interrupt (hero_id):
 	var client_id = cfc.get_rpc_sender_id()
 	display_debug(str(client_id) + " wants to pass for hero:" + str(hero_id) )
 
-	add_yield_counter("clients_pass_interrupt")
-	while (yield_wait_time < yield_max_wait_time) and run_mode != RUN_MODE.PENDING_USER_INTERACTION:
-		display_debug("yield for PENDING_USER_INTERACTION in clients_pass_interrupt")
-		yield(get_tree().create_timer(0.1), "timeout")
-		yield_wait_time+= 0.1
-	remove_yield_counter("clients_pass_interrupt")
-	
+	add_incoming_network_event({
+		"type": "clients_pass_interrupt",
+		"requester":client_id,
+		"details": {"hero_id": hero_id},
+		"expected_run_mode": RUN_MODE.PENDING_USER_INTERACTION,
+		"checksum": "pass_interrupt_" + str(hero_id)})	
 
-	#TODO ensure that caller network id actually controls that hero
-	reset_phase_buttons()
-	_heroes_passed_optional_interrupt[hero_id] = true
-	set_run_mode(RUN_MODE.NO_BRAKES, "clients_pass_interrupt")
 
 func pass_interrupt_for_card (event, card):
 	var guid = guidMaster.get_guid(card)
@@ -914,15 +932,13 @@ remotesync func clients_pass_interrupt_for_card (event_uid, card_guid):
 	var card = guidMaster.get_object_by_guid(card_guid)
 	display_debug(str(client_id) + " wants to pass for card:" + card.canonical_name )
 
-	add_yield_counter("clients_pass_interrupt_for_card")
-	while (yield_wait_time < yield_max_wait_time) and run_mode != RUN_MODE.PENDING_USER_INTERACTION:
-		display_debug("yield for PENDING_USER_INTERACTION in clients_pass_interrupt")
-		yield(get_tree().create_timer(0.1), "timeout")
-		yield_wait_time+= 0.1
-	remove_yield_counter("clients_pass_interrupt_for_card")
-	
-
-	add_card_already_played(event_uid, card)
+	add_incoming_network_event({
+		"type": "clients_pass_interrupt_for_card",
+		"requester":client_id,
+		"details": {"card": card, "card_guid": "card_guid", "event_uid": event_uid},
+		"expected_run_mode": RUN_MODE.PENDING_USER_INTERACTION,
+		"checksum": "pass_interrupt_for_card" + str(card_guid)	
+	})
 
 
 #forced activation of card for forced interrupt
@@ -1106,7 +1122,11 @@ func compute_interrupts(script):
 						var guid = guidMaster.get_guid(card)
 						my_interrupters[guid] = true
 						interrupters_found = true
-				potential_interrupters[hero_id] = my_interrupters.keys()		
+						
+				#sort cards by guid to preserve order in network games
+				var keys = my_interrupters.keys()
+				keys.sort_custom(WCUtils, "sort_by_guid")
+				potential_interrupters[hero_id] = keys								
 			
 			#we break here if we found interrupters for the current subtask
 			#this ensures the _current_interrupted_event variable matches the current interruption
@@ -1351,7 +1371,9 @@ func is_idle(basic = false):
 
 	if pending_stack_yield:
 		return false
-		
+	
+	if !_incoming_network_events.empty():
+		return false	
 		
 	if !stack.empty():
 		return false
@@ -1529,6 +1551,8 @@ func reset():
 	if pending_stack_yield:
 		cfc.LOG("error in stack reset: pending_stack_yield :" + to_json(pending_stack_yield))	
 	pending_stack_yield = {}
+	_incoming_network_events = []
+	
 	
 	all_clients_status = {}
 	run_mode = RUN_MODE.NOTHING_TO_RUN

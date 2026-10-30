@@ -335,6 +335,8 @@ static func sort_stage(a, b):
 static func sort_cards(a, b):
 	return (a.get("card") < b.get("card"))
 
+static func sort_by_guid(a, b):
+	return guidMaster.guid_to_int(a) < guidMaster.guid_to_int(b)
 	
 static func to_grayscale(_texture : Texture) -> Texture:
 	var texture = _texture

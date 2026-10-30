@@ -183,7 +183,10 @@ func load_next_step(next_step):
 			post_cards_moved_load()
 			#next step called from within function
 		LOADING_STEPS.READY_TO_START:
-			offer_to_load_last_game()
+			var can_load = offer_to_load_last_game()
+			if !can_load:
+				#cleanup previous save folder if there's no way to reload the previous game
+				gameData.init_save_folder()
 			#need to move gamePadHandler below any potential dialog box to ensure it captures events beforehand
 			get_tree().root.move_child(gamepadHandler, get_tree().root.get_children().size()-1)
 		LOADING_STEPS.SCENARIO_DESCRIPTION:
@@ -238,24 +241,24 @@ func offer_to_load_last_game():
 	#we need to resolve https://github.com/frwololo/warnel-chawpiovs/issues/2
 	#before we enable this functionality again	
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
-	return	
+	return false
 	#/TODO
 	
 	# warning-ignore:UNREACHABLE_CODE
 	if !cfc.is_game_master():
 		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
-		return
+		return false
 		
 	var json_data = gameData.get_ongoing_game()
 	if !json_data:
 		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
-		return
+		return false
 
 	#only offer to load if the previous save game had the same number of heroes
 	var hero_data:Array = json_data.get("heroes", [])	
 	if hero_data.size() != gameData.get_team_size():
 		cfc._rpc(self,"ready_for_step", LOADING_STEPS.SCENARIO_DESCRIPTION)
-		return
+		return false
 
 		
 	var load_dialog:ConfirmationDialog = ConfirmationDialog.new()
@@ -266,6 +269,7 @@ func offer_to_load_last_game():
 	load_dialog.connect("confirmed", self, "_load_last_game")
 	add_child(load_dialog)
 	load_dialog.popup_centered()
+	return true
 
 remotesync func set_random_seed(my_seed):
 	cfc.LOG("setting random seed to " + str(my_seed))
@@ -1544,7 +1548,14 @@ func _current_playing_hero_changed (trigger_details: Dictionary = {}):
 
 
 
-func savestate_to_json() -> Dictionary:	
+func savestate_to_json() -> Dictionary:
+	
+	#force refresh card status before saving game
+	#we try to minimize expensive calls, so this only calls
+	#functions for which I've seen errors in the past	
+	for card in get_all_cards(true):
+		card.refresh_dummy_alterants()
+		
 	var json_data:Dictionary = {}
 	var seen_cards:= {}
 	var GRID_SETUP = gameData.scenario.grid_setup	

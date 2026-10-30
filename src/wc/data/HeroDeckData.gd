@@ -155,8 +155,8 @@ func loadstate_from_json(json:Dictionary) -> bool:
 		if deck_id > 0:
 			load_deck_data_from_local_id(deck_id)
 		else:
-			var fallback_deck_data = cfc.get_deck_data_for_hero(_hero_id)[0]
-			deck_data = fallback_deck_data.duplicate(true)
+			#fallback
+			deck_data = get_hero_base_deck(_hero_id)
 		
 
 	return true

@@ -1,0 +1,560 @@
+{
+	"_comments": "Bug: Hulk attacks, then draws a physical card, changes villain form",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "01001a"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "01029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Breakin' & Takin' #01107",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard to Keep Down #01104",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Crowd Control #01108",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Armored Rhino Suit #01098",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 27
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Spider-Man #01001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Iron Man #01029a",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Highway Robbery #01166",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Vulture #01167",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sweeping Swoop #01168",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sweeping Swoop #01168",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Vulture's Plans #01169",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Imminent Overload #01171",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Whiplash #01172",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electric Whip Attack #01173",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electric Whip Attack #01173",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electromagnetic Backlash #01174",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rhino - 2 #01095",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Break-In! - 1A #01097a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Business Problems #01170",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength #01090",
+					"owner_hero_id": 1,
+				}
+			],
+			"discard1": [
+				{
+					"card": "Enhanced Spider-Sense #01004",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #01001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daredevil - Matt Murdock #01058",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Helicarrier #01092",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heroic Intuition #01065",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Surveillance Team #01064",
+					"owner_hero_id": 1,
+					"tokens": {
+						"snoop": 1
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "snoop"
+					}
+				},
+				{
+					"card": "Aunt May #01006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Web-Shooter #01008",
+					"owner_hero_id": 1,
+					"exhausted": true,
+					"tokens": {
+						"web": 2
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "web"
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Nick Fury #01084",
+					"owner_hero_id": 1
+				}
+			],
+			"deck2": [
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Uppercut #01054",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Uppercut #01054",
+					"owner_hero_id": 2
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man #01029a",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"allies2": [
+				{
+					"card": "Hulk - Bruce Banner #01050",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Armor #01036",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Rocket Boots #01039",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Stark Tower #01034",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Pepper Potts #01033",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Arc Reactor #01035",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Powered Gauntlets #01038",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Powered Gauntlets #01038",
+					"owner_hero_id": 2
+				}
+			],
+			"hand2": [
+				{
+					"card": "War Machine - James Rhodes #01030",
+					"owner_hero_id": 2
+				}
+			],
+			"others": [
+				{
+					"card": "Charge #01099",
+					"owner_hero_id": 0,
+					"host": "01094"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Hulk - Bruce Banner #01050",
+			"hero": 2
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1 #01094",
+			"hero": 2
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 2 #01095",
+			"hero": 2,
+			"_comments": "side attack from Hulk"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "01001a"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "01029a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hard to Keep Down #01104",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Crowd Control #01108",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Armored Rhino Suit #01098",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 2 #01095",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				},
+				{
+					"card": "Breakin' & Takin' #01107",
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Spider-Man #01001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Iron Man #01029a",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Highway Robbery #01166",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Vulture #01167",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sweeping Swoop #01168",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sweeping Swoop #01168",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Vulture's Plans #01169",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Imminent Overload #01171",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Whiplash #01172",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electric Whip Attack #01173",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electric Whip Attack #01173",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electromagnetic Backlash #01174",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rhino - 1 #01094",
+					"owner_hero_id": 0
+				}				
+			],
+			"removed_from_game": [
+				{
+					"card": "The Break-In! - 1A #01097a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Business Problems #01170",
+					"owner_hero_id": 0
+				},
+
+			],
+			"deck1": [
+				{
+					"card": "Strength #01090",
+					"owner_hero_id": 1,
+				}
+			],
+			"discard1": [
+				{
+					"card": "Enhanced Spider-Sense #01004",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Man #01001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daredevil - Matt Murdock #01058",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Helicarrier #01092",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heroic Intuition #01065",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Surveillance Team #01064",
+					"owner_hero_id": 1,
+					"tokens": {
+						"snoop": 1
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "snoop"
+					}
+				},
+				{
+					"card": "Aunt May #01006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Web-Shooter #01008",
+					"owner_hero_id": 1,
+					"exhausted": true,
+					"tokens": {
+						"web": 2
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "web"
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Nick Fury #01084",
+					"owner_hero_id": 1
+				}
+			],
+			"deck2": [
+				{
+					"card": "Energy #01088",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Uppercut #01054",
+					"owner_hero_id": 2
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man #01029a",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"allies2": [
+				{
+					"card": "Hulk - Bruce Banner #01050",
+					"owner_hero_id": 2,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Armor #01036",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Rocket Boots #01039",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Stark Tower #01034",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Pepper Potts #01033",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Arc Reactor #01035",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Powered Gauntlets #01038",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Powered Gauntlets #01038",
+					"owner_hero_id": 2
+				}
+			],
+			"discard2": [
+				{
+					"card": "Uppercut #01054",
+					"owner_hero_id": 2
+				}
+			],
+			"hand2": [
+				{
+					"card": "War Machine - James Rhodes #01030",
+					"owner_hero_id": 2
+				}
+			],
+			"others": [
+				{
+					"card": "Charge #01099",
+					"owner_hero_id": 0,
+					"host": "01094"
+				}
+			]
+		}
+	}
+}

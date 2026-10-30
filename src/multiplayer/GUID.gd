@@ -10,7 +10,8 @@ var current_guid_int:int = 0
 var guid_to_object:Dictionary = {}
 var guid_to_name: Dictionary = {}
 var object_to_guid:Dictionary = {}
-
+var _guids_check_data_cache = {}	
+var _guids_check_data_hash_cache = ""	
 
 func int_to_guid(int_guid:int) -> String:
 	return "guid_" + str(int_guid)
@@ -34,13 +35,18 @@ func set_guid(stuff) -> int:
 		return object_to_guid[stuff]
 	current_guid_int += 1
 	var current_guid = int_to_guid(current_guid_int)
-	guid_to_object[current_guid] = stuff
+	add_guid_to_object(current_guid, stuff)
 	if "canonical_name" in stuff:
 		guid_to_name[current_guid] = stuff.canonical_name
 	else:
 		guid_to_name[current_guid] = stuff.name
 	object_to_guid[stuff] = current_guid
 	return current_guid
+
+func add_guid_to_object(guid, stuff):
+	_guids_check_data_cache = {}
+	_guids_check_data_hash_cache = ""
+	guid_to_object[guid] = stuff
 	
 func get_guid(stuff) -> String:
 	if (object_to_guid.has(stuff)):
@@ -55,7 +61,7 @@ func get_object_by_guid(uid:String):
 
 #Forces a specific guid to align all network clients	
 remote func force_set_guid(stuff, uid) -> String:
-	guid_to_object[uid] = stuff
+	add_guid_to_object(uid, stuff)
 	object_to_guid[stuff] = uid
 	var uid_int =  guid_to_int(uid)
 	#set current_guid to this value for next occurrences as needed
@@ -84,18 +90,23 @@ func array_of_guid_to_objects(uids:Array, int_passthrough = false)-> Array:
 			var o = get_object_by_guid(uid)
 			results.append(o)
 	return results
-	
-func get_guids_check_data():
-	var result = {}
-	for guid in guid_to_object:
-		result[guid] = guid_to_name[guid]
-	return result
+
+
+func get_guids_check_data(hash_mode = false):
+	if !_guids_check_data_cache:
+		for guid in guid_to_object:
+			_guids_check_data_cache[guid] = guid_to_name[guid]
+		_guids_check_data_hash_cache = WCUtils.ordered_hash(_guids_check_data_cache)
+	if hash_mode:
+		return _guids_check_data_hash_cache
+	return _guids_check_data_cache
 
 func reset():
 	current_guid_int = 0
 	guid_to_object = {}
 	guid_to_name = {}
 	object_to_guid = {}
+	_guids_check_data_cache = {}	
 
 func replace_guids_to_objects (script_definition):
 	var result

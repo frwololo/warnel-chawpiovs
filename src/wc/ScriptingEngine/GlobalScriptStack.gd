@@ -982,9 +982,7 @@ func flush_script(stack_object):
 		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
 		return
 	
-	for t in stack_object.get_tasks():
-		if t.script_name =="temporary_effect":
-			var _tmp = 1
+
 	var execute_mode = stack_object.next_execute_mode()
 
 	var func_return = stack_object.execute()	
@@ -1050,6 +1048,42 @@ func flush_script(stack_object):
 		emit_signal("script_executed_from_stack", stack_object )		
 	_pending_flush.erase(uid)
 	_stash_pending_flush.erase(uid)	
+	
+	#Sanity check for network
+	var owner_guid = 0
+	var owner = stack_object.get_owner()
+	if owner:
+		owner_guid = guidMaster.get_guid(owner)
+	var fingerprint = {
+		"uid": uid, 
+		"task_name": stack_object.get_first_task_name(),
+		"rng": cfc.game_rng.state,
+		"owner_guid": owner_guid,
+		"all_guids_hash": guidMaster.get_guids_check_data(true)
+	}
+	cfc._rpc_id(self, 1, "master_check_fingerprint", fingerprint)	
+
+master func master_check_fingerprint(fingerprint):
+	var uid = fingerprint.uid
+	var checksum = "fingerprint_" + str(uid)
+	var acks = _ack_received.get(checksum, {})
+	var client_id = cfc.get_rpc_sender_id()
+	acks[client_id] = fingerprint
+	_ack_received[checksum] = acks
+	if acks.size() == gameData.network_players.size():
+		var my_network_id = cfc.get_network_unique_id()
+		var my_status = acks[my_network_id]
+		for k in acks:
+			var other_status = acks[k]
+			if !(WCUtils.json_equal(my_status, other_status)):
+				cfc.LOG("{error} Desync at fingerprint Step", true)
+				cfc.LOG("My Status:", true)
+				cfc.LOG_DICT(my_status, true)
+				cfc.LOG("Their Status:{" +str(k) +"}", true)
+				cfc.LOG_DICT(other_status, true)						
+		_ack_received.erase(checksum)
+	
+	
 
 func compute_interrupts(script):
 	if !script:

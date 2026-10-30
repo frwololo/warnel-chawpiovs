@@ -9,11 +9,28 @@ var display_name: = ""
 var interrupt_marker = false
 var context_marker = false
 var owner_identity = null
+var object_log = []
 
 #task elements, generally speaking, should be ScriptTask objects
 #at the very least, they need a script_definition and a script_name value
 var tasks:= []
 
+#
+#Debug functions
+#
+func add_log(value):
+	object_log.append(value)
+
+func print_log():
+	var result = ""
+	for stuff in object_log:
+		result = stuff + "\n"
+	return result
+	
+#	
+# END Debug functions	
+#
+	
 func set_stack_uid(uid):
 	stack_uid = uid
 

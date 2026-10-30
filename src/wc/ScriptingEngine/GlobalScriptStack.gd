@@ -749,6 +749,14 @@ func add_script(stackEvent, context:= {}):
 
 var _sent_about_to_execute_signal = {}
 func _process(delta: float):
+	
+	#resync is supposed to happened but might get stuck here
+	if _resync_scheduled:
+		_force_resync_timer += delta
+		if _force_resync_timer > 5:
+			attempt_resync()
+			return	
+	
 	if _process_incoming_network_events(delta):
 		return
 		
@@ -760,7 +768,12 @@ func _process(delta: float):
 		if yielded_scripts:
 			attempt_yielded_script()
 			return
-			
+		#nothing on the stack and we're aware of a desync, attempt to fix
+		if _resync_scheduled:
+			if _resync_scheduled == 1:
+				attempt_resync()
+			return
+		
 	if run_mode != RUN_MODE.NO_BRAKES:
 		return
 
@@ -1080,10 +1093,53 @@ master func master_check_fingerprint(fingerprint):
 				cfc.LOG("My Status:", true)
 				cfc.LOG_DICT(my_status, true)
 				cfc.LOG("Their Status:{" +str(k) +"}", true)
-				cfc.LOG_DICT(other_status, true)						
+				cfc.LOG_DICT(other_status, true)
+				cfc._rpc(self,"clients_schedule_resync")						
 		_ack_received.erase(checksum)
-	
-	
+
+
+var _resync_scheduled = 0
+var _force_resync_timer = 0.0
+remotesync func clients_schedule_resync():
+	_resync_scheduled = 1
+
+#a desync happened, we're going to try and fix it when the stack is idle everywhere
+func attempt_resync():
+	var board_status = gameData.save_gamedata()	
+	_resync_scheduled =  2
+	cfc._rpc_id(self, 1, "master_resync", board_status)
+
+remotesync func clients_resync_attempted():
+	_resync_scheduled = 0
+
+master func master_resync(board_status):
+	var checksum = "resync"
+	var acks = _ack_received.get(checksum, {})
+	var client_id = cfc.get_rpc_sender_id()
+	acks[client_id] = board_status
+	_ack_received[checksum] = acks
+	if acks.size() == gameData.network_players.size():
+		var my_network_id = cfc.get_network_unique_id()
+		var my_status = acks[my_network_id]
+		var needs_reload = false
+		for k in acks:
+			var other_status = acks[k]
+			if !(WCUtils.json_equal(my_status, other_status)):
+				needs_reload = true					
+		_ack_received.erase(checksum)
+
+		if needs_reload:
+			cfc.LOG("{error} desync confirmed, attempting to resync", true)
+			gameData.load_gamedata(my_status)	
+		else:
+			cfc.LOG("{warning} There was a desync but everything seems in order right now, won't do anything", true)
+			
+		cfc._rpc(self,"clients_resync_attempted")	
+			
+
+
+
+
 
 func compute_interrupts(script):
 	if !script:

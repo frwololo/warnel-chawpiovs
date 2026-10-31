@@ -1282,8 +1282,7 @@ func receive_damage(script: ScriptTask) -> int:
 			var new_action = {
 				"state_scripts_dict": state_scripts_dict
 			}
-#				var task_event = SimplifiedStackScript.new(indirect_damage_script_definition, attacker)
-#				gameData.theStack.add_script(task_event)
+
 			attacker.execute_scripts(attacker, "__damage_replacement__", new_action)
 			#TODO the return here implies that this replacement to indirect damage will only
 			#ever work if there's only one target. I'm not sure how future proof this is
@@ -2863,6 +2862,7 @@ func _add_receive_threat_on_stack(amount, original_script, modifications:Diction
 		var receive_threat_script = _modify_script(original_script, modifications, "replace")
 	
 		var task_event = SimplifiedStackScript.new(receive_threat_script)
+		task_event.add_log("created in WCScriptingEngine:_add_receive_threat_on_stack")
 		gameData.theStack.add_script(task_event)
 
 	

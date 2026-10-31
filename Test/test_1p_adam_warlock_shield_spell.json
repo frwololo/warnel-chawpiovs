@@ -61,7 +61,11 @@
 			"type": "select",
 			"value": "cancel",
 			"_comments": "click cancel on defenders to take an undefended attack"
-		},		
+		},	
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},			
 		{
 			"type": "play",
 			"value": "Shield Spell"

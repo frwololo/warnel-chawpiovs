@@ -52,7 +52,9 @@ const RunModeStr := [
 ]
 
 var _incoming_network_events := []
+var _ack_received = {}
 var all_clients_status:= {}
+var _local_status_counter = 0
 var run_mode = RUN_MODE.NOTHING_TO_RUN
 var interrupt_mode = InterruptMode.NONE
 var interrupting_hero_id = 0
@@ -180,7 +182,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			_pending_flush.erase(interrupt_parent_stack_uid)
 		if yield_script:
 			add_yielded_script(yield_data)
-			return
+			return null
 		
 	if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
 		if trigger != "manual":	
@@ -192,10 +194,10 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		if trigger in ["manual"]: #todo might need interrupt in there as well?
 			var _error = 1
 			display_stack_error_for_card(sceng.owner)
-			return
+			return null
 		elif sync_enabled:
 			add_yielded_script(yield_data)
-			return
+			return null
 	#if the script required user interaction, we send it
 	#to the master for replication on all clients
 	#else, all machines are expected to run it locally
@@ -237,14 +239,26 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
 			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers, action_name, checksum)
+			#todo return something useful here
+			return null
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
+			stackEvent.add_log("created in GlobalScriptStack: create_and_add_script. Trigger: " + trigger)			
 			stackEvent.set_display_name(action_name)
 			add_script_and_run(stackEvent)
+			return stackEvent
 		_:
 			#this shouldn't happen
 			display_debug("error in create_and_add_script, invalid sceng.user_interaction_status:" +str(sceng.user_interaction_status))
+			return null
+			
+func is_pending_flush(uid):
+	return _pending_flush.get(uid) or _stash_pending_flush.get(uid)
+
+func remove_pending_flush(uid):
+	_pending_flush.erase(uid)
+	_stash_pending_flush.erase(uid)	
 
 func add_yielded_script(yield_data):
 	add_yield_counter("yielded_script")
@@ -260,7 +274,7 @@ func attempt_yielded_script():
 		
 	var script_data = yielded_scripts.pop_front()
 	remove_yield_counter("yielded_script")	
-	create_and_add_script(
+	var result = create_and_add_script(
 		script_data["sceng"],
 		script_data["run_type"],
 		script_data["trigger"],
@@ -268,10 +282,8 @@ func attempt_yielded_script():
 		script_data["action_name"] ,
 		script_data["checksum"] )
 
-func create_and_add_simplescript( _owner, trigger_card, definition,  trigger_details):
-	var task = ScriptTask.new(_owner, definition, trigger_card, trigger_details)	
-	var stackEvent = SimplifiedStackScript.new(task)
-	add_script_and_run(stackEvent)
+	if result:
+		result.add_log("succesful creation after yield")
 
 func set_client_status(client_id, key, value):
 	if !all_clients_status.has(client_id):
@@ -391,7 +403,7 @@ func get_allowed_interrupting_cards():
 	return _current_interrupting_cards
 
 
-var _ack_received = {}
+
 master func from_client_script_received_ack(expected_run_mode, checksum):
 	var acks = _ack_received.get(checksum, {})
 	var client_id = cfc.get_rpc_sender_id()
@@ -439,6 +451,7 @@ func _process_incoming_network_events(delta):
 		"add_stack_object":
 			var stackEvent = client_create_script(ev.details)
 			if stackEvent:
+				stackEvent.add_log("succesful after _process_incoming_network_events")
 				add_event_to_stack(stackEvent, ev.checksum)
 				if ev.details.get("trigger", "") == "manual":
 					emit_signal("manual_interaction_added_to_stack", ev.details)
@@ -541,6 +554,7 @@ func client_create_script(details):
 	#to ensure that when this sceng goes on the stack, its subjects are ready for any interrupt to check for them	
 	sceng.network_prepaid_prime()	
 	var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
+	stackEvent.add_log("created in GlobalScriptStack: client_create_script")
 	stackEvent.set_display_name(action_name)
 	return stackEvent
 
@@ -645,6 +659,7 @@ func open_context( context, position =-1):
 	}
 	var owner = event.get_owner() if event else original_script.owner
 	var task = SimplifiedStackScript.new(definition, owner)
+	task.add_log("created in globalScriptStack: open_context")
 	task.context_marker = true
 	var stack_uid = insert_event_into_stack(task, position)
 	context["context_stack_uid"] = stack_uid
@@ -733,6 +748,7 @@ func add_script_and_run(stackEvent, context : = {}):
 
 func add_context_and_script(context_name, script):
 	var stack_event = SimplifiedStackScript.new(script)
+	stack_event.add_log("created in globalScriptStack: add_context_and_script")	
 	var context = {
 			"context_name": context_name,
 			"original_script": script,
@@ -981,7 +997,7 @@ func flush_script(stack_object):
 
 	var uid = stack_object.stack_uid
 	
-	if _pending_flush.get(uid, false) or _stash_pending_flush.get(uid, false):
+	if is_pending_flush(uid):
 		var _error = 1
 		display_debug("called to flush script but not allowed because I already started running it" + str(uid))
 		return	
@@ -990,7 +1006,7 @@ func flush_script(stack_object):
 	_stash_pending_flush.erase(uid)
 	
 	if run_mode != RUN_MODE.NO_BRAKES:
-		_pending_flush.erase(uid)
+		remove_pending_flush(uid)
 		var _error = 1
 		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
 		return
@@ -1003,6 +1019,11 @@ func flush_script(stack_object):
 		var id = cfc.add_debug_yielded(func_return, "step 1")
 		func_return = yield(func_return, "completed")
 		cfc.remove_debug_yielded(id)
+		
+		#script was removed under our feet at some point (e.g. game reset during tests)
+		if !is_pending_flush(uid):
+			var _error = 1
+			return
 
 	#attempt to fast track: if this was a cost and the stack hasn't changed + nothing to interrupt we run the second half (effects) of the script
 	if execute_mode == CFInt.RunMode.COST_SCRIPTS_ONLY:
@@ -1018,6 +1039,11 @@ func flush_script(stack_object):
 					var id = cfc.add_debug_yielded(func_return, "step 2")
 					func_return = yield(func_return, "completed")
 					cfc.remove_debug_yielded(id)
+					
+					#script was removed under our feet at some point (e.g. game reset during tests)
+					if !is_pending_flush(uid):
+						var _error = 1
+						return
 
 	#if either execute_both or non_costs part of the execution
 	if execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY:					
@@ -1059,19 +1085,22 @@ func flush_script(stack_object):
 	#	if stack.empty():
 	#		set_run_mode(RUN_MODE.NOTHING_TO_RUN, "flush_script " + stack_object.get_display_name())
 		emit_signal("script_executed_from_stack", stack_object )		
-	_pending_flush.erase(uid)
-	_stash_pending_flush.erase(uid)	
+	remove_pending_flush(uid)
+
 	
 	#Sanity check for network
 	var owner_guid = 0
+	var owner_name = ""
 	var owner = stack_object.get_owner()
 	if owner:
 		owner_guid = guidMaster.get_guid(owner)
+		owner_name = owner.canonical_name
 	var fingerprint = {
 		"uid": uid, 
 		"task_name": stack_object.get_first_task_name(),
 		"rng": cfc.game_rng.state,
 		"owner_guid": owner_guid,
+		"owner_name": owner_name,
 		"all_guids_hash": guidMaster.get_guids_check_data(true)
 	}
 	cfc._rpc_id(self, 1, "master_check_fingerprint", fingerprint)	
@@ -1096,10 +1125,20 @@ master func master_check_fingerprint(fingerprint):
 				cfc.LOG_DICT(other_status, true)
 				if gameData.testSuite:
 					gameData.testSuite.force_fail_current_test("clients out of sync" + JSON.print({"my_status": my_status, "their_status" : other_status}))
+					cfc._rpc(self,"get_stack_event_logs", uid)
 				else:
 					cfc._rpc(self,"clients_schedule_resync")						
 		_ack_received.erase(checksum)
 
+
+master func master_receive_stack_event_logs(uid, logs):
+	cfc.LOG("Received client logs for uid: " +str(uid) , true )
+	cfc.LOG(logs, true)
+
+remotesync func get_stack_event_logs(uid):
+	var stackEvent = get_stack_object_by_uid(uid)
+	var logs = stackEvent.print_log()
+	cfc._rpc_id(self, 1, "master_receive_stack_event_logs", uid, logs)
 
 var _resync_scheduled = 0
 var _force_resync_timer = 0.0
@@ -1286,9 +1325,12 @@ func _filter_potential_interrupters(potential_interrupters):
 	return potential_interrupters
 			
 
+
 func update_local_client_status():
+	_local_status_counter += 1
 	var my_network_id = cfc.get_network_unique_id()
 	all_clients_status[my_network_id] ={
+		"tick": _local_status_counter,
 		"run_mode": run_mode,
 		"current_stack_uid": self.current_stack_uid
 	}
@@ -1312,6 +1354,13 @@ func set_run_mode(new_value, caller = ""):
 
 remote func client_run_mode_changed (new_status):
 	var client_id = cfc.get_rpc_sender_id()
+	var new_tick = new_status.get("tick")
+	if new_tick:
+		var previous_tick = get_client_status(client_id, "tick")
+		if previous_tick and previous_tick > new_tick:
+			var _error = 1
+			return
+
 	for key in new_status:
 		set_client_status(client_id, key, new_status[key])
 
@@ -1645,9 +1694,10 @@ func reset():
 		cfc.LOG("error in stack reset: pending_stack_yield :" + to_json(pending_stack_yield))	
 	pending_stack_yield = {}
 	_incoming_network_events = []
-	
+	_ack_received = {}
 	
 	all_clients_status = {}
+	_local_status_counter = 0
 	run_mode = RUN_MODE.NOTHING_TO_RUN
 	interrupt_mode = InterruptMode.NONE
 	interrupting_hero_id = 0
@@ -1662,6 +1712,7 @@ func reset():
 	history = {}
 	pending_interaction_checksums = {}
 	_pending_flush = {}
+	_stash_pending_flush = {}
 	_sent_about_to_execute_signal = {}
 	
 	_interrupt_cache["zones"] = []

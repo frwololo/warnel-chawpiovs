@@ -2023,8 +2023,8 @@ func reveal_encounter(target_id = 0):
 			}
 			var reveal_task = ScriptTask.new(_current_encounter, reveal_script, _current_encounter, {})	
 			var task_event = SimplifiedStackScript.new(reveal_task)
+			task_event.add_log("created in GameData: EncounterStatus.ABOUT_TO_REVEAL")
 			theStack.add_script(task_event)
-			#theStack.create_and_add_simplescript(_current_encounter, _current_encounter, reveal_script, {})
 			_current_encounter.encounter_status = EncounterStatus.PENDING_REVEAL_INTERRUPT
 			return
 					

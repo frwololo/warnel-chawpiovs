@@ -107,6 +107,10 @@
 			"value": "cancel"
 		},
 		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},			
+		{
 			"type": "select",
 			"value": "Spider-Man"
 		},		

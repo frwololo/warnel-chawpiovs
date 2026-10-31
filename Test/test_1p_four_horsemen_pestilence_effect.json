@@ -144,6 +144,10 @@
 			"value": 1
 		},
 		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},		
+		{
 			"type": "select",
 			"value": "Cancel"
 		},

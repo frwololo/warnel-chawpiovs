@@ -108,6 +108,10 @@
 		{
 			"type": "target",
 			"value": "Sandman - 1"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_lot"
 		},		
 	],
 	"end": {

@@ -254,13 +254,13 @@ func _process(delta: float) -> void:
 	# e.g. with surge. We place them in this specific dictionary
 	#and gamedata checks for them
 	if (gameData.immediate_encounters):
-		gameData.reveal_encounter()
+		gameData.reveal_encounter(delta)
 		return
 
 	#scheme and attack can happen outside of specific phases,
 	#so instead we check if "attacker" has something going on
 	if (gameData.attackers):
-		gameData.enemy_activates()
+		gameData.enemy_activates(delta)
 		return
 
 	#sequence scripts are willing to be played before we move on to "regular schedule"
@@ -278,11 +278,11 @@ func _process(delta: float) -> void:
 			return
 		CFConst.PHASE_STEP.VILLAIN_ACTIVATES:
 			#villain activate phase is doing some automated stuff in its process step
-			gameData.enemy_activates()
+			gameData.enemy_activates(delta)
 			return		
 		CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
 			if (!current_step_complete):
-				gameData.reveal_encounter()
+				gameData.reveal_encounter(delta)
 			return	
 	
 	#other phases are just constantly requesting to move to the next step if they can	

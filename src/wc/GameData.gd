@@ -132,6 +132,7 @@ var cards_played_this_round := []
 var _clients_current_activation = {}
 var _clients_activation_counter = {}
 var _clients_desync_start_time: int = 0
+var _catch_up_timer:= 0.0	
 
 
 #a timer to avoid double registering a click on a target
@@ -1259,13 +1260,13 @@ func start_activity(enemy, action, script, target = 0):
 				var subscript_id = enemy.add_extra_script(attack_script, target)
 				gameData.theGameObserver.add_script_removal_effect(script, enemy, subscript_id, "enemy_activation_finished")
 
-			if target.get_controller_hero_id():
+			if target_friendly.get_controller_hero_id():
 				next_step = EnemyAttackStatus.PENDING_DEFENDERS
 			else:
 				#attack from an enemy to an enemy (ex: Moondragon ability)
 				#we force defender to be the target, with no exhaust
 				var activity_script = enemy.activity_script
-				activity_script.subjects = [target]
+				activity_script.subjects = [target_friendly]
 				activity_script.script_definition["exhaust_defenders"] = false
 				next_step = EnemyAttackStatus.BOOST_CARDS
 
@@ -1274,7 +1275,7 @@ func start_activity(enemy, action, script, target = 0):
 		"additional_tags": [],
 		"target": target_friendly,
 		SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
-		"target_identity": target.get_controller_hero_card()
+		"target_identity": target_friendly.get_controller_hero_card()
 	}
 	if script:
 		trigger_details["additional_tags"] += script.get_property(SP.KEY_TAGS, [])
@@ -1293,7 +1294,7 @@ func get_current_attacker_data():
 		"subject": attacker_data
 	}	
 
-func enemy_activates() :
+func enemy_activates(delta) :
 	var target_hero_id = _villain_current_hero_target
 	var target_friendly = null
 	var target_identity = null
@@ -1309,7 +1310,7 @@ func enemy_activates() :
 		all_attackers_finished()
 		return
 
-	if !can_proceed_activation():
+	if !can_proceed_activation(delta):
 		return
 
 	#there is an enemy, we'll try to attack
@@ -1884,11 +1885,11 @@ remotesync func set_client_status(type, guid, value):
 #	_clients_current_activation.erase(client_id)	
 
 #attempt to pace encounters in order to avoid race conditions
-func can_proceed_encounter()-> bool:
-	return can_proceed_activation()
-	
-func can_proceed_activation()-> bool:
+func can_proceed_encounter(delta:float)-> bool:
+	return can_proceed_activation(delta)
 
+
+func can_proceed_activation(delta:float)-> bool:	
 	#not sure if this section is needed but for now it doesn't hurt
 	if _priority_scripts or _current_priority_script:
 		return false
@@ -1905,7 +1906,7 @@ func can_proceed_activation()-> bool:
 			if cfc.is_game_master():
 				display_debug("clients alignment issue, attempting resync")
 				save_round(current_round)
-				init_desync_recover()
+				init_desync_recover()	
 		return false
 
 	self._clients_desync_start_time = 0
@@ -1913,7 +1914,18 @@ func can_proceed_activation()-> bool:
 	if typeof(aligned) == TYPE_DICTIONARY:
 		var catching_up = aligned.get("catching_up", false)
 		if catching_up:
-			return theStack.is_idle(true)
+			var can_proceed = theStack.is_idle(1)
+			if can_proceed:
+				_catch_up_timer = 0
+				return true
+			
+			#give the stack a few ticks to align itself
+			_catch_up_timer += delta
+			if _catch_up_timer >= 2.0:
+				#waited long enough, we return a more permissive version of is_idle
+				_catch_up_timer = 0
+				return theStack.is_idle(0)
+			return false
 
 	return theStack.is_idle()
 
@@ -1934,9 +1946,8 @@ func cancel_current_encounter():
 var _local_encounter_uid = 0
 var _last_encounter_dbg_msg = ""		
 #TODO need something much more advanced here, per player, etc...
-func reveal_encounter(target_id = 0):
-	if (!target_id):
-		target_id = _villain_current_hero_target
+func reveal_encounter(delta:float):
+	var target_id = _villain_current_hero_target
 	
 
 	if immediate_encounters:
@@ -1990,7 +2001,7 @@ func reveal_encounter(target_id = 0):
 				Card.CardState.MOVING_TO_CONTAINER:
 			return
 
-	if !can_proceed_encounter():
+	if !can_proceed_encounter(delta):
 		return
 	
 	var guid = guidMaster.get_guid(_current_encounter)
@@ -2834,6 +2845,9 @@ func cleanup_post_game():
 	
 	_clients_current_activation = {}
 	_clients_activation_counter = {}	
+
+	_clients_desync_start_time = 0
+	_catch_up_timer = 0.0	
 	
 	current_round = 1
 	last_target = null

@@ -24,7 +24,7 @@ func add_log(value):
 func print_log():
 	var result = ""
 	for stuff in object_log:
-		result = stuff + "\n"
+		result += stuff + "\n"
 	return result
 	
 #	

@@ -159,9 +159,48 @@ func remove_yield_counter(name):
 	pending_stack_yield[name] -=1
 	if pending_stack_yield[name] <= 0:
 		pending_stack_yield.erase(name)
+
+func serialize_sceng(sceng, trigger_details):
+	var prepaid: Array = sceng.network_prepaid
+	var prepaid_uids: Array = []
+
+	#NOTE in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
+
+	for array in prepaid:
+		var data = {"is_valid": array["is_valid"]}
+		data["subjects"] =  guidMaster.array_of_objects_to_guid(array["subjects"], true)
+		prepaid_uids.append(data)
+	var remote_trigger_details: Dictionary = trigger_details.duplicate()
+	remote_trigger_details["network_prepaid"] =  prepaid_uids
+	remote_trigger_details["network_rng_state"] =  cfc.game_rng.state
+
+	#convert stack_object and event_object to integers for network
+	#TODO this should be encapsulated somewhere
+	var stack_object = trigger_details.get("stack_object", null)
+	if stack_object:
+		remote_trigger_details["stack_object"] = stack_object.stack_uid
+		var task_object = trigger_details.get("event_object", null)
+		if task_object:
+			var tasks = stack_object.get_tasks()
+			var i = 0
+			for task in tasks:
+				if task == task_object:
+					remote_trigger_details["event_object"] = i
+				i+= 1
+	
+	var trigger_card_uid = guidMaster.get_guid(sceng.trigger_object)
+	var owner_uid = guidMaster.get_guid(sceng.owner)
+	var state_scripts = sceng.state_scripts
+	
+	return {
+		"state_scripts": state_scripts,
+		"owner_uid": owner_uid,
+		"trigger_card_uid": trigger_card_uid,
+		"remote_trigger_details": remote_trigger_details,
+		"stored_integers": sceng.stored_integers	
+	}
 					
 func create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum):
-
 	var yield_data = {
 		"sceng": sceng,
 		"run_type": run_type,
@@ -171,6 +210,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		"checksum": checksum,
 		"yield_reason": "create_and_add_script",
 	}
+		
 	if _pending_flush and sync_enabled:
 		var yield_script = true
 		# a hacky check to interrupt an ongoing activity when nothing else works
@@ -182,6 +222,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			_pending_flush.erase(interrupt_parent_stack_uid)
 		if yield_script:
 			add_yielded_script(yield_data)
+			send_log_to_master("create_and_add_script yields (" + checksum + ")")
 			return null
 		
 	if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
@@ -194,9 +235,11 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		if trigger in ["manual"]: #todo might need interrupt in there as well?
 			var _error = 1
 			display_stack_error_for_card(sceng.owner)
+			send_log_to_master("create_and_add_script run_mod error")
 			return null
 		elif sync_enabled:
 			add_yielded_script(yield_data)
+			send_log_to_master("create_and_add_script yields (runmode)")
 			return null
 	#if the script required user interaction, we send it
 	#to the master for replication on all clients
@@ -206,44 +249,16 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
 		#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
 		#also send GUIDs to find the right cards/targets			
-			var prepaid: Array = sceng.network_prepaid
-			var prepaid_uids: Array = []
-
-			#NOTE in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
-
-			for array in prepaid:
-				var data = {"is_valid": array["is_valid"]}
-				data["subjects"] =  guidMaster.array_of_objects_to_guid(array["subjects"], true)
-				prepaid_uids.append(data)
-			var remote_trigger_details: Dictionary = trigger_details.duplicate()
-			remote_trigger_details["network_prepaid"] =  prepaid_uids
-			remote_trigger_details["network_rng_state"] =  cfc.game_rng.state
-
-			#convert stack_object and event_object to integers for network
-			#TODO this should be encapsulated somewhere
-			var stack_object = trigger_details.get("stack_object", null)
-			if stack_object:
-				remote_trigger_details["stack_object"] = stack_object.stack_uid
-				var task_object = trigger_details.get("event_object", null)
-				if task_object:
-					var tasks = stack_object.get_tasks()
-					var i = 0
-					for task in tasks:
-						if task == task_object:
-							remote_trigger_details["event_object"] = i
-						i+= 1
-			
-			var trigger_card_uid = guidMaster.get_guid(sceng.trigger_object)
-			var owner_uid = guidMaster.get_guid(sceng.owner)
-			var state_scripts = sceng.state_scripts
+			var serialized_sceng = serialize_sceng(sceng, trigger_details)
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
-			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, state_scripts, owner_uid, trigger_card_uid, run_type, trigger, remote_trigger_details, sceng.stored_integers, action_name, checksum)
+			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, serialized_sceng, run_type, trigger, action_name, checksum)
 			#todo return something useful here
 			return null
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
+			send_log_to_master("create_and_add_script: creating local stackEvent: " + checksum)
 			stackEvent.add_log("created in GlobalScriptStack: create_and_add_script. Trigger: " + trigger)			
 			stackEvent.set_display_name(action_name)
 			add_script_and_run(stackEvent)
@@ -329,18 +344,20 @@ func client_status_is_behind(client_id, key):
 	if my_value < max_value:
 		return true
 	return false
-	
-mastersync func master_create_and_add_script(expected_run_mode, state_scripts, owner_uid, trigger_card_uid,  run_type, trigger, remote_trigger_details, stored_integers, action_name, checksum):
+
+
+mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng,  run_type, trigger, action_name, checksum):
 	var client_id = cfc.get_rpc_sender_id() 
 	set_client_status(client_id, "run_mode", RUN_MODE.PENDING_REQUEST_ACK)	
+	var owner_uid = serialized_sceng["owner_uid"]
 	var original_details = {
-		"state_scripts": state_scripts,
+		"state_scripts": serialized_sceng["state_scripts"],
 		"owner_uid": owner_uid, 
-		"trigger_card_uid": trigger_card_uid,  
+		"trigger_card_uid": serialized_sceng["trigger_card_uid"],  
 		"run_type": run_type, 
 		"trigger": trigger,	
-		"remote_trigger_details":remote_trigger_details,
-		"stored_integers": stored_integers, 
+		"remote_trigger_details":serialized_sceng["remote_trigger_details"],
+		"stored_integers": serialized_sceng["stored_integers"], 
 		"action_name": action_name	
 	}		
 	
@@ -566,7 +583,8 @@ func add_event_to_stack(stackEvent, checksum = "", context= {}):
 	#this prevents them from triggering infinitely to the same event 
 #	if interrupt_mode == InterruptMode.HERO_IS_INTERRUPTING:
 	var result = {
-		"is_interrupt" : false
+		"is_interrupt" : false,
+		"pos": -1
 	}
 
 	var high_priority_script = 0
@@ -624,6 +642,7 @@ func add_event_to_stack(stackEvent, checksum = "", context= {}):
 				if !context or (existing_name != context["context_name"]):
 					pos = j + 1
 					break	
+		result["pos"] = pos
 		insert_event_into_stack(stackEvent, pos)
 		if context:
 			open_context(context, pos)
@@ -738,14 +757,18 @@ func insert_event_into_stack(stackEvent, pos = -1):
 #wrapper around add_event_to_stack that also tries to restart the execution of scripts
 func add_script_and_run(stackEvent, context : = {}):
 	var result = add_event_to_stack(stackEvent, "", context)
+	force_run(result)
+	return result
+
+func force_run(result):
 	if run_mode == RUN_MODE.NOTHING_TO_RUN:
 		set_run_mode(RUN_MODE.NO_BRAKES, "add_script_and_run")
 	if result.get("is_interrupt", false):
 		set_run_mode(RUN_MODE.NO_BRAKES, "add_script_and_run interrupt")			
 	if run_mode!= RUN_MODE.NO_BRAKES:
 		display_debug("error add_script: expected run mode to be NO_BRAKES, but got " + RunModeStr[run_mode])
-
-
+	return result
+	
 func add_context_and_script(context_name, script):
 	var stack_event = SimplifiedStackScript.new(script)
 	stack_event.add_log("created in globalScriptStack: add_context_and_script")	
@@ -1131,8 +1154,18 @@ master func master_check_fingerprint(fingerprint):
 		_ack_received.erase(checksum)
 
 
+var _log_tick = 0
+func send_log_to_master(value):
+	_log_tick += 1
+	cfc._rpc_id(self, 1, "master_log", str(_log_tick) + "-" + value)
+
+master func master_log(value):
+	var client_id = cfc.get_rpc_sender_id()	
+	cfc.LOG("from " + str(client_id) +": " + value  , true )	
+
 master func master_receive_stack_event_logs(uid, logs):
-	cfc.LOG("Received client logs for uid: " +str(uid) , true )
+	var client_id = cfc.get_rpc_sender_id()	
+	cfc.LOG("Received client logs for uid: " +str(uid) +" client: " + str(client_id) , true )
 	cfc.LOG(logs, true)
 
 remotesync func get_stack_event_logs(uid):
@@ -1503,20 +1536,23 @@ func is_phasecontainer_allowed_to_process():
 			return false	
 		
 
-func is_idle(basic = false):		
+func is_idle(level = 2):		
 	if my_script_requests_pending_execution:
 		return false
 
 	#in basic mode, we stop here
-	if basic:
+	if level == 0:
 		return true
 
 	if pending_stack_yield:
 		return false
-	
+
 	if !_incoming_network_events.empty():
 		return false	
 		
+	if level == 1:
+		return true
+			
 	if !stack.empty():
 		return false
 		#TODO

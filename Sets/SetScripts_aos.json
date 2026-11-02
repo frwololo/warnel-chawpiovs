@@ -8421,7 +8421,6 @@
 	},
 	"Sky-Destroyer": {
 		"response_card_played": {
-			"trigger": "another",
 			"filter_state_trigger": [
 				{
 					"filter_properties": {

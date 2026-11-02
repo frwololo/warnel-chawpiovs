@@ -3174,18 +3174,6 @@
 				"upgrade",
 				"filter_same_controller"
 			],
-			"condition_board": {
-				"func_name": "count_cards>1",
-				"func_params": {
-					"subject": "boardseek",
-					"subject_count": "all",
-					"filter_state_seek": [
-						"trait_shapeshift",
-						"upgrade",
-						"filter_same_controller"
-					]
-				}
-			},
 			"board": [
 				{
 					"name": "discard",

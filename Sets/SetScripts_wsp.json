@@ -1139,7 +1139,7 @@
 		}
 	},
 	"Wasp #13001a": {
-		"card_dies": {
+		"response_card_defeated": {
 			"event_filters": {
 				"source": "self"
 			},

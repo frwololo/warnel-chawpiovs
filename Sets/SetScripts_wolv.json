@@ -308,7 +308,7 @@
 				}
 			]
 		},
-		"card_dies": {
+		"response_card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {

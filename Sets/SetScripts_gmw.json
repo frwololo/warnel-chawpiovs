@@ -4995,9 +4995,10 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
+		"response_card_defeated": {
 			"event_filters": {
-				"secondary_source": "self"
+				"secondary_source": "self",
+				"is_enemy": true
 			},
 			"all": [
 				{

@@ -2890,6 +2890,7 @@ func post_death_move():
 			else:
 				card.move_to(cfc.NMAP["discard_villain"])	
 
+
 func die(script):
 	var type_code = properties.get("type_code", "")
 	if !script.trigger_details:
@@ -2900,6 +2901,10 @@ func die(script):
 	script.trigger_details["tags"] += script.get_property("tags", [])
 #	if script and !script.trigger_details.get("tags", []):
 #		script.trigger_details["tags"] = script.get_property("tags", [])
+
+	#need to check before discarding the card (it moves away from groups afterwards)
+	var is_enemy = self.is_in_group("group_enemies")
+
 	match type_code:
 		"hero", "alter_ego":
 			gameData.hero_died(self, script)
@@ -2913,7 +2918,9 @@ func die(script):
 		_:
 			self.discard()
 
-	scripting_bus.emit_signal_on_stack("card_defeated", self, script.trigger_details)			
+	var defeated_details = script.trigger_details.duplicate()
+	defeated_details["is_enemy"] = is_enemy
+	scripting_bus.emit_signal_on_stack("card_defeated", self, defeated_details)			
 	#scripting_bus.emit_signal("card_defeated", self, trigger_details)			
 	return CFConst.ReturnCode.OK		
 

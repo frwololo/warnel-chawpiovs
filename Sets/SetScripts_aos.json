@@ -2687,7 +2687,8 @@
 		},
 		"card_defeated": {
 			"event_filters": {
-				"secondary_source": "self"
+				"secondary_source": "self",
+				"is_enemy": true
 			},
 			"all": {
 				"Add threat on suit": [

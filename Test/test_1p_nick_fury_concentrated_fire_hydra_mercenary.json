@@ -1,0 +1,153 @@
+{
+	"_comments": "Tests Nick Fury Concentrated Fire vs enemy defeat",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nick Fury #50034a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Stealth #50035b",
+					"owner_hero_id": 1
+				}
+			],
+			"deck1": [
+				{
+					"card": "Under Surveillance #50053"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Informant #50050"
+				}
+			],
+			"others": [
+				{
+					"card": "Armored Rhino Suit",
+					"host": "01094",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nick Fury #50034a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Assault #50035a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Concentrated Fire"
+				},
+				{
+					"card": "Genius"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Concentrated Fire"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Mercenary"
+		},
+		{
+			"type": "choose",
+			"value": "Change to Stealth",
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nick Fury #50034a"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Advance"
+				}
+			],
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Under Surveillance #50053"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Informant #50050"
+				},
+				{
+					"card": "Genius"
+				},
+				{
+					"card": "Concentrated Fire"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Nick Fury #50034a"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Stealth #50035b"
+				}
+			],
+			"hand1": []
+		}
+	}
+}

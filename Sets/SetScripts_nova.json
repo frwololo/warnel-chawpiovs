@@ -639,6 +639,7 @@
 		"card_defeated": {
 			"event_filters": {
 				"secondary_source": "self",
+				"is_enemy": true,
 				"tags": [
 					"one_by_one"
 				]

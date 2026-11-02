@@ -623,6 +623,10 @@ func get_hero_player_network_owner(hero_id):
 	return gameData.id_to_network_id[player]
 	
 mastersync func action_complete():
+	if !_action_ongoing:
+		var _error = 1
+		return
+		
 	_action_ongoing -=1
 
 	

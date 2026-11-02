@@ -209,29 +209,38 @@ func reset(reset_phase:= true):
 #Moving to next step needs to happen outside of the signal processing to avoid infinite loops or recursive signals
 var _dbg_cfc_ongoing_processes_timer := 0.0
 
+var _process_status_msg = ""
+
 func _process(delta: float) -> void:
 	if !gameData.is_game_started():
+		_process_status_msg = "Game not started"
 		return
 	
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
 	#but not empty, it means it is waiting for some playing interruption
 	if !gameData.theStack.is_phasecontainer_allowed_to_process():
+		_process_status_msg = "!is_phasecontainer_allowed_to_process"
 		return
 			
 	if gameData.user_input_ongoing or gameData.is_targeting_ongoing():
+		_process_status_msg = "user_input_ongoing"
 		return
 		
 	if cfc.game_paused:
+		_process_status_msg = "game paused"
 		return
 		
 	if cfc.get_modal_menu():
+		_process_status_msg = "modal menu"
 		return
 		
 	if gameData.is_announce_ongoing():
+		_process_status_msg = "announce ongoing"
 		return	
 		
 	if gameData.pending_network_ack():
+		_process_status_msg = "pending network ack"
 		return	
 
 	if cfc.is_process_ongoing():
@@ -243,34 +252,41 @@ func _process(delta: float) -> void:
 			for obj in _tmp:
 				var _value = _tmp[obj]
 			cfc.reset_ongoing_process_stack()
+		_process_status_msg = "cfc process ongoing"	
 		return
 	_dbg_cfc_ongoing_processes_timer = 0.0
 
 	var forced_scripts = gameData.execute_priority_scripts()
 	if forced_scripts: #it either returns a bool (true if executing script) of a function (ongoing compute)
+		_process_status_msg = "gameData priorirty scripts"
 		return
 
 	#some encounters need to be revealed outside of their regular schedule
 	# e.g. with surge. We place them in this specific dictionary
 	#and gamedata checks for them
 	if (gameData.immediate_encounters):
+		_process_status_msg = "gameData immediate encounter"
 		gameData.reveal_encounter(delta)
 		return
 
 	#scheme and attack can happen outside of specific phases,
 	#so instead we check if "attacker" has something going on
 	if (gameData.attackers):
+		_process_status_msg = "gameData attackers"
 		gameData.enemy_activates(delta)
 		return
 
 	#sequence scripts are willing to be played before we move on to "regular schedule"
 	if gameData.sequence_queue_is_ready():
+		_process_status_msg = "gameData sequence_queue_is_ready"
 		return
 
 	if please_start_next_step: 
+		_process_status_msg = "please_start_next_step"
 		request_next_phase("phaseContainer _process", 1)
 		return
 
+	_process_status_msg = "regular phase stuff"
 	#phases that do something particular  in their process step
 	match current_step:			
 		CFConst.PHASE_STEP.PLAYER_TURN:
@@ -285,12 +301,15 @@ func _process(delta: float) -> void:
 				gameData.reveal_encounter(delta)
 			return	
 	
+	_process_status_msg = "last third"
 	#other phases are just constantly requesting to move to the next step if they can	
 	if (!current_step_complete) :
+		_process_status_msg = "!current_step_complete"
 		return		
 
 	#sequence scripts were not ready but are still in the pipeline, we're not allowned to proceed
 	if gameData.get_sequence_scripts(true):
+		_process_status_msg = "gameData get_sequence_scripts"
 		return
 		
 	match current_step:
@@ -299,6 +318,13 @@ func _process(delta: float) -> void:
 				request_next_phase("from _process systems_check")	
 		_:
 			request_next_phase("from _process _:")				
+
+	_process_status_msg = ""
+
+func get_current_status():
+	return {
+		"_process_status_msg": _process_status_msg
+	}
 
 func offer_to_mulligan() -> void:
 	cfc.add_ongoing_process(self, "offer_to_mulligan")

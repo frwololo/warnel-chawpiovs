@@ -159,6 +159,7 @@ func sanity_cleanup():
 	if is_instance_valid(theStack):
 		theStack.reset()
 
+var _remote_load_requester = 0
 func start_game():
 	cfc.LOG("game starting")
 	emit_signal("game_started")
@@ -171,6 +172,8 @@ func start_game():
 	
 	_game_started = true
 	_game_over = ""
+
+	remote_load_finalize()
 
 func is_game_started():
 	return _game_started
@@ -359,7 +362,28 @@ func restart_game(requester = null):
 func disable_desync_recovery():
 	_desync_recovery_enabled = false
 
+var _log_tick = 0
+func send_log_to_master(value):
+	_log_tick += 1
+	cfc._rpc_id(self, 1, "master_log", str(_log_tick) + "-" + value)
+
+master func master_log(value):
+	var client_id = cfc.get_rpc_sender_id()	
+	cfc.LOG("from " + str(client_id) +": " + value  , true )	
+
+remotesync func report_overall_status():
+	var report = {
+		"stack": theStack.get_current_status(),
+		"phaseContainer": phaseContainer.get_current_status(),
+		"gameData": self.get_current_status()
+	}
+	send_log_to_master(JSON.print(report))
+
+var _logs_requested = false
 func attempt_resync(result:String):
+	if cfc.is_network_master() and !_logs_requested:
+		cfc._rpc(self, "report_overall_status")
+		_logs_requested = true
 	if ! _desync_recovery_enabled:
 		return
 	_clients_system_status = {}	
@@ -2827,6 +2851,11 @@ func erase_pending_scripts():
 	immediate_encounters = []
 	
 
+func get_current_status():
+	return {
+		"_clients_current_activation": _clients_current_activation
+	}
+
 	
 func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")
@@ -2951,15 +2980,19 @@ remotesync func remote_load_game_data_finished(result:int):
 	var caller_id = cfc.get_rpc_sender_id()
 	gamesave_load_status[caller_id] = result
 	if (gamesave_load_status.size() == network_players.size()):
+		gamesave_load_status = {}
 		scripting_bus.emit_signal("all_clients_game_loaded",  gamesave_load_status)
 
 
 #loads current game data from a json structure
+var _is_engine_ready = true
 remotesync func remote_load_gamedata(json_data:Dictionary):
+	_is_engine_ready = false
+
 	var previous_pause_state = cfc.game_paused
 	cfc.set_game_paused(true)
 	var caller_id = cfc.get_rpc_sender_id()
-
+	_remote_load_requester  = caller_id
 	#TODO sanity check of the save file
 	cleanup_post_game()
 	
@@ -3022,9 +3055,15 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 	
 	
 	cfc.set_game_paused(previous_pause_state)
-	assign_starting_hero()		
-	cfc._rpc_id(self, caller_id,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
-
+	assign_starting_hero()
+	_is_engine_ready = true	
+	
+func remote_load_finalize():
+	if !_remote_load_requester:
+		_remote_load_requester = 1	
+	cfc._rpc_id(self, _remote_load_requester,"remote_load_game_data_finished",CFConst.ReturnCode.OK)
+	_remote_load_requester = 0
+	
 remotesync func start_phaseContainer():
 	phaseContainer.start_current_step()
 

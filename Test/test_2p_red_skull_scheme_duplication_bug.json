@@ -24,6 +24,18 @@
 					}
 				}
 			],
+			"deck_side_schemes": [
+													{
+					"card": "Hydra Reinforcements"
+				},		
+							{
+					"card": "Prison Camps"
+				},
+				
+								{
+					"card": "Censor the Past"
+				},
+			],
 			"deck_villain": [
 				{
 					"card": "advance"
@@ -154,10 +166,24 @@
 					"card": "Gang-Up"
 				}
 			],
+			"deck_side_schemes": [
+												{
+					"card": "Hydra Reinforcements"
+				},			
+
+
+
+			],			
 			"schemes": [
 				{
 					"card": "New World Hydra"
-				}
+				},
+								{
+					"card": "Censor the Past"
+				},
+							{
+					"card": "Prison Camps"
+				},				
 			],
 			"deck1": [
 				{

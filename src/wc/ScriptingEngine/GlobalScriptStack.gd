@@ -222,7 +222,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			_pending_flush.erase(interrupt_parent_stack_uid)
 		if yield_script:
 			add_yielded_script(yield_data)
-			send_log_to_master("create_and_add_script yields (" + checksum + ")")
+			#gameData.send_log_to_master("create_and_add_script yields (" + checksum + ")")
 			return null
 		
 	if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
@@ -235,11 +235,11 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		if trigger in ["manual"]: #todo might need interrupt in there as well?
 			var _error = 1
 			display_stack_error_for_card(sceng.owner)
-			send_log_to_master("create_and_add_script run_mod error")
+			#gameData.send_log_to_master("create_and_add_script run_mod error")
 			return null
 		elif sync_enabled:
 			add_yielded_script(yield_data)
-			send_log_to_master("create_and_add_script yields (runmode)")
+			#gameData.send_log_to_master("create_and_add_script yields (runmode)")
 			return null
 	#if the script required user interaction, we send it
 	#to the master for replication on all clients
@@ -258,7 +258,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
-			send_log_to_master("create_and_add_script: creating local stackEvent: " + checksum)
+			#gameData.send_log_to_master("create_and_add_script: creating local stackEvent: " + checksum)
 			stackEvent.add_log("created in GlobalScriptStack: create_and_add_script. Trigger: " + trigger)			
 			stackEvent.set_display_name(action_name)
 			add_script_and_run(stackEvent)
@@ -738,6 +738,9 @@ func add_context_details (stack_uid_or_context_name, details: Dictionary):
 	
 
 func insert_event_into_stack(stackEvent, pos = -1):
+	if !gameData._is_engine_ready:
+		var _error = 1
+		gameData.send_log_to_master("insert event into stack called but engine isn't ready " + stackEvent.get_first_task_name())
 	stackEvent.set_stack_uid(get_next_stack_uid())
 	if pos == -1:
 		stack.append(stackEvent)
@@ -1146,22 +1149,11 @@ master func master_check_fingerprint(fingerprint):
 				cfc.LOG_DICT(my_status, true)
 				cfc.LOG("Their Status:{" +str(k) +"}", true)
 				cfc.LOG_DICT(other_status, true)
-				if gameData.testSuite:
-					gameData.testSuite.force_fail_current_test("clients out of sync" + JSON.print({"my_status": my_status, "their_status" : other_status}))
-					cfc._rpc(self,"get_stack_event_logs", uid)
-				else:
-					cfc._rpc(self,"clients_schedule_resync")						
+				cfc._rpc(self,"clients_schedule_resync")						
 		_ack_received.erase(checksum)
 
 
-var _log_tick = 0
-func send_log_to_master(value):
-	_log_tick += 1
-	cfc._rpc_id(self, 1, "master_log", str(_log_tick) + "-" + value)
 
-master func master_log(value):
-	var client_id = cfc.get_rpc_sender_id()	
-	cfc.LOG("from " + str(client_id) +": " + value  , true )	
 
 master func master_receive_stack_event_logs(uid, logs):
 	var client_id = cfc.get_rpc_sender_id()	
@@ -1193,6 +1185,7 @@ master func master_resync(board_status):
 	var client_id = cfc.get_rpc_sender_id()
 	acks[client_id] = board_status
 	_ack_received[checksum] = acks
+	var error_msg = ""
 	if acks.size() == gameData.network_players.size():
 		var my_network_id = cfc.get_network_unique_id()
 		var my_status = acks[my_network_id]
@@ -1200,12 +1193,16 @@ master func master_resync(board_status):
 		for k in acks:
 			var other_status = acks[k]
 			if !(WCUtils.json_equal(my_status, other_status)):
+				error_msg = JSON.print({"my_status": my_status, "their_status" : other_status})
 				needs_reload = true					
 		_ack_received.erase(checksum)
 
 		if needs_reload:
-			cfc.LOG("{error} desync confirmed, attempting to resync", true)
-			gameData.load_gamedata(my_status)	
+			cfc.LOG("{error} desync confirmed, should attempt to resync, but not doing it because of bugs", true)
+#			if gameData.testSuite:
+#				gameData.testSuite.force_fail_current_test("clients out of sync" + error_msg )
+#			else:			
+#				gameData.load_gamedata(my_status)	
 		else:
 			cfc.LOG("{warning} There was a desync but everything seems in order right now, won't do anything", true)
 			
@@ -1755,6 +1752,19 @@ func reset():
 	_interrupt_cache["additional_cards"] = []
 	_interrupt_cache["needs_refresh"] = true
 
+func get_current_status():
+	return {
+		"my_script_requests_pending_execution": my_script_requests_pending_execution,
+		"pending_stack_yield" : pending_stack_yield,
+		"incoming_network_events": _incoming_network_events,
+		"run_mode":RunModeStr[run_mode],
+		"interrupt_mode": InterruptModeStr[interrupt_mode],
+		"interrupting_hero_id": interrupting_hero_id,
+		"current_stack_uid" : current_stack_uid,
+		"stack": stack,
+		"_pending_flush": _pending_flush,
+		"_stash_pending_flush": _stash_pending_flush	
+	}
 
 func flush_logs():
 	var display_text =JSON.print(history, '\t') + "\n"

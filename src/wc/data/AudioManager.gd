@@ -139,6 +139,9 @@ func find_sound_for_card_event(event_name, card_owner = null):
 	if is_allowed_specific_sounds(card_owner):
 		shortname = card_owner.get_property("shortname", "").to_lower()
 		type_code = card_owner.get_property("type_code", "").to_lower()	
+		#TODO remove hardcode once music update can be done more smoothly with the server 
+		if type_code == "leader":
+			type_code = "villain"
 	
 	if shortname:
 		var fullname = shortname + "-" + event_name

@@ -4217,9 +4217,8 @@
 		"round_ended": {
 			"board": [
 				{
-					"name": "move_card_to_container",
+					"name": "discard",
 					"subject": "self",
-					"dest_container": "discard"
 				}
 			]
 		}

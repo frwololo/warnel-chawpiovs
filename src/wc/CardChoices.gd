@@ -115,19 +115,29 @@ func force_select_by_title(keyword: String):
 func select_by_title(keyword):
 	
 	GameRecorder.add_entry(GameRecorder.ACTIONS.CHOOSE, keyword)
-	
-	var id = text_to_id.get(keyword.to_lower(), 0)
-	
+
+	var forced = rules.get("forced", false)	
+	var is_valid_entry = false
+	var id = text_to_id.get(keyword.to_lower(), -1)
+	if id >= 0:
+		is_valid_entry = true
+	else:
+		#if not a forced menu, cancel on invalid entry
+		if !forced:
+			id = 0
+			is_valid_entry = true
+		
 	if keyword == "cancel":
+		is_valid_entry = true
 		id = 0
 	
 	id_selected = id
 	
-	if id_selected:
+	if id_selected > 0:
 		selected_key = items[id_selected-1].code
 	
-
-	emit_signal("id_pressed", id_selected)
+	if is_valid_entry:
+		emit_signal("id_pressed", id_selected)
 
 func cancel_input():
 	select_by_title("cancel")

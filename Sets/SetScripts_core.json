@@ -1092,7 +1092,7 @@
 				{
 					"name": "thwart",
 					"subject": "a_scheme",
-					"needs_subject":false,
+					"needs_subject": false,
 					"tags": [
 						"collateral_thwart"
 					],
@@ -4221,9 +4221,11 @@
 						"name": "exhaust_card",
 						"subject": "boardseek",
 						"subject_count": "all",
+						"is_cost": true,
 						"filter_state_seek": [
 							{
-								"filter_group": "group_friendly_my_hero"
+								"filter_group": "group_friendly_my_hero",
+								"filter_is_exhausted": false
 							}
 						]
 					}

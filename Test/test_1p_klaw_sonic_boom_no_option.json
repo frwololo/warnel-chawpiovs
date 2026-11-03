@@ -1,0 +1,168 @@
+{
+	"_comments": "Klaw sonic boom no valid option",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "01117a"
+				},
+				{
+					"card": "01117b"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Sonic Boom"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark",
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Make The Call"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+							{
+					"card": "Sonic Boom"
+				}
+			],
+			"villain": [
+				{
+					"card": "01113"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01116b",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "01117a"
+				},
+				{
+					"card": "01117b"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Weapons Runner"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Advance"
+				},
+
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Black Cat"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Tony Stark",
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Make The Call"
+				}
+			]
+		}
+	}
+}

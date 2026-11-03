@@ -117,7 +117,7 @@
 			"type": "choose",
 			"value": "attack",
 			"expected_to_fail": true
-		},
+		},		
 		{
 			"type": "target",
 			"value": "Magneto",

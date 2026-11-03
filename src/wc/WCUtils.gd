@@ -836,6 +836,8 @@ static func script_definitions_pre_processing(script_definition):
 					script_definition.erase("func_name")
 					script_definition.erase("func_params")
 					script_definition.erase("then")
+					#preprocess the newly added stuff
+					script_definitions_pre_processing(script_definition["options"])
 				else:
 					script_definitions_pre_processing(script_definition[key])
 		TYPE_ARRAY:	

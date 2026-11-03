@@ -236,6 +236,13 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "fatigue"
+				}
+			},		
 			"board": [
 				{
 					"name": "constraints",

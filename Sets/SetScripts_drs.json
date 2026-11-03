@@ -1336,6 +1336,62 @@
 						"amount": 1,
 						"subject": "previous"
 					}
+				],
+				"Heal": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens1": [
+									{
+										"filter_token_name": "confused",
+										"filter_count": 0
+									}
+								],
+								"filter_tokens2": [
+									{
+										"filter_token_name": "stunned",
+										"filter_count": 0
+									}
+								],
+								"filter_tokens3": [
+									{
+										"filter_token_name": "tough",
+										"filter_count": 0
+									}
+								]
+							}
+						]
+					}
 				]
 			}
 		}

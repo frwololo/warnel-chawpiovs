@@ -16,6 +16,18 @@ var stack:= []
 #stores data relevant to the ongoing interrupt signal
 var _current_interrupted_event: Dictionary = {}
 
+#configuration for optimizations that might break multiplayer mode,
+#but help speed up single player mode
+#Ideally in the long run we need none of that and fix
+#the underlying bugs/ inconsistent behavior
+var all_config = {
+	"single_player":{
+		"speed_run_incoming_network_event": true, #force attempt to immediately run an event that was delayed
+		"disable_status_tick_security_checks": true #disable tick checks for local status update
+	},
+	"multiplayer": {
+	}
+}
 
 enum InterruptMode {
 	NONE,
@@ -124,7 +136,14 @@ func init_interruptable_cache():
 
 
 
+func get_config(entry):
+	if gameData.is_multiplayer_game:
+		return all_config.get("multiplayer", {}).get(entry, false)
+	
+	return all_config.get("single_player", {}).get(entry, false)
+
 func _ready():
+		
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("card_script_added", self, "_card_script_added")
 	scripting_bus.connect("card_script_removed", self, "_card_script_removed")
@@ -437,8 +456,10 @@ func add_incoming_network_event(data):
 
 	#if I'm the requester, process instantly. 
 	#TODO this might lead to errors?
-#	if data.requester == cfc.get_network_unique_id():
-#		_process_incoming_network_events(0.0)
+
+	#speed run in single player mode
+	if get_config("speed_run_incoming_network_event"):
+		_process_incoming_network_events(0.0)
 		
 remotesync func client_create_and_add_stackobject( original_requester_id, expected_run_mode, details, checksum):
 	var client_id = cfc.get_rpc_sender_id()
@@ -1384,12 +1405,21 @@ func set_run_mode(new_value, caller = ""):
 
 remote func client_run_mode_changed (new_status):
 	var client_id = cfc.get_rpc_sender_id()
-	var new_tick = new_status.get("tick")
-	if new_tick:
-		var previous_tick = get_client_status(client_id, "tick")
-		if previous_tick and previous_tick > new_tick:
-			var _error = 1
-			return
+	
+	#We check that requests are received in order,
+	#and reject any request that's older than what we currently have
+	#For some reason events are not ordered correctly (I though RPC enforced order)
+	#In single player mode, for some reason, this delays gameplay,
+	#most likely because a "blocking" status gets set at the wrong time
+	#until I figure this out, I'm deactivating this check in single player,
+	#and enabling it in multiplayer
+	if !get_config("disable_status_tick_security_checks"):
+		var new_tick = new_status.get("tick")
+		if new_tick:
+			var previous_tick = get_client_status(client_id, "tick")
+			if previous_tick and previous_tick > new_tick:
+				var _error = 1
+				return
 
 	for key in new_status:
 		set_client_status(client_id, key, new_status[key])
@@ -1751,6 +1781,7 @@ func reset():
 	_interrupt_cache["zones"] = []
 	_interrupt_cache["additional_cards"] = []
 	_interrupt_cache["needs_refresh"] = true
+
 
 func get_current_status():
 	return {

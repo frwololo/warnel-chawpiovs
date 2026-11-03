@@ -141,7 +141,9 @@
 				},
 				{
 					"name": "attack",
-					"tags": ["collateral_damage"],
+					"tags": [
+						"collateral_damage"
+					],
 					"amount": 3,
 					"subject": "boardseek",
 					"subject_count": "all",
@@ -970,7 +972,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"alterants": {
 			"board": [
 				{
@@ -1400,7 +1402,9 @@
 					},
 					{
 						"name": "thwart",
-						"tags": ["collateral_thwart"],
+						"tags": [
+							"collateral_thwart"
+						],
 						"amount": 3,
 						"subject": "target",
 						"subject_exclude": "previous",

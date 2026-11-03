@@ -74,7 +74,12 @@
 		{
 			"type": "target",
 			"value": "Hydra Regular"
-		}
+		},
+		{
+			"type": "activate",
+			"value": "Wasp #13001a",
+			"_comments": "1 extra point of damage to the villain"
+		},		
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -95,7 +100,7 @@
 				{
 					"card": "Rhino - 1",
 					"tokens": {
-						"damage": 6
+						"damage": 7
 					}
 				}
 			],

@@ -51,6 +51,9 @@ func remove_non_cost_tasks():
 func get_script_by_event_details(_details):
 	return null
 
+func print_modifiers_log():
+	return ""
+
 func get_user_interaction_status():
 	var status = CFConst.USER_INTERACTION_STATUS.NOT_CHECKED_YET
 	for t in get_tasks():
@@ -295,25 +298,24 @@ func _get_display_text_nocache():
 		match task.script_name:
 			"add_threat":
 				var amount = task.retrieve_integer_property("amount", 0)
-				result = owner_name + " adds " + str(amount) + " threat" + subjects
-				return result			
+				result = owner_name + " adds " + str(amount) + " threat"	
 			"reveal_encounter":
 				if owner:
 					var text = owner.get_printed_text("when revealed")
 					if text:
-						return text
-					var text_alter_ego = owner.get_printed_text("When Revealed (Alter-Ego)")	
-					var text_hero = owner.get_printed_text("When Revealed (Hero)")
-					var controller_hero = owner.get_controller_hero_card()
-					if !controller_hero:
-						return text_alter_ego + text_hero
-					if controller_hero.is_alter_ego_form() and text_alter_ego:
-						return text_alter_ego
-					elif text_hero:
-						return text_hero
+						result = text
+					else:
+						var text_alter_ego = owner.get_printed_text("When Revealed (Alter-Ego)")	
+						var text_hero = owner.get_printed_text("When Revealed (Hero)")
+						var controller_hero = owner.get_controller_hero_card()
+						if !controller_hero:
+							result = text_alter_ego + text_hero
+						elif controller_hero.is_alter_ego_form() and text_alter_ego:
+							result = text_alter_ego
+						elif text_hero:
+							result = text_hero
 			"surge":
 				result = owner_name + " - Surge"
-				return result
 			"mod_tokens":
 				var token_name = task.get_property("token_name", "")
 				var modification = task.retrieve_integer_property("modification", 0)
@@ -323,8 +325,7 @@ func _get_display_text_nocache():
 							var action = "add status:"
 							if modification < 0:
 								action = "remove status:"						
-							result = owner_name + " - " + action + token_name + subjects
-							return result
+							result = owner_name + " - " + action + token_name
 			"receive_damage":
 				var tags = task.get_property("tags")
 				if "retaliate" in tags:
@@ -334,6 +335,11 @@ func _get_display_text_nocache():
 	result = result + subjects
 #	if "conditional script" in result:
 #		var _tmp =1
+	
+	var modifiers_log = print_modifiers_log()
+	if modifiers_log:
+		result += "\n" + modifiers_log
+
 	return result
 			
 

@@ -46,6 +46,8 @@ func _init(_task, _owner = null, _trigger_object = null, _trigger_details = {}):
 	sceng = cfc.scripting_engine.new([task.script_definition], task.owner,task.trigger_object, task.trigger_details)
 	run_type = CFInt.RunType.NORMAL
 	trigger = "" #TODO something better ?
+	trigger_details = task.trigger_details
+	
 	tasks = [task]
 	# Seems to be required to avoid re-targeting... ?
 	task.is_primed = true

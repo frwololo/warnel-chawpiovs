@@ -295,4 +295,36 @@ func get_script_by_event_details(event_details):
 			return task		
 		return null
 	
-
+func print_modifiers_log():
+	var result = ""
+	var modifiers_log = trigger_details.get("modifiers_log",[])
+	
+	#don't add this information if only base element
+	if modifiers_log.size() <=1:
+		return ""
+	
+	var plus_prefix = ""
+	var minus_prefix = "-"
+	
+	var skip_names_for = [self.get_owner()]
+	var first_task = get_first_task()
+	if first_task: 
+		var subjects = first_task.subjects
+		skip_names_for += subjects	
+	for data in modifiers_log:
+		var amount = data.amount
+		if amount == 0:
+			continue
+		if amount > 0:
+			result += plus_prefix + str(abs(amount))
+		else:
+			result += minus_prefix + str(abs(amount))
+		plus_prefix = " +"
+		minus_prefix= " -"
+		var source = data.source
+		if !(source in skip_names_for):
+			result+= "(" + source.get_translated_property("shortname") +")"
+	if result:
+		result = "(" + result + ")"
+				
+	return result

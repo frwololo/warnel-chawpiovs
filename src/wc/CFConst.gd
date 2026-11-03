@@ -1262,8 +1262,8 @@ const DEBUG_SIMULATE_NETWORK_DELAY = 1.5
 const DEBUG_NETWORK_DELAY_RANDOM = false
 const DEBUG_SIMULATE_NETWORK_PACKET_DROP = false
 
-const SCRIPT_BREAKPOINT_CARD_NAME := "Gamora"
-const SCRIPT_BREAKPOINT_TRIGGER_NAME := "card_played"
+const SCRIPT_BREAKPOINT_CARD_NAME := "Soaring Acrobatics"
+const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
 const GAME_VERSION := "1.9.0"

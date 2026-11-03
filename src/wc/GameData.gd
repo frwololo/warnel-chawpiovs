@@ -1664,6 +1664,8 @@ func villain_threat():
 	if not main_schemes:
 		return CFConst.ReturnCode.FAILED
 
+	var modifiers = []
+
 	var all_cards:Array = cfc.NMAP.board.get_all_cards()
 	for main_scheme in main_schemes:		
 		#basic threat computation, check if it's a constant or multiplied by numbers of players	
@@ -1671,25 +1673,37 @@ func villain_threat():
 		var escalation_threat_fixed = main_scheme.properties["escalation_threat_fixed"]
 		if (not escalation_threat_fixed):
 			escalation_threat *= get_team_size()
-		
+		modifiers.append({"source": main_scheme, "name": "base", "amount": escalation_threat})
 		#venom goblin scenario (sinister motives) states that main schemes ignore other counters
 		#unless they are the active scheme. This is achieved by setting the "ignore_external_acceleration" on non active main schemes
 		if main_scheme.get_property("ignore_external_acceleration", 0, true):
-			escalation_threat += main_scheme.tokens.get_token_count("acceleration")
+			var self_acceleration = main_scheme.tokens.get_token_count("acceleration")
+			if self_acceleration:
+				escalation_threat += self_acceleration
+				modifiers.append({"source": main_scheme, "name": "acceleration", "amount": self_acceleration})
 		else:
 			for card in all_cards:
 				#we add all acceleration tokens	
-				escalation_threat += card.tokens.get_token_count("acceleration")
+				var acceleration = card.tokens.get_token_count("acceleration")
+				if acceleration:
+					escalation_threat += acceleration
+					modifiers.append({"source": card, "name": "acceleration token (" +card.get_translated_property("shortname") +")", "amount": acceleration})
 				
 				#we also add acceleration icons from other schemes
-				escalation_threat += card.get_property("scheme_acceleration", 0, true)
+				var scheme_acceleration = card.get_property("scheme_acceleration", 0, true)
+				if scheme_acceleration:
+					escalation_threat += scheme_acceleration
+					modifiers.append({"source": card, "name": "acceleration (" +card.get_translated_property("shortname") +")", "amount": scheme_acceleration})
 		if escalation_threat:
 			#todo maybe threat source should always be the scheme itself?
 			#nothing in the rules states it should be the villain
 			var threat_source = gameData.get_villain()
 			if !threat_source:
 				threat_source = main_scheme
-			var task = ScriptTask.new(threat_source, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, threat_source, {})
+			var details = {
+				"modifiers_log": modifiers
+			}	
+			var task = ScriptTask.new(threat_source, {"name": "add_threat", "amount": escalation_threat, "tags": ["villain_step_one_threat"]}, threat_source, details)
 			task.set_subjects ([main_scheme])
 			var stackEvent = SimplifiedStackScript.new(task)
 			gameData.theStack.add_script(stackEvent)			

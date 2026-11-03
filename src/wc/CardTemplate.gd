@@ -1957,9 +1957,18 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	# If it does not match, then we don't pass any scripts for this trigger.
 	if !card_scripts:
 		return card_scripts
+
+	#tmp_card_scripts here is a copy that will be modified
+	#with _my_hero etc.. replaced with the appropriate value,
+	#but because there are other modifciations down the line (for_each_player)
+	#we need to return the unmodified one ultimately
+	#this is probably going to lead to some bug eventually, but that's what works for now
+	#as we can't afford to modify card_scripts here
+	var tmp_card_scripts = card_scripts.duplicate(true)
+	tmp_card_scripts = cfc.ov_utils.static_pre_task_prime(tmp_card_scripts,self)
 		
 	if not SP.filter_trigger(
-			card_scripts,
+			tmp_card_scripts,
 			trigger_card,
 			self,
 			trigger_details):
@@ -1970,7 +1979,7 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 	#additional filter check for interrupts/responses
 	var event_data = cfc.ov_utils.filter_trigger(
 			trigger,
-			card_scripts,
+			tmp_card_scripts,
 			trigger_card,
 			self,
 			trigger_details)
@@ -1983,8 +1992,8 @@ func retrieve_filtered_scripts(trigger_card,trigger, trigger_details):
 		
 	var to_erase = []
 
-	for key in card_scripts:
-		if !script_passes_condition(card_scripts, key, trigger_card, trigger_details):
+	for key in tmp_card_scripts:
+		if !script_passes_condition(tmp_card_scripts, key, trigger_card, trigger_details):
 			to_erase.append(key)
 			to_erase.append("condition_" + key)		
 	for key in to_erase:

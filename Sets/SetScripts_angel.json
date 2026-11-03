@@ -1,5 +1,6 @@
 {
 	"Adaptive Plumage": {
+		"_ignore_trait_constraint": true,
 		"manual": {
 			"hand": {
 				"Thwart": [
@@ -7,7 +8,8 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"hero_action"
+							"hero_action",
+							"thwart_ability"
 						],
 						"constraints": [
 							{
@@ -38,7 +40,8 @@
 						"name": "constraints",
 						"is_cost": true,
 						"tags": [
-							"hero_action"
+							"hero_action",
+							"attack_ability"
 						],
 						"constraints": [
 							{

@@ -900,7 +900,7 @@
 			"all": [
 				{
 					"name": "add_threat",
-					"amount": "my_boost_icons",
+					"amount": "my_boost_count",
 					"subject": "self"
 				}
 			]

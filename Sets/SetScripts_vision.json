@@ -1097,20 +1097,19 @@
 		}
 	},
 	"Solar Beam": {
+		"_ignore_trait_constraint": true,
 		"manual": {
-			"hand": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_action"
-					]
-				},
-				{
-					"name": "conditional_script",
-					"options": [
-						{
-							"condition": {
+			"hand": {
+				"Attack": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action",
+							"attack_ability"
+						],
+						"constraints": [
+							{
 								"func_name": "count_cards",
 								"func_params": {
 									"subject": "boardseek",
@@ -1124,24 +1123,46 @@
 									]
 								}
 							},
-							"nested_tasks": [
-								{
-									"name": "attack",
-									"amount": 7,
-									"subject": "an_enemy"
+						]
+					},
+					{
+						"name": "attack",
+						"amount": 7,
+						"subject": "an_enemy"
+					}
+				],
+				"Thwart": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action",
+							"thwart_ability"
+						],
+						"constraints": [
+							{
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_same_controller": true,
+											"filter_properties": {
+												"Name": "Intangible"
+											}
+										}
+									]
 								}
-							]
-						}
-					],
-					"else": [
-						{
-							"name": "thwart",
-							"amount": 5,
-							"subject": "a_scheme"
-						}
-					]
-				}
-			]
+							},
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 5,
+						"subject": "a_scheme"
+					}
+				]
+			}
 		}
 	},
 	"Solar Gem": {

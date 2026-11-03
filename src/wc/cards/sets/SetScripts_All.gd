@@ -109,17 +109,18 @@ static func get_scripts(scripts: Dictionary, card_id: String, _get_modified = tr
 					"subject": "my_identity"
 				}
 			)
-			
-		for trait in ["defense", "thwart", "attack"]:
-			var has_trait = card.get("trait_" + trait, 0)
-			if has_trait:
-				hand_constraints.append(
-					{	
-						"name": "constraints",
-						"is_cost": true,
-						"tags": [trait + "_ability"]
-					}			
-				)			
+		
+		if !script.get("_ignore_trait_constraint"):	
+			for trait in ["defense", "thwart", "attack"]:
+				var has_trait = card.get("trait_" + trait, 0)
+				if has_trait:
+					hand_constraints.append(
+						{	
+							"name": "constraints",
+							"is_cost": true,
+							"tags": [trait + "_ability"]
+						}			
+					)			
 	#interrupt or response replacements
 	var interrupt_scripts = has_interrupt(script)
 

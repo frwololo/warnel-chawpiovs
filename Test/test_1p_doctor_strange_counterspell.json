@@ -1,0 +1,199 @@
+{
+	"_comments": "Bug: Counterspell vs regular spell",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},	
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Counterspell"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				},
+				{
+					"card": "Shocker",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "Magic Blast"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "play",
+			"value": "Magic Blast"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Counterspell"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"villain": [
+				{
+					"card": "Rhino - 1",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Desperate Defense"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Bomber"
+				},
+				{
+					"card": "Shocker",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Magic Blast"
+				}
+			]
+		}
+	}
+}

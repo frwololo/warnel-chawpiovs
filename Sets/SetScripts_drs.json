@@ -245,10 +245,10 @@
 					"name": "attach_to_card",
 					"subject": "my_hero",
 					"is_cost": true
-				},			
+				},
 				{
 					"is_else": true,
-					"name" :"discard",
+					"name": "discard",
 					"subject": "self"
 				}
 			]
@@ -270,34 +270,13 @@
 				},
 				{
 					"name": "discard",
-					"subject": "trigger",
-				},				
-				{
-					"name": "discard",
-					"subject": "self",
-				}
-			]
-		},
-		"interrupt": {
-			"event_filters": {
-				"filter_state_event_source": ["event", "trait_invocation","filter_same_controller"],
-				"_comments": "special exception for invocation deck. Its cards aren't technically played so I'm leaving this as an exception until we agree on the actual desired effect"
-			},
-			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
+					"subject": "trigger"
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_invocation",
-					"subject": "trigger",
-				},				
-				{
 					"name": "discard",
-					"subject": "self",
+					"subject": "self"
 				}
-			]		
+			]
 		}
 	},
 	"Crimson Bands of Cyttorak": {
@@ -545,7 +524,7 @@
 				{
 					"name": "attack",
 					"subject": "an_enemy",
-					"amount": 5,
+					"amount": 5
 				},
 				{
 					"name": "move_card_to_container",

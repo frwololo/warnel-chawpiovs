@@ -2195,6 +2195,15 @@ func execute_scripts(
 	#tells the game engine to not display this event prominently to the users
 	if card_scripts.get("_silent", false):
 		trigger_details["_silent"] = true
+
+	#some events explicitly tell us not to use the stack
+	#these should be used cautiously and should only be ok for
+	#"internal" stuff
+	#at the time of writing, this is used for
+	#once_per_phase, once_per_round internal token macro,
+	#to ensure the tokens are added as soon as possible
+	if card_scripts.has("_use_stack"):
+		trigger_details["use_stack"] = card_scripts.get("_use_stack")
 	
 	for key in ["macro_name", "display_section"]:
 		if card_scripts.has(key):

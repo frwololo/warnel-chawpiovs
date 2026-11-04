@@ -681,7 +681,7 @@ func add_card_already_played(script_uid, card):
 #adds a "context" event to open a context window for the current activity (e.g. attack)
 #this will allow sending a "context closed" event once the ongoing activity is finished
 func open_context( context, position =-1):
-	var event = context["stack_event"]
+	var event = context.get("stack_event", null)
 	
 	#if the event already exists in the stack, we open right before it
 	if position == -1:

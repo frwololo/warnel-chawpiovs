@@ -1,0 +1,273 @@
+{
+	"_comments": "Angel Metamorphosis (bug: triggers draw twice)",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "42001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Atlantean Guard #56165"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Ruler of Atlantis #56164"
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain America - 1 #56137",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Gathering Support - 1B #56141b"
+				},
+				{
+					"card": "Fearless Determination #56149",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Archangel #42001c"
+				},
+				{
+					"card": "Angel #42001a"
+				},
+				{
+					"card": "Harpoon #42025"
+				},
+				{
+					"card": "Hook, Line, and Sinker #42026"
+				},
+				{
+					"card": "Harpoon's Harpoon #42027"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Captain America - 2 #56138"
+				},
+				{
+					"card": "Resistance Tactics - 2A #56142a"
+				},
+				{
+					"card": "Secret Avengers - 2B #56142b"
+				},
+				{
+					"card": "Fighting Dirty #56208"
+				},
+				{
+					"card": "The People's Hero #56210"
+				},
+				{
+					"card": "Recruited by Cap #56209"
+				},
+				{
+					"card": "No, You Move! #56207"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Resistance - 1A #56141a"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Taunt #42016"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Warren Worthington III"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Metamorphosis"
+				},
+				{
+					"card": "The Power of Flight"
+				}
+			],
+			"others": [
+				{
+					"card": "Cap's Shield #56143",
+					"owner_hero_id": 0,
+					"host": "56137"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Metamorphosis"
+		},
+		{
+			"type": "choose",
+			"value": "Change Form (Angel)"
+		},
+		{
+			"type": "activate",
+			"value": "Angel",
+			"_comments": "draw from ability"
+		},		
+		{
+			"type": "target",
+			"value": "Fearless Determination #56149"
+		},
+		{
+			"type": "activate",
+			"value": "Angel",
+			"_comments": "this shouldn't trigger a second time"
+		},	
+		{
+			"type": "choose",
+			"value": "Cancel",
+		},			
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "42001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Atlantean Guard #56165"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Ruler of Atlantis #56164"
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain America - 1 #56137",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Gathering Support - 1B #56141b"
+				},
+				{
+					"card": "Fearless Determination #56149",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Archangel #42001c"
+				},
+				{
+					"card": "Angel #42001a"
+				},
+				{
+					"card": "Harpoon #42025"
+				},
+				{
+					"card": "Hook, Line, and Sinker #42026"
+				},
+				{
+					"card": "Harpoon's Harpoon #42027"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Captain America - 2 #56138"
+				},
+				{
+					"card": "Resistance Tactics - 2A #56142a"
+				},
+				{
+					"card": "Secret Avengers - 2B #56142b"
+				},
+				{
+					"card": "Fighting Dirty #56208"
+				},
+				{
+					"card": "The People's Hero #56210"
+				},
+				{
+					"card": "Recruited by Cap #56209"
+				},
+				{
+					"card": "No, You Move! #56207"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Resistance - 1A #56141a"
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Power of Flight"
+				},
+				{
+					"card": "Metamorphosis"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Angel #42001a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Taunt #42016"
+				}
+			],
+			"others": [
+				{
+					"card": "Cap's Shield #56143",
+					"owner_hero_id": 0,
+					"host": "56137"
+				}
+			]
+		}
+	}
+}

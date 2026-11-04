@@ -1412,7 +1412,7 @@
 							"filter_properties": {
 								"trait_avenger": 1
 							},
-							"filter_is_exhausted": false,
+							"filter_is_exhausted": false
 						}
 					]
 				},
@@ -1426,7 +1426,7 @@
 							"filter_properties": {
 								"trait_avenger": 1
 							},
-							"filter_is_exhausted": true,
+							"filter_is_exhausted": true
 						}
 					]
 				}

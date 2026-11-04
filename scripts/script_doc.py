@@ -258,7 +258,7 @@ def parse_file(source_file):
                 if not trigger.startswith("_") and not trigger.startswith("do_"):
                     if trigger not in events:
                         events[trigger] = {}
-                        events[trigger][card] = trigger_data
+                    events[trigger][card] = trigger_data
                 card_abilities = get_abilities(trigger_data)
                 if card_abilities:
                     for ability in card_abilities:

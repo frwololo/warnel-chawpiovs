@@ -4218,7 +4218,7 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject": "self",
+					"subject": "self"
 				}
 			]
 		}

@@ -360,6 +360,7 @@
 		},
 		"self_moved_to_board": {
 			"_silent": true,
+			"_use_stack": false,
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -384,9 +385,9 @@
 				}
 			]
 		},
-		"card_moved_to_board": {
+		"self_moved_to_board": {
 			"_silent": true,
-			"trigger": "self",
+			"_use_stack": false,
 			"board": [
 				{
 					"name": "mod_tokens",

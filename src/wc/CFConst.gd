@@ -1267,7 +1267,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
 const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261103-1554"
+const BUILD_NUMBER := "20261105-0654"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

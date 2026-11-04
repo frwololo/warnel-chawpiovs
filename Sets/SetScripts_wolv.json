@@ -216,7 +216,7 @@
 		"card_defeated": {
 			"event_filters": {
 				"secondary_source": "self",
-				"is_enemy": true,
+				"is_enemy": true
 			},
 			"is_optional_all": true,
 			"all": [
@@ -916,7 +916,7 @@
 		"card_defeated": {
 			"event_filters": {
 				"secondary_source": "self",
-				"is_enemy": true,
+				"is_enemy": true
 			},
 			"all": [
 				{

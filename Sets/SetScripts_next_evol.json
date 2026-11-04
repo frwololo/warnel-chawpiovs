@@ -65,7 +65,7 @@
 				"force_run_at_prime": true,
 				"var_name": "my_discarded",
 				"var_type": "subject"
-			},			
+			},
 			{
 				"name": "conditional_script",
 				"options": [
@@ -7169,7 +7169,7 @@
 					"subject_index": "top",
 					"subject_count": 1,
 					"src_container": "deck",
-					"needs_subject": true,
+					"needs_subject": true
 				},
 				{
 					"name": "thwart",
@@ -8216,7 +8216,10 @@
 	},
 	"Stryfe #40032": {
 		"interrupt_play_card": {
-			"filter_state_trigger": ["trait_psionic", "event"],
+			"filter_state_trigger": [
+				"trait_psionic",
+				"event"
+			],
 			"board": [
 				{
 					"name": "prevent",

@@ -53,15 +53,19 @@
 		},
 		"__wolfsbane": [
 			{
-				"name": "view_card",
-				"subject": "target",
-				"target_include_piles": true,
-				"target_include_board": false
+				"name": "discard",
+				"subject": "index",
+				"subject_index": "top",
+				"src_container": "deck_my_hero",
+				"is_cost": true
 			},
 			{
-				"name": "discard",
-				"subject": "previous"
-			},
+				"name": "save_variable",
+				"value": "previous",
+				"force_run_at_prime": true,
+				"var_name": "my_discarded",
+				"var_type": "subject"
+			},			
 			{
 				"name": "conditional_script",
 				"options": [
@@ -69,7 +73,7 @@
 						"condition": {
 							"func_name": "get_subject_int_property",
 							"func_params": {
-								"subject": "previous",
+								"subject": "my_discarded",
 								"property": "type_code",
 								"property_value": "__type_code__"
 							}
@@ -78,7 +82,7 @@
 							{
 								"name": "move_card_to_container",
 								"dest_container": "hand",
-								"subject": "previous"
+								"subject": "my_discarded"
 							}
 						]
 					}

@@ -1,0 +1,154 @@
+{
+	"_comments": "Bug: A good Workout not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Diamondback #40038"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "A good Workout"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "A Good workout"
+		},
+		{
+			"type": "target",
+			"value": "Arclight - A"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1,
+						"damage": 6
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},
+				{
+					"card": "Diamondback #40038"
+				},
+				{
+					"card": "A Good workout"
+				}
+			]
+		}
+	}
+}

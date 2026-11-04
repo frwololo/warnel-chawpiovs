@@ -180,7 +180,8 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"src_container": "deck"
+					"src_container": "deck",
+					"needs_subject": true
 				},
 				{
 					"name": "attack",
@@ -7167,7 +7168,8 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"src_container": "deck"
+					"src_container": "deck",
+					"needs_subject": true,
 				},
 				{
 					"name": "thwart",

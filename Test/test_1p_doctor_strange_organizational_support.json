@@ -1,0 +1,167 @@
+{
+	"_comments": "Organizational Support Mana resource test - Bug reported for Dr Strange",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Quinjet",
+					"tokens": {
+						"time": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Cloak of Levitation"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Cloak of Levitation"
+		},
+		{
+			"type": "select",
+			"value": "Organizational Support"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Quinjet"
+			]
+		},
+		{
+			"type": "select",
+			"value": "OK"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Quinjet",
+					"tokens": {
+						"time": 1
+					},
+					"exhausted": true
+				},
+				{
+					"card": "Cloak of Levitation"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Organizational Support"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

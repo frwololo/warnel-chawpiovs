@@ -1,0 +1,156 @@
+{
+	"_comments": "Bug: Right Place, right Time not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+				{
+					"card": "Diamondback #40038"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Right Place, Right Time"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Right Place, Right Time"
+		},
+		{
+			"type": "target",
+			"value": "Gotta Get Away #40103b"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				},
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"upgrade_support1": [],
+			"enemies1": [
+			],
+			"allies1": [],
+			"discard1": [
+				{
+					"card": "Strength"
+				},			
+				{
+					"card": "Diamondback #40038"
+				},			
+
+				{
+					"card": "Right Place, Right Time"
+				}
+			]
+		}
+	}
+}

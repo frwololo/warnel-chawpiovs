@@ -1,0 +1,171 @@
+{
+	"_comments": "Bug: Painted Lady triggers from encounter deck",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Shadow of the past"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Black Widow - Natasha Romanoff"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "The Painted Lady"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Team Investigation"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Black Widow - Natasha Romanoff"
+		},
+		{
+			"type": "select",
+			"value": "Team Investigation"
+		},
+		{
+			"type": "activate",
+			"value": "The Painted Lady",
+			"expected_to_fail": true
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Shadow of the past"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Black Widow - Natasha Romanoff"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "The Painted Lady"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Team Investigation"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

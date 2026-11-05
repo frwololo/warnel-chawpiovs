@@ -24,7 +24,7 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Magnetic Bubble",
+					"card": "Magnetic Bubble #32149",
 					"owner_hero_id": 0
 				}
 			],
@@ -54,7 +54,7 @@
 			],
 			"others": [
 				{
-					"card": "Magneto's Helmet",
+					"card": "Magneto's Helmet #32147",
 					"host": "Magneto"
 				}
 			],
@@ -133,7 +133,7 @@
 		},
 		{
 			"type": "activate",
-			"value": "Magneto's Helmet"
+			"value": "Magneto's Helmet #32147"
 		}
 	],
 	"end": {
@@ -148,7 +148,7 @@
 		"board": {
 			"discard_villain": [
 				{
-					"card": "Magneto's Helmet"
+					"card": "Magneto's Helmet #32147"
 				}
 			],
 			"deck_villain": [
@@ -166,7 +166,7 @@
 			],
 			"others": [
 				{
-					"card": "Magnetic Bubble",
+					"card": "Magnetic Bubble #32149",
 					"host": "Magneto",
 					"tokens": {
 						"damage": 2

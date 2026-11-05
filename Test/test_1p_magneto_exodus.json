@@ -1,0 +1,421 @@
+{
+	"_comments": "Test Exodus discard ability",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magneto"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Spectacular! #56182",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Spider-Woman - 1 #56168",
+					"owner_hero_id": 0,
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Open Rebellion - 1B #56172b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1
+					}
+				},
+				{
+					"card": "Self-propelled Glide #56179",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Magneto #49001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Surge - Noriko Ashida #49033",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Anole - Victor Borkowski #49034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bling! - Roxanne Washington #49035",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Indra - Paras Gavaskar #49036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exodus #49028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Martyr for Mutants #49029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fabian Cortez #49030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Frenzy #49031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Angry Acolyte #49032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Spider-Woman - 2 #56169",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Resistance Tactics - 2A #56173a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Neighborhood Protectors - 2B #56173b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Spider-Blast #56212",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Double Agent #56211",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Secret Contact #56214",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard to Hit #56213",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Resistance - 1A #56172a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength #49026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cyclops - Scott Summers #49015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Master of Magnetism #49011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deft Focus #49023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #49024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"You Got This!\" #49019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Noble Sacrifice #49018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #49025",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Metal Shards #49009",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Magneto #49001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"_magnetic_pull": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Magneto's Armor #49004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Asteroid M #49002",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Exodus #49028"
+				}
+			],
+			"others": [
+				{
+					"card": "Finesse #56174",
+					"owner_hero_id": 0,
+					"host": "56168"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Magneto",
+			"_comments": "block attack"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magneto"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Spectacular! #56182",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Spider-Woman - 1 #56168",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Open Rebellion - 1B #56172b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1
+					}
+				},
+				{
+					"card": "Self-propelled Glide #56179",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Magneto #49001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Surge - Noriko Ashida #49033",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Anole - Victor Borkowski #49034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bling! - Roxanne Washington #49035",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Indra - Paras Gavaskar #49036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exodus #49028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Martyr for Mutants #49029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fabian Cortez #49030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Frenzy #49031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Angry Acolyte #49032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Spider-Woman - 2 #56169",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Resistance Tactics - 2A #56173a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Neighborhood Protectors - 2B #56173b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Spider-Blast #56212",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Double Agent #56211",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Secret Contact #56214",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard to Hit #56213",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Resistance - 1A #56172a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Strength #49026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cyclops - Scott Summers #49015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Master of Magnetism #49011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deft Focus #49023",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Metal Shards #49009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #49025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Noble Sacrifice #49018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"You Got This!\" #49019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #49024",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Magneto #49001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"_magnetic_pull": 1,
+						"damage": 2
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Magneto's Armor #49004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Asteroid M #49002",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Exodus #49028"
+				},
+				{
+					"card": "Hydra Mercenary",
+					"owner_hero_id": 0
+				}
+			],
+			"others": [
+				{
+					"card": "Finesse #56174",
+					"owner_hero_id": 0,
+					"host": "56168"
+				}
+			]
+		}
+	}
+}

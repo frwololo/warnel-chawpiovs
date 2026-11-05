@@ -2696,6 +2696,8 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	for boost_amount in boost_data:
 		amount+= boost_amount	
 
+	script.script_definition["total_attack"] = amount
+
 	var prevent = script.retrieve_integer_property("prevent_amount", 0)	
 	if prevent:
 		amount-= prevent

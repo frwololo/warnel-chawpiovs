@@ -24,7 +24,7 @@
 					"card": "Hydra Mercenary"
 				},
 				{
-					"card": "Magnetic Missile",
+					"card": "Magnetic Missile #32155",
 					"owner_hero_id": 0
 				}
 			],
@@ -54,7 +54,7 @@
 			],
 			"others": [
 				{
-					"card": "Magneto's Helmet",
+					"card": "Magneto's Helmet #32147",
 					"host": "Magneto"
 				}
 			],
@@ -132,7 +132,7 @@
 		"board": {
 			"discard_villain": [
 				{
-					"card": "Magnetic Missile",
+					"card": "Magnetic Missile #32155",
 					"owner_hero_id": 0
 				}
 			],
@@ -172,7 +172,7 @@
 			],
 			"others": [
 				{
-					"card": "Magneto's Helmet",
+					"card": "Magneto's Helmet #32147",
 					"host": "Magneto"
 				}
 			],

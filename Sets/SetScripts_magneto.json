@@ -829,8 +829,7 @@
 					"subject": "my_hero"
 				}
 			]
-		},
-		"_comments": "TODO verify 'previous' still points at the discarded ally"
+		}
 	},
 	"\"You Got This!\"": {
 		"response_attack_started": {
@@ -1064,8 +1063,11 @@
 				},
 				{
 					"name": "reveal_nemesis",
-					"subject": "my_identity",
-					"_comments": "TODO verify reveal_nemesis searches deck/discard/set-aside for the nemesis minion",
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
 					"is_cost": true
 				},
 				{
@@ -1077,13 +1079,74 @@
 					"amount": 3
 				},
 				{
+					"name": "add_script",
+					"subject": "villain",
+					"end_condition": "phase_ended",
+					"script": {
+						"is_valid_target_filters": {
+							"board": {
+								"attack": {
+									"source_condition": {
+										"func_name": "!count_tokens",
+										"func_params": {
+											"subject": "trigger",
+											"token_name": "__face_the_past_weakling"
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__face_the_past_weakling"
+				},
+				{
+					"name": "save_variable",
+					"subject": "self",
+					"value": "my_identity",
+					"var_name": "my_weakling",
+					"var_type": "subject"
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
+				{
 					"name": "move_card_to_container",
 					"dest_container": "removed_from_game",
 					"subject": "self"
 				}
 			]
 		},
-		"TODO": "You cannot attack the villain this phase"
+		"phase_ended": {
+			"_silent": true,
+			"condition_all": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "my_weakling",
+					"token_name": "__face_the_past_weakling"
+				}
+			},
+			"all": [
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "__face_the_past_weakling"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_weakling"
+				}
+			]
+		}
 	},
 	"Deft Focus": {
 		"manual": {
@@ -1221,8 +1284,7 @@
 					},
 					"subject": "my_identity"
 				}
-			],
-			"_comments": "after Magnetic Pull resolves; TODO verify script_executed filters (pattern from Black Widow's Gauntlet)"
+			]
 		},
 		"manual": {
 			"board": [
@@ -1254,14 +1316,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_current_hero_target",
-					"subject_count": {
-						"func_name": "get_subject_int_property",
-						"func_params": {
-							"subject": "self",
-							"property": "attack"
-						}
-					},
-					"_comments": "TODO 'total ATK' including boost icons"
+					"subject_count": "trigger_details_total_attack"
 				}
 			]
 		}
@@ -1599,14 +1654,6 @@
 							"filter_same_controller": true,
 							"filter_group": "group_friendly",
 							"filter_properties": {
-								"trait_x-factor": 1,
-								"comparison": "ge"
-							}
-						},
-						{
-							"filter_same_controller": true,
-							"filter_group": "group_friendly",
-							"filter_properties": {
 								"trait_x-force": 1,
 								"comparison": "ge"
 							}
@@ -1631,14 +1678,6 @@
 							"filter_group": "group_friendly",
 							"filter_properties": {
 								"trait_x-factor": 1,
-								"comparison": "ge"
-							}
-						},
-						{
-							"filter_same_controller": true,
-							"filter_group": "group_friendly",
-							"filter_properties": {
-								"trait_x-force": 1,
 								"comparison": "ge"
 							}
 						},
@@ -1672,20 +1711,11 @@
 								"trait_x-force": 1,
 								"comparison": "ge"
 							}
-						},
-						{
-							"filter_same_controller": true,
-							"filter_group": "group_friendly",
-							"filter_properties": {
-								"trait_x-men": 1,
-								"comparison": "ge"
-							}
 						}
 					]
 				}
 			]
-		},
-		"_comments": "TODO trait alterants may stack (gain = at least 1)"
+		}
 	},
 	"Sebastian Shaw": {
 		"attack_happened": {
@@ -1696,31 +1726,52 @@
 				{
 					"name": "draw_boost_card",
 					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cannot_be_attacked",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
 				}
 			]
-		},
-		"TODO": "He cannot be attacked again this phase"
+		}
 	},
 	"Selene": {
+		"is_valid_target_filters": {
+			"board": {
+				"attack": {
+					"source_condition": {
+						"func_name": "!get_subject_int_property",
+						"func_params": {
+							"subject": "self",
+							"property": "type_code",
+							"property_value": "ally"
+						}
+					}
+				}
+			}
+		},
 		"quickstrike": {},
 		"boost": {
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_current_hero_target"
-						}
-					]
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": "group_allies_current_hero_target"
 				}
 			]
-		},
-		"TODO": "Allies cannot attack Selene"
+		}
 	},
 	"Hellfire Pawn": {
 		"_surge": {},

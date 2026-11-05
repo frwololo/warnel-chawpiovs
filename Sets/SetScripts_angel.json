@@ -90,7 +90,7 @@
 					},
 					"then": [
 						{
-							"name": "replacement_effects",
+							"name": "replacement_effect",
 							"subject": "interrupted_event",
 							"replacements": {
 								"additional_tags": [

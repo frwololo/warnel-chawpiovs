@@ -4573,7 +4573,7 @@
 							"trigger": "self",
 							"board": [
 								{
-									"name": "enemy_attacks_you",
+									"name": "enemy_activates_against_you",
 									"subject": "self"
 								}
 							]

@@ -4,51 +4,53 @@
 			"__name__": "_magnetic_pull"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"token_name": "_magnetic_pull",
-					"modification": -1,
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "discard",
-					"subject": "grab_until",
-					"src_container": "deck",
-					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"trait_magnetic": 1,
-								"comparison": "ge"
+			"board": {
+				"Magnetic Pull": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_magnetic_pull",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "discard",
+						"subject": "grab_until",
+						"src_container": "deck",
+						"filter_state_grab_until": [
+							{
+								"filter_properties": {
+									"trait_magnetic": 1,
+									"comparison": "ge"
+								}
 							}
-						}
-					]
-				},
-				{
-					"name": "save_variable",
-					"var_name": "my_pull_cards",
-					"var_type": "subject",
-					"value": "previous",
-					"_comments": "remember all discarded cards for Magneto's Armor / Old Grievances; TODO verify previous holds every grab_until card"
-				},
-				{
-					"name": "move_card_to_container",
-					"subject": "index",
-					"subject_count": 1,
-					"subject_index": "retrieve_integer",
-					"src_container": "deck",
-					"dest_container": "hand",
-					"_comments": "pattern from Underground Distribution: the matching card stays at retrieve_integer"
-				}
-			]
+						]
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_pull_cards",
+						"var_type": "subject",
+						"value": "previous",
+						"_comments": "remember all discarded cards for Magneto's Armor / Old Grievances; TODO verify previous holds every grab_until card"
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "index",
+						"subject_count": 1,
+						"subject_index": "retrieve_integer",
+						"src_container": "deck",
+						"dest_container": "hand",
+						"_comments": "pattern from Underground Distribution: the matching card stays at retrieve_integer"
+					}
+				]
+			}
 		}
 	},
 	"Erik Lehnsherr": {
@@ -65,8 +67,7 @@
 					"subject_index": "top",
 					"subject_count": 3,
 					"src_container": "discard",
-					"dest_container": "deck",
-					"_comments": "TODO 'top' of the discard pile = most recently discarded"
+					"dest_container": "deck"
 				}
 			]
 		}
@@ -99,8 +100,7 @@
 								"comparison": "ge"
 							}
 						}
-					],
-					"_comments": "TODO 'topmost' ordering in the discard pile"
+					]
 				},
 				{
 					"name": "heal",
@@ -146,24 +146,30 @@
 					"amount": 1,
 					"resource_name": "wild"
 				}
-			],
-			"_comments": "pattern from The Power of the Mind (only for a Magnetic card)"
+			]
 		}
 	},
 	"Magneto's Armor": {
-		"response_script_executed": {
+		"script_executed": {
 			"event_filters": {
-				"script_executed_trigger": "manual",
-				"filter_state_event_source": [
-					{
-						"filter_properties": {
-							"shortname": "Magneto",
-							"type_code": "hero"
-						}
-					}
-				]
+				"action_name_id": "magnetic_pull"
 			},
+			"is_optional_board": true,
 			"board": [
+				{
+					"name": "save_variable",
+					"value": {
+						"func_name": "get_subject_variable",
+						"func_params": {
+							"subject": "Magneto",
+							"variable": "my_pull_cards"
+						}
+					},
+					"var_name": "my_pull_cards",
+					"var_type": "subject",
+					"force_run_at_prime": true,
+					"_comments": "transfer variable from Magento to this"
+				},
 				{
 					"name": "conditional_script",
 					"options": [
@@ -263,8 +269,7 @@
 						}
 					]
 				}
-			],
-			"_comments": "after Magnetic Pull resolves; TODO verify script_executed filters (pattern from Black Widow's Gauntlet)"
+			]
 		}
 	},
 	"Magneto's Cape": {
@@ -280,16 +285,9 @@
 		},
 		"response_script_executed": {
 			"event_filters": {
-				"script_executed_trigger": "manual",
-				"filter_state_event_source": [
-					{
-						"filter_properties": {
-							"shortname": "Magneto",
-							"type_code": "hero"
-						}
-					}
-				]
+				"action_name_id": "magnetic_pull"
 			},
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "exhaust_card",
@@ -300,22 +298,10 @@
 					"name": "ready_card",
 					"subject": "Magneto"
 				}
-			],
-			"_comments": "after Magnetic Pull resolves; TODO verify script_executed filters (pattern from Black Widow's Gauntlet)",
-			"is_optional_board": true
+			]
 		}
 	},
 	"Magnetic Bubble": {
-		"alterants": {
-			"board": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "retaliate",
-					"alteration": 1,
-					"trigger": "Magneto"
-				}
-			]
-		},
 		"on_load": {
 			"all": [
 				{
@@ -327,6 +313,16 @@
 					"set_properties": {
 						"health": 6
 					}
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 1,
+					"trigger": "Magneto"
 				}
 			]
 		},
@@ -348,8 +344,7 @@
 					"amount": "all"
 				}
 			]
-		},
-		"_comments": "pattern from Psionic Force Field (health 6 = discard threshold)"
+		}
 	},
 	"Wrapped in Metal": {
 		"attach_upgrade_to_target": {
@@ -810,7 +805,112 @@
 		"_comments": "TODO verify 'previous' still points at the discarded ally"
 	},
 	"\"You Got This!\"": {
-		"TODO": "after exhausting your hero for a basic thwart/attack, discard an ally → add its matching power; ready your hero"
+		"response_attack_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "discard",
+					"subject": "boardseek_and_choose",
+					"is_cost": true,
+					"filter_state_seek": [
+						"ally",
+						"filter_same_controller"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "my_ally",
+											"property": "attack"
+										}
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"response_thwart_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "discard",
+					"subject": "boardseek_and_choose",
+					"is_cost": true,
+					"filter_state_seek": [
+						"ally",
+						"filter_same_controller"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_ally",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"trigger": "my_hero",
+									"alteration": {
+										"func_name": "get_subject_int_property",
+										"func_params": {
+											"subject": "my_ally",
+											"property": "thwart"
+										}
+									}
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
 	},
 	"New Recruits": {
 		"card_defeated": {
@@ -959,6 +1059,22 @@
 	},
 	"Deft Focus": {
 		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			],
+			"condition_board": {
+				"func_name": "has_trait",
+				"func_params": {
+					"trait": "superpower",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand_my_hero"
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -969,12 +1085,70 @@
 				},
 				{
 					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
 					"subject": "self",
-					"is_cost": true
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__focus"
 				}
 			]
 		},
-		"TODO": "reduce the cost of the next Superpower card you play this turn by 1"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_superpower": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__focus",
+						"is_inverted": true
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"trait_superpower": 1,
+						"comparison": "ge"
+					}
+				}
+			],
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__focus"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__focus"
+				}
+			]
+		}
 	},
 	"Old Grievances": {
 		"give_obligation": {

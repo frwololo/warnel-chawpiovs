@@ -94,6 +94,17 @@ func preprocess_subject_definition(script: ScriptObject):
 
 func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int = 0, run_type = CFInt.RunType.NORMAL, trigger_details :={}) -> Array:
 	var results = []
+	
+	if typeof(_subject_request) == TYPE_DICTIONARY:
+		if _subject_request.has("func_name"):
+			var func_name = _subject_request["func_name"]
+			var params = _subject_request.get("func_params", {})
+			results = cfc.ov_utils.func_name_run(script.owner, func_name, params, script)	
+			return results
+		else:
+			#unsupported
+			return results
+	
 	if _subject_request.begins_with("trigger_details_"):
 		if !trigger_details:
 			return results

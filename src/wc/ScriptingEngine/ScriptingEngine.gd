@@ -869,7 +869,7 @@ func save_variable(script:ScriptTask) -> int:
 	var current_value = script.owner.script_variables.get(var_name, null)
 	match var_type:
 		"subject":
-			if typeof(value) == TYPE_STRING:
+			if typeof(value) in [TYPE_STRING, TYPE_DICTIONARY]:
 				value = {"subject" : value}
 			result = script._local_find_subjects(0, CFInt.RunType.NORMAL,value )
 			if !result:

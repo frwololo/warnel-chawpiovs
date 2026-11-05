@@ -1807,19 +1807,9 @@
 					"amount": 2
 				},
 				{
-					"name": "if",
-					"func_name": "get_scenario_option_value",
-					"func_params": {
-						"option_name": "competitive_mode"
-					},
-					"then": [
-						{
-							"name": "heal",
-							"amount": 2,
-							"subject": "todo",
-							"_comments": "TODO, competitive mode not supported"
-						}
-					]
+					"name": "heal",
+					"amount": 2,
+					"subject": "villain"
 				}
 			]
 		},
@@ -6174,9 +6164,12 @@
 		"setup": {
 			"all": [
 				{
-					"name": "reveal_encounter",
+					"name": "host_card",
 					"subject": "enemy_team_tutor_and_choose",
-					"src_container": "deck_villain",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
 					"filter_state_tutor": "Finesse"
 				},
 				{
@@ -6223,9 +6216,21 @@
 					"set_to_mod": true
 				},
 				{
-					"name": "increase",
-					"subject": "interrupted_event",
-					"amount": "my_boost"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": "my_boost"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -6286,9 +6291,21 @@
 					"set_to_mod": true
 				},
 				{
-					"name": "increase",
-					"subject": "interrupted_event",
-					"amount": "my_boost"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": "my_boost"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -6297,9 +6314,12 @@
 		"setup": {
 			"all": [
 				{
-					"name": "reveal_encounter",
+					"name": "host_card",
 					"subject": "enemy_team_tutor_and_choose",
-					"src_container": "deck_villain",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
 					"filter_state_tutor": "Finesse"
 				},
 				{
@@ -6346,9 +6366,21 @@
 					"set_to_mod": true
 				},
 				{
-					"name": "increase",
-					"subject": "interrupted_event",
-					"amount": "my_boost"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": "my_boost"
+								}
+							]
+						}
+					}
 				}
 			]
 		}
@@ -6409,9 +6441,21 @@
 					"set_to_mod": true
 				},
 				{
-					"name": "increase",
-					"subject": "interrupted_event",
-					"amount": "my_boost"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": "my_boost"
+								}
+							]
+						}
+					}
 				}
 			]
 		}

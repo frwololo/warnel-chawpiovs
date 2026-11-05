@@ -172,6 +172,7 @@ func _enable_texture(texture):
 		$Margin.queue_free()
 		text_enabled = false
 		_perf_hacks_done = true
+	card_owner.emit_signal("card_texture_changed", card_owner)	
 
 func card_image_download_complete(card_id):
 	if card_owner.canonical_id != card_id:

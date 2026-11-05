@@ -1163,7 +1163,6 @@ const DEFAULT_SETTINGS:= {
 }
 
 const BETA_SETS:= [
-	"gob",
 	"twc",
 	"toafk",
 	"hood",
@@ -1266,7 +1265,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
 const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261105-1316"
+const BUILD_NUMBER := "20261105-1916"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

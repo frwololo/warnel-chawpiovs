@@ -101,7 +101,7 @@ static func filter_trigger(
 			return false
 
 	if card_scripts.get(FILTER_INCLUDED_IN):
-		if !check_included_in_filter(trigger_card,owner_card,card_scripts.get(FILTER_HOSTED_BY)):
+		if !check_included_in_filter(trigger_card,owner_card,card_scripts.get(FILTER_INCLUDED_IN)):
 			return false
 
 	# Same Controller filter check

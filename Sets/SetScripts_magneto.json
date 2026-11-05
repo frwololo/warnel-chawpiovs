@@ -37,8 +37,7 @@
 						"name": "save_variable",
 						"var_name": "my_pull_cards",
 						"var_type": "subject",
-						"value": "previous",
-						"_comments": "remember all discarded cards for Magneto's Armor / Old Grievances; TODO verify previous holds every grab_until card"
+						"value": "previous"
 					},
 					{
 						"name": "move_card_to_container",
@@ -48,6 +47,14 @@
 						"src_container": "deck",
 						"dest_container": "hand",
 						"_comments": "pattern from Underground Distribution: the matching card stays at retrieve_integer"
+					},
+					{
+						"name": "save_variable",
+						"var_name": "my_pull_cards",
+						"var_type": "subject",
+						"mode": "add",
+						"value": "previous",
+						"_comments": "need to add the previous card as well"
 					}
 				]
 			}
@@ -168,7 +175,7 @@
 					"var_name": "my_pull_cards",
 					"var_type": "subject",
 					"force_run_at_prime": true,
-					"_comments": "transfer variable from Magento to this"
+					"_comments": "transfer variable from Magneto to this"
 				},
 				{
 					"name": "conditional_script",
@@ -347,33 +354,39 @@
 		}
 	},
 	"Wrapped in Metal": {
-		"attach_upgrade_to_target": {
-			"__filter_state_subject__": [
+		"manual": {
+			"hand": [
 				{
-					"filter_properties": {
-						"type_code": "minion"
-					},
-					"filter_properties2": {
-						"trait_elite": 0
-					}
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
 				}
 			]
 		},
-		"interrupt": {
-			"event_name": [
-				"enemy_initiates_attack",
-				"enemy_initiates_scheme"
-			],
-			"trigger": "host",
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				"minion",
+				"!trait_elite"
+			]
+		},
+		"alterants": {
 			"board": [
 				{
-					"name": "prevent",
-					"subject": "interrupted_event"
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_activate",
+					"alteration": 1,
+					"trigger": "host"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "blank_printed_text_box",
+					"alteration": 1,
+					"trigger": "host"
 				}
-			],
-			"_comments": "attached minion cannot activate"
-		},
-		"TODO": "Treat its printed text box as if it were blank; 'Hero form only' play restriction"
+			]
+		}
 	},
 	"Electromagnetic Blast": {
 		"manual": {
@@ -400,29 +413,34 @@
 		},
 		"last_threat_removed": {
 			"event_filters": {
-				"source": "self"
+				"secondary_source": "self"
 			},
 			"is_optional_all": true,
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"type_code": "attachment"
+							},
+							"filter_func": {
+								"func_name": "property_contains",
+								"func_params": {
+									"subject": "trigger",
+									"property": "real_text",
+									"value": [
+										"hero action",
+										"hero response"
+									]
+								}
 							}
 						}
-					],
-					"_comments": "TODO only attachments with 'Hero Action' or 'Hero Response' text"
+					]
 				}
 			]
-		},
-		"_comments": "pattern from Creole Charmer"
+		}
 	},
 	"Metal Shards": {
 		"manual": {
@@ -513,33 +531,44 @@
 					"subject": "previous"
 				}
 			]
-		},
-		"_comments": "TODO verify 'previous' is the damaged enemy"
+		}
 	},
 	"M - Monet St. Croix": {
 		"self_moved_to_board": {
+			"is_optional_board": true,
 			"board": [
 				{
+					"name": "save_variable",
+					"force_run_at_prime": true,
+					"var_name": "my_health",
+					"var_type": "int",
+					"value": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "self",
+							"property": "health"
+						}
+					}
+				},
+				{
 					"name": "defeat_card",
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
 						{
 							"filter_properties": {
 								"type_code": "minion"
 							},
 							"filter_func": {
-								"func_name": "get_remaining_damage<my_m_hp",
+								"func_name": "get_subject_int_property<my_health",
 								"func_params": {
-									"subject": "trigger"
+									"subject": "trigger",
+									"property": "health"
 								}
 							}
 						}
-					],
-					"_comments": "TODO compute my_m_hp = M's remaining hit points"
+					]
 				}
-			],
-			"is_optional_board": true
+			]
 		}
 	},
 	"Kid Omega - Quentin Quire": {
@@ -617,19 +646,26 @@
 	},
 	"Cyclops - Scott Summers": {
 		"self_moved_to_board": {
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "nop",
 					"subject": "an_enemy"
 				},
 				{
+					"name": "save_variable",
+					"value": "previous",
+					"var_type": "subject",
+					"var_name": "my_target"
+				},
+				{
 					"name": "add_script",
-					"subject": "previous",
+					"subject": "self",
 					"end_condition": "phase_ended",
 					"script": {
 						"interrupt_receive_damage": {
 							"event_filters": {
-								"target": "self",
+								"target": "my_target",
 								"tags": [
 									"attack"
 								]
@@ -642,11 +678,9 @@
 								}
 							]
 						}
-					},
-					"_comments": "TODO verify add_script with an interrupt on the chosen enemy"
+					}
 				}
-			],
-			"is_optional_board": true
+			]
 		}
 	},
 	"Won't Stay Down": {
@@ -716,25 +750,20 @@
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
 					"src_container": "deck_villain",
-					"grid_name": "enemies_active_player",
+					"grid_name": "enemies_my_hero",
 					"is_cost": true
 				},
 				{
 					"name": "add_script",
-					"end_condition": "card_played",
-					"subject": "tutor",
-					"src_container": "hand",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
+					"end_condition": {
+						"event": "card_played",
+						"event_filters": {
+							"trigger": "self"
 						}
-					],
+					},
+					"subject": "tutor_and_choose",
+					"src_container": "hand",
+					"filter_state_tutor": "ally",
 					"script": {
 						"alterants": {
 							"all": [
@@ -753,8 +782,7 @@
 					"subject": "previous",
 					"require_exec_state": "hand",
 					"exec_trigger": "manual",
-					"delayed": true,
-					"_comments": "pattern from Team-Building Exercise"
+					"delayed": true
 				}
 			]
 		}
@@ -1165,17 +1193,23 @@
 		},
 		"response_script_executed": {
 			"event_filters": {
-				"script_executed_trigger": "manual",
-				"filter_state_event_source": [
-					{
-						"filter_properties": {
-							"shortname": "Magneto",
-							"type_code": "hero"
-						}
-					}
-				]
+				"action_name_id": "magnetic_pull"
 			},
 			"board": [
+				{
+					"name": "save_variable",
+					"value": {
+						"func_name": "get_subject_variable",
+						"func_params": {
+							"subject": "Magneto",
+							"variable": "my_pull_cards"
+						}
+					},
+					"var_name": "my_pull_cards",
+					"var_type": "subject",
+					"force_run_at_prime": true,
+					"_comments": "transfer variable from Magneto to this"
+				},
 				{
 					"name": "deal_damage",
 					"amount": {
@@ -1736,9 +1770,13 @@
 					"subject": "villain"
 				},
 				{
-					"name": "move_boost_cards",
+					"name": "move_card_to_container",
 					"subject": "self",
-					"_comments": "TODO give this card to the villain as a facedown boost card"
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
 				}
 			]
 		},

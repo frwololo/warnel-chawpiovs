@@ -6142,18 +6142,13 @@
 					],
 					"else": [
 						{
-							"name": "move_card_to_container",
+							"name": "deal_encounter",
 							"subject": "enemy_team_tutor_and_choose",
 							"src_container": [
 								"discard_villain",
 								"deck_villain"
 							],
-							"filter_state_tutor": "Tangled Up",
-							"dest_container": "deck_villain"
-						},
-						{
-							"name": "draw_boost_card",
-							"subject": "villain"
+							"filter_state_tutor": "Tangled Up"
 						}
 					]
 				}
@@ -6978,8 +6973,8 @@
 			"event_name": [
 				"enemy_would_scheme",
 				"enemy_would_attack",
-				"attack",
-				"thwart"
+				"attack_started",
+				"thwart_started"
 			],
 			"trigger": "host",
 			"board": [
@@ -7820,7 +7815,7 @@
 							],
 							"else": {
 								"if": {
-									"func_name": "count_tokens=1",
+									"func_name": "count_tokens==1",
 									"func_params": {
 										"subject": "Finesse",
 										"token_name": "skill"

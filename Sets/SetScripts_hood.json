@@ -868,8 +868,7 @@
 					]
 				}
 			]
-		},
-		"_comments": "TODO verify group_friendly_<hero> group names"
+		}
 	},
 	"Brothers Grimm": {
 		"interrupt": {
@@ -1307,8 +1306,7 @@
 								"comparison": "ge"
 							}
 						}
-					],
-					"_comments": "TODO verify trait key for Crossfire's Crew"
+					]
 				},
 				{
 					"name": "reveal_encounter",
@@ -1428,7 +1426,11 @@
 				{
 					"name": "engage_nemesis",
 					"subject": "my_identity",
-					"_comments": "TODO verify engage_nemesis searches deck/discard/set-aside"
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					]
 				}
 			]
 		}
@@ -1618,12 +1620,7 @@
 					"subject_count": "all",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_heroes"
-						},
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
+							"filter_group": "group_allies_and_heroes"
 						}
 					]
 				}
@@ -2348,16 +2345,38 @@
 			"all": [
 				{
 					"name": "reveal_nemesis",
-					"subject": "my_identity",
-					"is_cost": true
+					"surge_on_failure": true
 				},
 				{
-					"name": "surge",
-					"is_else": true
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "reveal_nemesis_scheme",
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "shuffle_nemesis_other",
+					"subject": "self"
 				}
 			]
 		},
-		"_comments": "TODO verify reveal_nemesis puts nemesis minion+side scheme in play and shuffles the rest"
+		"reveal_nemesis_scheme": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "reveal_nemesis_scheme"
+				}
+			]
+		},
+		"shuffle_nemesis_other": {
+			"_silent": true,
+			"all": [
+				{
+					"name": "shuffle_nemesis_other"
+				}
+			]
+		}
 	},
 	"Total Annihilation": {
 		"_surge": {},
@@ -2572,12 +2591,7 @@
 					"alteration": 1,
 					"filter_state_trigger": [
 						{
-							"filter_group": "group_heroes"
-						},
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
+							"filter_group": "group_allies_and_heroes"
 						}
 					]
 				},

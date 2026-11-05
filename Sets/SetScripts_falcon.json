@@ -1150,8 +1150,7 @@
 					"filter_state_trigger": [
 						{
 							"filter_properties": {
-								"trait_aerial": 1,
-								"comparison": "ge"
+								"trait_aerial": 1
 							}
 						}
 					]
@@ -1162,8 +1161,7 @@
 					"resource_name": "energy"
 				}
 			]
-		},
-		"_comments": "pattern from The Power of the Mind"
+		}
 	},
 	"Harlem's Protector": {
 		"give_obligation": {

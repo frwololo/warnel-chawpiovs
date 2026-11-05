@@ -136,8 +136,7 @@
 					],
 					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
 				}
-			],
-			"_comments": "TODO verify 'after' value for alter-ego"
+			]
 		}
 	},
 	"Touched": {

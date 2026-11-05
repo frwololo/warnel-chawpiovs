@@ -448,7 +448,11 @@
 					{
 						"name": "engage_nemesis",
 						"subject": "my_identity",
-						"_comments": "TODO verify engage_nemesis searches deck/discard/set aside for the nemesis minion"
+						"src_container": [
+							"deck_villain",
+							"discard_villain",
+							"set_aside"
+						]
 					}
 				]
 			}
@@ -1011,8 +1015,7 @@
 					"trigger": "self"
 				}
 			]
-		},
-		"_comments": "TODO verify play_area_* group names"
+		}
 	},
 	"Past Machinations": {
 		"incite": {
@@ -1487,8 +1490,7 @@
 					"trigger": "self"
 				}
 			]
-		},
-		"_comments": "TODO 'your play area' = the engaged player's; verify group"
+		}
 	},
 	"Time-Displaced Soldier": {
 		"incite": {

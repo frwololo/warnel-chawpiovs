@@ -673,7 +673,9 @@
 							"filter_group": "group_enemies"
 						},
 						{
-							"filter_group": "group_heroes"
+							"filter_properties": {
+								"type_code": "hero"
+							}
 						}
 					]
 				}
@@ -877,8 +879,7 @@
 					"selection_type": "equal",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_heroes",
-							"filter_same_controller": true
+							"filter_group": "group_identities_my_hero"
 						},
 						{
 							"filter_group": "group_allies_my_hero"
@@ -1026,8 +1027,7 @@
 						}
 					}
 				}
-			],
-			"_comments": "TODO verify nested if/then/else values"
+			]
 		}
 	},
 	"Self Control": {
@@ -1098,7 +1098,7 @@
 		"interrupt_card_dies": {
 			"filter_state_trigger": [
 				{
-					"filter_group": "group_heroes"
+					"filter_group": "group_identities"
 				}
 			],
 			"board": [

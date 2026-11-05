@@ -2306,12 +2306,7 @@
 					"sort_name": "get_remaining_damage",
 					"filter_state_seek": [
 						{
-							"filter_group": "group_heroes"
-						},
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
+							"filter_group": "group_allies_and_heroes"
 						}
 					]
 				},
@@ -2369,8 +2364,7 @@
 						{
 							"filter_group": "group_friendly_current_hero_target"
 						}
-					],
-					"_comments": "TODO verify group name for 'each character you control'"
+					]
 				}
 			]
 		}
@@ -2406,8 +2400,7 @@
 						{
 							"filter_group": "group_friendly_current_hero_target"
 						}
-					],
-					"_comments": "TODO verify group name for 'each character you control'"
+					]
 				}
 			]
 		}
@@ -3619,8 +3612,7 @@
 						{
 							"filter_group": "group_friendly_my_hero"
 						}
-					],
-					"_comments": "TODO verify group name"
+					]
 				}
 			]
 		},

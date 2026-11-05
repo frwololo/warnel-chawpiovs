@@ -492,18 +492,8 @@
 			"board": [
 				{
 					"name": "nop",
-					"subject": "a_player"
-				},
-				{
-					"name": "save_variable",
-					"var_name": "my_player",
-					"var_type": "subject",
-					"value": "previous"
-				},
-				{
-					"name": "deal_damage",
-					"amount": 1,
-					"subject": "villain"
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": "group_identities"
 				},
 				{
 					"name": "deal_damage",
@@ -511,14 +501,14 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies_my_player",
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
-					],
-					"_comments": "TODO verify group for minions engaged with the chosen player"
+						"group_enemies_previous_subject",
+						"minion"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "villain"
 				},
 				{
 					"name": "sequence",
@@ -554,7 +544,8 @@
 									"type_code": "minion"
 								}
 							}
-						]
+						],
+						"_comments": "TODO the chosen player is not carried into this sequence; group_enemies_my_player is not a valid group (stuns nothing for now)"
 					}
 				],
 				"Keep": [

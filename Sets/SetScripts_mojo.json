@@ -513,8 +513,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_be_stunned",
 					"alteration": 1,
-					"trigger": "self",
-					"_comments": "TODO verify property name"
+					"trigger": "self"
 				}
 			]
 		},
@@ -607,8 +606,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_be_stunned",
 					"alteration": 1,
-					"trigger": "self",
-					"_comments": "TODO verify property name"
+					"trigger": "self"
 				}
 			]
 		},
@@ -701,8 +699,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_be_stunned",
 					"alteration": 1,
-					"trigger": "self",
-					"_comments": "TODO verify property name"
+					"trigger": "self"
 				}
 			]
 		},

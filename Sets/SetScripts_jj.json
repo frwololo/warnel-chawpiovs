@@ -1142,12 +1142,7 @@
 						"selection_type": "equal",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_heroes"
-							},
-							{
-								"filter_properties": {
-									"type_code": "ally"
-								}
+								"filter_group": "group_allies_and_heroes"
 							}
 						]
 					}
@@ -1169,12 +1164,7 @@
 						"selection_type": "equal",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_heroes"
-							},
-							{
-								"filter_properties": {
-									"type_code": "ally"
-								}
+								"filter_group": "group_allies_and_heroes"
 							}
 						],
 						"is_cost": true

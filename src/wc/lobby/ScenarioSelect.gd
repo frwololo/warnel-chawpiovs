@@ -11,6 +11,9 @@ var is_beta = false
 var _options:= []
 var villain_id
 var _rotation = 0
+var grayscale_tex = null
+var color_tex = null
+var available = true
 
 #animation
 var target_container = null
@@ -176,7 +179,12 @@ func attempt_load_texture():
 		set_display_name(display_name)
 		 
 		if (texture):
-			the_picture.texture_normal = texture
+			color_tex = texture
+			grayscale_tex = WCUtils.to_grayscale(color_tex)	
+			if available:			
+				the_picture.texture_normal = color_tex
+			else:
+				the_picture.texture_normal = grayscale_tex
 		resize()	
 			
 func _process(delta:float):
@@ -213,6 +221,17 @@ func migration_finished():
 	parent.remove_child(self)
 	target_container.add_child(self)	
 
+
+func enable():
+	the_picture.texture_normal = color_tex
+	available = true
+
+func disable():
+	the_picture.texture_normal = grayscale_tex	
+	available = false
+	#hack to deselect if previously selected and we can't have this scenario anymore
+	if lobby._scenario == scenario_id:
+		lobby.scenario_select("01097a")
 
 func resize():
 
@@ -257,6 +276,9 @@ func resize():
 
 	
 func _game_locale_changed(_new_locale):
+	#invalidate pictures
+	grayscale_tex = null
+	color_tex = null	
 	reload_texture()
 	
 func gui_focus_changed(control):
@@ -280,13 +302,16 @@ func load_scenario(_scenario_id) -> bool:
 	return true
 	
 
-func _on_ScenarioSelect_gui_input(event):		
+func _on_ScenarioSelect_gui_input(event):	
 	if event is InputEventMouseButton: #TODO better way to handle Tablets and consoles
 		if event.button_index == BUTTON_LEFT and event.pressed:
 			#Tell the server I want this hero
 			action()
 
 func action():
+	if !available:
+		return	
+			
 	if (not cfc.is_game_master()):
 		return	
 			

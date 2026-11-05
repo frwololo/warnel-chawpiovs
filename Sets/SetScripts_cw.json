@@ -2808,7 +2808,7 @@
 				}
 			]
 		},
-		"response_card_token_added": {
+		"card_token_added": {
 			"trigger": "villain",
 			"event_filters": {
 				"token_name": "tough"
@@ -3366,7 +3366,7 @@
 		"boost": {
 			"all": [
 				{
-					"name": "draw_boost",
+					"name": "draw_boost_card",
 					"subject": "host"
 				}
 			]
@@ -5693,9 +5693,21 @@
 			"trigger": "villain",
 			"board": [
 				{
-					"name": "increase",
-					"subject": "interrupted_event",
-					"amount": 1
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "villain",
+									"alteration": 1
+								}
+							]
+						}
+					}
 				}
 			]
 		}

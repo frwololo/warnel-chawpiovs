@@ -242,7 +242,7 @@
 					"subject": "self",
 					"token_name": "fatigue"
 				}
-			},		
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -497,15 +497,9 @@
 			},
 			"board": [
 				{
-					"name": "mod_tokens",
-					"token_name": "__reduce_consequential",
-					"modification": -1,
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
 					"name": "prevent",
 					"amount": {
+						"func_name": "count_cards",
 						"func_params": {
 							"subject": "tutor",
 							"subject_count": "all",
@@ -1217,12 +1211,12 @@
 				}
 			]
 		},
-		"interrupt_enemy_attack": {
+		"interrupt_defender_chosen": {
+			"filter_state_trigger": [
+				"group_identities_my_hero",
+				"trait_aerial"
+			],
 			"event_filters": {
-				"filter_state_event_target": [
-					"group_friendly_my_hero",
-					"trait_aerial"
-				],
 				"tags": [
 					"basic_defense"
 				]

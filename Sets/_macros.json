@@ -156,7 +156,7 @@
 				}
 			]
 		}
-	},	
+	},
 	"attach_upgrade_to_target": {
 		"manual": {
 			"hand": [
@@ -355,12 +355,35 @@
 					"modification": 1,
 					"set_to_mod": true,
 					"token_name": "__name__"
+				},
+			]
+		},
+		"card_token_removed": {
+			"_silent": true,
+			"event_filters": {
+				"token_name": "__name__"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__used_once_per_phase__name__"
 				}
 			]
 		},
 		"self_moved_to_board": {
 			"_silent": true,
 			"_use_stack": false,
+			"condition_board": {
+				"func_name": "count_tokens==0",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__used_once_per_phase__name__"
+				}
+			},
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -382,12 +405,35 @@
 					"modification": 1,
 					"set_to_mod": true,
 					"token_name": "__name__"
+				},
+			]
+		},
+		"card_token_removed": {
+			"_silent": true,
+			"event_filters": {
+				"token_name": "__name__"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "__used_once_per_round__name__"
 				}
 			]
 		},
 		"self_moved_to_board": {
 			"_silent": true,
 			"_use_stack": false,
+			"condition_board": {
+				"func_name": "count_tokens==0",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__used_once_per_round__name__"
+				}
+			},
 			"board": [
 				{
 					"name": "mod_tokens",
@@ -467,7 +513,7 @@
 				}
 			]
 		}
-	},	
+	},
 	"once_per_round_per_player": {
 		"round_ended": {
 			"_silent": true,

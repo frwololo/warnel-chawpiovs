@@ -970,6 +970,28 @@ func heroes_container_update(hero_id, slot):
 	for c in heroes_container.get_children():
 		c.set_players_mode(count_visible)
 
+#enables/disables some scenarios depending on current state of the selection
+#e.g. if some specific heroes are selected, vilains of the same name cannot be chosen
+func scenarios_availability_update():
+	var shortnames = []
+	for i in HERO_COUNT:
+		var hero_data: HeroDeckData = team[i]
+		var hero_id = hero_data.get_hero_id()
+		if hero_id:
+			var card_data = cfc.get_card_by_id(hero_id)
+			var shortname = card_data["shortname"]
+			shortnames.append(shortname.to_lower())
+	 
+				
+	for villain in all_scenarios_container.get_children():
+		villain.enable()
+		var villain_id = villain.villain_id
+		if villain_id:
+			var card_data = cfc.get_card_by_id(villain_id)
+			var shortname = card_data["shortname"].to_lower()
+			if shortname in shortnames:
+				villain.disable()		
+
 remotesync func assign_hero(hero_id, slot, data = {}):
 	#data update
 	var hero_deck_data: HeroDeckData = team[slot]
@@ -978,6 +1000,7 @@ remotesync func assign_hero(hero_id, slot, data = {}):
 	
 	#gui update
 	heroes_container_update(hero_id, slot)
+	scenarios_availability_update()
 	var hero_deck_select = heroes_container.get_child(slot)
 	hero_deck_select.load_hero(hero_id, data.get("deck_data", []))
 	if hero_id:

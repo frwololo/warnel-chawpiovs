@@ -627,7 +627,9 @@ func setup() -> void:
 	gameData.connect("game_state_changed", self, "_game_state_changed")
 	scripting_bus.connect("step_about_to_start", self, "_game_step_about_to_start")	
 	scripting_bus.connect("round_ended", self, "_round_ended")	
-
+	scripting_bus.connect("phase_ended", self, "_phase_ended")	
+	
+	
 	scripting_bus.connect("card_token_modified", self, "_card_token_modified")
 
 	scripting_bus.connect("card_moved_to_hand", self, "_card_moved")
@@ -1135,9 +1137,20 @@ func _cfc_cache_cleared():
 	queue_refresh_cache()
 
 func _round_ended():
+	cleanup_temporary_tokens(["__used_once_per_round"])
 	if is_onboard():
 		if get_property("temporary", 0, true) and !get_property("not_temporary", 0, true):
 			self.discard()
+
+func _phase_ended(_card, _details):
+	cleanup_temporary_tokens(["__used_once_per_phase"])
+
+func cleanup_temporary_tokens(prefix_list:Array):
+	for token_prefix in prefix_list:
+		for token_name in tokens.get_all_tokens():
+			if token_name.begins_with(token_prefix):
+				tokens.mod_token(token_name, 0, true)
+
 
 #reset some variables at new turn
 func _game_step_about_to_start(_trigger_object, details:Dictionary):

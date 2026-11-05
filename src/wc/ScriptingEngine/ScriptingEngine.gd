@@ -3542,6 +3542,15 @@ func sequence(script: ScriptTask) -> int:
 		
 	if !script.subjects:
 		return CFConst.ReturnCode.FAILED
+
+	var at_least_one_valid_subject = false
+	for subject in script.subjects:
+		if subject.get_potential_scripts(ability):
+			at_least_one_valid_subject = true
+			break
+	
+	if !at_least_one_valid_subject:
+		return 	CFConst.ReturnCode.FAILED	
 				
 	if (costs_dry_run()): #not allowed ?
 		return retcode

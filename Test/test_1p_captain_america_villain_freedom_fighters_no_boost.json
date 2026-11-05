@@ -1,0 +1,224 @@
+{
+	"_comments": "Bug: No surge if no boost activated from Freedom Fighters",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "42001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Atlantean Guard #56165"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Freedom Fighters"
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain America - 1 #56137",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Secret Avengers - 2B #56142b"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Archangel #42001c"
+				},
+				{
+					"card": "Angel #42001a"
+				},
+				{
+					"card": "Harpoon #42025"
+				},
+				{
+					"card": "Hook, Line, and Sinker #42026"
+				},
+				{
+					"card": "Harpoon's Harpoon #42027"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Captain America - 2 #56138"
+				},
+				{
+					"card": "Fighting Dirty #56208"
+				},
+				{
+					"card": "The People's Hero #56210"
+				},
+				{
+					"card": "Recruited by Cap #56209"
+				},
+				{
+					"card": "No, You Move! #56207"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Taunt #42016"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Soaring Acrobatics"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Angel #42001a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Ever Vigilant #42015"
+				}
+			],
+			"others": [
+				{
+					"card": "Cap's Shield #56143",
+					"owner_hero_id": 0,
+					"host": "56137"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "42001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Freedom Fighters"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Atlantean Guard #56165"
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain America - 1 #56137",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Secret Avengers - 2B #56142b"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Archangel #42001c"
+				},
+				{
+					"card": "Angel #42001a"
+				},
+				{
+					"card": "Harpoon #42025"
+				},
+				{
+					"card": "Hook, Line, and Sinker #42026"
+				},
+				{
+					"card": "Harpoon's Harpoon #42027"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Captain America - 2 #56138"
+				},
+				{
+					"card": "Fighting Dirty #56208"
+				},
+				{
+					"card": "The People's Hero #56210"
+				},
+				{
+					"card": "Recruited by Cap #56209"
+				},
+				{
+					"card": "No, You Move! #56207"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Taunt #42016"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Soldier"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Soaring Acrobatics"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Angel #42001a"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Ever Vigilant #42015"
+				}
+			],
+			"others": [
+				{
+					"card": "Cap's Shield #56143",
+					"owner_hero_id": 0,
+					"host": "56137"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,276 @@
+{
+	"_comments": "Bug: cannonball attacks leaving game in a weird state",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "42001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Atlantean Guard #56165"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Ruler of Atlantis #56164"
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain America - 1 #56137",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Gathering Support - 1B #56141b"
+				},
+				{
+					"card": "Fearless Determination #56149",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Archangel #42001c"
+				},
+				{
+					"card": "Angel #42001a"
+				},
+				{
+					"card": "Harpoon #42025"
+				},
+				{
+					"card": "Hook, Line, and Sinker #42026"
+				},
+				{
+					"card": "Harpoon's Harpoon #42027"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Captain America - 2 #56138"
+				},
+				{
+					"card": "Resistance Tactics - 2A #56142a"
+				},
+				{
+					"card": "Secret Avengers - 2B #56142b"
+				},
+				{
+					"card": "Fighting Dirty #56208"
+				},
+				{
+					"card": "The People's Hero #56210"
+				},
+				{
+					"card": "Recruited by Cap #56209"
+				},
+				{
+					"card": "No, You Move! #56207"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Resistance - 1A #56141a"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cannonball #42020",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Archangel #42001c",
+					"tokens": {
+						"__angel_of_death": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Aerial Agility #42004"
+				},
+				{
+					"card": "Natural Flight"
+				}
+			],
+			"others": [
+				{
+					"card": "Cap's Shield #56143",
+					"owner_hero_id": 0,
+					"host": "56137"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Cannonball #42020"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Mercenary"
+		},
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "42001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Atlantean Guard #56165"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Ruler of Atlantis #56164"
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain America - 1 #56137",
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Gathering Support - 1B #56141b"
+				},
+				{
+					"card": "Fearless Determination #56149",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Archangel #42001c"
+				},
+				{
+					"card": "Angel #42001a"
+				},
+				{
+					"card": "Harpoon #42025"
+				},
+				{
+					"card": "Hook, Line, and Sinker #42026"
+				},
+				{
+					"card": "Harpoon's Harpoon #42027"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Spear Shot #42028"
+				},
+				{
+					"card": "Captain America - 2 #56138"
+				},
+				{
+					"card": "Resistance Tactics - 2A #56142a"
+				},
+				{
+					"card": "Secret Avengers - 2B #56142b"
+				},
+				{
+					"card": "Fighting Dirty #56208"
+				},
+				{
+					"card": "The People's Hero #56210"
+				},
+				{
+					"card": "Recruited by Cap #56209"
+				},
+				{
+					"card": "No, You Move! #56207"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Resistance - 1A #56141a"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Cannonball #42020",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Archangel #42001c",
+					"tokens": {
+						"__angel_of_death": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Aerial Agility #42004"
+				},
+				{
+					"card": "Natural Flight"
+				}
+			],
+			"others": [
+				{
+					"card": "Cap's Shield #56143",
+					"owner_hero_id": 0,
+					"host": "56137"
+				}
+			]
+		}
+	}
+}

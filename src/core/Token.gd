@@ -41,7 +41,8 @@ func setup(token_name: String, _token_drawer = null) -> void:
 	display_name = token_name
 
 	if token_name.begins_with("__"):
-		visible = false
+		if !gameData.testSuite:
+			visible = false
 		not_a_real_token = true
 		display_name = token_name.substr(2)
 	elif token_name.begins_with("_"):

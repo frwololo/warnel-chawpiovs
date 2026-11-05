@@ -1,0 +1,3339 @@
+{
+	"\"I'm Tough\"": {
+		"TODO": "If Rhino already has a tough status card, this card gains surge",
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "Rhino"
+				}
+			]
+		}
+	},
+	"Advance": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Advanced Ultron Drone": {
+		"TODO": "the engaged player puts the top card of their deck into play facedown, engaged with them as a Drone minion",
+		"interrupt_card_dies": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Affairs of State": {
+		"TODO": "You may flip to alter-ego form | Choose: • Exhaust T'Challa → remove Affairs of State from the game | • Choose and discard a Black Panther upgrade you control | Discard this obligation",
+		"give_obligation": {
+			"__to__": "T'Challa"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Alpha Flight Station": {
+		"TODO": "cost: choose",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "hand",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Ancestral Knowledge": {
+		"TODO": "Choose up to 3 different cards in your discard pile and shuffle them into your deck",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				}
+			]
+		}
+	},
+	"Android Efficiency #01144": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Android Efficiency #01144a": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion | Choose to either spend a [energy] resource or put the top card of the deck into play facedown, engaged with you as a Drone minion",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Android Efficiency #01144b": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion | Choose to either spend a [mental] resource or put the top card of the deck into play facedown, engaged with you as a Drone minion",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Android Efficiency #01144c": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion | Choose to either spend a [physical] resource or put the top card of the deck into play facedown, engaged with you as a Drone minion",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Arc Reactor": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "Iron Man"
+				}
+			]
+		}
+	},
+	"Armored Rhino Suit": {
+		"TODO": "attach to rhino | place it here instead. | Then, if there is at least 5 damage here, discard Armored Rhino Suit | trigger: When any amount of damage would be dealt to Rhino",
+		"interrupt": {
+			"event_name": "TODO",
+			"board": []
+		}
+	},
+	"Armored Vest": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_mts.json (same card text)"
+	},
+	"Assault": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		}
+	},
+	"Assault on NORAD - 2": {
+		"TODO": "each player must choose to either place 2 threat here or put the top card of their deck into play facedown, engaged with them as a Drone minion | trigger: After placing threat here during step one of the villain phase",
+		"response": {
+			"event_name": "TODO",
+			"board": []
+		}
+	},
+	"Assault on NORAD - 2A": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion. | Advance to stage 2B",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Assault on NORAD - 2B": {
+		"TODO": "each player must choose to either place 2 threat here or put the top card of their deck into play facedown, engaged with them as a Drone minion | trigger: After placing threat here during step one of the villain phase",
+		"response": {
+			"event_name": "TODO",
+			"board": []
+		}
+	},
+	"Aunt May": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "heal",
+					"amount": 4,
+					"subject": "Peter Parker"
+				}
+			]
+		}
+	},
+	"Avengers Mansion": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "a_player"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_drs.json (same card text)"
+	},
+	"Backflip": {
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "my_identity",
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			]
+		}
+	},
+	"Biomechanical Upgrades": {
+		"TODO": "without another biomechanical upgrades attached | heal all damage from it instead, then discard this card",
+		"_surge": {},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"_comments": "TODO verify: the minion with the highest printed hit points"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"board": []
+		}
+	},
+	"Black Cat - Felicia Hardy": {
+		"TODO": "Add each card with a printed [mental] resource discarded this way to your hand | trigger: After you play Black Cat",
+		"response": {
+			"event_name": "TODO",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck"
+				}
+			]
+		}
+	},
+	"Black Widow - Natasha Romanoff": {
+		"TODO": "cancel the effects of that card and discard it. | Then, reveal another card from the encounter deck | trigger: When a card is revealed from the encounter deck",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				}
+			]
+		}
+	},
+	"Bomb Scare": {
+		"TODO": "Place an additional 1 [per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Breakin' & Takin'": {
+		"TODO": "Place an additional 1 [per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Business Problems": {
+		"TODO": "You may flip to alter-ego form | Choose: • Exhaust Tony Stark → remove Business Problems from the game | • Exhaust each upgrade you control | Discard this obligation",
+		"give_obligation": {
+			"__to__": "Tony Stark"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Captain Marvel": {
+		"TODO": "cost: Spend a [energy] resource and heal 1 damage from Captain Marvel",
+		"once_per_round": {
+			"__name__": "_rechannel"
+		},
+		"manual": {
+			"board": {
+				"Rechannel": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_rechannel",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "draw_cards",
+						"amount": 1
+					}
+				]
+			}
+		}
+	},
+	"Captain Marvel's Helmet": {
+		"TODO": "Captain Marvel gets +1 DEF"
+	},
+	"Carol Danvers": {
+		"TODO": "Choose a player to draw 1 card",
+		"once_per_round": {
+			"__name__": "_commander"
+		},
+		"manual": {
+			"board": {
+				"Commander": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_commander",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					}
+				]
+			}
+		}
+	},
+	"Caught Off Guard": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"src_container": "upgrade_support",
+					"is_cost": true,
+					"subject": "index",
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true
+				},
+				{
+					"name": "surge",
+					"is_else": true
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_gmw.json (same card text)"
+	},
+	"Charge": {
+		"TODO": "attach to rhino | the attack gains overkill. | At the end of this attack, discard Charge",
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "Rhino",
+			"board": []
+		}
+	},
+	"Chase Them Down": {
+		"response": {
+			"event_name": "enemy_died",
+			"event_filters": {
+				"source": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_gmw.json (same card text)"
+	},
+	"Combat Training": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_gam.json (same card text)"
+	},
+	"Concussion Blasters": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "villain",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Concussive Blast": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_friendly_current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Cosmic Flight": {
+		"TODO": "Captain Marvel gains the Aerial trait | Hero Interrupt: : When Captain Marvel would take damage, discard Cosmic Flight → prevent 3 of that damage."
+	},
+	"Countdown to Oblivion - 3": {
+		"TODO": "Threat cannot be removed from this scheme"
+	},
+	"Countdown to Oblivion - 3A": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion. | Advance to stage 3B",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Countdown to Oblivion - 3B": {
+		"TODO": "Threat cannot be removed from this scheme"
+	},
+	"Counter-Punch": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "attack",
+					"subject": "trigger_details_attacker"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_drax.json (same card text)"
+	},
+	"Crisis Interdiction": {
+		"TODO": "Then, if you have the Aerial trait, remove 2 threat from a different scheme",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Daredevil - Matt Murdock": {
+		"TODO": "trigger: After Daredevil thwarts",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Defense Network": {
+		"TODO": "Place an additional 1 [per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Drone Factory": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion. | Place 1 threat here for each Drone minion in play",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Electric Whip Attack": {
+		"TODO": "Choose to either deal 1 damage to your hero for each upgrade you control or choose and discard an upgrade you control | If the villain is making an undefended attack, choose and discard an upgrade you control",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Electromagnetic Backlash": {
+		"TODO": "Each player discards the top 5 cards of their deck. | For each printed [energy] resource a player discards this way, that player takes 1 damage",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Emergency": {
+		"TODO": "reduce the amount of threat placed on the scheme by 1",
+		"interrupt_enemy_scheme": {
+			"trigger": "villain",
+			"is_optional_hand": true,
+			"hand": []
+		}
+	},
+	"Energy Channel": {
+		"TODO": "cost: Spend X [energy] resources | put X energy counters here | deal 2 damage to an enemy for each energy counter here | several actions on one card (merged into one list): Hero Action: Discard Energy Channel → deal 2 damage to an enemy for each energy counter here.",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Energy Daggers": {
+		"TODO": "Choose a player. | Deal 1 damage to the villain and to each enemy engaged with that player (2 damage instead if this is the final step of this sequence)",
+		"special": {
+			"board": []
+		}
+	},
+	"Enhanced Ivory Horn": {
+		"TODO": "attach to rhino",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 3
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Enhanced Spider-Sense": {
+		"TODO": "cancel its \"When Revealed\" effects",
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			],
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				}
+			]
+		}
+	},
+	"Eviction Notice": {
+		"TODO": "You may flip to alter-ego form | Choose: • Exhaust Peter Parker → remove Eviction Notice from the game | • Discard 1 card at random from your hand | This card gains surge | Discard this obligation",
+		"give_obligation": {
+			"__to__": "Peter Parker"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Exhaustion": {
+		"TODO": "Exhaust your identity card",
+		"_surge": {},
+		"reveal": {
+			"all": []
+		}
+	},
+	"Explosion": {
+		"TODO": "If Bomb Scare is in play, assign X damage among heroes and allies, where X is the amount of threat on Bomb Scare. | If Bomb Scare is not in play, this card gains surge",
+		"reveal": {
+			"all": []
+		}
+	},
+	"False Alarm": {
+		"TODO": "If you are already confused, this card gains surge",
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Family Emergency": {
+		"TODO": "You may flip to alter-ego form | Choose: • Exhaust Carol Danvers → remove Family Emergency from the game | • You are stunned | This card gains surge | Discard this obligation",
+		"give_obligation": {
+			"__to__": "Carol Danvers"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"First Aid": {
+		"manual": {
+			"hand": [
+				{
+					"name": "heal",
+					"subject": "target",
+					"amount": 2,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_characters"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_ant.json (same card text)"
+	},
+	"Focused Rage": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"is_cost": true,
+					"amount": 1,
+					"subject": "my_identity"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"For Justice!": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"mental": 1
+							}
+						},
+						"then": 4,
+						"else": 3
+					},
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_mts.json (same card text)"
+	},
+	"Gamma Slam": {
+		"TODO": "Deal X damage to an enemy. | X is the amount of damage you have sustained",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Gang-Up": {
+		"TODO": "The villain and each minion engaged with you attacks you",
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": []
+		}
+	},
+	"Genetically Enhanced": {
+		"TODO": "If there are no minions in play, this card gains surge",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"_comments": "TODO verify: the minion with the highest printed hit points"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "host",
+					"alteration": 3
+				}
+			]
+		}
+	},
+	"Get Behind Me!": {
+		"interrupt": {
+			"event_name": "reveal_encounter",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "treachery"
+					}
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_msm.json (same card text)"
+	},
+	"Get Ready": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_allies"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_stld.json (same card text)"
+	},
+	"Great Responsibility": {
+		"interrupt": {
+			"event_name": "add_threat",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"subject": "my_hero",
+						"name": "deal_damage"
+					}
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_spiderham.json (same card text)"
+	},
+	"Ground Stomp": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Hard to Keep Down": {
+		"TODO": "Rhino heals 4 damage. | If no damage was healed this way, this card gains surge",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Hawkeye - Clint Barton": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 4,
+					"token_name": "arrow"
+				}
+			]
+		},
+		"minion_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "arrow",
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"subject": "trigger",
+					"amount": 2,
+					"needs_subject": true
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_cap.json (same card text)"
+	},
+	"Haymaker": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Heart-Shaped Herb": {
+		"TODO": "Give the villain and each minion engaged with you a tough status card",
+		"_surge": {},
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Helicarrier": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 1,
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "_helicarrier",
+						"is_inverted": true
+					}
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "another",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"phase_ended": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "_helicarrier"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_hlk.json (same card text)"
+	},
+	"Hellcat - Patsy Walker": {
+		"TODO": "Return Hellcat to your hand",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				}
+			]
+		}
+	},
+	"Heroic Intuition": {
+		"give_to_player_max1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"filter_same_controller": true,
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_mts.json (same card text)"
+	},
+	"Highway Robbery": {
+		"TODO": "Each player places a random card from their hand facedown here | Return each facedown card here to its owner's hand",
+		"reveal": {
+			"all": []
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": []
+		}
+	},
+	"Hulk - Bruce Banner": {
+		"TODO": "If that card's printed resource has: [physical] - Deal 2 damage to an enemy. | [energy] - Deal 1 damage to each character. | [mental] - Discard Hulk. | [wild] - All of the above",
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_current_hero_target"
+				}
+			]
+		}
+	},
+	"Hydra Bomber": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Take 2 damage": [
+					{
+						"name": "deal_damage",
+						"subject": "my_identity",
+						"amount": 2
+					}
+				],
+				"1 Threat on Main Scheme": [
+					{
+						"name": "add_threat",
+						"amount": 1,
+						"subject": "main_scheme"
+					}
+				]
+			}
+		},
+		"_comments": "reused from SetScripts_trors.json (same card text)"
+	},
+	"Hydra Soldier": {
+		"interrupt": {
+			"event_name": "card_dies",
+			"board": [
+				{
+					"name": "deal_encounter",
+					"subject": "my_hero"
+				}
+			],
+			"trigger": "self"
+		},
+		"_comments": "reused from SetScripts_cap.json (same card text)"
+	},
+	"Illegal Arms Factory": {
+		"TODO": "Place an additional 1 [per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Imminent Overload": {
+		"TODO": "Place an additional 1 [per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Indomitable": {
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_drax.json (same card text)"
+	},
+	"Inspired": {
+		"attach_upgrade_to_ally_max_1": {},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "host",
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "host",
+					"alteration": 1
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_mts.json (same card text)"
+	},
+	"Interrogation Room": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"max_per_hero": 1
+				}
+			]
+		},
+		"minion_died": {
+			"filter_source_controlled_by": "my_hero",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_bkw.json (same card text)"
+	},
+	"Invasive AI": {
+		"TODO": "Each player discards the top 3 cards of their deck",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Iron Man": {
+		"TODO": "You get +1 hand size for each Tech upgrade you control"
+	},
+	"Jennifer Walters": {
+		"TODO": "prevent 1 of that threat | trigger: When threat would be placed on a scheme",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Jessica Jones": {
+		"TODO": "Jessica Jones gets +1 THW for each side scheme in play"
+	},
+	"Killmonger": {
+		"TODO": "Killmonger cannot take damage from Black Panther upgrades"
+	},
+	"Klaw - 1": {
+		"TODO": "give him 1 additional boost card for this activation",
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Klaw - 2": {
+		"TODO": "give him 1 additional boost card for this activation",
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "\"Immortal\" Klaw"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"_comments": "TODO verify shuffle_container params"
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Klaw - 3": {
+		"TODO": "give him 1 additional boost card for this activation",
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Klaw's Vengeance": {
+		"TODO": "Discard 1 card at random from your hand | If this attack deals damage, place 1 threat on the main scheme",
+		"reveal_alter_ego": {
+			"all": []
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Klaw"
+				}
+			]
+		}
+	},
+	"Kree Manipulator": {
+		"TODO": "If the villain is making an undefended attack, place 1 threat on the main scheme",
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "main_scheme"
+				}
+			]
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Lead from the Front": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "phase_ended",
+					"subject": "boardseek",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "equal",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					],
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "thwart",
+									"filter_state_trigger": [
+										{
+											"filter_group": "group_characters{__subject_hero_id__}"
+										}
+									],
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_aoa.json (same card text)"
+	},
+	"Legal Practice": {
+		"TODO": "cost: Choose | cost: discard up to 5 cards from your hand | remove 1 threat from a scheme for each card discarded this way",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				}
+			]
+		}
+	},
+	"Legal Work": {
+		"TODO": "You may flip to alter-ego form | Choose: • Exhaust Jennifer Walters → remove Legal Work from the game | • Give the main scheme 1 acceleration token | Discard this obligation",
+		"give_obligation": {
+			"__to__": "Jennifer Walters"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Legions of Hydra": {
+		"TODO": "If Madame Hydra is not in play, search the encounter deck and discard pile for Madame Hydra and put her into play engaged with you, then shuffle the encounter deck. | Place 2 additional threat here for each Hydra enemy in play",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Madame Hydra": {
+		"TODO": "Madame Hydra cannot take damage while the Legions of Hydra side scheme is in play | place 2 threat on the Legions of Hydra side scheme | trigger: After Madame Hydra schemes or attacks",
+		"response": {
+			"event_name": "TODO",
+			"board": []
+		}
+	},
+	"Make the Call": {
+		"manual": {
+			"hand": [
+				{
+					"name": "add_script",
+					"end_condition": "before_card_moved_to_board",
+					"is_cost": true,
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "any_discard",
+					"filter_state_tutor": [
+						{
+							"filter_group": "group_allies"
+						}
+					],
+					"script": {
+						"manual": {
+							"pile": [
+								{
+									"name": "pay_regular_cost",
+									"is_cost": true,
+									"cost": "card_cost"
+								},
+								{
+									"name": "move_card_to_board",
+									"subject": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_cap.json (same card text)"
+	},
+	"Maria Hill": {
+		"TODO": "each player draws 1 card",
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Mark V Armor": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_hero",
+					"alteration": 6
+				}
+			]
+		}
+	},
+	"Mark V Helmet": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Masterplan": {
+		"TODO": "If there are no side schemes in play, discard cards from the top of the encounter deck until a side scheme is discarded. | Reveal that side scheme",
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 4,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_side_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Masters of Mayhem": {
+		"TODO": "Each Masters of Evil minion attacks the hero it is engaged with. | If no attacks were made this way, search the encounter deck and discard pile for a Masters of Evil minion and put it into play engaged with you, then shuffle the encounter deck",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Med Team": {
+		"uses": {
+			"__name__": "medical",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "medical",
+					"is_cost": true
+				},
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_friendly"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_drs.json (same card text)"
+	},
+	"Melter": {
+		"TODO": "The engaged player must defend against Melter's attacks with an ally they control, if able",
+		"boost": {
+			"all": [
+				{
+					"name": "exhaust_card",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Mockingbird - Bobbi Morse": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 1,
+					"token_name": "stunned",
+					"needs_subject": true,
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_cap.json (same card text)"
+	},
+	"Nick Fury": {
+		"self_moved_to_board": {
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"remove 2 threat": [
+					{
+						"name": "remove_threat",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"draw 3": [
+					{
+						"name": "draw_cards",
+						"amount": 3
+					}
+				],
+				"deal 4 damage": [
+					{
+						"name": "deal_damage",
+						"subject": "target",
+						"amount": 4,
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				]
+			}
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "discard"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_bkw.json (same card text)"
+	},
+	"One-Two Punch": {
+		"response_basic_attack_happened": {
+			"trigger": "my_hero",
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "ready_card",
+					"subject": "She-Hulk"
+				}
+			]
+		}
+	},
+	"Panther Claws": {
+		"TODO": "Deal 2 damage to an enemy (4 damage instead if this is the final step of this sequence)",
+		"special": {
+			"board": []
+		}
+	},
+	"Pepper Potts": {
+		"TODO": "Resource: Exhaust Pepper Potts → generate the resources of the top card in your discard pile.",
+		"resource": {
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Personal Challenge": {
+		"TODO": "Place an additional 1 [per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Peter Parker": {
+		"resource": {
+			"board": [
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "mental"
+				}
+			]
+		}
+	},
+	"Photonic Blast": {
+		"TODO": "If you paid for this card using a [energy] resource, draw 1 card",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Powered Gauntlets": {
+		"TODO": "deal 1 damage to an enemy (2 damage instead if you have the Aerial trait)",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Program Transmitter": {
+		"TODO": "attach to ultron",
+		"response_enemy_scheme_happened": {
+			"trigger": "Ultron",
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_side_schemes"
+						}
+					]
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Radioactive Man": {
+		"TODO": "discard 1 card at random from your hand | Discard 1 card at random from your hand",
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Rage of Ultron": {
+		"TODO": "Discard the top card of your deck for each threat placed this way | Discard the top card of your deck for each damage dealt by this attack",
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "Ultron"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Ultron"
+				}
+			]
+		}
+	},
+	"Relentless Assault": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"subject": "target",
+					"amount": 5,
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						}
+					],
+					"tags": [
+						"hero_action",
+						"attack"
+					],
+					"overkill": {
+						"if": {
+							"func_name": "paid_with_includes",
+							"func_params": {
+								"physical": 1
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_gmw.json (same card text)"
+	},
+	"Repair Sequence": {
+		"TODO": "Ultron heals 2 damage for each Drone minion engaged with you. | If no damage was healed this way, this card gains surge | Ultron heals 1 damage for each Drone minion engaged with you",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Repulsor Blast": {
+		"TODO": "For each printed [energy] resource discarded this way, deal 2 additional damage to that enemy",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 5,
+					"src_container": "deck"
+				}
+			]
+		}
+	},
+	"Rhino - 2": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"shortname": "Breakin' & Takin'"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"_comments": "TODO verify shuffle_container params"
+				}
+			]
+		}
+	},
+	"Rhino - 3": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ritual Combat": {
+		"TODO": "Then, choose to either deal X damage to your hero or place X threat on the main scheme. | X is 1 more than the number of boost icons on the discarded encounter card",
+		"reveal": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_villain"
+				}
+			]
+		}
+	},
+	"Rocket Boots": {
+		"TODO": "gain the Aerial trait until the end of the phase",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"trigger": "my_hero",
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				}
+			]
+		}
+	},
+	"Secret Rendezvous - 2A": {
+		"TODO": "Discard cards from the encounter deck until a minion is discarded. | Put that minion into play engaged with the first player. | Advance to stage 2B",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Shadow of the Past": {
+		"TODO": "Reveal your set-aside nemesis minion and put it into play engaged with you. | Reveal your set-aside nemesis side scheme and put it into play. | Shuffle the rest of your set-aside nemesis encounter set into the encounter deck. | If your nemesis minion does not enter the game this way, this card gains surge",
+		"reveal": {
+			"all": []
+		}
+	},
+	"She-Hulk": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Shocker": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Shuri": {
+		"TODO": "search your deck for an upgrade and add it to your hand. | Shuffle your deck",
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Solid-Sound Body": {
+		"TODO": "attach to klaw | Klaw gains retaliate 1",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sonic Boom": {
+		"TODO": "Either spend [energy] [mental] [physical] resources or exhaust each character you control | If this activation deals damage to you, exhaust your hero",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Sonic Converter": {
+		"TODO": "attach to klaw | stun that character",
+		"enemy_attack_happened": {
+			"trigger": "Klaw",
+			"board": [],
+			"_comments": "TODO only if the attack dealt damage"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sound Manipulation": {
+		"TODO": "Klaw heals 4 damage. | If no damage was healed this way, this card gains surge | Klaw heals 2 damage",
+		"reveal_alter_ego": {
+			"all": []
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Spider-Man": {
+		"TODO": "trigger: When the villain initiates an attack against you",
+		"interrupt": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Spider-Tracer": {
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				"minion"
+			]
+		},
+		"interrupt_card_dies": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Spider-Woman - Jessica Drew": {
+		"self_moved_to_board": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Split Personality": {
+		"TODO": "Change your form. | Then, draw up to your printed hand size",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				}
+			]
+		}
+	},
+	"Stampede": {
+		"TODO": "If a character is damaged by this attack, that character is stunned",
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "Rhino"
+				}
+			]
+		}
+	},
+	"Stark Tower": {
+		"TODO": "choose a player. | That player returns the topmost Tech upgrade in their discard pile to their hand",
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Superhuman Law Division": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"mental": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "a_scheme"
+				}
+			]
+		}
+	},
+	"Superhuman Strength": {
+		"TODO": "She-Hulk gets +2 ATK | stun the attacked enemy | trigger: After She-Hulk attacks",
+		"response": {
+			"event_name": "TODO",
+			"board": [
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Supersonic Punch": {
+		"TODO": "Deal 4 damage to an enemy (8 damage instead if you have the Aerial trait)",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"Surveillance Team": {
+		"uses": {
+			"__name__": "snoop",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "snoop",
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_bkw.json (same card text)"
+	},
+	"Swarm Attack": {
+		"TODO": "Each Drone minion engaged with your hero attacks. | If no attack was made this way, put the top card of your deck into play facedown, engaged with you as a Drone minion",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Sweeping Swoop": {
+		"TODO": "If Vulture is in play, this card gains surge | If this activation deals damage to a friendly character, stun that character",
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			]
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Swinging Web Kick": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 8,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"T'Challa": {
+		"TODO": "Shuffle your deck",
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": "deck",
+					"dest_container": "hand",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_properties2": {
+								"trait_black_panther": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck"
+				}
+			]
+		}
+	},
+	"Tac Team": {
+		"uses": {
+			"__name__": "attack",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "attack",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Tactical Genius": {
+		"TODO": "Remove 1 threat from a scheme (2 threat instead if this is the final step of this sequence)",
+		"special": {
+			"board": []
+		}
+	},
+	"Tenacity": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"The \"Immortal\" Klaw": {
+		"TODO": "Klaw gets +10 hit points"
+	},
+	"The Break-In! - 1A": {
+		"TODO": "Contents: Rhino and Rhino | (Rhino and Rhino instead for expert mode.) Rhino and Standard encounter sets | One modular encounter set | Advance to stage 1B",
+		"setup": {
+			"all": []
+		}
+	},
+	"The Crimson Cowl - 1": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion",
+		"reveal": {
+			"all": []
+		}
+	},
+	"The Crimson Cowl - 1A": {
+		"TODO": "Contents: Ultron and Ultron | (Ultron and Ultron instead for expert mode.) Ultron and Standard encounter sets | One modular encounter set | Put the Ultron Drones environment into play. | Advanced to stage 1B",
+		"setup": {
+			"all": [
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"_comments": "TODO verify shuffle_container params"
+				}
+			]
+		}
+	},
+	"The Crimson Cowl - 1B": {
+		"TODO": "Each player puts the top card of their deck into play facedown, engaged with them as a Drone minion",
+		"reveal": {
+			"all": []
+		}
+	},
+	"The Doomsday Chair": {
+		"TODO": "If M.O.D.O.K. | is not in play, search the encounter deck and discard pile for M.O.D.O.K. | and put him into play engaged with you, then shuffle the encounter deck",
+		"reveal": {
+			"all": []
+		}
+	},
+	"The Golden City": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2
+				}
+			]
+		}
+	},
+	"The Masters of Evil": {
+		"TODO": "Discard cards from the encounter deck until a Masters of Evil minion is discarded. | Put that minion into play engaged with the first player",
+		"reveal": {
+			"all": []
+		}
+	},
+	"The Power of Aggression": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "aggression"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_aoa.json (same card text)"
+	},
+	"The Power of Justice": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "justice"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_bkw.json (same card text)"
+	},
+	"The Power of Leadership": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "leadership"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_aoa.json (same card text)"
+	},
+	"The Power of Protection": {
+		"resource": {
+			"hand": [
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"faction_code": "protection"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_drs.json (same card text)"
+	},
+	"The Psyche-Magnitron": {
+		"TODO": "Place an additional 1[per_hero] threat here",
+		"reveal": {
+			"all": []
+		}
+	},
+	"The Triskelion": {
+		"TODO": "Increase your ally limit by 1"
+	},
+	"The Vulture's Plans": {
+		"TODO": "Discard 1 card at random from each player's hand. | Place 1 threat on the main scheme for each different resource type discarded this way",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Tiger Shark": {
+		"TODO": "give him a tough status card",
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": []
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "villain"
+				}
+			]
+		}
+	},
+	"Tigra - Greer Grant Nelson": {
+		"TODO": "heal 1 damage from her | trigger: After Tigra attacks and defeats a minion",
+		"response": {
+			"event_name": "TODO",
+			"is_optional_board": true,
+			"board": []
+		}
+	},
+	"Titania": {
+		"TODO": "X is equal to Titania's remaining hit points"
+	},
+	"Titania's Fury": {
+		"TODO": "Titania attacks your hero. | If Titania did not attack, heal all damage from Titania and this card gains surge | Give the villain 1 additional boost card for this activation",
+		"reveal": {
+			"all": []
+		},
+		"boost": {
+			"all": []
+		}
+	},
+	"Tony Stark": {
+		"TODO": "Look at the top 3 cards of your deck. | Add 1 to your hand and discard the others",
+		"once_per_round": {
+			"__name__": "_futurist"
+		},
+		"manual": {
+			"board": {
+				"Futurist": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_futurist",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					}
+				]
+			}
+		}
+	},
+	"Ultron - 1": {
+		"TODO": "choose to either place 1 threat on the main scheme or put the top card of your deck into play facedown, engaged with you as a Drone minion",
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Ultron - 2": {
+		"TODO": "put the top card of your deck into play facedown, engaged with you as a Drone minion. | Until the end of his attack, Ultron gets +1 ATK for each Drone minion engaged with you",
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Ultron - 3": {
+		"TODO": "Ultron cannot take damage while a Drone minion is in play",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_drone": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_drone": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": [
+						"deck_villain",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"shortname": "Ultron's Imperative"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"_comments": "TODO verify shuffle_container params"
+				}
+			]
+		}
+	},
+	"Ultron Drones": {
+		"TODO": "Each facedown Drone minion engaged with a player has a base SCH of 1, a base ATK of 1, and a base hit points of 1 | place that card in it's owners discard pile | trigger: After a facedown Drone minion is defeated",
+		"response": {
+			"event_name": "TODO",
+			"board": []
+		}
+	},
+	"Ultron's Imperative": {
+		"TODO": "The first player puts the top 2 cards of their deck into play facedown, engaged with them as Drone minions",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Under Attack": {
+		"TODO": "Each player chooses to either place 2 threat here or deal 3 damage to their hero",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Under Fire": {
+		"TODO": "Reveal the top card of the encounter deck",
+		"_surge": {},
+		"reveal": {
+			"all": []
+		}
+	},
+	"Underground Distribution - 1": {
+		"TODO": "Discard cards from the encounter deck until a minion is discarded. | Put that minion into play engaged with the first player",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Underground Distribution - 1A": {
+		"TODO": "Contents: Klaw and Klaw | (Klaw and Klaw instead for expert mode.) Klaw and Standard encounter sets | One modular encounter set | Advance to stage 1B",
+		"setup": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"src_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							},
+							"filter_properties2": {
+								"shortname": "Defense Network"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"_comments": "TODO verify shuffle_container params"
+				}
+			]
+		}
+	},
+	"Underground Distribution - 1B": {
+		"TODO": "Discard cards from the encounter deck until a minion is discarded. | Put that minion into play engaged with the first player",
+		"reveal": {
+			"all": []
+		}
+	},
+	"Upgraded Drones": {
+		"TODO": "attach to the ultron drones environment",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_facedown_drone": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_facedown_drone": 1,
+								"comparison": "ge"
+							}
+						}
+					],
+					"alteration": 1
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Uppercut": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"is_cost": true,
+					"subject": "target",
+					"amount": 5,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"attack"
+					]
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_gam.json (same card text)"
+	},
+	"Vibranium Armor": {
+		"TODO": "trigger: After the villain take damage",
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"response": {
+			"event_name": "TODO",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"physical": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Vibranium Suit": {
+		"TODO": "Move 1 damage from your hero to an enemy (2 damage instead if this is the final step of this sequence)",
+		"special": {
+			"board": []
+		}
+	},
+	"Vision": {
+		"TODO": "choose THW or ATK. | Until the end of the phase, Vision gets +2 to the chosen power",
+		"once_per_round": {
+			"__name__": "_vision"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "_vision",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1
+					},
+					"is_cost": true
+				}
+			]
+		}
+	},
+	"Wakanda Forever!": {
+		"TODO": "Resolve the \"Special\" ability on each Black Panther upgrade you control in any order",
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				}
+			]
+		}
+	},
+	"War Machine - James Rhodes": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"is_cost": true,
+					"amount": 2,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Weapons Runner": {
+		"TODO": "Put Weapons Runner into play engaged with you",
+		"_surge": {},
+		"boost": {
+			"all": []
+		}
+	},
+	"Web-Shooter": {
+		"uses": {
+			"__name__": "web",
+			"__amount__": 3
+		},
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": -1,
+					"token_name": "web",
+					"is_cost": true
+				},
+				{
+					"name": "add_resource",
+					"amount": 1,
+					"resource_name": "wild"
+				}
+			]
+		},
+		"_comments": "reused from SetScripts_sm.json (same card text)"
+	},
+	"Webbed Up": {
+		"TODO": "discard Webbed Up instead.",
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				"group_enemies"
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "host",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "host"
+				}
+			]
+		}
+	},
+	"Whirlwind": {
+		"TODO": "also resolve his attack against each other hero",
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"board": []
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_identities"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Yon-Rogg": {
+		"TODO": "place 1 threat on The Psyche-Magnitron",
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": []
+		}
+	},
+	"Yon-Rogg's Treason": {
+		"TODO": "Discard each [energy] resource from your hand. | If you discarded no cards this way, this card gains surge",
+		"reveal": {
+			"all": []
+		}
+	}
+}

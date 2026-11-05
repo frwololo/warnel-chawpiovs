@@ -16,16 +16,6 @@ Test/recorded_gameplay.txt
 *.py#
 *.py~
 *.x86_64
-Sets/SetDefinition_cap.json
-Sets/SetDefinition_core.json
-Sets/SetDefinition_drs.json
-Sets/SetDefinition_mts.json
-Sets/SetDefinition_sm.json
-Sets/SetDefinition_trors.json
-Sets/SetDefinition_warm.json
-Sets/SetScripts_trors.json
-Sets/SetDefinition_gmw.json
-Sets/SetDefinition_thor.json
 scripts/scenarios_msm.json
 scripts/SetScripts_msm.json
 scripts/scenarios_bkw.json

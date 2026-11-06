@@ -126,8 +126,8 @@
 			"Modular"
 		],
 		"villains": [
-			"Green Goblin - 1",
-			"Green Goblin - 2"
+			"Green Goblin - 1 #02014",
+			"Green Goblin - 2 #02015"
 		],
 		"expert": {
 			"encounter_sets": [
@@ -137,8 +137,8 @@
 				"expert"
 			],
 			"villains": [
-				"Green Goblin - 2",
-				"Green Goblin - 3"
+				"Green Goblin - 2 #02015",
+				"Green Goblin - 3 #02016"
 			]
 		},
 		"description": [

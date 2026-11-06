@@ -1501,7 +1501,11 @@ func enemy_activates(delta) :
 			}
 			if is_instance_valid(enemy.activity_script) and enemy.activity_script.subjects:
 				details["defender"] = enemy.activity_script.subjects[0]
-				details["total_attack"] = enemy.activity_script.get_property("total_attack", 0)
+				
+				#total_attack, damage, etc...
+				var attack_details =  enemy.activity_script.get_property("attack_details", {})
+				for key in attack_details: 
+					details[key] = attack_details[key]
 			else:
 				details["defender"] = target_friendly	
 

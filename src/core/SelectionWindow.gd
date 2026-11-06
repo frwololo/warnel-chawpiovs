@@ -856,6 +856,11 @@ func select_cards_by_name(names :Array = []) -> Dictionary:
 	)
 
 
+func get_script_owner():
+	if !my_script:
+		return null
+	return my_script.owner
+
 func get_all_card_options() -> Array:
 	return(_card_dupe_map.keys())
 

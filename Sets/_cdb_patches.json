@@ -342,6 +342,22 @@
 		"text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you.",
 		"real_text": "Guard. Patrol. (While this minion is engaged with you, you cannot thwart the main scheme.)\n<hr />\n[star] <b>Boost</b>: Put enraged Symbiote into play engaged with you."
 	},
+	"31001a": {
+		"_comments": "hack for peni parker/spdr, I'm exchanging the cards to fit the engine",
+		"linked_to_code": "31002a"
+	},
+	"31002a": {
+		"_comments": "hack for peni parker/spdr, I'm exchanging the cards to fit the engine",
+		"linked_to_code": "31001a"
+	},
+	"31001b": {
+		"_comments": "hack for peni parker/spdr, I'm exchanging the cards to fit the engine",
+		"linked_to_code": "31002b"
+	},
+	"31002b": {
+		"_comments": "hack for peni parker/spdr, I'm exchanging the cards to fit the engine",
+		"linked_to_code": "31001b"
+	},
 	"32001a": {
 		"printed_card_id": "32001b",
 		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
@@ -501,13 +517,13 @@
 		"wc_meta": {
 			"art_render": "wide"
 		}
-	},	
+	},
 	"42015": {
 		"alternate_art": true
 	},
 	"42016": {
 		"alternate_art": true
-	},		
+	},
 	"43017": {
 		"alternate_art": true
 	},

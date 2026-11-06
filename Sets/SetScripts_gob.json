@@ -723,21 +723,6 @@
 			]
 		}
 	},
-	"Green Goblin - 1 #02014": {
-		"enemy_attack_happened": {
-			"trigger": "self",
-			"event_filters": {
-				"damage": ">0"
-			},
-			"board": [
-				{
-					"name": "add_threat",
-					"amount": 1,
-					"subject": "main_scheme"
-				}
-			]
-		}
-	},
 	"Green Goblin - 2 #02002b": {
 		"reveal": {
 			"all": {
@@ -768,39 +753,6 @@
 					"subject": "State of Madness"
 				}
 			]
-		}
-	},
-	"Green Goblin - 2 #02015": {
-		"enemy_attack_happened": {
-			"trigger": "self",
-			"event_filters": {
-				"damage": ">0"
-			},
-			"board": [
-				{
-					"name": "add_threat",
-					"amount": 1,
-					"subject": "main_scheme"
-				}
-			]
-		},
-		"reveal": {
-			"all": {
-				"_rules": {
-					"forced": true,
-					"for_each_player": true
-				},
-				"Deal Encounter Cards": [
-					{
-						"name": "deal_encounter",
-						"subject": "my_identity"
-					},
-					{
-						"name": "deal_encounter",
-						"subject": "my_identity"
-					}
-				]
-			}
 		}
 	},
 	"Green Goblin - 3 #02003b": {
@@ -835,19 +787,16 @@
 			]
 		}
 	},
-	"Green Goblin - 3 #02016": {
-		"enemy_attack_happened": {
-			"trigger": "self",
-			"event_filters": {
-				"damage": ">0"
-			},
-			"board": [
-				{
-					"name": "add_threat",
-					"amount": 2,
-					"subject": "main_scheme"
-				}
-			]
+	"Green Goblin - 1 #02014": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "1_threat_on_main_scheme_if_damage"
+		}
+	},
+	"Green Goblin - 2 #02015": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "1_threat_on_main_scheme_if_damage"
 		},
 		"reveal": {
 			"all": {
@@ -858,14 +807,28 @@
 				"Deal Encounter Cards": [
 					{
 						"name": "deal_encounter",
+						"amount": 2,
 						"subject": "my_identity"
-					},
+					}
+				]
+			}
+		}
+	},
+	"Green Goblin - 3 #02016": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "2_threat_on_main_scheme_if_damage"
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal Encounter Cards": [
 					{
 						"name": "deal_encounter",
-						"subject": "my_identity"
-					},
-					{
-						"name": "deal_encounter",
+						"amount": 3,
 						"subject": "my_identity"
 					}
 				]

@@ -1324,13 +1324,16 @@ func receive_damage(script: ScriptTask) -> int:
 				card.exhaustme()
 			if ("run_post_damage_script" in tags):
 				script.owner.execute_scripts(script.owner, "post_damage_script", {})
-					
-			if ("1_threat_on_main_scheme_if_damage" in tags):
-				var main_scheme = gameData.get_main_scheme()
-				var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": 1}, card, {})
-				task.set_subjects([main_scheme])
-				var stackEvent = SimplifiedStackScript.new(task)
-				gameData.theStack.add_script(stackEvent)
+			
+			for i in 2:
+				var count_str = str(i+1)
+				var tag = count_str + "_threat_on_main_scheme_if_damage"		
+				if (tag in tags):
+					var main_scheme = gameData.get_main_scheme()
+					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": count_str}, card, {})
+					task.set_subjects([main_scheme])
+					var stackEvent = SimplifiedStackScript.new(task)
+					gameData.theStack.add_script(stackEvent)
 			
 			var if_damage: Dictionary = script.get_property("if_damage", {})
 			if if_damage:
@@ -2696,7 +2699,11 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 	for boost_amount in boost_data:
 		amount+= boost_amount	
 
-	script.script_definition["total_attack"] = amount
+	#attack_details contains a "log" of the attack event that will be send down
+	#the line to add details to events (enemy_attack_happened, etc)
+	var attack_details = {
+		"total_attack": amount
+	}
 
 	var prevent = script.retrieve_integer_property("prevent_amount", 0)	
 	if prevent:
@@ -2717,26 +2724,14 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 		script.subjects.append(target_friendly)
 		script.script_definition["tags"].append("undefended")
 		
-#	var overkill_amount = 0
+	script.script_definition["attack_details"] = attack_details
 	
-#	if amount: #we want to send the damage even if zero, to trigger retaliate, etc...
-	if true:
-		var script_modifications = {
-			"additional_tags" : ["attack", "Scripted", "enemy_attack"],
-		}
-		_add_pre_receive_damage_on_stack (amount, script, script_modifications)
+	#we want to send the damage even if zero, to trigger retaliate, etc...
+	var script_modifications = {
+		"additional_tags" : ["attack", "Scripted", "enemy_attack"],
+	}
+	_add_pre_receive_damage_on_stack (amount, script, script_modifications)
 	
-#	if defender and (script.has_tag("overkill") or attacker.get_property("overkill", 0, true)):
-#		if defender_type in ["minion", "ally"]:
-#			overkill_amount = amount - defender.get_remaining_damage()
-#			overkill_amount = max(0, overkill_amount)
-#
-#			var script_modifications = {
-#				"tags" : ["Scripted", "overkill"], #notably, overkill isn't an attack
-#				"subjects": [my_hero]
-#			}
-#			_add_pre_receive_damage_on_stack (overkill_amount, script, script_modifications)
-#
 	return retcode
 
 

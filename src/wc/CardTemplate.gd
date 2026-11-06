@@ -25,6 +25,10 @@ var _cache_refresh_needed:= false
 var _cached_all_traits = null
 var _script_alter_cache := {}
 
+#used by selectionWindow for special mana resources
+var _resource_special_sceng = null
+var _resource_special_precompute_cache = {}
+
 var _on_ready_load_from_json:Dictionary = {}
 
 #marvel champions specific variables
@@ -4737,12 +4741,24 @@ func get_overpaid_amount(params:Dictionary, script:ScriptTask = null) -> int:
 		result = remaining_mana.converted_mana_cost()
 	return result
 	
-func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> bool:
+func count_paid_resources(params:Dictionary, script:ScriptTask = null) -> int:
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return 0
+		
 	var paid_with = ManaPool.new()
-	for data in _last_paid_with:
+	
+	
+	for data in subject._last_paid_with:
+		var source = data["source"]
 		var resource = data["resource"]
-		paid_with.add_manacost(resource)
+		if params.has("filter_state_source"):
+			var owner = script.owner if script else subject
+			if !SP.check_validity(source, params, "source", owner):
+				continue			
+		paid_with.add_manacost(resource)		
 
+	
 	var cost_filters = params.get("filters", {})
 	if cost_filters:
 		paid_with.filter(cost_filters)
@@ -4910,6 +4926,12 @@ func is_resource_locked(script, owner = null, only_check_subject = false):
 	
 func _window_selection_confirmed(window, details):
 	var selected_cards = details.get("selected_cards", [])
+	
+
+	if (!self in selected_cards) and (self != window.get_script_owner()):
+		#clean whatever cache might be remaining from payment attempt, when I'm not concerned
+		refresh_special_mana_resource_cache()
+
 	if !self in selected_cards:
 		return
 	var script = window.my_script
@@ -4925,7 +4947,7 @@ func pay_as_resource(script):
 	cfc.add_ongoing_process(self, "pay_as_resource")
 
 	#generate a summary of resources generated
-	var result_mana = get_resource_value_as_mana(script)
+	var result_mana:ManaCost = get_resource_value_as_mana(script)
 
 
 	#reload and re_run the script from scratch, up to execution
@@ -4968,6 +4990,7 @@ func pay_as_resource(script):
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	var trigger_details = script.trigger_details.duplicate()
 	trigger_details.erase("network_prepaid")
+	trigger_details["converted_amount"] = result_mana.converted_mana_cost()
 	scripting_bus.emit_signal_on_stack("paid_as_resource", self, trigger_details)
 	return result_mana
 
@@ -5090,9 +5113,14 @@ func compute_resource_value_as_mana(sceng):
 			result_mana.add_manacost(result)
 	return result_mana
 
-#used by selectionWindow for special mana resources
-var _resource_special_sceng = null
-var _resource_special_precompute_cache = {}
+func refresh_special_mana_resource_cache():
+	
+	#special mana cost cancel
+	if canonical_name == "SP//dr Suit":
+		var _tmp = 1
+	_resource_special_precompute_cache = {}				
+	_resource_special_sceng = null	
+
 func get_resource_value_as_int_special(mode, script):
 	var cache_key = {
 		"owner": script.owner

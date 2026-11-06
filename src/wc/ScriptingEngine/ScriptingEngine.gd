@@ -126,6 +126,11 @@ func pay_as_resource(script: ScriptTask) -> int:
 	var expected_cost:ManaCost = ManaCost.new()
 	expected_cost.init_from_expression(script.get_property("selection_count", 0))
 	script.owner.set_last_paid_with(resources_paid, expected_cost)
+	
+	for card in cfc.NMAP.board.get_all_cards(true):
+		card.refresh_special_mana_resource_cache()
+	
+	
 	return retcode		
 
 #empty ability, used for filtering and script failure

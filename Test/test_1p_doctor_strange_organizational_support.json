@@ -1,8 +1,5 @@
 {
-	"_comments": "Organizational Support Mana resource test - Bug reported for Dr Strange",
-	"test_conditions": {
-		"bug_type": "cant_repro",
-	},		
+	"_comments": "Organizational Support Mana resource test - Bug reported for Dr Strange",	
 	"init": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -53,44 +50,42 @@
 			"allies1": [],
 			"upgrade_support1": [
 				{
-					"card": "Quinjet",
-					"tokens": {
-						"time": 1
-					}
-				}
+					"card": "Avengers Mansion"
+				},
 			],
 			"hand1": [
 				{
-					"card": "Cloak of Levitation"
+					"card": "Wong"
 				},
 				{
 					"card": "Organizational Support"
 				},
 				{
-					"card": "Strength"
-				}
+					"card": "Sanctum Sanctorum"
+				},
+				{
+					"card": "Quinjet",
+				},			
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
 			"type": "play",
-			"value": "Cloak of Levitation"
+			"value": "Quinjet"
 		},
 		{
 			"type": "select",
-			"value": "Organizational Support"
-		},
-		{
-			"type": "select",
-			"value": [
-				"Quinjet"
-			]
-		},
-		{
-			"type": "select",
-			"value": "OK"
+			"value": "Sanctum Sanctorum"
 		},		
+		{
+			"type": "play",
+			"value": "Wong"
+		},
+		{
+			"type": "select",
+			"value": ["Quinjet", "Avengers Mansion"]
+		},	
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -139,28 +134,29 @@
 					"card": "Doctor Strange"
 				}
 			],
-			"allies1": [],
+			"allies1": [				{
+					"card": "Wong"
+				}],
 			"upgrade_support1": [
 				{
+					"card": "Avengers Mansion"
+				},			
+				{
 					"card": "Quinjet",
-					"tokens": {
-						"time": 1
-					},
 					"exhausted": true
 				},
-				{
-					"card": "Cloak of Levitation"
-				}
+
 			],
 			"discard1": [
+			
+				{
+					"card": "Sanctum Sanctorum"
+				},			
 				{
 					"card": "Organizational Support"
 				}
 			],
 			"hand1": [
-				{
-					"card": "Strength"
-				}
 			]
 		}
 	}

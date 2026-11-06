@@ -361,8 +361,11 @@ func post_initiate_checks():
 	# We immediately return what is there.
 	if get_count(card_array) == get_selection_count()\
 			and selection_type in ["equal", "min"]:
-		if !show_cards_with_zero_value:	
-			selected_cards = card_array
+		if !show_cards_with_zero_value:
+			for card in card_array:
+				var ret = _add_card_to_selection(card)	
+				if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
+					ret = yield(ret, "completed")
 			emit_signal("confirmed")
 			return
 	
@@ -759,7 +762,9 @@ func spinbox_value_changed( new_value,  dupe_selection: Card, origin_card) -> vo
 	
 	if to_add > 0:
 		for _i in range(to_add):
-			selected_cards.append(origin_card)
+			var ret = _add_card_to_selection(origin_card)
+			if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
+				ret = yield(ret, "completed")			
 	else:
 		for _i in range (-to_add):
 			selected_cards.erase(origin_card)
@@ -797,15 +802,10 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 		dupe_selection.highlight.set_highlight(false)
 		grid_card_obj.set_selected(false)
 	else:
-		if typeof(what_to_count) == TYPE_STRING:
-			var additional_method = what_to_count + "_special"
-			if origin_card.has_method(additional_method):
-				var ret = origin_card.call(additional_method, "prime", my_script)
-				if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
-					self.visible = false
-					ret = yield(ret, "completed")
-					self.visible = true
-		selected_cards.append(origin_card)
+		var ret = _add_card_to_selection(origin_card)
+		if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
+			ret = yield(ret, "completed")
+			
 		dupe_selection.highlight.set_highlight(true)
 		grid_card_obj.set_selected(true)
 	# We want to avoid the player being able to select more cards than
@@ -817,6 +817,18 @@ func card_clicked(dupe_selection: Card, origin_card) -> void:
 		dupe.highlight.set_highlight(false)
 		dupe.get_parent().set_selected(false)
 		selected_cards.remove(0)	
+
+func _add_card_to_selection(origin_card):
+	if typeof(what_to_count) == TYPE_STRING:
+		var additional_method = what_to_count + "_special"
+		if origin_card.has_method(additional_method):
+			var ret = origin_card.call(additional_method, "prime", my_script)
+			if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
+				self.visible = false
+				ret = yield(ret, "completed")
+				self.visible = true	
+				
+	selected_cards.append(origin_card)
 
 # The player can select the cards using a simple left-click.
 func on_selection_gui_input(event: InputEvent, dupe_selection: Card, origin_card) -> void:

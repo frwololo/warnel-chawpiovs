@@ -232,6 +232,8 @@ func refresh_cache(forced=false):
 
 	check_death()
 	_cache_resource_value = {}
+	_resource_special_precompute_cache = {}
+		
 	_state_exec_cache = ""
 	side_icons.update_state(true)
 	tokens.refresh_display()
@@ -5116,15 +5118,31 @@ func compute_resource_value_as_mana(sceng):
 func refresh_special_mana_resource_cache():
 	
 	#special mana cost cancel
-	if canonical_name == "SP//dr Suit":
+	if canonical_name == "Organizational Support":
 		var _tmp = 1
 	_resource_special_precompute_cache = {}				
-	_resource_special_sceng = null	
+	set_resource_special_sceng(null)	
+
+func set_resource_special_sceng(new_sceng):
+	if _resource_special_sceng:
+		if !new_sceng:
+			var _erase = 1
+		else:
+			var _error = 1
+	else:
+		if new_sceng:
+			var _new = 1		
+	_resource_special_sceng = new_sceng
+	
+		
 
 func get_resource_value_as_int_special(mode, script):
 	var cache_key = {
 		"owner": script.owner
 	}.hash()
+
+	if canonical_name == "Organizational Support" and script.owner.canonical_name == "Wong":
+		var _tmp = 1
 		
 	match mode:
 		"get_mana":
@@ -5140,7 +5158,7 @@ func get_resource_value_as_int_special(mode, script):
 		"prime":
 			_cache_resource_value.erase(cache_key)	
 			_resource_special_precompute_cache.erase(cache_key)	
-			_resource_special_sceng = _get_script_sceng("resource_special", script, false)
+			set_resource_special_sceng(_get_script_sceng("resource_special", script, false))
 			if !_resource_special_sceng:
 				return null		
 			var sceng_return = _resource_special_sceng.execute(CFInt.RunType.PRIME_ONLY)
@@ -5150,7 +5168,7 @@ func get_resource_value_as_int_special(mode, script):
 		"cancel":
 			_cache_resource_value = {}
 			_resource_special_precompute_cache = {}				
-			_resource_special_sceng = null
+			set_resource_special_sceng(null)
 		"execute":
 			_cache_resource_value = {}
 			_resource_special_precompute_cache = {}			
@@ -5175,7 +5193,7 @@ func get_resource_value_as_int_special(mode, script):
 				var sceng_return = sceng.execute(run_type)
 				while sceng_return is GDScriptFunctionState && sceng_return.is_valid():
 					sceng_return = sceng_return.resume()				
-			_resource_special_sceng = null
+			set_resource_special_sceng(null)
 			return true
 		
 			

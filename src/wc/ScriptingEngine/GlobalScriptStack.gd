@@ -1230,6 +1230,7 @@ func attempt_resync():
 
 remotesync func clients_resync_attempted():
 	_resync_scheduled = 0
+	_force_resync_timer = 0.0
 	_journal_diff_requested = false
 
 master func master_resync(board_status):
@@ -1435,6 +1436,158 @@ func _format_journal_entry(e) -> String:
 		+ " | src=" + str(e["source"]) + " trigger=" + str(e["trigger"]) \
 		+ " | run=" + str(e["run_mode"]) + " int=" + str(e["interrupt_mode"]) + " step=" + str(e["step"]) \
 		+ " | frame " + str(e["frame"])
+
+###
+### State dump (deadlock diagnostics)
+###
+#Press F9 on any client: every client writes a snapshot of its sync state
+#to its own log, and sends it to the master which logs all of them together.
+#Works without a debugger attached.
+const STATE_DUMP_KEY := KEY_F9
+const STATE_DUMP_JOURNAL_TAIL := 15
+
+func _input(event):
+	if event is InputEventKey and event.pressed and !event.echo and event.scancode == STATE_DUMP_KEY:
+		request_state_dump("F9 pressed on client " + str(cfc.get_network_unique_id()))
+
+func request_state_dump(reason := ""):
+	cfc.LOG("{state_dump} requested: " + reason, true)
+	cfc._rpc(self, "clients_dump_state", reason)
+
+remotesync func clients_dump_state(reason := ""):
+	var dump = get_state_dump()
+	dump["reason"] = reason
+	cfc.LOG("{state_dump} local state of client " + str(cfc.get_network_unique_id()) + ":", true)
+	cfc.LOG_DICT(dump, true)
+	cfc._rpc_id(self, 1, "master_receive_state_dump", dump)
+
+master func master_receive_state_dump(dump):
+	var client_id = cfc.get_rpc_sender_id()
+	if client_id == cfc.get_network_unique_id():
+		return #already logged locally
+	cfc.LOG("{state_dump} received from client " + str(client_id) + ":", true)
+	cfc.LOG_DICT(dump, true)
+
+func get_state_dump() -> Dictionary:
+	var stack_dump = []
+	for event in stack:
+		stack_dump.append(_dump_stack_object(event))
+
+	var yielded_dump = []
+	for data in yielded_scripts:
+		var entry = {
+			"type": data.get("type", "script"),
+			"yield_reason": data.get("yield_reason", ""),
+			"checksum": data.get("checksum", ""),
+		}
+		if data.has("sceng"):
+			entry["action_name"] = str(data.get("action_name", ""))
+			entry["trigger"] = str(data.get("trigger", ""))
+			var sceng = data["sceng"]
+			if is_instance_valid(sceng) and "owner" in sceng and is_instance_valid(sceng.owner):
+				entry["owner"] = str(sceng.owner.get("canonical_name"))
+				entry["user_interaction_status"] = sceng.get("user_interaction_status")
+		else:
+			entry["reason"] = data.get("reason", "")
+		yielded_dump.append(entry)
+
+	var incoming_dump = []
+	for ev in _incoming_network_events:
+		incoming_dump.append({
+			"type": ev.get("type", ""),
+			"requester": ev.get("requester", 0),
+			"expected_run_mode": _run_mode_str(ev.get("expected_run_mode", -1)),
+			"waited": ev.get("waited", 0.0),
+			"checksum": ev.get("checksum", ""),
+		})
+
+	var clients_status = {}
+	for client_id in all_clients_status:
+		var status = all_clients_status[client_id].duplicate()
+		if status.has("run_mode"):
+			status["run_mode"] = _run_mode_str(status["run_mode"])
+		clients_status[str(client_id)] = status
+
+	var ongoing_processes = []
+	for object in cfc._ongoing_processes:
+		var descriptions = cfc._ongoing_processes[object]
+		for description in descriptions:
+			if descriptions[description]:
+				var object_name = "<dictionary>"
+				if typeof(object) == TYPE_OBJECT:
+					if !is_instance_valid(object):
+						object_name = "<freed>"
+					elif object.get("canonical_name"):
+						object_name = str(object.get("canonical_name"))
+					else:
+						object_name = str(object)
+				ongoing_processes.append(object_name + ": " + str(description) + " x" + str(descriptions[description]))
+
+	var journal_tail = []
+	for i in range(max(0, _insert_journal.size() - STATE_DUMP_JOURNAL_TAIL), _insert_journal.size()):
+		journal_tail.append(_format_journal_entry(_insert_journal[i]))
+
+	var dump = {
+		"network_id": cfc.get_network_unique_id(),
+		"frame": Engine.get_frames_drawn(),
+		"my_heroes": gameData.get_my_heroes(),
+		"run_mode": RunModeStr[run_mode],
+		"interrupt_mode": InterruptModeStr[interrupt_mode],
+		"interrupting_hero_id": interrupting_hero_id,
+		"sync_enabled": sync_enabled,
+		"stack": stack_dump,
+		"yielded_scripts": yielded_dump,
+		"incoming_network_events": incoming_dump,
+		"pending_interaction_checksums": pending_interaction_checksums.keys(),
+		"pending_flush": _pending_flush.keys(),
+		"stash_pending_flush": _stash_pending_flush.keys(),
+		"pending_stack_yield": pending_stack_yield.duplicate(),
+		"my_script_requests_pending_execution": my_script_requests_pending_execution,
+		"resync_scheduled": _resync_scheduled,
+		"all_clients_status": clients_status,
+		"ongoing_processes": ongoing_processes,
+		"game_paused": cfc.game_paused,
+		"modal_menu": str(cfc.get_modal_menu()) if cfc.get_modal_menu() else "",
+		"blocking_announce": gameData.is_ongoing_blocking_announce(),
+		"journal_tail": journal_tail,
+	}
+
+	#GameData / PhaseContainer queues that gate progress outside the stack
+	var attackers_dump = []
+	for attacker in gameData.attackers:
+		var subject = attacker.get("subject")
+		attackers_dump.append({
+			"subject": str(subject.get("canonical_name")) if is_instance_valid(subject) else "<freed>",
+			"type": attacker.get("type", ""),
+			"target_id": attacker.get("target_id", 0),
+		})
+	dump["gamedata"] = {
+		"attackers": attackers_dump,
+		"immediate_encounters": gameData.immediate_encounters.size(),
+		"scripted_play_sequence": gameData.scripted_play_sequence.size(),
+		"scripted_play_sequence_low_priority": gameData.scripted_play_sequence_low_priority.size(),
+		"priority_scripts": gameData._priority_scripts.size(),
+		"villain_current_hero_target": gameData._villain_current_hero_target,
+	}
+	if gameData.phaseContainer and is_instance_valid(gameData.phaseContainer):
+		dump["gamedata"]["step"] = gameData.phaseContainer.get_current_phase_name()
+		dump["gamedata"]["current_step_complete"] = gameData.phaseContainer.current_step_complete
+	return dump
+
+func _dump_stack_object(event) -> Dictionary:
+	var owner = event.get_owner()
+	return {
+		"uid": event.stack_uid,
+		"name": str(event.get_display_name()),
+		"task": "<interrupt_marker>" if event.interrupt_marker else ("<context>" if event.context_marker else str(event.get_first_task_name())),
+		"owner": str(owner.get("canonical_name")) if is_instance_valid(owner) else "",
+		"trigger": str(event.get_trigger()),
+	}
+
+func _run_mode_str(value) -> String:
+	if typeof(value) == TYPE_INT and value >= 0 and value < RunModeStr.size():
+		return RunModeStr[value]
+	return str(value)
 
 func compute_interrupts(script):
 	if !script:
@@ -1979,6 +2132,14 @@ func reset():
 	_pending_flush = {}
 	_stash_pending_flush = {}
 	_sent_about_to_execute_signal = {}
+	if yielded_scripts:
+		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(yielded_scripts.size()))
+	yielded_scripts = []
+	if _resync_scheduled:
+		cfc.LOG("error in stack reset: resync was scheduled: " + str(_resync_scheduled))
+	_resync_scheduled = 0
+	_force_resync_timer = 0.0
+	_interrupting_hero_data = {}
 	_insert_journal = []
 	_insert_source = ""
 	_journals_received = {}

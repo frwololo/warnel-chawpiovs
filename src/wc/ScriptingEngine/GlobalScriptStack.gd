@@ -83,6 +83,18 @@ var yielded_scripts = []
 var _pending_flush = {}
 var _stash_pending_flush = {}
 
+#Insert journal: a debug record of every stack insertion on this client.
+#When the master detects a fingerprint mismatch, it collects all journals
+#and logs the first insertion where clients diverged, with the source
+#of that insertion (local, network, yielded, signal, sequence...)
+const INSERT_JOURNAL_MAX_SIZE := 300
+var _insert_journal := []
+#set temporarily by callers to tag where an insertion comes from
+var _insert_source := ""
+var _journals_received := {}
+var _journal_diff_requested := false
+var _last_reported_divergence_uid := -1
+
 #stores unique IDs for all stack events
 var current_stack_uid:int = 0
 var card_already_played_for_stack_uid:Dictionary = {}
@@ -307,7 +319,9 @@ func attempt_yielded_script():
 		return false
 		
 	var script_data = yielded_scripts.pop_front()
-	remove_yield_counter("yielded_script")	
+	remove_yield_counter("yielded_script")
+	var previous_source = _insert_source
+	_insert_source = "yielded"
 	var result = create_and_add_script(
 		script_data["sceng"],
 		script_data["run_type"],
@@ -315,6 +329,7 @@ func attempt_yielded_script():
 		script_data["trigger_details"],
 		script_data["action_name"] ,
 		script_data["checksum"] )
+	_insert_source = previous_source
 
 	if result:
 		result.add_log("succesful creation after yield")
@@ -401,13 +416,16 @@ mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng
 	if accept_request:
 		#master_request_add_stack_object(client_id, original_details)
 		cfc._rpc_id(self, client_id, "accepted_add_script_request", expected_run_mode, original_details)
-		cfc._rpc(self,"client_sync_rng", original_details["remote_trigger_details"]["network_rng_state"])						
-		display_debug("Asking clients to add script " + action_name) 			
+		#NOTE: the RNG state travels inside original_details and is applied by each client
+		#at the moment the script is inserted (see _process_incoming_network_events),
+		#not on packet receipt. Applying it on receipt caused RNG divergence when a client
+		#was still running local scripts while the network script waited in the queue.
+		display_debug("Asking clients to add script " + action_name)
 		cfc._rpc(self,"client_create_and_add_stackobject", client_id, expected_run_mode, original_details, checksum)
 	else:
 		cfc._rpc_id(self, client_id, "rejected_add_script_request", expected_run_mode, original_details)
 
-remotesync func client_sync_rng(new_state):
+func _apply_network_rng_state(new_state):
 	var current_state = cfc.game_rng.state
 	if current_state!= new_state:
 		cfc.game_rng.state = new_state
@@ -487,10 +505,18 @@ func _process_incoming_network_events(delta):
 	_incoming_network_events.pop_front()
 	match ev.type:
 		"add_stack_object":
+			#Sync the RNG at the exact point the script enters the stack,
+			#so every client resumes from the same RNG state from here on
+			var rng_state = ev.details.get("remote_trigger_details", {}).get("network_rng_state", null)
+			if rng_state != null:
+				_apply_network_rng_state(rng_state)
 			var stackEvent = client_create_script(ev.details)
 			if stackEvent:
 				stackEvent.add_log("succesful after _process_incoming_network_events")
+				var previous_source = _insert_source
+				_insert_source = "network"
 				add_event_to_stack(stackEvent, ev.checksum)
+				_insert_source = previous_source
 				if ev.details.get("trigger", "") == "manual":
 					emit_signal("manual_interaction_added_to_stack", ev.details)
 			cfc._rpc_id(self, 1, "from_client_script_received_ack", ev.expected_run_mode, ev.checksum)
@@ -763,6 +789,7 @@ func insert_event_into_stack(stackEvent, pos = -1):
 		var _error = 1
 		gameData.send_log_to_master("insert event into stack called but engine isn't ready " + stackEvent.get_first_task_name())
 	stackEvent.set_stack_uid(get_next_stack_uid())
+	_journal_insert(stackEvent, pos)
 	if pos == -1:
 		stack.append(stackEvent)
 	else:
@@ -1162,16 +1189,20 @@ master func master_check_fingerprint(fingerprint):
 	if acks.size() == gameData.network_players.size():
 		var my_network_id = cfc.get_network_unique_id()
 		var my_status = acks[my_network_id]
+		var mismatch = false
 		for k in acks:
 			var other_status = acks[k]
 			if !(WCUtils.json_equal(my_status, other_status)):
+				mismatch = true
 				cfc.LOG("{error} Desync at fingerprint Step", true)
 				cfc.LOG("My Status:", true)
 				cfc.LOG_DICT(my_status, true)
 				cfc.LOG("Their Status:{" +str(k) +"}", true)
 				cfc.LOG_DICT(other_status, true)
-				cfc._rpc(self,"clients_schedule_resync")						
+				cfc._rpc(self,"clients_schedule_resync")
 		_ack_received.erase(checksum)
+		if mismatch:
+			master_request_insert_journals(uid)
 
 
 
@@ -1199,6 +1230,7 @@ func attempt_resync():
 
 remotesync func clients_resync_attempted():
 	_resync_scheduled = 0
+	_journal_diff_requested = false
 
 master func master_resync(board_status):
 	var checksum = "resync"
@@ -1233,6 +1265,176 @@ master func master_resync(board_status):
 
 
 
+
+###
+### Insert journal (desync diagnostics)
+###
+
+#records one stack insertion. Only "key" and "pos" are compared between clients,
+#the rest is context to help understand why the insertion happened when it did
+func _journal_insert(stackEvent, pos):
+	var owner = stackEvent.get_owner()
+	var owner_guid = ""
+	var owner_name = ""
+	if is_instance_valid(owner):
+		owner_guid = guidMaster.get_guid(owner)
+		var canonical_name = owner.get("canonical_name")
+		if canonical_name:
+			owner_name = str(canonical_name)
+
+	var task_name = ""
+	if stackEvent.interrupt_marker:
+		task_name = "<interrupt_marker>"
+	elif stackEvent.context_marker:
+		task_name = "<context:" + str(_journal_context_name(stackEvent)) + ">"
+	else:
+		task_name = str(stackEvent.get_first_task_name())
+
+	var step_name = ""
+	if gameData.phaseContainer and is_instance_valid(gameData.phaseContainer):
+		step_name = gameData.phaseContainer.get_current_phase_name()
+
+	var entry = {
+		#compared between clients
+		"uid": stackEvent.stack_uid,
+		"key": task_name + "@" + owner_guid,
+		"pos": pos,
+		#context, for humans
+		"owner_name": owner_name,
+		"trigger": str(stackEvent.get_trigger()),
+		"source": _journal_source(stackEvent),
+		"stack_size": stack.size(),
+		"run_mode": RunModeStr[run_mode],
+		"interrupt_mode": InterruptModeStr[interrupt_mode],
+		"step": step_name,
+		"frame": Engine.get_frames_drawn(),
+	}
+	_insert_journal.append(entry)
+	if _insert_journal.size() > INSERT_JOURNAL_MAX_SIZE:
+		_insert_journal.pop_front()
+
+func _journal_context_name(stackEvent):
+	if "task" in stackEvent and stackEvent.task and stackEvent.task.has_method("get_property"):
+		return stackEvent.task.get_property("context_name")
+	return ""
+
+#where an insertion comes from: "local" (triggered by this client's own simulation),
+#"network" (script received from the master), "yielded" (deferred by create_and_add_script),
+#with "/signal" or "/sequence" suffixes when relevant
+func _journal_source(stackEvent) -> String:
+	if stackEvent.interrupt_marker or stackEvent.context_marker:
+		return "marker"
+	var source = _insert_source if _insert_source else "local"
+	if stackEvent is SignalStackScript:
+		return source + "/signal"
+	var sceng = stackEvent.get_sceng()
+	if sceng:
+		var details = sceng.trigger_details
+		if typeof(details) == TYPE_DICTIONARY:
+			var additional = details.get("additional_script_definition", {})
+			if typeof(additional) == TYPE_DICTIONARY and additional.get("is_sequence", false):
+				return source + "/sequence"
+	return source
+
+#master only: ask all clients for their journal, once per desync
+func master_request_insert_journals(fingerprint_uid):
+	if _journal_diff_requested:
+		return
+	_journal_diff_requested = true
+	_journals_received = {}
+	cfc._rpc(self, "clients_send_insert_journal", fingerprint_uid)
+
+remotesync func clients_send_insert_journal(fingerprint_uid):
+	cfc._rpc_id(self, 1, "master_receive_insert_journal", fingerprint_uid, _insert_journal)
+
+master func master_receive_insert_journal(fingerprint_uid, journal):
+	var client_id = cfc.get_rpc_sender_id()
+	_journals_received[client_id] = journal
+	if _journals_received.size() < gameData.network_players.size():
+		return
+	var journals = _journals_received
+	_journals_received = {}
+	var report = _diff_insert_journals(fingerprint_uid, journals)
+	cfc.LOG(report, true)
+
+#finds the first uid where clients inserted a different event (or the same event
+#at a different stack position) and returns a printable report around that point
+func _diff_insert_journals(fingerprint_uid, journals:Dictionary) -> String:
+	var reference_id = cfc.get_network_unique_id()
+	if !journals.has(reference_id):
+		reference_id = journals.keys()[0]
+
+	var by_uid := {}
+	var max_uid := {}
+	var lo = -1
+	var hi = -1
+	for client_id in journals:
+		var journal = journals[client_id]
+		var map = {}
+		for entry in journal:
+			map[int(entry["uid"])] = entry
+		by_uid[client_id] = map
+		var client_min = int(journal.front()["uid"]) if journal else 0
+		var client_max = int(journal.back()["uid"]) if journal else 0
+		max_uid[client_id] = client_max
+		lo = client_min if lo == -1 else int(max(lo, client_min))
+		hi = client_max if hi == -1 else int(min(hi, client_max))
+
+	var lines = []
+	lines.append("{desync} insert journal diff (fingerprint uid " + str(fingerprint_uid) \
+		+ "), comparing uids " + str(lo) + ".." + str(hi) + " against client " + str(reference_id))
+
+	var divergence_uid = -1
+	var reason = ""
+	for uid in range(lo, hi + 1):
+		var ref = by_uid[reference_id].get(uid, null)
+		for client_id in by_uid:
+			if client_id == reference_id:
+				continue
+			var other = by_uid[client_id].get(uid, null)
+			if !ref or !other:
+				reason = "missing entry"
+			elif ref["key"] != other["key"]:
+				reason = "different event"
+			elif ref["pos"] != other["pos"]:
+				reason = "same event, different stack position"
+			if reason:
+				divergence_uid = uid
+				break
+		if divergence_uid != -1:
+			break
+
+	if divergence_uid == -1:
+		lines.append("No insertion divergence in the common window. Last insert uid per client: " + to_json(max_uid))
+		lines.append("If last uids match, the mismatch likely comes from state changed outside the stack (RNG, guids, direct calls)")
+		lines.append("If they differ, one client inserted extra events after uid " + str(hi))
+		if lo > 1:
+			lines.append("(the divergence could also be older than the journal window of " + str(INSERT_JOURNAL_MAX_SIZE) + " entries)")
+		return PoolStringArray(lines).join("\n")
+
+	if divergence_uid == _last_reported_divergence_uid:
+		return "{desync} insert journal: first divergence still at uid " + str(divergence_uid) + " (already reported)"
+	_last_reported_divergence_uid = divergence_uid
+
+	lines.append("FIRST DIVERGENCE at uid " + str(divergence_uid) + ": " + reason)
+	for client_id in by_uid:
+		var label = " (master)" if client_id == cfc.get_network_unique_id() else ""
+		lines.append("-- client " + str(client_id) + label)
+		var start = int(max(lo, divergence_uid - 3))
+		var end = int(min(divergence_uid + 5, max_uid[client_id]))
+		for uid in range(start, end + 1):
+			var e = by_uid[client_id].get(uid, null)
+			if e:
+				var marker = ">> " if uid == divergence_uid else "   "
+				lines.append(marker + _format_journal_entry(e))
+	return PoolStringArray(lines).join("\n")
+
+func _format_journal_entry(e) -> String:
+	return "uid " + str(e["uid"]) + " pos " + str(e["pos"]) + "/" + str(e["stack_size"]) \
+		+ " | " + str(e["key"]) + " (" + str(e["owner_name"]) + ")" \
+		+ " | src=" + str(e["source"]) + " trigger=" + str(e["trigger"]) \
+		+ " | run=" + str(e["run_mode"]) + " int=" + str(e["interrupt_mode"]) + " step=" + str(e["step"]) \
+		+ " | frame " + str(e["frame"])
 
 func compute_interrupts(script):
 	if !script:
@@ -1777,6 +1979,11 @@ func reset():
 	_pending_flush = {}
 	_stash_pending_flush = {}
 	_sent_about_to_execute_signal = {}
+	_insert_journal = []
+	_insert_source = ""
+	_journals_received = {}
+	_journal_diff_requested = false
+	_last_reported_divergence_uid = -1
 	
 	_interrupt_cache["zones"] = []
 	_interrupt_cache["additional_cards"] = []

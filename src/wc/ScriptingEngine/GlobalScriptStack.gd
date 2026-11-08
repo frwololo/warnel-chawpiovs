@@ -91,6 +91,8 @@ const INSERT_JOURNAL_MAX_SIZE := 300
 var _insert_journal := []
 #set temporarily by callers to tag where an insertion comes from
 var _insert_source := ""
+#true while attempt_yielded_script re-submits a deferred script
+var _draining_yielded_script := false
 var _journals_received := {}
 var _journal_diff_requested := false
 var _last_reported_divergence_uid := -1
@@ -320,8 +322,14 @@ func attempt_yielded_script():
 		
 	var script_data = yielded_scripts.pop_front()
 	remove_yield_counter("yielded_script")
+
+	if script_data.get("type", "") == "pending_network_interaction":
+		_enter_pending_network_interaction(script_data["checksum"], script_data["reason"])
+		return
+
 	var previous_source = _insert_source
 	_insert_source = "yielded"
+	_draining_yielded_script = true
 	var result = create_and_add_script(
 		script_data["sceng"],
 		script_data["run_type"],
@@ -329,6 +337,7 @@ func attempt_yielded_script():
 		script_data["trigger_details"],
 		script_data["action_name"] ,
 		script_data["checksum"] )
+	_draining_yielded_script = false
 	_insert_source = previous_source
 
 	if result:
@@ -495,13 +504,13 @@ func _process_incoming_network_events(delta):
 	if _incoming_network_events.empty():
 		return false
 	var ev = _incoming_network_events[0]
-	if ev.requester != cfc.get_network_unique_id() and sync_enabled \
-			and run_mode != ev.expected_run_mode:
+	var wait_reason = _get_network_event_wait_reason(ev)
+	if wait_reason:
 		ev.waited += delta
-		display_debug("yield for " + RunModeStr[ev.expected_run_mode] + " in " + ev.type)
+		display_debug("yield for " + wait_reason + " in " + ev.type)
 		if ev.waited < yield_max_wait_time:
 			return false  # keep waiting, and keep the order
-		send_error_to_master("{error} timeout waiting for " + RunModeStr[ev.expected_run_mode] + " - " + ev.checksum)
+		cfc.LOG("{desync} timeout waiting for " + wait_reason + ", inserting " + ev.type + " anyway - " + ev.checksum, true)
 	_incoming_network_events.pop_front()
 	match ev.type:
 		"add_stack_object":
@@ -522,6 +531,9 @@ func _process_incoming_network_events(delta):
 			cfc._rpc_id(self, 1, "from_client_script_received_ack", ev.expected_run_mode, ev.checksum)
 			return stackEvent
 		"resume_operations":
+			if _is_resume_for_unknown_manual_interaction(ev):
+				display_debug("ignoring resume_operations for a manual interaction I never waited for - " + str(ev.checksum))
+				return false
 			if ev.expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION:
 				if !pending_interaction_checksums.has(ev.checksum):
 					send_error_to_master("error in resume_operations, unaware of pending interaction " + ev.checksum)
@@ -539,19 +551,89 @@ func _process_incoming_network_events(delta):
 			#unsupported
 			return false
 
+#A player who opens a choice on a manual play (e.g. "manual - Spider-Man") and cancels it
+#sends resume_operations to everyone, but the other clients never stopped for it:
+#manual plays only run on the clicking client until they're sent to the stack.
+#Those clients used to wait 5s for PENDING_USER_INTERACTION, then set NO_BRAKES anyway.
+func _is_resume_for_unknown_manual_interaction(ev) -> bool:
+	return ev.type == "resume_operations" \
+			and ev.expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION \
+			and str(ev.get("checksum", "")).begins_with("manual") \
+			and run_mode != RUN_MODE.PENDING_USER_INTERACTION \
+			and !pending_interaction_checksums.has(ev.checksum)
+
+#returns "" if the event can be applied now, otherwise what we're waiting for
+func _get_network_event_wait_reason(ev) -> String:
+	if ev.requester == cfc.get_network_unique_id() or !sync_enabled:
+		return ""
+	if _is_resume_for_unknown_manual_interaction(ev):
+		return ""
+	if run_mode != ev.expected_run_mode:
+		return "run_mode " + RunModeStr[ev.expected_run_mode]
+	if ev.type == "add_stack_object" and _requires_matching_interaction_point(ev):
+		if !pending_interaction_checksums.has(ev.checksum):
+			return "interaction point " + str(ev.checksum)
+	return ""
+
+#A script decided by another client (defender choice, multiple choice,
+#optional confirmation, targeting...) can only be applied once this client has
+#itself reached that same decision point, which it signals by registering the
+#same checksum in set_pending_network_interaction.
+#Matching run_mode alone is not enough: PENDING_USER_INTERACTION is also the
+#run_mode of an interrupt check. Without this, Whirlwind's attack decision from
+#the defending client got inserted on the master while the master was still
+#resolving Whirlwind's forced interrupt, and the master later waited forever
+#for a decision it had already consumed.
+#
+#Excluded, because the other clients never register a checksum for them:
+# - player-initiated plays ("manual", "manual_override")
+# - interrupts and responses played during an interrupt window: the other clients
+#   are already stopped by the interrupt check itself (e.g. "interrupt - Stampede")
+func _requires_matching_interaction_point(ev) -> bool:
+	var trigger = str(ev.details.get("trigger", ""))
+	for prefix in ["manual", "interrupt", "response"]:
+		if trigger.begins_with(prefix):
+			return false
+	var remote_trigger_details = ev.details.get("remote_trigger_details", {})
+	if typeof(remote_trigger_details) == TYPE_DICTIONARY \
+			and remote_trigger_details.get("is_interrupt_or_response", false):
+		return false
+	return true
+
 func send_error_to_master(error_message):
 	#todo send error message to master to attempt recovery
 	display_debug(error_message)
 
+#Called on clients that are NOT authorized to make a choice: they stop and wait
+#for the authorized client's decision to arrive through the network.
+#
+#On the authorized client, the matching script goes through create_and_add_script,
+#which defers it into yielded_scripts (FIFO) when a flush is ongoing.
+#To stop at the same point on every client, this client defers its wait through
+#the very same queue, under the very same condition: otherwise it enters
+#PENDING_USER_INTERACTION while the authorized client keeps running its stack
+#until that queue drains, and the remote decision gets inserted at a different
+#point (Nick Fury / Web-Shooter, Spider-Man / Interrogation Room desyncs)
+#
+#This only mirrors the authorized client; it must never change the order in which
+#the authorized client (or a single player game) resolves scripts.
+#
+#NOTE: no run_mode condition here, on purpose: the authorized client switches to
+#PENDING_USER_INTERACTION right away whatever its run_mode, so this client must too,
+#otherwise its stack keeps running past the decision point
 func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
-	add_yield_counter("set_pending_network_interaction")
-	var yield_wait_time = 0.0
-	while (yield_wait_time < yield_max_wait_time) and _pending_flush:
-		display_debug("flush ongoing in set_pending_network_interaction")
-		yield(get_tree().create_timer(0.1), "timeout")
-		yield_wait_time+=0.1
-	remove_yield_counter("set_pending_network_interaction")
-	
+	if sync_enabled and !_draining_yielded_script and _pending_flush:
+		display_debug("set_pending_network_interaction deferred behind ongoing/deferred scripts - " + checksum)
+		add_yielded_script({
+			"type": "pending_network_interaction",
+			"checksum": checksum,
+			"reason": reason,
+			"yield_reason": "set_pending_network_interaction",
+		})
+		return
+	_enter_pending_network_interaction(checksum, reason)
+
+func _enter_pending_network_interaction(checksum, reason:=""):
 	if reason:
 		display_debug(reason)
 	if pending_interaction_checksums:
@@ -1385,25 +1467,21 @@ func _diff_insert_journals(fingerprint_uid, journals:Dictionary) -> String:
 	lines.append("{desync} insert journal diff (fingerprint uid " + str(fingerprint_uid) \
 		+ "), comparing uids " + str(lo) + ".." + str(hi) + " against client " + str(reference_id))
 
+	#find the first divergent uid that starts a new divergence run after the ones
+	#already reported (a swap of 2 events makes 2 consecutive uids diverge)
 	var divergence_uid = -1
 	var reason = ""
+	var previous_uid_diverged = false
 	for uid in range(lo, hi + 1):
-		var ref = by_uid[reference_id].get(uid, null)
-		for client_id in by_uid:
-			if client_id == reference_id:
-				continue
-			var other = by_uid[client_id].get(uid, null)
-			if !ref or !other:
-				reason = "missing entry"
-			elif ref["key"] != other["key"]:
-				reason = "different event"
-			elif ref["pos"] != other["pos"]:
-				reason = "same event, different stack position"
-			if reason:
-				divergence_uid = uid
-				break
-		if divergence_uid != -1:
+		var uid_reason = _journal_uid_divergence(by_uid, reference_id, uid)
+		if uid_reason and !previous_uid_diverged and uid > _last_reported_divergence_uid:
+			divergence_uid = uid
+			reason = uid_reason
 			break
+		previous_uid_diverged = (uid_reason != "")
+
+	if divergence_uid == -1 and _last_reported_divergence_uid >= lo:
+		return "{desync} insert journal: no new divergence since uid " + str(_last_reported_divergence_uid) + " (already reported)"
 
 	if divergence_uid == -1:
 		lines.append("No insertion divergence in the common window. Last insert uid per client: " + to_json(max_uid))
@@ -1413,11 +1491,9 @@ func _diff_insert_journals(fingerprint_uid, journals:Dictionary) -> String:
 			lines.append("(the divergence could also be older than the journal window of " + str(INSERT_JOURNAL_MAX_SIZE) + " entries)")
 		return PoolStringArray(lines).join("\n")
 
-	if divergence_uid == _last_reported_divergence_uid:
-		return "{desync} insert journal: first divergence still at uid " + str(divergence_uid) + " (already reported)"
 	_last_reported_divergence_uid = divergence_uid
 
-	lines.append("FIRST DIVERGENCE at uid " + str(divergence_uid) + ": " + reason)
+	lines.append("DIVERGENCE at uid " + str(divergence_uid) + ": " + reason)
 	for client_id in by_uid:
 		var label = " (master)" if client_id == cfc.get_network_unique_id() else ""
 		lines.append("-- client " + str(client_id) + label)
@@ -1429,6 +1505,26 @@ func _diff_insert_journals(fingerprint_uid, journals:Dictionary) -> String:
 				var marker = ">> " if uid == divergence_uid else "   "
 				lines.append(marker + _format_journal_entry(e))
 	return PoolStringArray(lines).join("\n")
+
+#returns "" if all clients agree on this uid, otherwise a short reason
+func _journal_uid_divergence(by_uid:Dictionary, reference_id, uid) -> String:
+	var ref = by_uid[reference_id].get(uid, null)
+	for client_id in by_uid:
+		if client_id == reference_id:
+			continue
+		var other = by_uid[client_id].get(uid, null)
+		if !ref or !other:
+			return "missing entry"
+		if ref["key"] != other["key"]:
+			#most common case: two events inserted in opposite order
+			var ref_next = by_uid[reference_id].get(uid + 1, null)
+			var other_next = by_uid[client_id].get(uid + 1, null)
+			if ref_next and other_next and ref_next["key"] == other["key"] and other_next["key"] == ref["key"]:
+				return "two events swapped (" + str(ref["source"]) + " vs " + str(other["source"]) + ")"
+			return "different event"
+		if ref["pos"] != other["pos"]:
+			return "same event, different stack position"
+	return ""
 
 func _format_journal_entry(e) -> String:
 	return "uid " + str(e["uid"]) + " pos " + str(e["pos"]) + "/" + str(e["stack_size"]) \
@@ -2142,6 +2238,7 @@ func reset():
 	_interrupting_hero_data = {}
 	_insert_journal = []
 	_insert_source = ""
+	_draining_yielded_script = false
 	_journals_received = {}
 	_journal_diff_requested = false
 	_last_reported_divergence_uid = -1

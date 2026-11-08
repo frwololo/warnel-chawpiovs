@@ -738,7 +738,7 @@ func _index_seek_subjects(stored_integer: int) -> Array:
 		# This is useful for effects which mention something like:
 		# "...the last X cards from the deck"
 		if str(get_property(SP.KEY_SUBJECT_INDEX)) != SP.KEY_SUBJECT_INDEX_V_TOP:
-			if index + iter >  all_cards.size():
+			if index + iter >=  all_cards.size():
 				break
 			subjects_array.append(all_cards[index + iter])
 		# When retrieving cards from any other index,

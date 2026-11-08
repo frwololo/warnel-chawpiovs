@@ -1,0 +1,228 @@
+{
+	"_comments": "Bug: Evil Doppleganger boost causes crash",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mysterio - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Maze of Mirrors",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Open the Dark Dimension"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Evil Doppleganger #27154"
+				}
+			],
+			"deck1": [
+
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				},
+				{
+					"card": "Unflappable"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "Protective Ward"
+				},				
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Med Team"
+				},				
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		}	,
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mysterio - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Maze of Mirrors",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Open the Dark Dimension"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+
+
+			],
+			"deck1": [
+				{
+					"card": "The Power of Protection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 6
+					}
+				}
+			],
+			"enemies1": [
+							{
+					"card": "Hydra Mercenary"
+				},
+			],
+			"discard1": [
+				{
+					"card": "Med Team"
+				},				
+				{
+					"card": "Momentum Shift"
+				},		
+				{
+					"card": "Magic Blast"
+				},					
+				{
+					"card": "Evil Doppleganger #27154"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},			
+				{
+					"card": "Unflappable"
+				},
+				{
+					"card": "Astral Projection"
+				},	
+				{
+					"card": "Protective Ward"
+				},
+			
+			]
+		}
+	}
+}

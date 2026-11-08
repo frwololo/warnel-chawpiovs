@@ -1891,7 +1891,8 @@
 				{
 					"name": "draw_cards",
 					"is_cost": true,
-					"amount": 3
+					"amount": 3,
+					"subject": "current_hero_target"
 				},
 				{
 					"name": "execute_scripts",
@@ -1907,12 +1908,11 @@
 					"dest_container": "hand_current_hero_target"
 				},
 				{
-					"name": "move_card_to_container",
-					"dest_container": "discard_current_hero_target",
+					"name": "discard",
 					"src_container": "hand_current_hero_target",
-					"subject": "index",
+					"subject": "tutor",
 					"subject_count": 3,
-					"subject_index": "random"
+					"sort_by": "random"
 				}
 			]
 		}

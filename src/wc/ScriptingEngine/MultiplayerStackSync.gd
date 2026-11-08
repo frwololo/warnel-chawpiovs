@@ -30,6 +30,15 @@ var _force_resync_timer = 0.0
 #fingerprints and board statuses received by the master, by checksum then client id
 var _acks := {}
 
+#Token state (damage, threat, counters... on every card) after each of the last
+#TOKEN_SNAPSHOTS_MAX stack objects, by stack uid. Only its hash goes into the
+#fingerprint; the full state is sent to the master when it asks for journals, so
+#the desync report can say which cards differ.
+const TOKEN_SNAPSHOTS_MAX := 30
+var _token_snapshots := {}
+var _token_snapshot_uids := []
+var _token_snapshots_received := {}
+
 func is_multiplayer() -> bool:
 	return true
 
@@ -59,11 +68,15 @@ func on_process_idle() -> bool:
 	return false
 
 func reset() -> void:
+	.reset()
 	if _resync_scheduled:
 		cfc.LOG("error in stack reset: resync was scheduled: " + str(_resync_scheduled))
 	_resync_scheduled = 0
 	_force_resync_timer = 0.0
 	_acks = {}
+	_token_snapshots = {}
+	_token_snapshot_uids = []
+	_token_snapshots_received = {}
 	_insert_journal = []
 	_journals_received = {}
 	_journal_diff_requested = false
@@ -118,7 +131,9 @@ func _requires_matching_interaction_point(ev) -> bool:
 ###
 
 #Sanity check: every client sends the master a fingerprint of the state after
-#each stack object it executes, the master compares them
+#each stack object it executes, the master compares them.
+#tokens_hash catches state that diverges while the event order stays identical
+#(e.g. a card dying on one client only because its damage already differed)
 func on_script_flushed(stack_object) -> void:
 	var uid = stack_object.stack_uid
 	var owner_guid = 0
@@ -135,7 +150,36 @@ func on_script_flushed(stack_object) -> void:
 		"owner_name": owner_name,
 		"all_guids_hash": guidMaster.get_guids_check_data(true)
 	}
+	var tokens_state = _get_tokens_state()
+	_store_token_snapshot(uid, tokens_state)
+	fingerprint["tokens_hash"] = WCUtils.ordered_hash(tokens_state)
 	cfc._rpc_id(self, 1, "master_check_fingerprint", fingerprint)
+
+#{guid: {token_name: count}} for every card that currently has tokens
+func _get_tokens_state() -> Dictionary:
+	var state := {}
+	for guid in guidMaster.guid_to_object:
+		var object = guidMaster.guid_to_object[guid]
+		if typeof(object) != TYPE_OBJECT or !is_instance_valid(object) or !("tokens" in object):
+			continue
+		var drawer = object.tokens
+		if !is_instance_valid(drawer) or !drawer.has_method("get_all_tokens"):
+			continue
+		var card_tokens := {}
+		var all_tokens = drawer.get_all_tokens()
+		for token_name in all_tokens:
+			var count = all_tokens[token_name].get_count()
+			if count:
+				card_tokens[token_name] = count
+		if card_tokens:
+			state[guid] = card_tokens
+	return state
+
+func _store_token_snapshot(uid, tokens_state:Dictionary) -> void:
+	_token_snapshots[uid] = tokens_state
+	_token_snapshot_uids.append(uid)
+	while _token_snapshot_uids.size() > TOKEN_SNAPSHOTS_MAX:
+		_token_snapshots.erase(_token_snapshot_uids.pop_front())
 
 master func master_check_fingerprint(fingerprint):
 	var uid = fingerprint.uid
@@ -291,17 +335,61 @@ func master_request_insert_journals(fingerprint_uid):
 	cfc._rpc(self, "clients_send_insert_journal", fingerprint_uid)
 
 remotesync func clients_send_insert_journal(fingerprint_uid):
-	cfc._rpc_id(self, 1, "master_receive_insert_journal", fingerprint_uid, _insert_journal)
+	#always a dictionary (never null) so that cfc._rpc_id doesn't drop the argument
+	var tokens = {
+		"available": _token_snapshots.has(fingerprint_uid),
+		"state": _token_snapshots.get(fingerprint_uid, {}),
+	}
+	cfc._rpc_id(self, 1, "master_receive_insert_journal", fingerprint_uid, _insert_journal, tokens)
 
-master func master_receive_insert_journal(fingerprint_uid, journal):
+master func master_receive_insert_journal(fingerprint_uid, journal, tokens := {}):
 	var client_id = cfc.get_rpc_sender_id()
 	_journals_received[client_id] = journal
+	_token_snapshots_received[client_id] = tokens
 	if _journals_received.size() < gameData.network_players.size():
 		return
 	var journals = _journals_received
+	var token_snapshots = _token_snapshots_received
 	_journals_received = {}
+	_token_snapshots_received = {}
 	var report = _diff_insert_journals(fingerprint_uid, journals)
 	cfc.LOG(report, true)
+	cfc.LOG(_diff_token_snapshots(fingerprint_uid, token_snapshots), true)
+
+#lists the cards whose tokens differ between clients after stack object uid
+func _diff_token_snapshots(uid, snapshots:Dictionary) -> String:
+	var reference_id = cfc.get_network_unique_id()
+	if !snapshots.has(reference_id):
+		reference_id = snapshots.keys()[0]
+	var ref = snapshots[reference_id]
+	if !ref.get("available", false):
+		return "{desync} tokens at uid " + str(uid) + ": snapshot no longer available on client " + str(reference_id)
+	var lines = []
+	for client_id in snapshots:
+		if client_id == reference_id:
+			continue
+		var other = snapshots[client_id]
+		if !other.get("available", false):
+			lines.append("   snapshot no longer available on client " + str(client_id))
+			continue
+		var ref_state = ref.get("state", {})
+		var other_state = other.get("state", {})
+		var guids = {}
+		for guid in ref_state:
+			guids[guid] = true
+		for guid in other_state:
+			guids[guid] = true
+		var sorted_guids = guids.keys()
+		sorted_guids.sort()
+		for guid in sorted_guids:
+			var a = ref_state.get(guid, {})
+			var b = other_state.get(guid, {})
+			if !WCUtils.json_equal(a, b):
+				lines.append("   " + str(guid) + " (" + str(guidMaster.guid_to_name.get(guid, "?")) + "): client " \
+					+ str(reference_id) + " " + to_json(a) + " vs client " + str(client_id) + " " + to_json(b))
+	if !lines:
+		return "{desync} tokens at uid " + str(uid) + ": identical on all clients"
+	return "{desync} TOKEN DIFFERENCES after uid " + str(uid) + ":\n" + PoolStringArray(lines).join("\n")
 
 #finds the first uid where clients inserted a different event (or the same event
 #at a different stack position) and returns a printable report around that point

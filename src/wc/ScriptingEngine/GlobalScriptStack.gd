@@ -240,6 +240,8 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		"checksum": checksum,
 		"yield_reason": "create_and_add_script",
 	}
+	#diagnostics only: was a flush running when this script was created?
+	var flush_was_pending = !_pending_flush.empty()
 		
 	if _pending_flush and sync_enabled:
 		var yield_script = true
@@ -251,6 +253,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			_stash_pending_flush[interrupt_parent_stack_uid] = true
 			_pending_flush.erase(interrupt_parent_stack_uid)
 		if yield_script:
+			get_sync().record_script_created(trigger, "deferred_flush", flush_was_pending, _draining_yielded_script)
 			add_yielded_script(yield_data)
 			#gameData.send_log_to_master("create_and_add_script yields (" + checksum + ")")
 			return null
@@ -268,6 +271,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			#gameData.send_log_to_master("create_and_add_script run_mod error")
 			return null
 		elif sync_enabled:
+			get_sync().record_script_created(trigger, "deferred_run_mode", flush_was_pending, _draining_yielded_script)
 			add_yielded_script(yield_data)
 			#gameData.send_log_to_master("create_and_add_script yields (runmode)")
 			return null
@@ -279,6 +283,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER:
 		#we deconstruct locally here to reconstruct it on all clients then add it to all stacks
 		#also send GUIDs to find the right cards/targets			
+			get_sync().record_script_created(trigger, "request", flush_was_pending, _draining_yielded_script)
 			var serialized_sceng = serialize_sceng(sceng, trigger_details)
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
@@ -287,6 +292,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			return null
 			#TODO should wait for ack from all clients before anybody can do anything further in the game
 		CFConst.USER_INTERACTION_STATUS.DONE_INTERACTION_NOT_REQUIRED:
+			get_sync().record_script_created(trigger, "direct", flush_was_pending, _draining_yielded_script)
 			var stackEvent:StackScript = StackScript.new(sceng, run_type, trigger)
 			#gameData.send_log_to_master("create_and_add_script: creating local stackEvent: " + checksum)
 			stackEvent.add_log("created in GlobalScriptStack: create_and_add_script. Trigger: " + trigger)			
@@ -1093,6 +1099,7 @@ func flush_script(stack_object):
 		display_debug("called to flush script but not allowed because run_mode is" + RunModeStr[run_mode])
 		return
 	
+	get_sync().record_flush_started(_pending_flush.size())
 
 	var execute_mode = stack_object.next_execute_mode()
 

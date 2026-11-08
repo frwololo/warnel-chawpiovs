@@ -49,7 +49,70 @@ func on_process_idle() -> bool:
 
 #called by GlobalScriptStack.reset() (new game, between tests)
 func reset() -> void:
-	pass
+	_log_and_reset_stats()
+
+
+###
+### Ordering statistics (diagnostics only, see the design doc's investigation)
+###
+#How often flushes overlap, how often scripts are deferred and why, and which
+#triggers create scripts while no flush is running (those are ordered by
+#timing rather than by game actions). Shown in the F9 dump, and logged once
+#per game or test when the stack is reset.
+const STATS_MAX_TRIGGERS := 40
+
+var _stats := {}
+
+func _new_stats() -> Dictionary:
+	return {
+		"flushes": 0,
+		"overlapping_flushes": 0,
+		"max_concurrent_flushes": 0,
+		"created": {"direct": 0, "request": 0, "deferred_flush": 0, "deferred_run_mode": 0},
+		"resubmitted": {"direct": 0, "request": 0, "deferred_flush": 0, "deferred_run_mode": 0},
+		"deferred_by_trigger": {},
+		"created_outside_flush_by_trigger": {},
+	}
+
+func _get_stats() -> Dictionary:
+	if !_stats:
+		_stats = _new_stats()
+	return _stats
+
+#concurrent = number of flushes running, this one included
+func record_flush_started(concurrent: int) -> void:
+	var stats = _get_stats()
+	stats["flushes"] += 1
+	if concurrent > 1:
+		stats["overlapping_flushes"] += 1
+	stats["max_concurrent_flushes"] = int(max(stats["max_concurrent_flushes"], concurrent))
+
+#outcome: "direct", "request", "deferred_flush" or "deferred_run_mode"
+#resubmitted: the script comes back from yielded_scripts (already counted once)
+func record_script_created(trigger, outcome: String, flush_was_pending: bool, resubmitted: bool) -> void:
+	var stats = _get_stats()
+	if resubmitted:
+		stats["resubmitted"][outcome] += 1
+		return
+	stats["created"][outcome] += 1
+	if outcome.begins_with("deferred"):
+		_count_trigger(stats["deferred_by_trigger"], trigger)
+	if !flush_was_pending:
+		_count_trigger(stats["created_outside_flush_by_trigger"], trigger)
+
+func _count_trigger(counts: Dictionary, trigger) -> void:
+	var key = str(trigger)
+	if !counts.has(key) and counts.size() >= STATS_MAX_TRIGGERS:
+		key = "<other>"
+	counts[key] = counts.get(key, 0) + 1
+
+func get_stats() -> Dictionary:
+	return _get_stats().duplicate(true)
+
+func _log_and_reset_stats() -> void:
+	if _stats and _stats.get("flushes", 0):
+		cfc.LOG("{sync_stats} " + to_json(_stats), true)
+	_stats = _new_stats()
 
 
 ###
@@ -233,6 +296,7 @@ func get_state_dump() -> Dictionary:
 	if gameData.phaseContainer and is_instance_valid(gameData.phaseContainer):
 		dump["gamedata"]["step"] = gameData.phaseContainer.get_current_phase_name()
 		dump["gamedata"]["current_step_complete"] = gameData.phaseContainer.current_step_complete
+	dump["ordering_stats"] = get_stats()
 	#network-specific state
 	var extra = get_extra_state_dump()
 	for key in extra:

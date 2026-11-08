@@ -321,7 +321,7 @@ func attempt_yielded_script():
 	remove_yield_counter("yielded_script")
 
 	if script_data.get("type", "") == "pending_network_interaction":
-		_enter_pending_network_interaction(script_data["checksum"], script_data["reason"])
+		get_sync().enter_pending_network_interaction(script_data["checksum"], script_data["reason"])
 		return
 
 	var previous_source = _insert_source
@@ -501,7 +501,7 @@ func _process_incoming_network_events(delta):
 	if _incoming_network_events.empty():
 		return false
 	var ev = _incoming_network_events[0]
-	var wait_reason = _get_network_event_wait_reason(ev)
+	var wait_reason = get_sync().get_network_event_wait_reason(ev)
 	if wait_reason:
 		ev.waited += delta
 		display_debug("yield for " + wait_reason + " in " + ev.type)
@@ -528,7 +528,7 @@ func _process_incoming_network_events(delta):
 			cfc._rpc_id(self, 1, "from_client_script_received_ack", ev.expected_run_mode, ev.checksum)
 			return stackEvent
 		"resume_operations":
-			if _is_resume_for_unknown_manual_interaction(ev):
+			if get_sync().is_resume_for_unknown_manual_interaction(ev):
 				display_debug("ignoring resume_operations for a manual interaction I never waited for - " + str(ev.checksum))
 				return false
 			if ev.expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION:
@@ -548,95 +548,13 @@ func _process_incoming_network_events(delta):
 			#unsupported
 			return false
 
-#A player who opens a choice on a manual play (e.g. "manual - Spider-Man") and cancels it
-#sends resume_operations to everyone, but the other clients never stopped for it:
-#manual plays only run on the clicking client until they're sent to the stack.
-#Those clients used to wait 5s for PENDING_USER_INTERACTION, then set NO_BRAKES anyway.
-func _is_resume_for_unknown_manual_interaction(ev) -> bool:
-	return ev.type == "resume_operations" \
-			and ev.expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION \
-			and str(ev.get("checksum", "")).begins_with("manual") \
-			and run_mode != RUN_MODE.PENDING_USER_INTERACTION \
-			and !pending_interaction_checksums.has(ev.checksum)
-
-#returns "" if the event can be applied now, otherwise what we're waiting for
-func _get_network_event_wait_reason(ev) -> String:
-	if ev.requester == cfc.get_network_unique_id() or !sync_enabled:
-		return ""
-	if _is_resume_for_unknown_manual_interaction(ev):
-		return ""
-	if run_mode != ev.expected_run_mode:
-		return "run_mode " + RunModeStr[ev.expected_run_mode]
-	if ev.type == "add_stack_object" and _requires_matching_interaction_point(ev):
-		if !pending_interaction_checksums.has(ev.checksum):
-			return "interaction point " + str(ev.checksum)
-	return ""
-
-#A script decided by another client (defender choice, multiple choice,
-#optional confirmation, targeting...) can only be applied once this client has
-#itself reached that same decision point, which it signals by registering the
-#same checksum in set_pending_network_interaction.
-#Matching run_mode alone is not enough: PENDING_USER_INTERACTION is also the
-#run_mode of an interrupt check. Without this, Whirlwind's attack decision from
-#the defending client got inserted on the master while the master was still
-#resolving Whirlwind's forced interrupt, and the master later waited forever
-#for a decision it had already consumed.
-#
-#Excluded, because the other clients never register a checksum for them:
-# - player-initiated plays ("manual", "manual_override")
-# - interrupts and responses played during an interrupt window: the other clients
-#   are already stopped by the interrupt check itself (e.g. "interrupt - Stampede")
-func _requires_matching_interaction_point(ev) -> bool:
-	var trigger = str(ev.details.get("trigger", ""))
-	for prefix in ["manual", "interrupt", "response"]:
-		if trigger.begins_with(prefix):
-			return false
-	var remote_trigger_details = ev.details.get("remote_trigger_details", {})
-	if typeof(remote_trigger_details) == TYPE_DICTIONARY \
-			and remote_trigger_details.get("is_interrupt_or_response", false):
-		return false
-	return true
-
 func send_error_to_master(error_message):
 	#todo send error message to master to attempt recovery
 	display_debug(error_message)
 
-#Called on clients that are NOT authorized to make a choice: they stop and wait
-#for the authorized client's decision to arrive through the network.
-#
-#On the authorized client, the matching script goes through create_and_add_script,
-#which defers it into yielded_scripts (FIFO) when a flush is ongoing.
-#To stop at the same point on every client, this client defers its wait through
-#the very same queue, under the very same condition: otherwise it enters
-#PENDING_USER_INTERACTION while the authorized client keeps running its stack
-#until that queue drains, and the remote decision gets inserted at a different
-#point (Nick Fury / Web-Shooter, Spider-Man / Interrogation Room desyncs)
-#
-#This only mirrors the authorized client; it must never change the order in which
-#the authorized client (or a single player game) resolves scripts.
-#
-#NOTE: no run_mode condition here, on purpose: the authorized client switches to
-#PENDING_USER_INTERACTION right away whatever its run_mode, so this client must too,
-#otherwise its stack keeps running past the decision point
-func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
-	if sync_enabled and !_draining_yielded_script and _pending_flush:
-		display_debug("set_pending_network_interaction deferred behind ongoing/deferred scripts - " + checksum)
-		add_yielded_script({
-			"type": "pending_network_interaction",
-			"checksum": checksum,
-			"reason": reason,
-			"yield_reason": "set_pending_network_interaction",
-		})
-		return
-	_enter_pending_network_interaction(checksum, reason)
-
-func _enter_pending_network_interaction(checksum, reason:=""):
-	if reason:
-		display_debug(reason)
-	if pending_interaction_checksums:
-		display_debug("error, assked to set to pending_interaction but pending queue not empty " + to_json(pending_interaction_checksums))
-	pending_interaction_checksums[checksum] = true	
-	set_run_mode(RUN_MODE.PENDING_USER_INTERACTION, "set_pending_network_interaction - " + checksum)
+#Called on clients that are NOT authorized to make a choice, see StackSync.gd
+func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
+	get_sync().set_pending_network_interaction(interaction_authority, checksum, reason)
 
 #client asking everyone to resume
 #the expectation is to call this only when it is clear that everyone is pending interaction

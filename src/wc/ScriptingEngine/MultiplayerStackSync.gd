@@ -71,6 +71,49 @@ func reset() -> void:
 
 
 ###
+### Incoming network events
+###
+
+#returns "" if the event can be applied now, otherwise what we're waiting for
+func get_network_event_wait_reason(ev) -> String:
+	if ev.requester == cfc.get_network_unique_id() or !the_stack.sync_enabled:
+		return ""
+	if is_resume_for_unknown_manual_interaction(ev):
+		return ""
+	if the_stack.run_mode != ev.expected_run_mode:
+		return "run_mode " + the_stack.RunModeStr[ev.expected_run_mode]
+	if ev.type == "add_stack_object" and _requires_matching_interaction_point(ev):
+		if !the_stack.pending_interaction_checksums.has(ev.checksum):
+			return "interaction point " + str(ev.checksum)
+	return ""
+
+#A script decided by another client (defender choice, multiple choice,
+#optional confirmation, targeting...) can only be applied once this client has
+#itself reached that same decision point, which it signals by registering the
+#same checksum in set_pending_network_interaction.
+#Matching run_mode alone is not enough: PENDING_USER_INTERACTION is also the
+#run_mode of an interrupt check. Without this, Whirlwind's attack decision from
+#the defending client got inserted on the master while the master was still
+#resolving Whirlwind's forced interrupt, and the master later waited forever
+#for a decision it had already consumed.
+#
+#Excluded, because the other clients never register a checksum for them:
+# - player-initiated plays ("manual", "manual_override")
+# - interrupts and responses played during an interrupt window: the other clients
+#   are already stopped by the interrupt check itself (e.g. "interrupt - Stampede")
+func _requires_matching_interaction_point(ev) -> bool:
+	var trigger = str(ev.details.get("trigger", ""))
+	for prefix in ["manual", "interrupt", "response"]:
+		if trigger.begins_with(prefix):
+			return false
+	var remote_trigger_details = ev.details.get("remote_trigger_details", {})
+	if typeof(remote_trigger_details) == TYPE_DICTIONARY \
+			and remote_trigger_details.get("is_interrupt_or_response", false):
+		return false
+	return true
+
+
+###
 ### Fingerprint check
 ###
 

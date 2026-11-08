@@ -53,6 +53,66 @@ func reset() -> void:
 
 
 ###
+### Remote decisions
+###
+#Kept in the base class because single player can reach them too (e.g. through
+#authority errors in UserInteractionAuthority), with the same behavior.
+
+#Called on clients that are NOT authorized to make a choice: they stop and wait
+#for the authorized client's decision to arrive through the network.
+#
+#On the authorized client, the matching script goes through create_and_add_script,
+#which defers it into yielded_scripts (FIFO) when a flush is ongoing.
+#To stop at the same point on every client, this client defers its wait through
+#the very same queue, under the very same condition: otherwise it enters
+#PENDING_USER_INTERACTION while the authorized client keeps running its stack
+#until that queue drains, and the remote decision gets inserted at a different
+#point (Nick Fury / Web-Shooter, Spider-Man / Interrogation Room desyncs)
+#
+#This only mirrors the authorized client; it must never change the order in which
+#the authorized client (or a single player game) resolves scripts.
+#
+#NOTE: no run_mode condition here, on purpose: the authorized client switches to
+#PENDING_USER_INTERACTION right away whatever its run_mode, so this client must too,
+#otherwise its stack keeps running past the decision point
+func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
+	if the_stack.sync_enabled and !the_stack._draining_yielded_script and the_stack._pending_flush:
+		the_stack.display_debug("set_pending_network_interaction deferred behind ongoing/deferred scripts - " + checksum)
+		the_stack.add_yielded_script({
+			"type": "pending_network_interaction",
+			"checksum": checksum,
+			"reason": reason,
+			"yield_reason": "set_pending_network_interaction",
+		})
+		return
+	enter_pending_network_interaction(checksum, reason)
+
+func enter_pending_network_interaction(checksum, reason:=""):
+	if reason:
+		the_stack.display_debug(reason)
+	if the_stack.pending_interaction_checksums:
+		the_stack.display_debug("error, assked to set to pending_interaction but pending queue not empty " + to_json(the_stack.pending_interaction_checksums))
+	the_stack.pending_interaction_checksums[checksum] = true	
+	the_stack.set_run_mode(the_stack.RUN_MODE.PENDING_USER_INTERACTION, "set_pending_network_interaction - " + checksum)
+
+#A player who opens a choice on a manual play (e.g. "manual - Spider-Man") and cancels it
+#sends resume_operations to everyone, but the other clients never stopped for it:
+#manual plays only run on the clicking client until they're sent to the stack.
+#Those clients used to wait 5s for PENDING_USER_INTERACTION, then set NO_BRAKES anyway.
+func is_resume_for_unknown_manual_interaction(ev) -> bool:
+	return ev.type == "resume_operations" \
+			and ev.expected_run_mode == the_stack.RUN_MODE.PENDING_USER_INTERACTION \
+			and str(ev.get("checksum", "")).begins_with("manual") \
+			and the_stack.run_mode != the_stack.RUN_MODE.PENDING_USER_INTERACTION \
+			and !the_stack.pending_interaction_checksums.has(ev.checksum)
+
+#returns "" if an incoming network event can be applied now, otherwise what
+#we're waiting for. In single player every event comes from this client.
+func get_network_event_wait_reason(_ev) -> String:
+	return ""
+
+
+###
 ### State dump (deadlock diagnostics)
 ###
 #Press F9: writes a snapshot of the stack state to the log.

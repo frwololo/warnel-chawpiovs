@@ -14,6 +14,7 @@
 extends Node
 
 const NODE_NAME := "Sync"
+const StackInbox = preload("res://src/wc/ScriptingEngine/StackInbox.gd")
 
 var the_stack
 
@@ -204,7 +205,7 @@ func get_state_dump() -> Dictionary:
 		stack_dump.append(_dump_stack_object(event))
 
 	var yielded_dump = []
-	for data in the_stack.yielded_scripts:
+	for data in the_stack.inbox.entries(StackInbox.LOCAL):
 		var entry = {
 			"type": data.get("type", "script"),
 			"yield_reason": data.get("yield_reason", ""),
@@ -222,7 +223,7 @@ func get_state_dump() -> Dictionary:
 		yielded_dump.append(entry)
 
 	var incoming_dump = []
-	for ev in the_stack._incoming_network_events:
+	for ev in the_stack.inbox.entries(StackInbox.NETWORK):
 		incoming_dump.append({
 			"type": ev.get("type", ""),
 			"requester": ev.get("requester", 0),
@@ -262,6 +263,7 @@ func get_state_dump() -> Dictionary:
 		"interrupting_hero_id": the_stack.interrupting_hero_id,
 		"sync_enabled": the_stack.sync_enabled,
 		"stack": stack_dump,
+		"inbox_order": the_stack.inbox.describe(),
 		"yielded_scripts": yielded_dump,
 		"incoming_network_events": incoming_dump,
 		"pending_interaction_checksums": the_stack.pending_interaction_checksums.keys(),

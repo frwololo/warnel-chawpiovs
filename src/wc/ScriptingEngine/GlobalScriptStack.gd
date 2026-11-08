@@ -63,7 +63,10 @@ const RunModeStr := [
 	"PENDING_USER_INTERACTION", #I detected that another user interaction is required
 ]
 
-var _incoming_network_events := []
+#Work waiting to enter the stack: deferred local scripts and events received
+#from the master, in one ordered list (see StackInbox.gd)
+const StackInbox = preload("res://src/wc/ScriptingEngine/StackInbox.gd")
+var inbox = StackInbox.new()
 var _ack_received = {}
 var all_clients_status:= {}
 var _local_status_counter = 0
@@ -78,7 +81,6 @@ const yield_max_wait_time : float= 5.0
 var history := {}
 var pending_interaction_checksums := {}
 var sync_enabled = true
-var yielded_scripts = []
 
 var _pending_flush = {}
 var _stash_pending_flush = {}
@@ -313,17 +315,17 @@ func remove_pending_flush(uid):
 
 func add_yielded_script(yield_data):
 	add_yield_counter("yielded_script")
-	yielded_scripts.append(yield_data)
+	inbox.add(StackInbox.LOCAL, yield_data)
 
 func attempt_yielded_script():
-	if !yielded_scripts:
+	if !inbox.has(StackInbox.LOCAL):
 		return false
 	
 	#failsafe in case game exited early
 	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
 		return false
 		
-	var script_data = yielded_scripts.pop_front()
+	var script_data = inbox.pop_first(StackInbox.LOCAL)
 	remove_yield_counter("yielded_script")
 
 	if script_data.get("type", "") == "pending_network_interaction":
@@ -482,7 +484,7 @@ master func from_client_script_received_ack(expected_run_mode, checksum):
 
 func add_incoming_network_event(data):
 	data["waited"] = 0.0
-	_incoming_network_events.append(data)
+	inbox.add(StackInbox.NETWORK, data)
 
 	#if I'm the requester, process instantly. 
 	#TODO this might lead to errors?
@@ -504,9 +506,9 @@ remotesync func client_create_and_add_stackobject( original_requester_id, expect
 	
 
 func _process_incoming_network_events(delta):
-	if _incoming_network_events.empty():
+	var ev = inbox.first(StackInbox.NETWORK)
+	if ev == null:
 		return false
-	var ev = _incoming_network_events[0]
 	var wait_reason = get_sync().get_network_event_wait_reason(ev)
 	if wait_reason:
 		ev.waited += delta
@@ -514,7 +516,9 @@ func _process_incoming_network_events(delta):
 		if ev.waited < yield_max_wait_time:
 			return false  # keep waiting, and keep the order
 		cfc.LOG("{desync} timeout waiting for " + wait_reason + ", inserting " + ev.type + " anyway - " + ev.checksum, true)
-	_incoming_network_events.pop_front()
+	#removed before it is applied: applying it can add (and, with
+	#speed_run_incoming_network_event, process) further network events
+	inbox.pop_first(StackInbox.NETWORK)
 	match ev.type:
 		"add_stack_object":
 			#Sync the RNG at the exact point the script enters the stack,
@@ -854,7 +858,7 @@ func _process(delta: float):
 	show_server_activity()
 	
 	if run_mode in [RUN_MODE.NOTHING_TO_RUN]: #, RUN_MODE.PENDING_USER_INTERACTION]:
-		if yielded_scripts:
+		if inbox.has(StackInbox.LOCAL):
 			attempt_yielded_script()
 			return
 		if get_sync().on_process_idle():
@@ -887,7 +891,7 @@ func _process(delta: float):
 	#we're giving the chance for pending scripts to execute as part of
 	# an interrupt flow, before resuming normal execution
 	if stack_object.interrupt_marker:
-		if yielded_scripts:
+		if inbox.has(StackInbox.LOCAL):
 			#var backup_state = run_mode
 			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION)
 			attempt_yielded_script()
@@ -1528,7 +1532,7 @@ func is_idle(level = 2):
 	if pending_stack_yield:
 		return false
 
-	if !_incoming_network_events.empty():
+	if inbox.has(StackInbox.NETWORK):
 		return false	
 		
 	if level == 1:
@@ -1710,7 +1714,9 @@ func reset():
 	if pending_stack_yield:
 		cfc.LOG("error in stack reset: pending_stack_yield :" + to_json(pending_stack_yield))	
 	pending_stack_yield = {}
-	_incoming_network_events = []
+	if inbox.has(StackInbox.LOCAL):
+		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(inbox.count(StackInbox.LOCAL)))
+	inbox.clear()
 	_ack_received = {}
 	
 	all_clients_status = {}
@@ -1731,9 +1737,6 @@ func reset():
 	_pending_flush = {}
 	_stash_pending_flush = {}
 	_sent_about_to_execute_signal = {}
-	if yielded_scripts:
-		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(yielded_scripts.size()))
-	yielded_scripts = []
 	_interrupting_hero_data = {}
 	_insert_source = ""
 	_draining_yielded_script = false
@@ -1748,7 +1751,7 @@ func get_current_status():
 	return {
 		"my_script_requests_pending_execution": my_script_requests_pending_execution,
 		"pending_stack_yield" : pending_stack_yield,
-		"incoming_network_events": _incoming_network_events,
+		"incoming_network_events": inbox.entries(StackInbox.NETWORK),
 		"run_mode":RunModeStr[run_mode],
 		"interrupt_mode": InterruptModeStr[interrupt_mode],
 		"interrupting_hero_id": interrupting_hero_id,

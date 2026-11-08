@@ -83,19 +83,16 @@ var yielded_scripts = []
 var _pending_flush = {}
 var _stash_pending_flush = {}
 
-#Insert journal: a debug record of every stack insertion on this client.
-#When the master detects a fingerprint mismatch, it collects all journals
-#and logs the first insertion where clients diverged, with the source
-#of that insertion (local, network, yielded, signal, sequence...)
-const INSERT_JOURNAL_MAX_SIZE := 300
-var _insert_journal := []
 #set temporarily by callers to tag where an insertion comes from
+#(used by the multiplayer insert journal)
 var _insert_source := ""
 #true while attempt_yielded_script re-submits a deferred script
 var _draining_yielded_script := false
-var _journals_received := {}
-var _journal_diff_requested := false
-var _last_reported_divergence_uid := -1
+
+#Synchronization layer: single player or multiplayer version, see StackSync.gd
+const StackSyncScript = preload("res://src/wc/ScriptingEngine/StackSync.gd")
+const MultiplayerStackSyncScript = preload("res://src/wc/ScriptingEngine/MultiplayerStackSync.gd")
+var _sync = null
 
 #stores unique IDs for all stack events
 var current_stack_uid:int = 0
@@ -871,7 +868,7 @@ func insert_event_into_stack(stackEvent, pos = -1):
 		var _error = 1
 		gameData.send_log_to_master("insert event into stack called but engine isn't ready " + stackEvent.get_first_task_name())
 	stackEvent.set_stack_uid(get_next_stack_uid())
-	_journal_insert(stackEvent, pos)
+	get_sync().on_stack_insert(stackEvent, pos)
 	if pos == -1:
 		stack.append(stackEvent)
 	else:
@@ -922,12 +919,8 @@ func add_script(stackEvent, context:= {}):
 var _sent_about_to_execute_signal = {}
 func _process(delta: float):
 	
-	#resync is supposed to happened but might get stuck here
-	if _resync_scheduled:
-		_force_resync_timer += delta
-		if _force_resync_timer > 5:
-			attempt_resync()
-			return	
+	if get_sync().on_process(delta):
+		return
 	
 	if _process_incoming_network_events(delta):
 		return
@@ -940,10 +933,7 @@ func _process(delta: float):
 		if yielded_scripts:
 			attempt_yielded_script()
 			return
-		#nothing on the stack and we're aware of a desync, attempt to fix
-		if _resync_scheduled:
-			if _resync_scheduled == 1:
-				attempt_resync()
+		if get_sync().on_process_idle():
 			return
 		
 	if run_mode != RUN_MODE.NO_BRAKES:
@@ -1138,6 +1128,24 @@ func force_play_card(interrupters, stack_object):
 	if result:
 		add_card_already_played(stack_object.stack_uid, card)
 
+#Returns the synchronization layer matching the current game mode, creating
+#or replacing it if needed. The stack is created when the application starts,
+#before the game mode is known, hence the lazy creation.
+#It is called every frame from _process, so the node exists on every client
+#before any RPC can target it.
+func get_sync():
+	var want_multiplayer = gameData.is_multiplayer_game
+	if is_instance_valid(_sync) and _sync.is_multiplayer() == want_multiplayer:
+		return _sync
+	if is_instance_valid(_sync):
+		#remove before freeing so that the new node can use the same name
+		remove_child(_sync)
+		_sync.queue_free()
+	_sync = MultiplayerStackSyncScript.new() if want_multiplayer else StackSyncScript.new()
+	_sync.setup(self)
+	add_child(_sync)
+	return _sync
+
 func enable_sync():
 	sync_enabled = true
 
@@ -1243,51 +1251,7 @@ func flush_script(stack_object):
 		emit_signal("script_executed_from_stack", stack_object )		
 	remove_pending_flush(uid)
 
-	
-	#Sanity check for network
-	var owner_guid = 0
-	var owner_name = ""
-	var owner = stack_object.get_owner()
-	if owner:
-		owner_guid = guidMaster.get_guid(owner)
-		owner_name = owner.canonical_name
-	var fingerprint = {
-		"uid": uid, 
-		"task_name": stack_object.get_first_task_name(),
-		"rng": cfc.game_rng.state,
-		"owner_guid": owner_guid,
-		"owner_name": owner_name,
-		"all_guids_hash": guidMaster.get_guids_check_data(true)
-	}
-	cfc._rpc_id(self, 1, "master_check_fingerprint", fingerprint)	
-
-master func master_check_fingerprint(fingerprint):
-	var uid = fingerprint.uid
-	var checksum = "fingerprint_" + str(uid)
-	var acks = _ack_received.get(checksum, {})
-	var client_id = cfc.get_rpc_sender_id()
-	acks[client_id] = fingerprint
-	_ack_received[checksum] = acks
-	if acks.size() == gameData.network_players.size():
-		var my_network_id = cfc.get_network_unique_id()
-		var my_status = acks[my_network_id]
-		var mismatch = false
-		for k in acks:
-			var other_status = acks[k]
-			if !(WCUtils.json_equal(my_status, other_status)):
-				mismatch = true
-				cfc.LOG("{error} Desync at fingerprint Step", true)
-				cfc.LOG("My Status:", true)
-				cfc.LOG_DICT(my_status, true)
-				cfc.LOG("Their Status:{" +str(k) +"}", true)
-				cfc.LOG_DICT(other_status, true)
-				cfc._rpc(self,"clients_schedule_resync")
-		_ack_received.erase(checksum)
-		if mismatch:
-			master_request_insert_journals(uid)
-
-
-
+	get_sync().on_script_flushed(stack_object)
 
 master func master_receive_stack_event_logs(uid, logs):
 	var client_id = cfc.get_rpc_sender_id()	
@@ -1298,392 +1262,6 @@ remotesync func get_stack_event_logs(uid):
 	var stackEvent = get_stack_object_by_uid(uid)
 	var logs = stackEvent.print_log()
 	cfc._rpc_id(self, 1, "master_receive_stack_event_logs", uid, logs)
-
-var _resync_scheduled = 0
-var _force_resync_timer = 0.0
-remotesync func clients_schedule_resync():
-	_resync_scheduled = 1
-
-#a desync happened, we're going to try and fix it when the stack is idle everywhere
-func attempt_resync():
-	var board_status = gameData.save_gamedata()	
-	_resync_scheduled =  2
-	cfc._rpc_id(self, 1, "master_resync", board_status)
-
-remotesync func clients_resync_attempted():
-	_resync_scheduled = 0
-	_force_resync_timer = 0.0
-	_journal_diff_requested = false
-
-master func master_resync(board_status):
-	var checksum = "resync"
-	var acks = _ack_received.get(checksum, {})
-	var client_id = cfc.get_rpc_sender_id()
-	acks[client_id] = board_status
-	_ack_received[checksum] = acks
-	var error_msg = ""
-	if acks.size() == gameData.network_players.size():
-		var my_network_id = cfc.get_network_unique_id()
-		var my_status = acks[my_network_id]
-		var needs_reload = false
-		for k in acks:
-			var other_status = acks[k]
-			if !(WCUtils.json_equal(my_status, other_status)):
-				error_msg = JSON.print({"my_status": my_status, "their_status" : other_status})
-				needs_reload = true					
-		_ack_received.erase(checksum)
-
-		if needs_reload:
-			cfc.LOG("{error} desync confirmed, should attempt to resync, but not doing it because of bugs", true)
-#			if gameData.testSuite:
-#				gameData.testSuite.force_fail_current_test("clients out of sync" + error_msg )
-#			else:			
-#				gameData.load_gamedata(my_status)	
-		else:
-			cfc.LOG("{warning} There was a desync but everything seems in order right now, won't do anything", true)
-			
-		cfc._rpc(self,"clients_resync_attempted")	
-			
-
-
-
-
-
-###
-### Insert journal (desync diagnostics)
-###
-
-#records one stack insertion. Only "key" and "pos" are compared between clients,
-#the rest is context to help understand why the insertion happened when it did
-func _journal_insert(stackEvent, pos):
-	var owner = stackEvent.get_owner()
-	var owner_guid = ""
-	var owner_name = ""
-	if is_instance_valid(owner):
-		owner_guid = guidMaster.get_guid(owner)
-		var canonical_name = owner.get("canonical_name")
-		if canonical_name:
-			owner_name = str(canonical_name)
-
-	var task_name = ""
-	if stackEvent.interrupt_marker:
-		task_name = "<interrupt_marker>"
-	elif stackEvent.context_marker:
-		task_name = "<context:" + str(_journal_context_name(stackEvent)) + ">"
-	else:
-		task_name = str(stackEvent.get_first_task_name())
-
-	var step_name = ""
-	if gameData.phaseContainer and is_instance_valid(gameData.phaseContainer):
-		step_name = gameData.phaseContainer.get_current_phase_name()
-
-	var entry = {
-		#compared between clients
-		"uid": stackEvent.stack_uid,
-		"key": task_name + "@" + owner_guid,
-		"pos": pos,
-		#context, for humans
-		"owner_name": owner_name,
-		"trigger": str(stackEvent.get_trigger()),
-		"source": _journal_source(stackEvent),
-		"stack_size": stack.size(),
-		"run_mode": RunModeStr[run_mode],
-		"interrupt_mode": InterruptModeStr[interrupt_mode],
-		"step": step_name,
-		"frame": Engine.get_frames_drawn(),
-	}
-	_insert_journal.append(entry)
-	if _insert_journal.size() > INSERT_JOURNAL_MAX_SIZE:
-		_insert_journal.pop_front()
-
-func _journal_context_name(stackEvent):
-	if "task" in stackEvent and stackEvent.task and stackEvent.task.has_method("get_property"):
-		return stackEvent.task.get_property("context_name")
-	return ""
-
-#where an insertion comes from: "local" (triggered by this client's own simulation),
-#"network" (script received from the master), "yielded" (deferred by create_and_add_script),
-#with "/signal" or "/sequence" suffixes when relevant
-func _journal_source(stackEvent) -> String:
-	if stackEvent.interrupt_marker or stackEvent.context_marker:
-		return "marker"
-	var source = _insert_source if _insert_source else "local"
-	if stackEvent is SignalStackScript:
-		return source + "/signal"
-	var sceng = stackEvent.get_sceng()
-	if sceng:
-		var details = sceng.trigger_details
-		if typeof(details) == TYPE_DICTIONARY:
-			var additional = details.get("additional_script_definition", {})
-			if typeof(additional) == TYPE_DICTIONARY and additional.get("is_sequence", false):
-				return source + "/sequence"
-	return source
-
-#master only: ask all clients for their journal, once per desync
-func master_request_insert_journals(fingerprint_uid):
-	if _journal_diff_requested:
-		return
-	_journal_diff_requested = true
-	_journals_received = {}
-	cfc._rpc(self, "clients_send_insert_journal", fingerprint_uid)
-
-remotesync func clients_send_insert_journal(fingerprint_uid):
-	cfc._rpc_id(self, 1, "master_receive_insert_journal", fingerprint_uid, _insert_journal)
-
-master func master_receive_insert_journal(fingerprint_uid, journal):
-	var client_id = cfc.get_rpc_sender_id()
-	_journals_received[client_id] = journal
-	if _journals_received.size() < gameData.network_players.size():
-		return
-	var journals = _journals_received
-	_journals_received = {}
-	var report = _diff_insert_journals(fingerprint_uid, journals)
-	cfc.LOG(report, true)
-
-#finds the first uid where clients inserted a different event (or the same event
-#at a different stack position) and returns a printable report around that point
-func _diff_insert_journals(fingerprint_uid, journals:Dictionary) -> String:
-	var reference_id = cfc.get_network_unique_id()
-	if !journals.has(reference_id):
-		reference_id = journals.keys()[0]
-
-	var by_uid := {}
-	var max_uid := {}
-	var lo = -1
-	var hi = -1
-	for client_id in journals:
-		var journal = journals[client_id]
-		var map = {}
-		for entry in journal:
-			map[int(entry["uid"])] = entry
-		by_uid[client_id] = map
-		var client_min = int(journal.front()["uid"]) if journal else 0
-		var client_max = int(journal.back()["uid"]) if journal else 0
-		max_uid[client_id] = client_max
-		lo = client_min if lo == -1 else int(max(lo, client_min))
-		hi = client_max if hi == -1 else int(min(hi, client_max))
-
-	var lines = []
-	lines.append("{desync} insert journal diff (fingerprint uid " + str(fingerprint_uid) \
-		+ "), comparing uids " + str(lo) + ".." + str(hi) + " against client " + str(reference_id))
-
-	#find the first divergent uid that starts a new divergence run after the ones
-	#already reported (a swap of 2 events makes 2 consecutive uids diverge)
-	var divergence_uid = -1
-	var reason = ""
-	var previous_uid_diverged = false
-	for uid in range(lo, hi + 1):
-		var uid_reason = _journal_uid_divergence(by_uid, reference_id, uid)
-		if uid_reason and !previous_uid_diverged and uid > _last_reported_divergence_uid:
-			divergence_uid = uid
-			reason = uid_reason
-			break
-		previous_uid_diverged = (uid_reason != "")
-
-	if divergence_uid == -1 and _last_reported_divergence_uid >= lo:
-		return "{desync} insert journal: no new divergence since uid " + str(_last_reported_divergence_uid) + " (already reported)"
-
-	if divergence_uid == -1:
-		lines.append("No insertion divergence in the common window. Last insert uid per client: " + to_json(max_uid))
-		lines.append("If last uids match, the mismatch likely comes from state changed outside the stack (RNG, guids, direct calls)")
-		lines.append("If they differ, one client inserted extra events after uid " + str(hi))
-		if lo > 1:
-			lines.append("(the divergence could also be older than the journal window of " + str(INSERT_JOURNAL_MAX_SIZE) + " entries)")
-		return PoolStringArray(lines).join("\n")
-
-	_last_reported_divergence_uid = divergence_uid
-
-	lines.append("DIVERGENCE at uid " + str(divergence_uid) + ": " + reason)
-	for client_id in by_uid:
-		var label = " (master)" if client_id == cfc.get_network_unique_id() else ""
-		lines.append("-- client " + str(client_id) + label)
-		var start = int(max(lo, divergence_uid - 3))
-		var end = int(min(divergence_uid + 5, max_uid[client_id]))
-		for uid in range(start, end + 1):
-			var e = by_uid[client_id].get(uid, null)
-			if e:
-				var marker = ">> " if uid == divergence_uid else "   "
-				lines.append(marker + _format_journal_entry(e))
-	return PoolStringArray(lines).join("\n")
-
-#returns "" if all clients agree on this uid, otherwise a short reason
-func _journal_uid_divergence(by_uid:Dictionary, reference_id, uid) -> String:
-	var ref = by_uid[reference_id].get(uid, null)
-	for client_id in by_uid:
-		if client_id == reference_id:
-			continue
-		var other = by_uid[client_id].get(uid, null)
-		if !ref or !other:
-			return "missing entry"
-		if ref["key"] != other["key"]:
-			#most common case: two events inserted in opposite order
-			var ref_next = by_uid[reference_id].get(uid + 1, null)
-			var other_next = by_uid[client_id].get(uid + 1, null)
-			if ref_next and other_next and ref_next["key"] == other["key"] and other_next["key"] == ref["key"]:
-				return "two events swapped (" + str(ref["source"]) + " vs " + str(other["source"]) + ")"
-			return "different event"
-		if ref["pos"] != other["pos"]:
-			return "same event, different stack position"
-	return ""
-
-func _format_journal_entry(e) -> String:
-	return "uid " + str(e["uid"]) + " pos " + str(e["pos"]) + "/" + str(e["stack_size"]) \
-		+ " | " + str(e["key"]) + " (" + str(e["owner_name"]) + ")" \
-		+ " | src=" + str(e["source"]) + " trigger=" + str(e["trigger"]) \
-		+ " | run=" + str(e["run_mode"]) + " int=" + str(e["interrupt_mode"]) + " step=" + str(e["step"]) \
-		+ " | frame " + str(e["frame"])
-
-###
-### State dump (deadlock diagnostics)
-###
-#Press F9 on any client: every client writes a snapshot of its sync state
-#to its own log, and sends it to the master which logs all of them together.
-#Works without a debugger attached.
-const STATE_DUMP_KEY := KEY_F9
-const STATE_DUMP_JOURNAL_TAIL := 15
-
-func _input(event):
-	if event is InputEventKey and event.pressed and !event.echo and event.scancode == STATE_DUMP_KEY:
-		request_state_dump("F9 pressed on client " + str(cfc.get_network_unique_id()))
-
-func request_state_dump(reason := ""):
-	cfc.LOG("{state_dump} requested: " + reason, true)
-	cfc._rpc(self, "clients_dump_state", reason)
-
-remotesync func clients_dump_state(reason := ""):
-	var dump = get_state_dump()
-	dump["reason"] = reason
-	cfc.LOG("{state_dump} local state of client " + str(cfc.get_network_unique_id()) + ":", true)
-	cfc.LOG_DICT(dump, true)
-	cfc._rpc_id(self, 1, "master_receive_state_dump", dump)
-
-master func master_receive_state_dump(dump):
-	var client_id = cfc.get_rpc_sender_id()
-	if client_id == cfc.get_network_unique_id():
-		return #already logged locally
-	cfc.LOG("{state_dump} received from client " + str(client_id) + ":", true)
-	cfc.LOG_DICT(dump, true)
-
-func get_state_dump() -> Dictionary:
-	var stack_dump = []
-	for event in stack:
-		stack_dump.append(_dump_stack_object(event))
-
-	var yielded_dump = []
-	for data in yielded_scripts:
-		var entry = {
-			"type": data.get("type", "script"),
-			"yield_reason": data.get("yield_reason", ""),
-			"checksum": data.get("checksum", ""),
-		}
-		if data.has("sceng"):
-			entry["action_name"] = str(data.get("action_name", ""))
-			entry["trigger"] = str(data.get("trigger", ""))
-			var sceng = data["sceng"]
-			if is_instance_valid(sceng) and "owner" in sceng and is_instance_valid(sceng.owner):
-				entry["owner"] = str(sceng.owner.get("canonical_name"))
-				entry["user_interaction_status"] = sceng.get("user_interaction_status")
-		else:
-			entry["reason"] = data.get("reason", "")
-		yielded_dump.append(entry)
-
-	var incoming_dump = []
-	for ev in _incoming_network_events:
-		incoming_dump.append({
-			"type": ev.get("type", ""),
-			"requester": ev.get("requester", 0),
-			"expected_run_mode": _run_mode_str(ev.get("expected_run_mode", -1)),
-			"waited": ev.get("waited", 0.0),
-			"checksum": ev.get("checksum", ""),
-		})
-
-	var clients_status = {}
-	for client_id in all_clients_status:
-		var status = all_clients_status[client_id].duplicate()
-		if status.has("run_mode"):
-			status["run_mode"] = _run_mode_str(status["run_mode"])
-		clients_status[str(client_id)] = status
-
-	var ongoing_processes = []
-	for object in cfc._ongoing_processes:
-		var descriptions = cfc._ongoing_processes[object]
-		for description in descriptions:
-			if descriptions[description]:
-				var object_name = "<dictionary>"
-				if typeof(object) == TYPE_OBJECT:
-					if !is_instance_valid(object):
-						object_name = "<freed>"
-					elif object.get("canonical_name"):
-						object_name = str(object.get("canonical_name"))
-					else:
-						object_name = str(object)
-				ongoing_processes.append(object_name + ": " + str(description) + " x" + str(descriptions[description]))
-
-	var journal_tail = []
-	for i in range(max(0, _insert_journal.size() - STATE_DUMP_JOURNAL_TAIL), _insert_journal.size()):
-		journal_tail.append(_format_journal_entry(_insert_journal[i]))
-
-	var dump = {
-		"network_id": cfc.get_network_unique_id(),
-		"frame": Engine.get_frames_drawn(),
-		"my_heroes": gameData.get_my_heroes(),
-		"run_mode": RunModeStr[run_mode],
-		"interrupt_mode": InterruptModeStr[interrupt_mode],
-		"interrupting_hero_id": interrupting_hero_id,
-		"sync_enabled": sync_enabled,
-		"stack": stack_dump,
-		"yielded_scripts": yielded_dump,
-		"incoming_network_events": incoming_dump,
-		"pending_interaction_checksums": pending_interaction_checksums.keys(),
-		"pending_flush": _pending_flush.keys(),
-		"stash_pending_flush": _stash_pending_flush.keys(),
-		"pending_stack_yield": pending_stack_yield.duplicate(),
-		"my_script_requests_pending_execution": my_script_requests_pending_execution,
-		"resync_scheduled": _resync_scheduled,
-		"all_clients_status": clients_status,
-		"ongoing_processes": ongoing_processes,
-		"game_paused": cfc.game_paused,
-		"modal_menu": str(cfc.get_modal_menu()) if cfc.get_modal_menu() else "",
-		"blocking_announce": gameData.is_ongoing_blocking_announce(),
-		"journal_tail": journal_tail,
-	}
-
-	#GameData / PhaseContainer queues that gate progress outside the stack
-	var attackers_dump = []
-	for attacker in gameData.attackers:
-		var subject = attacker.get("subject")
-		attackers_dump.append({
-			"subject": str(subject.get("canonical_name")) if is_instance_valid(subject) else "<freed>",
-			"type": attacker.get("type", ""),
-			"target_id": attacker.get("target_id", 0),
-		})
-	dump["gamedata"] = {
-		"attackers": attackers_dump,
-		"immediate_encounters": gameData.immediate_encounters.size(),
-		"scripted_play_sequence": gameData.scripted_play_sequence.size(),
-		"scripted_play_sequence_low_priority": gameData.scripted_play_sequence_low_priority.size(),
-		"priority_scripts": gameData._priority_scripts.size(),
-		"villain_current_hero_target": gameData._villain_current_hero_target,
-	}
-	if gameData.phaseContainer and is_instance_valid(gameData.phaseContainer):
-		dump["gamedata"]["step"] = gameData.phaseContainer.get_current_phase_name()
-		dump["gamedata"]["current_step_complete"] = gameData.phaseContainer.current_step_complete
-	return dump
-
-func _dump_stack_object(event) -> Dictionary:
-	var owner = event.get_owner()
-	return {
-		"uid": event.stack_uid,
-		"name": str(event.get_display_name()),
-		"task": "<interrupt_marker>" if event.interrupt_marker else ("<context>" if event.context_marker else str(event.get_first_task_name())),
-		"owner": str(owner.get("canonical_name")) if is_instance_valid(owner) else "",
-		"trigger": str(event.get_trigger()),
-	}
-
-func _run_mode_str(value) -> String:
-	if typeof(value) == TYPE_INT and value >= 0 and value < RunModeStr.size():
-		return RunModeStr[value]
-	return str(value)
 
 func compute_interrupts(script):
 	if !script:
@@ -2231,17 +1809,10 @@ func reset():
 	if yielded_scripts:
 		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(yielded_scripts.size()))
 	yielded_scripts = []
-	if _resync_scheduled:
-		cfc.LOG("error in stack reset: resync was scheduled: " + str(_resync_scheduled))
-	_resync_scheduled = 0
-	_force_resync_timer = 0.0
 	_interrupting_hero_data = {}
-	_insert_journal = []
 	_insert_source = ""
 	_draining_yielded_script = false
-	_journals_received = {}
-	_journal_diff_requested = false
-	_last_reported_divergence_uid = -1
+	get_sync().reset()
 	
 	_interrupt_cache["zones"] = []
 	_interrupt_cache["additional_cards"] = []

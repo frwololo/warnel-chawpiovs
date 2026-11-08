@@ -411,6 +411,16 @@ func _extra_dupe_ready(dupe_focus: Card, card: Card) -> void:
 		dupe_focus.tokens.token_drawer(false, true)
 
 	dupe_focus.scale = Vector2(2,2) 
+
+	#TODO (this is a hack, those duplicates shouldn't be here in the first place)
+	# cleaning up some duplicate/incorrect nodes here (including a duplicate tokendrawer),
+	# not sure how they arrived here in the first place
+	for container in [dupe_focus, dupe_focus._control]:
+		for child in container.get_children():
+			if "@" in child.name:
+				child.queue_free()	
+	
+	
 func _input(event):				
 	if event.is_action_pressed("ui_toggle_big_card"):	
 		show_card_focus = !show_card_focus

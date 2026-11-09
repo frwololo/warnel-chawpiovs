@@ -139,15 +139,15 @@
 		{
 			"type": "target",
 			"value": "Apprehending Rogue Agents - 1B #50130b"
-		},
-		{
-			"type": "choose",
-			"value": "yes"
 		},			
 		{
 			"type": "activate",
 			"value": "Nova"
-		},	
+		},
+		{
+			"type": "choose",
+			"value": "yes"
+		},		
 		{
 			"type": "activate",
 			"value": "Nova"

@@ -1,0 +1,176 @@
+{
+	"_comments": "Tests Daredevil thwart followed by damage in multiplayer",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daredevil #01058"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker",
+					"tokens": {
+						"_peter_resource": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shooter"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Stark Tower"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Daredevil #01058"
+		},
+		{
+			"type": "choose",
+			"value": "Thwart"
+		},
+		{
+			"type": "target",
+			"value": "01097b"
+		},
+		{
+			"type": "target",
+			"value": "Rhino - 1",
+			"_comments": "target rhino with post thwart damage"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				},
+				{
+					"card": "Jessica Jones"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Daredevil #01058",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker",
+					"tokens": {
+						"_peter_resource": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Web-Shooter"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Stark Tower"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Nick Fury"
+				}
+			]
+		}
+	}
+}

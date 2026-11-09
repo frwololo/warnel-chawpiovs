@@ -2307,8 +2307,11 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
 	var interaction_authorized = interaction_authority.interaction_authorized()	
 	var interacting_hero = interaction_authority.authorized_hero_id()
-	#decision slot reserved by this script, if it needs a decision (see GlobalScriptStack)
-	var decision_slot := -1
+	#decision slot reserved by this script, if it needs a decision (see GlobalScriptStack).
+	#Already set when this is a decision that was deferred and now resumes
+	var decision_slot = exec_config.get("resumed_decision_slot", -1)
+	if is_network_call and run_type != CFInt.RunType.BACKGROUND_COST_CHECK:
+		gameData.theStack.log_decision_path(checksum, trigger, "runs as already paid (network_prepaid in its trigger details)", interaction_authorized)
 	if _debug:
 		cfc.LOG("reached step 2 for: " + checksum + ". InteractionAuthority says " + to_json(interaction_authority.compute_authority())  )
 
@@ -2319,9 +2322,14 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	#option (or none) is left on their side.
 	if was_choice and run_type != CFInt.RunType.BACKGROUND_COST_CHECK and !is_network_call \
 			and gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
-		decision_slot = gameData.theStack.reserve_decision_slot(checksum, "choice", interaction_authorized)
+		if decision_slot < 1:
+			decision_slot = gameData.theStack.reserve_decision_slot(checksum, "choice", interaction_authorized)
 		if !interaction_authorized:
 			gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "not authorized to multiple choice (" + str(trigger) + ")")
+			cfc.remove_ongoing_process(self, "core_execute_scripts")
+			return null
+		if gameData.theStack.should_defer_decision(exec_config):
+			gameData.theStack.defer_decision(self, [state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config], decision_slot, checksum, "choice")
 			cfc.remove_ongoing_process(self, "core_execute_scripts")
 			return null
 		if !state_scripts:
@@ -2360,11 +2368,16 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 			pass
 		else:
-			if gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
+			var is_slot_candidate = gameData.theStack.is_decision_slot_candidate(trigger, trigger_details)
+			if is_slot_candidate and decision_slot < 1:
 				decision_slot = gameData.theStack.reserve_decision_slot(checksum, "dialog", interaction_authorized)
 			if !interaction_authorized:
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "pending interaction because of optional dialog")		
+				return null
+			if is_slot_candidate and gameData.theStack.should_defer_decision(exec_config):
+				gameData.theStack.defer_decision(self, [state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config], decision_slot, checksum, "dialog")
+				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				return null
 
 			gameData.select_current_playing_hero(interacting_hero)
@@ -2567,6 +2580,9 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			# 2) Once done with payment, Client A sends ability + payment information to all clients (including itself)
 			# 3) That data is added to all clients stacks
 
+			if sceng.decision_slots_allowed and sceng.decision_slot < 1 and interaction_authority \
+					and !interaction_authority.interaction_authorized():
+				gameData.theStack.log_decision_path(checksum, trigger, "ran on the waiting side without reaching a decision (" + str(sceng.user_interaction_status) + ")", false)
 			if trigger_details.get("use_stack", true):
 				var func_return = add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum)
 				while func_return is GDScriptFunctionState && func_return.is_valid():
@@ -2577,10 +2593,13 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 					sceng_return = sceng_return.resume()	
 
 		else:
-			#a decision that ends here (payment cancelled or impossible) sends
-			#nothing else, but its slot must still be filled on every client
+			#A decision that ends here (payment cancelled or impossible) sends
+			#nothing else, but the other clients reached the same decision and
+			#are waiting for it: release them as a declined decision would
+			#(test_2p_nebula_gamora_clobber: the waiting client stayed in
+			#PENDING_USER_INTERACTION and Clobber never returned to hand)
 			if sceng.decision_slot > 0:
-				gameData.theStack.fill_decision_slot_with_nothing_to_all(sceng.decision_slot, checksum)
+				gameData.theStack.resume_operations_to_all(checksum, sceng.decision_slot)
 			#cleanup after cost failure
 			if sceng and sceng.network_prepaid:
 				for prepaid_data in sceng.network_prepaid:

@@ -316,6 +316,34 @@ func remove_pending_flush(uid):
 	_pending_flush.erase(uid)
 	_stash_pending_flush.erase(uid)	
 
+#One decision at a time: a deferred decision (the deciding client's dialog or
+#choice, or a waiting client's wait for it) is not resumed while another
+#decision is still open, otherwise two decision menus show up at once
+#(Cable's card_defeated dialog over the Lock and Load selection).
+#Both sides stop at the same point: the open decision ends, everywhere, when
+#its outcome reaches the stack.
+func can_drain_local_entry() -> bool:
+	var entry = inbox.first(StackInbox.LOCAL)
+	if entry == null:
+		return false
+	if not entry.get("type", "") in ["deferred_decision", "pending_network_interaction"]:
+		return true
+	var open_decision = get_open_decision()
+	if open_decision:
+		display_debug("deferred decision " + str(entry.get("checksum", "")) + " waits for " + open_decision)
+		return false
+	return true
+
+#"" if no decision is open on this client, otherwise what is open
+func get_open_decision() -> String:
+	if cfc.get_modal_menu():
+		return "a menu"
+	if my_script_requests_pending_execution > 0:
+		return "my own request"
+	if !pending_interaction_checksums.empty():
+		return "remote decision " + str(pending_interaction_checksums.keys())
+	return ""
+
 func add_yielded_script(yield_data):
 	add_yield_counter("yielded_script")
 	inbox.add(StackInbox.LOCAL, yield_data)
@@ -333,6 +361,10 @@ func attempt_yielded_script():
 
 	if script_data.get("type", "") == "pending_network_interaction":
 		get_sync().enter_pending_network_interaction(script_data["checksum"], script_data["reason"])
+		return
+
+	if script_data.get("type", "") == "deferred_decision":
+		_resume_deferred_decision(script_data)
 		return
 
 	var previous_source = _insert_source
@@ -595,10 +627,20 @@ func is_decision_slot_candidate(trigger, trigger_details) -> bool:
 func reserve_decision_slot(checksum, origin := "", authorized = null) -> int:
 	var result = inbox.reserve_slot(str(checksum))
 	_log_slot("reserved #" + str(result["slot"]) + " '" + str(checksum) + "' at " + origin \
-			+ ("" if authorized == null else (" (deciding)" if authorized else " (waiting)")))
+			+ ("" if authorized == null else (" (deciding)" if authorized else " (waiting)")) \
+			+ (" during flush" if !_pending_flush.empty() else ""))
 	if result["problem"]:
 		cfc.LOG("{slots} " + result["problem"], true)
 	return result["slot"]
+
+#Diagnostics for decisions one client may skip (Daredevil's thwart_happened):
+#only triggered scripts, manual plays and interrupts are expected to differ
+func log_decision_path(checksum, trigger, what: String, authorized) -> void:
+	var t = str(trigger)
+	for prefix in ["manual", "interrupt", "response"]:
+		if t.begins_with(prefix):
+			return
+	_log_slot("path '" + str(checksum) + "' " + what + (" (deciding)" if authorized else " (waiting)"))
 
 #One line per reservation, fill and request, so that the logs of two clients
 #can be compared side by side. Shadow mode diagnostics, removed in step 5
@@ -627,6 +669,40 @@ func fill_decision_slot_with_nothing_to_all(slot: int, checksum) -> void:
 
 remotesync func clients_fill_decision_slot_with_nothing(slot, checksum):
 	fill_decision_slot(slot, checksum, "nothing")
+
+#Deciding client: a dialog or a choice reached while a flush is ongoing waits
+#in the inbox like the waiting clients' wait does (see StackSync)
+func should_defer_decision(exec_config: Dictionary) -> bool:
+	return get_sync().should_defer_decision(exec_config)
+
+func defer_decision(card, args: Array, decision_slot, checksum, origin: String) -> void:
+	_log_slot("deferred #" + str(decision_slot) + " '" + str(checksum) + "' at " + origin)
+	add_yielded_script({
+		"type": "deferred_decision",
+		"card": card,
+		"args": args,
+		"decision_slot": decision_slot,
+		"checksum": checksum,
+		"yield_reason": "deferred decision (" + origin + ")",
+	})
+
+func _resume_deferred_decision(script_data) -> void:
+	var card = script_data["card"]
+	var checksum = script_data["checksum"]
+	var decision_slot = script_data["decision_slot"]
+	_log_slot("resumed #" + str(decision_slot) + " '" + str(checksum) + "'")
+	if !is_instance_valid(card):
+		#the other clients are waiting for this decision
+		resume_operations_to_all(checksum, decision_slot)
+		return
+	var args = script_data["args"]
+	var exec_config: Dictionary = args[5].duplicate()
+	exec_config["resumed_decision_slot"] = decision_slot
+	var trigger = args[2]
+	var result = card.choose_and_execute_scripts(args[0], args[1], trigger, args[3], args[4], exec_config)
+	if result is GDScriptFunctionState and !trigger in ["manual", "manual_override"]:
+		#same announce as in execute_scripts, which is not the caller anymore
+		gameData.theAnnouncer.choices_menu(card, trigger, args[3].get("origin_event", null), cfc.get_modal_menu())
 
 #Called on clients that are NOT authorized to make a choice, see StackSync.gd
 func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
@@ -927,7 +1003,8 @@ func _process(delta: float):
 	
 	if run_mode in [RUN_MODE.NOTHING_TO_RUN]: #, RUN_MODE.PENDING_USER_INTERACTION]:
 		if inbox.has(StackInbox.LOCAL):
-			attempt_yielded_script()
+			if can_drain_local_entry():
+				attempt_yielded_script()
 			return
 		if get_sync().on_process_idle():
 			return
@@ -960,6 +1037,8 @@ func _process(delta: float):
 	# an interrupt flow, before resuming normal execution
 	if stack_object.interrupt_marker:
 		if inbox.has(StackInbox.LOCAL):
+			if !can_drain_local_entry():
+				return
 			#var backup_state = run_mode
 			set_run_mode(RUN_MODE.PENDING_USER_INTERACTION)
 			attempt_yielded_script()

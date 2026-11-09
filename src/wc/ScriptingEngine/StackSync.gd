@@ -133,14 +133,17 @@ func _log_and_reset_stats() -> void:
 #until that queue drains, and the remote decision gets inserted at a different
 #point (Nick Fury / Web-Shooter, Spider-Man / Interrogation Room desyncs)
 #
-#This only mirrors the authorized client; it must never change the order in which
-#the authorized client (or a single player game) resolves scripts.
+#The deciding client defers the decision itself (dialog or choice, see
+#should_defer_decision) under the very same condition, so both sides reach it
+#at the same drain point: before, the deciding client showed its dialog in the
+#middle of the flush and inserted the outcome there, while the waiting client
+#deferred its wait (Tigra heal desync).
 #
 #NOTE: no run_mode condition here, on purpose: the authorized client switches to
 #PENDING_USER_INTERACTION right away whatever its run_mode, so this client must too,
 #otherwise its stack keeps running past the decision point
 func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
-	if the_stack.sync_enabled and !the_stack._draining_yielded_script and the_stack._pending_flush:
+	if _decision_must_wait_for_flush():
 		the_stack.display_debug("set_pending_network_interaction deferred behind ongoing/deferred scripts - " + checksum)
 		the_stack.add_yielded_script({
 			"type": "pending_network_interaction",
@@ -150,6 +153,18 @@ func set_pending_network_interaction(_interaction_authority, checksum, reason:="
 		})
 		return
 	enter_pending_network_interaction(checksum, reason)
+
+#The one condition under which a decision reached now waits for the drain
+#point, on the deciding client as well as on the waiting ones
+func _decision_must_wait_for_flush() -> bool:
+	return the_stack.sync_enabled and !the_stack._draining_yielded_script and !the_stack._pending_flush.empty()
+
+#deciding client side: exec_config carries resumed_decision_slot when the
+#decision was already deferred once and is now being resumed
+func should_defer_decision(exec_config: Dictionary) -> bool:
+	if exec_config.get("resumed_decision_slot", -1) > 0:
+		return false
+	return _decision_must_wait_for_flush()
 
 func enter_pending_network_interaction(checksum, reason:=""):
 	if reason:

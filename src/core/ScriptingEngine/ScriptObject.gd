@@ -343,6 +343,19 @@ func _reserve_decision_slot(task_run_type: int, origin: String, authorized: bool
 	if parent_sceng and is_instance_valid(parent_sceng) and parent_sceng.has_method("reserve_decision_slot"):
 		parent_sceng.reserve_decision_slot(task_run_type, origin + " " + str(script_name), authorized)
 
+#A background cost check of a triggered script only asks "could this be done?",
+#so the answer must not depend on which client decides: before, it failed on
+#every client but the deciding one (no target allowed), the optional script was
+#dropped there, and those clients never waited for the decision (Daredevil's
+#thwart_happened: two 5s timeouts). Manual plays keep the check, it tells
+#whether this player may play the card.
+func _blocked_by_authority(task_run_type: int, authorized: bool) -> bool:
+	if authorized:
+		return false
+	if task_run_type == CFInt.RunType.BACKGROUND_COST_CHECK and !str(trigger).begins_with("manual"):
+		return false
+	return true
+
 #runs "find_subjects" locally, does not store the result
 #this allows to run a "find subjects" activity within
 #the context of this scrpt, without impacting it
@@ -422,7 +435,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 						is_valid = false						
 		SP.KEY_SUBJECT_V_TARGET:
 			_reserve_decision_slot(run_type, "target", interaction_authorized)
-			if !interaction_authorized:
+			if _blocked_by_authority(run_type, interaction_authorized):
 				user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
 				cfc.remove_ongoing_process(self, "_local_find_subjects")
 				if overrides:
@@ -481,7 +494,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 
 	if get_property(SP.KEY_NEEDS_SELECTION):
 		_reserve_decision_slot(run_type, "selection", interaction_authorized)
-		if !interaction_authorized:
+		if _blocked_by_authority(run_type, interaction_authorized):
 			user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
 			cfc.remove_ongoing_process(self, "_local_find_subjects")
 			if overrides:

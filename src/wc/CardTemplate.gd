@@ -2281,7 +2281,8 @@ func execute_scripts(
 	
 func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigger_details, run_type, exec_config = {}):	
 	var state_scripts = state_scripts_dict["state_scripts"]
-	if !state_scripts:
+	var was_choice = state_scripts_dict.get("was_choice", false)
+	if !state_scripts and !was_choice:
 		return null
 		
 	var rules = state_scripts_dict.get("rules", {})
@@ -2310,6 +2311,31 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	var decision_slot := -1
 	if _debug:
 		cfc.LOG("reached step 2 for: " + checksum + ". InteractionAuthority says " + to_json(interaction_authority.compute_authority())  )
+
+	#A multiple choice is decided by one client only. The options were filtered
+	#down to the ones this client can pay for, and that filter can give a
+	#different result on each client, so the other clients neither filter nor
+	#pick anything themselves: they wait for the decision, even when only one
+	#option (or none) is left on their side.
+	if was_choice and run_type != CFInt.RunType.BACKGROUND_COST_CHECK and !is_network_call \
+			and gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
+		decision_slot = gameData.theStack.reserve_decision_slot(checksum, "choice", interaction_authorized)
+		if !interaction_authorized:
+			gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "not authorized to multiple choice (" + str(trigger) + ")")
+			cfc.remove_ongoing_process(self, "core_execute_scripts")
+			return null
+		if !state_scripts:
+			#no option can be paid: nothing will be sent, but the others are waiting
+			gameData.theStack.resume_operations_to_all(checksum, decision_slot)
+			cfc.remove_ongoing_process(self, "core_execute_scripts")
+			return null
+		if typeof(state_scripts) != TYPE_DICTIONARY:
+			#a single option left was picked automatically: it is still sent
+			#to everyone, as if the player had picked it
+			force_user_interaction_required = true
+	if !state_scripts:
+		cfc.remove_ongoing_process(self, "core_execute_scripts")
+		return null
 	
 
 	# Here we check for confirmation of optional trigger effects
@@ -2335,7 +2361,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			pass
 		else:
 			if gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
-				decision_slot = gameData.theStack.reserve_decision_slot(checksum)
+				decision_slot = gameData.theStack.reserve_decision_slot(checksum, "dialog", interaction_authorized)
 			if !interaction_authorized:
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "pending interaction because of optional dialog")		
@@ -2375,7 +2401,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			#TODO need to help check costs here as well?
 		else:
 			if decision_slot < 1 and gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
-				decision_slot = gameData.theStack.reserve_decision_slot(checksum)
+				decision_slot = gameData.theStack.reserve_decision_slot(checksum, "choice", interaction_authorized)
 			if !interaction_authorized:
 				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "not authorized to multiple choice " + to_json(state_scripts))
 				cfc.remove_ongoing_process(self, "core_execute_scripts")

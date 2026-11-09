@@ -1671,6 +1671,9 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_co
 	var state_scripts = state_scripts_data["state_scripts"]
 
 	var rules = {}
+	#true when the script offers a choice between several options,
+	#before they are filtered down to the ones this client can pay for
+	var was_choice := false
 	var show_optional_confirmation_menu = exec_config.get("show_optional_confirmation_menu", false)
 	#If it's a multiple choice, filter down only to only the ones we can afford to pay
 	if typeof(state_scripts) == TYPE_DICTIONARY:
@@ -1689,6 +1692,7 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_co
 			state_scripts = state_scripts[first_key]
 			action_name = first_key
 		else:	
+			was_choice = true
 			for entry_name in state_scripts.keys():
 				if entry_name in ["_rules", "macro_name"]:
 					continue
@@ -1730,7 +1734,7 @@ func get_state_scripts_dict(card_scripts, trigger_card, trigger_details, exec_co
 				
 
 	
-	return { "action_name" : action_name, "state_scripts" : state_scripts, "rules": rules, "state_exec": state_scripts_data["state_exec"]}
+	return { "action_name" : action_name, "state_scripts" : state_scripts, "rules": rules, "state_exec": state_scripts_data["state_exec"], "was_choice": was_choice}
 
 func is_dry_run(run_type):
 	return ((run_type == CFInt.RunType.COST_CHECK) or

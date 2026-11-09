@@ -337,16 +337,16 @@ func preload_hero_collection():
 	gameData.globals["hero_collection"] = existing_heroes
 	return  gameData.globals["hero_collection"]
 
+#Every client reaches this point, deciding or not: the slot is reserved here,
+#before the authority check, so that all clients reserve it in the same order
+func _reserve_decision_slot(task_run_type: int, origin: String, authorized: bool) -> void:
+	if parent_sceng and is_instance_valid(parent_sceng) and parent_sceng.has_method("reserve_decision_slot"):
+		parent_sceng.reserve_decision_slot(task_run_type, origin + " " + str(script_name), authorized)
+
 #runs "find_subjects" locally, does not store the result
 #this allows to run a "find subjects" activity within
 #the context of this scrpt, without impacting it
 #useful for sub scripts	
-#Every client reaches this point, deciding or not: the slot is reserved here,
-#before the authority check, so that all clients reserve it in the same order
-func _reserve_decision_slot(task_run_type: int) -> void:
-	if parent_sceng and is_instance_valid(parent_sceng) and parent_sceng.has_method("reserve_decision_slot"):
-		parent_sceng.reserve_decision_slot(task_run_type)
-
 func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL, overrides:Dictionary = {}):
 	cfc.add_ongoing_process(self, "_local_find_subjects")		
 	var subjects_array := []
@@ -421,7 +421,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 					if not SP.check_validity(c, script_definition, "subject", owner):
 						is_valid = false						
 		SP.KEY_SUBJECT_V_TARGET:
-			_reserve_decision_slot(run_type)
+			_reserve_decision_slot(run_type, "target", interaction_authorized)
 			if !interaction_authorized:
 				user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
 				cfc.remove_ongoing_process(self, "_local_find_subjects")
@@ -480,7 +480,7 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			subjects_array.erase(exclude)
 
 	if get_property(SP.KEY_NEEDS_SELECTION):
-		_reserve_decision_slot(run_type)
+		_reserve_decision_slot(run_type, "selection", interaction_authorized)
 		if !interaction_authorized:
 			user_interaction_status = CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER
 			cfc.remove_ongoing_process(self, "_local_find_subjects")

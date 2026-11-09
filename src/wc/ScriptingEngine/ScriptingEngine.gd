@@ -12,12 +12,12 @@ var decision_checksum := ""
 var decision_slots_allowed := false
 
 #called by a task right before it asks for a target or a selection
-func reserve_decision_slot(task_run_type: int) -> void:
+func reserve_decision_slot(task_run_type: int, origin := "", authorized = null) -> void:
 	if !decision_slots_allowed or decision_slot > 0:
 		return
 	if not task_run_type in [CFInt.RunType.COST_CHECK, CFInt.RunType.PRIME_ONLY]:
 		return
-	decision_slot = gameData.theStack.reserve_decision_slot(decision_checksum)
+	decision_slot = gameData.theStack.reserve_decision_slot(decision_checksum, origin, authorized)
 
 
 

@@ -289,6 +289,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			var serialized_sceng = serialize_sceng(sceng, trigger_details)
 			if "decision_slot" in sceng and sceng.decision_slot > 0:
 				serialized_sceng["decision_slot"] = sceng.decision_slot
+				_log_slot("request for #" + str(sceng.decision_slot) + " '" + str(checksum) + "' (" + action_name + ")")
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
 			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, serialized_sceng, run_type, trigger, action_name, checksum)
@@ -589,17 +590,30 @@ func is_decision_slot_candidate(trigger, trigger_details) -> bool:
 			return false
 	return true
 
-func reserve_decision_slot(checksum) -> int:
+#origin: where the decision was reached (dialog, choice, target, selection)
+#authorized: whether this client is the one deciding
+func reserve_decision_slot(checksum, origin := "", authorized = null) -> int:
 	var result = inbox.reserve_slot(str(checksum))
+	_log_slot("reserved #" + str(result["slot"]) + " '" + str(checksum) + "' at " + origin \
+			+ ("" if authorized == null else (" (deciding)" if authorized else " (waiting)")))
 	if result["problem"]:
 		cfc.LOG("{slots} " + result["problem"], true)
 	return result["slot"]
+
+#One line per reservation, fill and request, so that the logs of two clients
+#can be compared side by side. Shadow mode diagnostics, removed in step 5
+func _log_slot(msg: String) -> void:
+	if !sync_enabled:
+		return
+	cfc.LOG("{slots} " + msg + " | after uid " + str(current_stack_uid) \
+			+ " step=" + str(gameData.phaseContainer.get_current_phase_name()), true)
 
 func fill_decision_slot(slot, checksum, source: String) -> void:
 	if not typeof(slot) in [TYPE_INT, TYPE_REAL]:
 		return
 	if int(slot) < 1:
 		return
+	_log_slot("filled #" + str(int(slot)) + " '" + str(checksum) + "' by " + source)
 	var problem = inbox.fill_slot(int(slot), str(checksum))
 	if problem:
 		cfc.LOG("{slots} " + problem + " (" + source + ")", true)

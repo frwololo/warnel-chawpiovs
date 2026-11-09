@@ -174,6 +174,7 @@ func add_scripts(_state_scripts,
 						task,
 						_trigger_object,
 						_trigger_details)
+				script_task.parent_sceng = self
 				if (fifo):
 					scripts_queue.append(script_task)
 				else:
@@ -213,6 +214,7 @@ func insert_scripts(scripts_def, i):
 				task,
 				trigger_object,
 				children_trigger_details)		
+		script_task.parent_sceng = self
 		scripts_queue.insert(i, script_task)
 		state_scripts.insert(i, task)
 		i += 1

@@ -2306,6 +2306,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
 	var interaction_authorized = interaction_authority.interaction_authorized()	
 	var interacting_hero = interaction_authority.authorized_hero_id()
+	#decision slot reserved by this script, if it needs a decision (see GlobalScriptStack)
+	var decision_slot := -1
 	if _debug:
 		cfc.LOG("reached step 2 for: " + checksum + ". InteractionAuthority says " + to_json(interaction_authority.compute_authority())  )
 	
@@ -2332,6 +2334,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		if run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
 			pass
 		else:
+			if gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
+				decision_slot = gameData.theStack.reserve_decision_slot(checksum)
 			if !interaction_authorized:
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
 				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "pending interaction because of optional dialog")		
@@ -2359,7 +2363,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 				if not confirm_return:
 					if origin_event and trigger_details.get("is_interrupt_or_response", false):
 						gameData.theStack.pass_interrupt_for_card(origin_event, self)
-					gameData.theStack.resume_operations_to_all(checksum)
+					gameData.theStack.resume_operations_to_all(checksum, decision_slot)
 					state_scripts = []
 	
 	# If the state_scripts return a dictionary entry
@@ -2370,6 +2374,8 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			selected_key = state_scripts.keys()[0]
 			#TODO need to help check costs here as well?
 		else:
+			if decision_slot < 1 and gameData.theStack.is_decision_slot_candidate(trigger, trigger_details):
+				decision_slot = gameData.theStack.reserve_decision_slot(checksum)
 			if !interaction_authorized:
 				gameData.theStack.set_pending_network_interaction(interaction_authority, checksum, "not authorized to multiple choice " + to_json(state_scripts))
 				cfc.remove_ongoing_process(self, "core_execute_scripts")
@@ -2405,7 +2411,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			choices_menu.queue_free()
 			cfc.game_paused = false
 			if !selected_key:
-				gameData.theStack.resume_operations_to_all(checksum)
+				gameData.theStack.resume_operations_to_all(checksum, decision_slot)
 		if selected_key:
 			state_scripts = state_scripts[selected_key]
 			action_name = selected_key
@@ -2435,6 +2441,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 			"action_name": action_name,
 			"force_user_interaction_required": force_user_interaction_required,
 			"interaction_authority": interaction_authority,
+			"decision_slot": decision_slot,
 		}
 		sceng = execute_chosen_script(state_scripts, trigger_card, trigger_details, run_type, next_step_config)
 		if sceng is GDScriptFunctionState && sceng.is_valid():		
@@ -2487,6 +2494,13 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			trigger_details)
 
 	sceng.add_rules(rules)				
+
+	#decision slot: reserved earlier by a dialog or a choice, or by the first
+	#task that needs a target or a selection (never for dry runs)
+	sceng.decision_checksum = checksum
+	sceng.decision_slot = exec_config.get("decision_slot", -1)
+	sceng.decision_slots_allowed = !is_network_call and !only_cost_check \
+			and gameData.theStack.is_decision_slot_candidate(trigger, trigger_details)
 			
 	common_pre_run(sceng)
 	
@@ -2537,6 +2551,10 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 					sceng_return = sceng_return.resume()	
 
 		else:
+			#a decision that ends here (payment cancelled or impossible) sends
+			#nothing else, but its slot must still be filled on every client
+			if sceng.decision_slot > 0:
+				gameData.theStack.fill_decision_slot_with_nothing_to_all(sceng.decision_slot, checksum)
 			#cleanup after cost failure
 			if sceng and sceng.network_prepaid:
 				for prepaid_data in sceng.network_prepaid:

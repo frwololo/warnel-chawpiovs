@@ -264,6 +264,7 @@ func get_state_dump() -> Dictionary:
 		"sync_enabled": the_stack.sync_enabled,
 		"stack": stack_dump,
 		"inbox_order": the_stack.inbox.describe(),
+		"decision_slots": the_stack.inbox.describe_slots(),
 		"yielded_scripts": yielded_dump,
 		"incoming_network_events": incoming_dump,
 		"pending_interaction_checksums": the_stack.pending_interaction_checksums.keys(),

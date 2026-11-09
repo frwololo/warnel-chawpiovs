@@ -287,6 +287,8 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 		#also send GUIDs to find the right cards/targets			
 			get_sync().record_script_created(trigger, "request", flush_was_pending, _draining_yielded_script)
 			var serialized_sceng = serialize_sceng(sceng, trigger_details)
+			if "decision_slot" in sceng and sceng.decision_slot > 0:
+				serialized_sceng["decision_slot"] = sceng.decision_slot
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
 			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, serialized_sceng, run_type, trigger, action_name, checksum)
@@ -406,7 +408,8 @@ mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng
 		"trigger": trigger,	
 		"remote_trigger_details":serialized_sceng["remote_trigger_details"],
 		"stored_integers": serialized_sceng["stored_integers"], 
-		"action_name": action_name	
+		"action_name": action_name,
+		"decision_slot": serialized_sceng.get("decision_slot", -1),
 	}		
 	
 	#we will reject "manual" requests if the stack isn't empty 
@@ -521,6 +524,7 @@ func _process_incoming_network_events(delta):
 	inbox.pop_first(StackInbox.NETWORK)
 	match ev.type:
 		"add_stack_object":
+			fill_decision_slot(ev.details.get("decision_slot", -1), ev.checksum, "script")
 			#Sync the RNG at the exact point the script enters the stack,
 			#so every client resumes from the same RNG state from here on
 			var rng_state = ev.details.get("remote_trigger_details", {}).get("network_rng_state", null)
@@ -538,6 +542,7 @@ func _process_incoming_network_events(delta):
 			cfc._rpc_id(self, 1, "from_client_script_received_ack", ev.expected_run_mode, ev.checksum)
 			return stackEvent
 		"resume_operations":
+			fill_decision_slot(ev.get("decision_slot", -1), ev.checksum, "declined")
 			if get_sync().is_resume_for_unknown_manual_interaction(ev):
 				display_debug("ignoring resume_operations for a manual interaction I never waited for - " + str(ev.checksum))
 				return false
@@ -562,16 +567,64 @@ func send_error_to_master(error_message):
 	#todo send error message to master to attempt recovery
 	display_debug(error_message)
 
+###
+### Decision slots (step 3 of the Deterministic Stack Sync design, shadow mode)
+###
+#Every client reserves a slot when it reaches a decision, and the master's
+#broadcast of that decision fills it on every client, the deciding one included.
+#Shadow mode: slots are only matched and checked ({slots} log lines); the
+#existing mechanism still decides when decisions are applied.
+
+#Player-initiated plays (manual, and plays made during an interrupt window)
+#only run on the clicking client, so they must not consume a slot number.
+func is_decision_slot_candidate(trigger, trigger_details) -> bool:
+	if !sync_enabled:
+		return false
+	if str(trigger).begins_with("manual"):
+		return false
+	if typeof(trigger_details) == TYPE_DICTIONARY:
+		if trigger_details.get("is_interrupt_or_response", false):
+			return false
+		if trigger_details.has("network_prepaid"):
+			return false
+	return true
+
+func reserve_decision_slot(checksum) -> int:
+	var result = inbox.reserve_slot(str(checksum))
+	if result["problem"]:
+		cfc.LOG("{slots} " + result["problem"], true)
+	return result["slot"]
+
+func fill_decision_slot(slot, checksum, source: String) -> void:
+	if not typeof(slot) in [TYPE_INT, TYPE_REAL]:
+		return
+	if int(slot) < 1:
+		return
+	var problem = inbox.fill_slot(int(slot), str(checksum))
+	if problem:
+		cfc.LOG("{slots} " + problem + " (" + source + ")", true)
+
+#A decision that ends without a script and without a resume (e.g. a cost
+#payment that was cancelled or failed) still fills its slot everywhere
+func fill_decision_slot_with_nothing_to_all(slot: int, checksum) -> void:
+	if slot < 1:
+		return
+	cfc._rpc(self, "clients_fill_decision_slot_with_nothing", slot, checksum)
+
+remotesync func clients_fill_decision_slot_with_nothing(slot, checksum):
+	fill_decision_slot(slot, checksum, "nothing")
+
 #Called on clients that are NOT authorized to make a choice, see StackSync.gd
 func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
 	get_sync().set_pending_network_interaction(interaction_authority, checksum, reason)
 
 #client asking everyone to resume
 #the expectation is to call this only when it is clear that everyone is pending interaction
-func resume_operations_to_all(checksum):
-	cfc._rpc(self,"resume_operations", RUN_MODE.PENDING_USER_INTERACTION, checksum)
+#decision_slot: the slot of the decision that was declined, if any (see StackInbox)
+func resume_operations_to_all(checksum, decision_slot := -1):
+	cfc._rpc(self,"resume_operations", RUN_MODE.PENDING_USER_INTERACTION, checksum, decision_slot)
 	
-remotesync func resume_operations(expected_run_mode, checksum):
+remotesync func resume_operations(expected_run_mode, checksum, decision_slot := -1):
 	var client_id = cfc.get_rpc_sender_id()	
 #	if stack.empty() or run_mode == RUN_MODE.NO_BRAKES:
 #		var _error = 1
@@ -580,7 +633,8 @@ remotesync func resume_operations(expected_run_mode, checksum):
 		"type": "resume_operations",
 		"requester":client_id,
 		"expected_run_mode": expected_run_mode,
-		"checksum": checksum})	
+		"checksum": checksum,
+		"decision_slot": decision_slot})	
 
 			
 func client_create_script(details):
@@ -1716,6 +1770,8 @@ func reset():
 	pending_stack_yield = {}
 	if inbox.has(StackInbox.LOCAL):
 		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(inbox.count(StackInbox.LOCAL)))
+	if inbox.slots_reserved or inbox.describe_slots()["fills_before_reservation"]:
+		cfc.LOG("{slots} end of game: " + to_json(inbox.describe_slots()), true)
 	inbox.clear()
 	_ack_received = {}
 	

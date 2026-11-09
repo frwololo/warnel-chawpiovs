@@ -5163,7 +5163,7 @@
 		}
 	},
 	"Tigra - Greer Grant Nelson": {
-		"minion_died": {
+		"response_minion_died": {
 			"filter_event_source": "self",
 			"is_optional_board": true,
 			"board": [

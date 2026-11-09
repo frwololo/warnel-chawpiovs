@@ -120,6 +120,10 @@ func fill_slot(slot: int, checksum: String) -> String:
 	_early_fills[slot] = checksum
 	return ""
 
+#true once this client has reached (reserved) that decision
+func is_slot_reached(slot: int) -> bool:
+	return slot < _next_slot
+
 func _compare_slot(slot: int, reserved_checksum: String, filled_checksum: String) -> String:
 	if reserved_checksum == filled_checksum:
 		return ""

@@ -89,7 +89,7 @@
 				}
 			]
 		},
-		"card_defeated": {
+		"response_card_defeated": {
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -120,7 +120,7 @@
 				}
 			]
 		},
-		"minion_died": {
+		"response_minion_died": {
 			"event_filters": {
 				"source": "host"
 			},

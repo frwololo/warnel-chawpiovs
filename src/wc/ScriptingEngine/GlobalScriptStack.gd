@@ -518,6 +518,28 @@ master func from_client_script_received_ack(expected_run_mode, checksum):
 		cfc._rpc(self,"resume_operations", expected_run_mode, checksum)
 	
 
+#A network event that carries the outcome of a decision this client has not
+#reached yet must not hold the game back: this client still has to move on
+#to that decision point, and the event waits there for it (see
+#get_network_event_wait_reason). It used to stop the encounter sequence, so
+#an obligation never reached the board on the waiting client, its choice was
+#never reached, and only the 5s timeout broke the circle (Eviction Notice).
+func _has_network_event_blocking_idle() -> bool:
+	for ev in inbox.entries(StackInbox.NETWORK):
+		var slot = _get_event_decision_slot(ev)
+		if slot > 0 and !inbox.is_slot_reached(slot):
+			continue
+		return true
+	return false
+
+func _get_event_decision_slot(ev) -> int:
+	var slot = ev.get("decision_slot", -1)
+	if ev.get("type", "") == "add_stack_object":
+		slot = ev.get("details", {}).get("decision_slot", -1)
+	if typeof(slot) != TYPE_INT and typeof(slot) != TYPE_REAL:
+		return -1
+	return int(slot)
+
 func add_incoming_network_event(data):
 	data["waited"] = 0.0
 	inbox.add(StackInbox.NETWORK, data)
@@ -1679,7 +1701,7 @@ func is_idle(level = 2):
 	if pending_stack_yield:
 		return false
 
-	if inbox.has(StackInbox.NETWORK):
+	if _has_network_event_blocking_idle():
 		return false	
 		
 	if level == 1:

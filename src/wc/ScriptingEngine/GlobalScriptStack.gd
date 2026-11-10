@@ -667,6 +667,7 @@ func get_local_inbox_entries() -> Array:
 func log_flow(source: String, detail := "") -> void:
 	cfc.LOG("{flow} " + source + (" " + detail if detail else "") \
 			+ " | after uid " + str(current_stack_uid) \
+			+ " stack=" + str(stack.size()) + " run=" + str(RUN_MODE.keys()[run_mode]) \
 			+ " step=" + str(gameData.phaseContainer.get_current_phase_name()) \
 			+ " | waiting " + to_json(gameData.get_flow_waiting_summary()), true)
 

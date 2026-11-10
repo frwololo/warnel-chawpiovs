@@ -1945,11 +1945,11 @@ func can_proceed_activation(delta:float)-> bool:
 		if not self._clients_desync_start_time:
 			_clients_desync_start_time = Time.get_ticks_msec()
 		if Time.get_ticks_msec() - self._clients_desync_start_time > (CFConst.DESYNC_TIMEOUT * network_players.size() * 1000):
+			#The recovery that used to start here (save_round + init_desync_recover)
+			#never really worked: report the misalignment loudly instead, and keep waiting
 			self._clients_desync_start_time = 0
-			if cfc.is_game_master():
-				display_debug("clients alignment issue, attempting resync")
-				save_round(current_round)
-				init_desync_recover()	
+			cfc.LOG("{desync} clients still not aligned after " + str(CFConst.DESYNC_TIMEOUT * network_players.size()) \
+					+ "s in can_proceed_activation: " + to_json(_clients_current_activation), true)
 		return false
 
 	self._clients_desync_start_time = 0

@@ -69,8 +69,8 @@ func _new_stats() -> Dictionary:
 		"flushes": 0,
 		"overlapping_flushes": 0,
 		"max_concurrent_flushes": 0,
-		"created": {"direct": 0, "request": 0, "deferred_flush": 0, "deferred_run_mode": 0},
-		"resubmitted": {"direct": 0, "request": 0, "deferred_flush": 0, "deferred_run_mode": 0},
+		"created": {"direct": 0, "request": 0, "deferred_flush": 0, "deferred_run_mode": 0, "deferred_inbox": 0},
+		"resubmitted": {"direct": 0, "request": 0, "deferred_flush": 0, "deferred_run_mode": 0, "deferred_inbox": 0},
 		"deferred_by_trigger": {},
 		"created_outside_flush_by_trigger": {},
 	}
@@ -88,7 +88,7 @@ func record_flush_started(concurrent: int) -> void:
 		stats["overlapping_flushes"] += 1
 	stats["max_concurrent_flushes"] = int(max(stats["max_concurrent_flushes"], concurrent))
 
-#outcome: "direct", "request", "deferred_flush" or "deferred_run_mode"
+#outcome: "direct", "request", "deferred_flush", "deferred_run_mode" or "deferred_inbox"
 #resubmitted: the script comes back from yielded_scripts (already counted once)
 func record_script_created(trigger, outcome: String, flush_was_pending: bool, resubmitted: bool) -> void:
 	var stats = _get_stats()
@@ -308,6 +308,9 @@ func get_state_dump() -> Dictionary:
 		"immediate_encounters": gameData.immediate_encounters.size(),
 		"scripted_play_sequence": gameData.scripted_play_sequence.size(),
 		"scripted_play_sequence_low_priority": gameData.scripted_play_sequence_low_priority.size(),
+		"sequence_ready": gameData._ready_for_next_sequence,
+		"sequence_step_waiting": gameData._sequence_step_waiting,
+		"sequence_wait_reason": gameData.get_sequence_wait_reason(),
 		"priority_scripts": gameData._priority_scripts.size(),
 		"villain_current_hero_target": gameData._villain_current_hero_target,
 	}

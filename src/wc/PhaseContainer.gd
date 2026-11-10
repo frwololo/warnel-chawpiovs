@@ -256,9 +256,17 @@ func _process(delta: float) -> void:
 		return
 	_dbg_cfc_ongoing_processes_timer = 0.0
 
+	var had_priority_scripts = !gameData._priority_scripts.empty()
 	var forced_scripts = gameData.execute_priority_scripts()
 	if forced_scripts: #it either returns a bool (true if executing script) of a function (ongoing compute)
 		_process_status_msg = "gameData priorirty scripts"
+		return
+	#priority scripts that just ran may have started something on the stack
+	#(e.g. Blood to Spare's reveal activating an enemy). Whether it is still
+	#running at this point depends on the client, so wait for the next frame,
+	#where the checks above see the stack as it really is
+	if had_priority_scripts:
+		_process_status_msg = "gameData priority scripts just ran"
 		return
 
 	#some encounters need to be revealed outside of their regular schedule

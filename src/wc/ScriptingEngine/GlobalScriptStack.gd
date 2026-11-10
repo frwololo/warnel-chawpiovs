@@ -244,6 +244,26 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 	}
 	#diagnostics only: was a flush running when this script was created?
 	var flush_was_pending = !_pending_flush.empty()
+
+	#Step 4: a script that needs no decision does not jump ahead of the local
+	#scripts already waiting in the inbox. Before, a script created right after
+	#a flush (no flush running any more) went straight to the stack while older
+	#deferred scripts were still waiting, so its place depended on whether the
+	#flush had ended yet on that client (Red Skull's stage change: the new
+	#scheme's reveal before or after its self_moved_to_board).
+	#Requests (a player's decision) keep their place: the other clients apply
+	#them while they wait, without draining their inbox first.
+	#Interrupts and responses keep their place too: they belong to the window
+	#open on the stack right now, which waits for them, while the inbox only
+	#drains at a marker or an idle stack (Magik's
+	#response_signal_enable_magik_top_deck stayed behind two older scripts
+	#forever in test_1p_magik_play_top_colossus).
+	if sync_enabled and !_draining_yielded_script and inbox.has(StackInbox.LOCAL) \
+			and sceng.user_interaction_status != CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER \
+			and trigger != "manual" and !_is_interrupt_or_response_trigger(trigger, trigger_details):
+		get_sync().record_script_created(trigger, "deferred_inbox", flush_was_pending, _draining_yielded_script)
+		add_yielded_script(yield_data)
+		return null
 		
 	if _pending_flush and sync_enabled:
 		var yield_script = true
@@ -661,6 +681,21 @@ func reserve_decision_slot(checksum, origin := "", authorized = null) -> int:
 #encounter step, attack, phase request, automated death, stack_idle), with
 #what else was waiting at that moment, so the order can be compared across
 #clients. Diagnostics, removed in step 5
+func _is_interrupt_or_response_trigger(trigger, trigger_details) -> bool:
+	var t = str(trigger)
+	if t.begins_with("interrupt") or t.begins_with("response"):
+		return true
+	return typeof(trigger_details) == TYPE_DICTIONARY and trigger_details.get("is_interrupt_or_response", false)
+
+#Step 4: local scripts waiting in the inbox go before a new unit of game flow
+#(a new attack, a new encounter). Before, an attack could start while a
+#deferred script still waited, on one client only (Blood to Spare: Armored
+#Guard's attack vs its post_reveal sequence). Steps of an attack or an
+#encounter already under way do not wait: the encounter's own reveal scripts
+#are in the inbox while it moves on (test_1p_apocalypse_technological_interface)
+func has_local_inbox_entries() -> bool:
+	return inbox.has(StackInbox.LOCAL)
+
 func get_local_inbox_entries() -> Array:
 	return inbox.entries(StackInbox.LOCAL)
 

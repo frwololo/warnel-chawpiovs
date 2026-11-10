@@ -1110,7 +1110,12 @@ func execute_priority_scripts() -> bool:
 			force_current_playing_hero(override_hero)
 			_current_priority_script["override_hero"] = override_hero
 
+		#this priority script is being drained: what it creates
+		#takes its place instead of going behind later inbox entries
+		var was_draining = theStack._draining_yielded_script
+		theStack._draining_yielded_script = true
 		sceng = script_owner.execute_scripts(trigger_card, trigger, trigger_details, run_type)
+		theStack._draining_yielded_script = was_draining
 		
 		#either this returned nothing or execution was instant (no user interaction required),
 		#so we cleanup and move to the next candidate
@@ -1360,6 +1365,10 @@ func enemy_activates(delta) :
 		return
 
 	if !can_proceed_activation(delta):
+		return
+
+	#a new attack waits for the scripts already in the inbox (see GlobalScriptStack)
+	if _current_enemy_attack_step == EnemyAttackStatus.NONE and theStack.has_local_inbox_entries():
 		return
 
 	#there is an enemy, we'll try to attack
@@ -2076,6 +2085,10 @@ func reveal_encounter(delta:float):
 
 	if !can_proceed_encounter(delta):
 		return
+
+	#a new encounter waits for the scripts already in the inbox (see GlobalScriptStack)
+	if _current_encounter.encounter_status == EncounterStatus.NONE and theStack.has_local_inbox_entries():
+		return
 	
 	var flow_msg = _current_encounter.canonical_name + " " + EncounterStatusStr[_current_encounter.encounter_status] \
 			+ (" (immediate)" if immediate_encounters else "")
@@ -2481,11 +2494,42 @@ func get_ordered_hero_id(i):
 	return hero_id
 
 var _ready_for_next_sequence = true
+#the sequence step whose execute_scripts is still running, for the F9 dump
+var _sequence_step_waiting = ""
 func get_sequence_scripts(include_low_priority = false):
 	if include_low_priority:
 		return scripted_play_sequence + scripted_play_sequence_low_priority
 		
 	return scripted_play_sequence
+
+#why the next sequence step is not starting, "" if it would start (F9 dump)
+func get_sequence_wait_reason() -> String:
+	if !scripted_play_sequence and !scripted_play_sequence_low_priority:
+		return "no sequence"
+	if theAnnouncer.get_blocking_announce():
+		return "blocking announce"
+	if _game_over:
+		return "game over: " + str(_game_over)
+	if !_ready_for_next_sequence:
+		return "previous step still running: " + _sequence_step_waiting
+	if is_targeting_ongoing():
+		return "targeting"
+	if manual_action_happened_too_recently():
+		return "targeting timer"
+	var next_play_event = scripted_play_sequence.front() if scripted_play_sequence else scripted_play_sequence_low_priority.front()
+	if !scripted_play_sequence:
+		if immediate_encounters:
+			return "immediate encounters"
+		if attackers:
+			return "attackers"
+		if !theStack.is_idle():
+			return "stack not idle"
+	if next_play_event["is_villain"]:
+		if !theStack.is_phasecontainer_allowed_to_next_step():
+			return "villain sequence: phase container not allowed to next step"
+	elif !theStack.is_player_allowed_to_click():
+		return "player sequence: player not allowed to click"
+	return ""
 
 func sequence_queue_is_ready():
 	if !scripted_play_sequence and !scripted_play_sequence_low_priority:
@@ -2550,7 +2594,13 @@ func play_scripted_sequence():
 	} 
 	var func_return = subject.execute_scripts(subject, trigger, trigger_details)
 	if func_return is GDScriptFunctionState: # Still working.
+		#the next step waits for this one: say so, a step that never completes
+		#blocks every later sequence (and the phase step) for good
+		theStack.log_flow("sequence_waits", str(subject.canonical_name) + " " + str(trigger))
+		_sequence_step_waiting = str(subject.canonical_name) + " " + str(trigger)
 		func_return = yield(func_return, "completed")
+		theStack.log_flow("sequence_done", _sequence_step_waiting)
+		_sequence_step_waiting = ""
 			
 	_ready_for_next_sequence = true
 
@@ -2901,6 +2951,9 @@ func erase_pending_scripts():
 	_priority_scripts = []
 	scripted_play_sequence = []
 	scripted_play_sequence_low_priority = []
+	#a step left running by the previous game or test must not block the next one
+	_ready_for_next_sequence = true
+	_sequence_step_waiting = ""
 
 	_current_enemy_attack_step = EnemyAttackStatus.NONE
 	if _current_encounter and is_instance_valid(_current_encounter):

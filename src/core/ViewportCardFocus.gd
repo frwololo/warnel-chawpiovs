@@ -289,14 +289,14 @@ func focus_card(card: Card, _show_preview := true) -> void:
 		if _previously_focused_cards.has(card) and is_instance_valid(_previously_focused_cards[card]):
 			dupe_focus = _previously_focused_cards[card]
 			add_card(dupe_focus, card)
-			# Not sure why, but sometimes the dupe card will report is_faceup
-			# while having the card back visible. Workaround until I figure it out.
-			if dupe_focus.get_node('Control/Back').visible == dupe_focus.is_faceup:
-				# warning-ignore:return_value_discarded
-				dupe_focus.set_is_faceup(!dupe_focus.is_faceup, true)
 			# warning-ignore:return_value_discarded
 			dupe_focus.set_is_faceup(card.is_faceup, true)
 			dupe_focus.is_viewed = card.is_viewed
+			# While a dupe is not displayed it has no parent, so the flips
+			# forwarded to it by the original card are skipped by
+			# set_is_faceup (but the WC override still hides the front on
+			# facedown). Its front/back visibility can't be trusted: force it.
+			_sync_dupe_flip_visuals(dupe_focus)
 			var tokens_dict = card.tokens.export_to_json()
 			dupe_focus.tokens.load_from_json(tokens_dict)
 		else:
@@ -320,13 +320,9 @@ func focus_card(card: Card, _show_preview := true) -> void:
 
 			dupe_focus.is_faceup = card.is_faceup
 			dupe_focus.is_viewed = card.is_viewed
-			# We check that the card front was not left half-visible because it was duplicated
-			# in the middle of the flip animation
-			if dupe_focus._card_front_container.rect_scale.x != 1:
-				if dupe_focus.is_viewed:
-					dupe_focus._flip_card(dupe_focus._card_back_container, dupe_focus._card_front_container,true)
-				else:
-					dupe_focus._flip_card(dupe_focus._card_front_container,dupe_focus._card_back_container, true)
+			# The visibility/scale of front and back were copied from the
+			# original, which may be in the middle of a flip animation: force them.
+			_sync_dupe_flip_visuals(dupe_focus)
 		_current_focus_source = card
 		
 	
@@ -361,6 +357,14 @@ func focus_card(card: Card, _show_preview := true) -> void:
 		
 		return
 			
+
+# Instantly shows the front or back of a focus dupe to match its
+# is_faceup/is_viewed state, regardless of what its containers currently show
+func _sync_dupe_flip_visuals(dupe_focus: Card) -> void:
+	if dupe_focus.is_faceup or dupe_focus.is_viewed:
+		dupe_focus._flip_card(dupe_focus._card_back_container, dupe_focus._card_front_container, true)
+	else:
+		dupe_focus._flip_card(dupe_focus._card_front_container, dupe_focus._card_back_container, true)
 
 func _on_texture_reloaded(card):
 	if _previously_focused_cards.has(card):

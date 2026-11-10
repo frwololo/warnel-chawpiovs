@@ -545,6 +545,7 @@ func request_next_phase(caller = "", mode = 0):
 		return true
 	
 	_pending_next_phase_reply = true	
+	gameData.theStack.log_flow("phase", "request after " + StepStrings[current_step] + " (" + caller + ")")
 	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
 	#set_current_step_complete(false, caller + ", request_next_phase")
 	cfc._rpc_id(self,1, "client_ready_for_next_phase", current_step, mode)

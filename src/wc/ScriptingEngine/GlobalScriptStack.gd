@@ -358,6 +358,7 @@ func attempt_yielded_script():
 		
 	var script_data = inbox.pop_first(StackInbox.LOCAL)
 	remove_yield_counter("yielded_script")
+	log_flow("inbox", str(script_data.get("type", "script")) + " '" + str(script_data.get("checksum", "")) + "'")
 
 	if script_data.get("type", "") == "pending_network_interaction":
 		get_sync().enter_pending_network_interaction(script_data["checksum"], script_data["reason"])
@@ -654,6 +655,20 @@ func reserve_decision_slot(checksum, origin := "", authorized = null) -> int:
 	if result["problem"]:
 		cfc.LOG("{slots} " + result["problem"], true)
 	return result["slot"]
+
+#Step 4a of the Deterministic Stack Sync design: one {flow} line every time
+#work starts outside the stack (inbox entry, priority script, sequence step,
+#encounter step, attack, phase request, automated death, stack_idle), with
+#what else was waiting at that moment, so the order can be compared across
+#clients. Diagnostics, removed in step 5
+func get_local_inbox_entries() -> Array:
+	return inbox.entries(StackInbox.LOCAL)
+
+func log_flow(source: String, detail := "") -> void:
+	cfc.LOG("{flow} " + source + (" " + detail if detail else "") \
+			+ " | after uid " + str(current_stack_uid) \
+			+ " step=" + str(gameData.phaseContainer.get_current_phase_name()) \
+			+ " | waiting " + to_json(gameData.get_flow_waiting_summary()), true)
 
 #Diagnostics for decisions one client may skip (Daredevil's thwart_happened):
 #only triggered scripts, manual plays and interrupts are expected to differ

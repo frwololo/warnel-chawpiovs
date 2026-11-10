@@ -425,6 +425,7 @@ func _process(_delta: float):
 		if theStack.is_idle() and !gui_activity_ongoing():
 			_stack_idle_timer -= _delta
 			if _stack_idle_timer <=0 and !_stack_idle_signal_sent:
+				theStack.log_flow("stack_idle")
 				scripting_bus.emit_signal("stack_idle")
 				_stack_idle_signal_sent = true
 		else:
@@ -1035,6 +1036,28 @@ func get_currently_playing_hero_ids():
 	#outside of these events, players can't play ?	
 	return []
 	
+#what is waiting to start outside the stack, for the {flow} log lines
+func get_flow_waiting_summary() -> Dictionary:
+	var local := []
+	for entry in theStack.get_local_inbox_entries():
+		local.append(str(entry.get("type", "script")))
+	var result = {}
+	if local:
+		result["inbox"] = local
+	if _priority_scripts or _current_priority_script:
+		result["priority"] = _priority_scripts.size() + (1 if _current_priority_script else 0)
+	if scripted_play_sequence:
+		result["sequence"] = scripted_play_sequence.size()
+	if scripted_play_sequence_low_priority:
+		result["sequence_low"] = scripted_play_sequence_low_priority.size()
+	if immediate_encounters:
+		result["immediate_encounters"] = immediate_encounters.size()
+	if attackers:
+		result["attackers"] = attackers.size()
+	if _current_encounter and is_instance_valid(_current_encounter):
+		result["encounter"] = _current_encounter.canonical_name + " " + EncounterStatusStr[_current_encounter.encounter_status]
+	return result
+
 var _priority_scripts = []
 var _current_priority_script = {}
 func add_script_to_execute(owner, trigger_card, trigger, trigger_details = {}, run_type = CFInt.RunType.NORMAL):
@@ -1082,6 +1105,7 @@ func execute_priority_scripts() -> bool:
 			_current_priority_script = {}
 			continue
 		override_hero = trigger_details.get("override_hero_id", 0)
+		theStack.log_flow("priority", script_owner.canonical_name + " " + str(trigger) + (" hero " + str(override_hero) if override_hero else ""))
 		if override_hero:
 			force_current_playing_hero(override_hero)
 			_current_priority_script["override_hero"] = override_hero
@@ -1318,6 +1342,7 @@ func get_current_attacker_data():
 		"subject": attacker_data
 	}	
 
+var _last_flow_attack_msg = ""
 func enemy_activates(delta) :
 	var target_hero_id = _villain_current_hero_target
 	var target_friendly = null
@@ -1371,6 +1396,10 @@ func enemy_activates(delta) :
 		self.select_current_playing_hero(target_hero_id) 
 	
 	var guid = guidMaster.get_guid(enemy)
+	var flow_msg = enemy.canonical_name + " " + action + " step " + str(_current_enemy_attack_step) + " -> hero " + str(target_hero_id)
+	if flow_msg != _last_flow_attack_msg:
+		_last_flow_attack_msg = flow_msg
+		theStack.log_flow("attacker", flow_msg)
 	cfc._rpc(self,"set_client_status",  "activation", guid,  _current_enemy_attack_step)	
 
 	if !enemy.is_onboard():
@@ -1989,6 +2018,7 @@ func cancel_current_encounter():
 var _local_encounter_uid = 0
 var _last_encounter_dbg_msg = ""		
 #TODO need something much more advanced here, per player, etc...
+var _last_flow_encounter_msg = ""
 func reveal_encounter(delta:float):
 	var target_id = _villain_current_hero_target
 	
@@ -2047,6 +2077,12 @@ func reveal_encounter(delta:float):
 	if !can_proceed_encounter(delta):
 		return
 	
+	var flow_msg = _current_encounter.canonical_name + " " + EncounterStatusStr[_current_encounter.encounter_status] \
+			+ (" (immediate)" if immediate_encounters else "")
+	if flow_msg != _last_flow_encounter_msg:
+		_last_flow_encounter_msg = flow_msg
+		theStack.log_flow("encounter", flow_msg)
+
 	var guid = guidMaster.get_guid(_current_encounter)
 	cfc._rpc(self,"set_client_status", "encounter", guid, _current_encounter.encounter_status)
 	#an encounter is available, proceed
@@ -2497,7 +2533,11 @@ func play_scripted_sequence():
 		return
 		
 	_ready_for_next_sequence = false
+	#sequence_queue_is_ready() picks the high priority queue whenever it has something
+	var is_high_priority = !scripted_play_sequence.empty()
 	var next_play_event = ok_queue.pop_front()
+	theStack.log_flow("sequence" if is_high_priority else "sequence_low", \
+			str(next_play_event["card"].canonical_name) + " " + str(next_play_event["trigger"]))
 
 	var subject = next_play_event["card"]
 	var trigger = next_play_event["trigger"]	

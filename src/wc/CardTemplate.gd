@@ -478,6 +478,8 @@ func check_death(script = null) -> bool:
 	if !will_die:
 		return false
 	
+	if !script:
+		gameData.theStack.log_flow("death", canonical_name + " (automated check)")
 	var excess_damage = total_damage - health
 	
 	var tags = []

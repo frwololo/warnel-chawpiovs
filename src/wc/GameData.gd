@@ -432,6 +432,9 @@ func _process(_delta: float):
 			_stack_idle_timer = 5.0
 			_stack_idle_signal_sent = false
 		
+	if _game_started:
+		_watch_current_encounter()
+
 	if theAnnouncer.get_blocking_announce():
 		return
 		
@@ -443,7 +446,9 @@ func _process(_delta: float):
 	if _multiplayer_desync:
 			attempt_resync("desync")
 			
-	play_scripted_sequence()		
+	#step 4c: a sequence step starts only when it is the game flow's pick
+	if next_ready_work() in ["sequence", "sequence_low"]:
+		play_scripted_sequence()		
 
 puppetsync func user_input_lock_denied():
 	return #TODO ?
@@ -815,6 +820,13 @@ func check_main_scheme_defeat():
 			scripting_bus.emit_signal_on_stack("stage_completed", scheme, {})
 
 func main_scheme_stage_completed(scheme):
+	#the same stage can be completed twice before the first completion
+	#resolves (two token changes each emit stage_completed while the scheme is
+	#still in play). Once the scheme has been replaced, a later completion
+	#of it is stale: it is not a defeat
+	if !scheme in find_main_schemes():
+		theStack.log_flow("scheme", "stage_completed ignored, no longer the main scheme: " + str(scheme.canonical_name if is_instance_valid(scheme) else scheme))
+		return
 	var next_scheme = move_to_next_scheme(scheme)
 	
 	if (!next_scheme):		
@@ -1052,6 +1064,134 @@ func get_flow_waiting_summary() -> Dictionary:
 		result["encounter"] = _current_encounter.canonical_name + " " + EncounterStatusStr[_current_encounter.encounter_status]
 	return result
 
+#Step 4c: the order game flow starts work in, highest first. Reorder to try
+#another order. PhaseContainer._process and GameData._process start only
+#next_ready_work(): the first source whose work is ready. next_work() (the
+#first source with work, ready or not) is still compared with every start
+#(check_flow_start), so "{flow} mismatch" lines show where a source with work
+#was skipped because it was not ready.
+#"inbox" and "priority" are one queue in time order: whichever was queued
+#first goes first (priority scripts move into the inbox in step 4b).
+#"in_progress" = an attack or an encounter that has started and not finished;
+#what it caused (an attack, a sequence) runs before it goes on.
+#Deaths are not a source yet (still a timed check, step 4d).
+const FLOW_ORDER = [
+	"inbox",
+	"priority",
+	"sequence",
+	"immediate_encounter",
+	"attacker",
+	"sequence_low",
+	"in_progress",
+	"encounter",
+	"phase"
+]
+
+#the source name if that source has work right now, else ""
+func _flow_source_work(source: String) -> String:
+	match source:
+		"inbox":
+			return source if theStack.has_local_inbox_entries() else ""
+		"priority":
+			return source if (_priority_scripts or is_priority_script_waiting()) else ""
+		"in_progress":
+			if _current_enemy_attack_step != EnemyAttackStatus.NONE:
+				return "attacker"
+			if _current_encounter and is_instance_valid(_current_encounter) \
+					and !(_current_encounter.encounter_status in [EncounterStatus.NONE, EncounterStatus.ENCOUNTER_COMPLETE]):
+				return "immediate_encounter" if immediate_encounters else "encounter"
+			return ""
+		"sequence":
+			return source if scripted_play_sequence else ""
+		"immediate_encounter":
+			return source if immediate_encounters else ""
+		"attacker":
+			return source if attackers else ""
+		"sequence_low":
+			return source if scripted_play_sequence_low_priority else ""
+		"encounter":
+			if phaseContainer and is_instance_valid(phaseContainer) \
+					and phaseContainer.current_step == CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER \
+					and !phaseContainer.current_step_complete:
+				return source
+			return ""
+		"phase":
+			return source
+	return ""
+
+#done_source: a source the caller knows has just finished (its own test
+#would still see work, e.g. the encounter step before it is marked complete)
+func next_work(done_source := "") -> String:
+	for source in FLOW_ORDER:
+		if source == done_source:
+			continue
+		if source in ["inbox", "priority"]:
+			var queued = _oldest_inbox_or_priority()
+			if queued:
+				return queued
+			continue
+		var work = _flow_source_work(source)
+		if work:
+			return work
+	return ""
+
+#"inbox" or "priority", whichever was queued first, "" if neither has work
+func _oldest_inbox_or_priority() -> String:
+	var has_inbox = _flow_source_work("inbox") != ""
+	var has_priority = _flow_source_work("priority") != ""
+	if !has_priority:
+		return "inbox" if has_inbox else ""
+	if !has_inbox:
+		return "priority"
+	#a priority script already started (waiting for a decision) comes first
+	if is_priority_script_waiting():
+		return "priority"
+	#so does a decision in progress recorded in the inbox: on the waiting
+	#client, the choice of the priority script that just ran (Blood to Spare's
+	#do_get_minion, hero 1) before the next priority script (hero 2)
+	if theStack.local_inbox_head_is_decision():
+		return "inbox"
+	var priority_seq = _priority_scripts.front().get("seq", -1)
+	if priority_seq < 0:
+		return "inbox"
+	return "priority" if priority_seq < theStack.first_local_inbox_seq() else "inbox"
+
+#Step 4c: the first source in FLOW_ORDER whose work is ready to start.
+#A source with work that is not ready (a sequence waiting for its gates) is
+#skipped; check_flow_start logs it as a mismatch against next_work().
+func next_ready_work(done_source := "") -> String:
+	for source in FLOW_ORDER:
+		if source == done_source:
+			continue
+		match source:
+			"inbox", "priority":
+				var queued = _oldest_inbox_or_priority()
+				if queued:
+					return queued
+			"sequence":
+				if scripted_play_sequence and sequence_queue_is_ready():
+					return source
+			"sequence_low":
+				if !scripted_play_sequence and scripted_play_sequence_low_priority and sequence_queue_is_ready():
+					return source
+			_:
+				var work = _flow_source_work(source)
+				if work:
+					return work
+	return ""
+
+var next_work_stats = {"match": 0, "mismatch": 0}
+#called by today's code right before it starts a piece of work from `source`
+func check_flow_start(source: String, detail := "", done_source := "") -> void:
+	if !theStack or !is_game_started():
+		return
+	var expected = next_work(done_source)
+	if expected == source:
+		next_work_stats["match"] += 1
+		return
+	next_work_stats["mismatch"] += 1
+	theStack.log_flow("mismatch", "started " + source + (" " + detail if detail else "") + ", next_work says " + expected)
+
 var _priority_scripts = []
 var _current_priority_script = {}
 func add_script_to_execute(owner, trigger_card, trigger, trigger_details = {}, run_type = CFInt.RunType.NORMAL):
@@ -1061,7 +1201,9 @@ func add_script_to_execute(owner, trigger_card, trigger, trigger_details = {}, r
 			"trigger_card": trigger_card,
 			"trigger": trigger,
 			"trigger_details": trigger_details,
-			"run_type": run_type
+			"run_type": run_type,
+			#its place in time against the inbox entries (step 4c shadow mode)
+			"seq": theStack.inbox.take_seq()
 		}
 	)
 
@@ -1072,16 +1214,36 @@ func is_priority_script_waiting() -> bool:
 	var sceng = _current_priority_script.get("sceng", null)
 	return sceng is GDScriptFunctionState && sceng.is_valid()
 
+#releases the priority script that was waiting (e.g. for a player's choice)
+#and the hero it forced. Called the moment that script completes (the
+#"completed" signal of its function state), the same point in the game on
+#every client. Before step 4c this only happened on the next frame, inside
+#execute_priority_scripts, which PhaseContainer called every frame; with 4c
+#that call only happens when priority scripts are the pick, so the hero
+#stayed forced (test_1p_ultron_assault_on_norad - drone: Ultron never attacked)
+var _priority_script_token := 0
+#the "completed" signal passes the function's return value, or nothing at
+#all depending on how the function ends: the bound token is the last argument
+func _on_priority_script_completed(first_arg = null, second_arg = null) -> void:
+	var token = second_arg if second_arg != null else first_arg
+	if _current_priority_script.get("token", -1) != token:
+		return
+	_release_current_priority_script()
+
+func _release_current_priority_script() -> void:
+	var override_hero = _current_priority_script.get("override_hero", 0)
+	if override_hero:  #else this is done later
+		reset_forced_current_playing_hero(override_hero)
+	_current_priority_script = {}
+
 func execute_priority_scripts() -> bool:	
 	if _current_priority_script:
 		var sceng = _current_priority_script.get("sceng", null)
 		if sceng is GDScriptFunctionState && sceng.is_valid():
 			return sceng
 		else:
-			var override_hero = _current_priority_script.get("override_hero", 0)
-			if override_hero:  #else this is done later
-				reset_forced_current_playing_hero(override_hero)			
-			_current_priority_script = {}
+			#normally already released when it completed
+			_release_current_priority_script()
 		
 	if !_priority_scripts:
 		_current_priority_script = {}
@@ -1094,6 +1256,11 @@ func execute_priority_scripts() -> bool:
 		if !theStack.is_phasecontainer_allowed_to_process():
 			return false
 			
+		#an inbox entry queued before the next priority script goes first
+		if _oldest_inbox_or_priority() != "priority":
+			break
+		var next_owner = _priority_scripts.front().get("owner", null)
+		check_flow_start("priority", next_owner.canonical_name if is_instance_valid(next_owner) else "")
 		var script_data = _priority_scripts.pop_front()
 		_current_priority_script = script_data
 		var script_owner = script_data.get("owner", null)
@@ -1130,6 +1297,9 @@ func execute_priority_scripts() -> bool:
 	#print_debug("priority scripts pending after run:" +str(_priority_scripts.size()))
 	if sceng is GDScriptFunctionState && sceng.is_valid():
 		_current_priority_script["sceng"] = sceng		
+		_priority_script_token += 1
+		_current_priority_script["token"] = _priority_script_token
+		sceng.connect("completed", self, "_on_priority_script_completed", [_priority_script_token], CONNECT_ONESHOT)
 		return sceng
 			
 	_current_priority_script = {}
@@ -1409,6 +1579,8 @@ func enemy_activates(delta) :
 	var flow_msg = enemy.canonical_name + " " + action + " step " + str(_current_enemy_attack_step) + " -> hero " + str(target_hero_id)
 	if flow_msg != _last_flow_attack_msg:
 		_last_flow_attack_msg = flow_msg
+		if _current_enemy_attack_step == EnemyAttackStatus.NONE:
+			check_flow_start("attacker", enemy.canonical_name)
 		theStack.log_flow("attacker", flow_msg)
 	cfc._rpc(self,"set_client_status",  "activation", guid,  _current_enemy_attack_step)	
 
@@ -1829,7 +2001,27 @@ func all_encounters_finished():
 	phaseContainer.all_encounters_done()
 	pass
 
+#diagnostics: who ends or drops the current encounter
+func _log_current_encounter(event: String) -> void:
+	var callers = []
+	for frame in get_stack():
+		if callers.size() >= 6:
+			break
+		callers.append(str(frame.get("function", "")))
+	var name = "none"
+	if _current_encounter and is_instance_valid(_current_encounter):
+		name = _current_encounter.canonical_name + " " + EncounterStatusStr[_current_encounter.encounter_status]
+	theStack.log_flow("current_encounter", event + ": " + name + " via " + PoolStringArray(callers).join(">"))
+
+var _last_seen_current_encounter = null
+func _watch_current_encounter() -> void:
+	if _current_encounter == _last_seen_current_encounter:
+		return
+	_last_seen_current_encounter = _current_encounter
+	_log_current_encounter("changed (seen in _process)")
+
 func current_encounter_finished():
+	_log_current_encounter("finished")
 	for i in immediate_encounters.size():
 		if immediate_encounters[i]["encounter"] == _current_encounter:
 			immediate_encounters.remove(i)
@@ -2022,6 +2214,7 @@ func count_all_facedown_encounters():
 func cancel_current_encounter():
 	if !_current_encounter:
 		return false
+	_log_current_encounter("cancelled")
 	_current_encounter.move_to(cfc.NMAP["discard_villain"])
 	current_encounter_finished()	
 
@@ -2095,6 +2288,8 @@ func reveal_encounter(delta:float):
 			+ (" (immediate)" if immediate_encounters else "")
 	if flow_msg != _last_flow_encounter_msg:
 		_last_flow_encounter_msg = flow_msg
+		if _current_encounter.encounter_status == EncounterStatus.NONE:
+			check_flow_start("immediate_encounter" if immediate_encounters else "encounter", _current_encounter.canonical_name)
 		theStack.log_flow("encounter", flow_msg)
 
 	var guid = guidMaster.get_guid(_current_encounter)
@@ -2597,6 +2792,7 @@ func play_scripted_sequence():
 	_ready_for_next_sequence = false
 	#sequence_queue_is_ready() picks the high priority queue whenever it has something
 	var is_high_priority = !scripted_play_sequence.empty()
+	check_flow_start("sequence" if is_high_priority else "sequence_low", str(ok_queue.front()["card"].canonical_name))
 	var next_play_event = ok_queue.pop_front()
 	theStack.log_flow("sequence" if is_high_priority else "sequence_low", \
 			str(next_play_event["card"].canonical_name) + " " + str(next_play_event["trigger"]))
@@ -2963,6 +3159,8 @@ func gui_activity_ongoing_no_cache()-> bool:
 
 
 func erase_pending_scripts():
+	if _current_encounter:
+		_log_current_encounter("erased with pending scripts")
 	attackers = []
 	
 	_current_priority_script = {}

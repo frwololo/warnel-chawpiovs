@@ -297,6 +297,10 @@ func get_state_dump() -> Dictionary:
 	#GameData / PhaseContainer queues that gate progress outside the stack
 	var attackers_dump = []
 	for attacker in gameData.attackers:
+		#an entry can be a marker string ("load_minions") instead of a dictionary
+		if typeof(attacker) != TYPE_DICTIONARY:
+			attackers_dump.append(str(attacker))
+			continue
 		var subject = attacker.get("subject")
 		attackers_dump.append({
 			"subject": str(subject.get("canonical_name")) if is_instance_valid(subject) else "<freed>",
@@ -311,6 +315,9 @@ func get_state_dump() -> Dictionary:
 		"sequence_ready": gameData._ready_for_next_sequence,
 		"sequence_step_waiting": gameData._sequence_step_waiting,
 		"sequence_wait_reason": gameData.get_sequence_wait_reason(),
+		"next_work": gameData.next_work(),
+		"next_ready_work": gameData.next_ready_work(),
+		"next_work_stats": gameData.next_work_stats,
 		"priority_scripts": gameData._priority_scripts.size(),
 		"villain_current_hero_target": gameData._villain_current_hero_target,
 	}

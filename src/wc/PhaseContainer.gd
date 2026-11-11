@@ -256,37 +256,48 @@ func _process(delta: float) -> void:
 		return
 	_dbg_cfc_ongoing_processes_timer = 0.0
 
-	var had_priority_scripts = !gameData._priority_scripts.empty()
-	var forced_scripts = gameData.execute_priority_scripts()
-	if forced_scripts: #it either returns a bool (true if executing script) of a function (ongoing compute)
-		_process_status_msg = "gameData priorirty scripts"
-		return
-	#priority scripts that just ran may have started something on the stack
-	#(e.g. Blood to Spare's reveal activating an enemy). Whether it is still
-	#running at this point depends on the client, so wait for the next frame,
-	#where the checks above see the stack as it really is
-	if had_priority_scripts:
-		_process_status_msg = "gameData priority scripts just ran"
-		return
+	#Step 4c: one pick for game flow. next_ready_work() returns the first
+	#source in GameData.FLOW_ORDER that has work ready; only that one runs.
+	var work = gameData.next_ready_work()
+	match work:
+		"inbox":
+			#older than any priority script: the stack drains it
+			_process_status_msg = "next_work: inbox"
+			return
+		"priority":
+			var forced_scripts = gameData.execute_priority_scripts()
+			if forced_scripts: #it either returns a bool (true if executing script) of a function (ongoing compute)
+				_process_status_msg = "gameData priorirty scripts"
+				return
+			#priority scripts that just ran may have started something on the stack
+			#(e.g. Blood to Spare's reveal activating an enemy). Whether it is still
+			#running at this point depends on the client, so wait for the next frame,
+			#where the checks above see the stack as it really is
+			_process_status_msg = "gameData priority scripts just ran"
+			return
+		"sequence", "sequence_low":
+			#played by GameData._process, which keeps the sequence gates
+			_process_status_msg = "next_work: " + work
+			return
+		"immediate_encounter":
+			#some encounters need to be revealed outside of their regular schedule
+			# e.g. with surge
+			_process_status_msg = "gameData immediate encounter"
+			gameData.reveal_encounter(delta)
+			return
+		"attacker":
+			#scheme and attack can happen outside of specific phases
+			_process_status_msg = "gameData attackers"
+			gameData.enemy_activates(delta)
+			return
+	#"encounter" and "phase": the step's own work below
 
-	#some encounters need to be revealed outside of their regular schedule
-	# e.g. with surge. We place them in this specific dictionary
-	#and gamedata checks for them
-	if (gameData.immediate_encounters):
-		_process_status_msg = "gameData immediate encounter"
-		gameData.reveal_encounter(delta)
-		return
-
-	#scheme and attack can happen outside of specific phases,
-	#so instead we check if "attacker" has something going on
-	if (gameData.attackers):
-		_process_status_msg = "gameData attackers"
-		gameData.enemy_activates(delta)
-		return
-
-	#sequence scripts are willing to be played before we move on to "regular schedule"
-	if gameData.sequence_queue_is_ready():
-		_process_status_msg = "gameData sequence_queue_is_ready"
+	#a step change asked for while other work was ready
+	if _deferred_phase_request and work == "phase":
+		var request = _deferred_phase_request
+		_deferred_phase_request = {}
+		_process_status_msg = "deferred phase request"
+		request_next_phase(request["caller"], request["mode"])
 		return
 
 	if please_start_next_step: 
@@ -546,13 +557,35 @@ mastersync func client_unready_for_next_phase():
 
 
 var _pending_next_phase_reply = false		
+#a step change asked for while other game flow work was ready (step 4c):
+#{caller, mode}, asked again by _process once the phase step is the pick
+var _deferred_phase_request := {}
 func request_next_phase(caller = "", mode = 0):
 	if (!is_ready_for_next_phase()):
 		return false
 	if _pending_next_phase_reply:
 		return true
+
+	#the reveal step ends with this request, before it is marked complete
+	var done_source = "encounter" if caller == "all_encounters_done" else ""
+	var work = gameData.next_ready_work(done_source)
+	#a sequence still pending belongs to the step that queued it, even when
+	#it is not ready this frame (Thanos's Infinity Stone specials, queued at the
+	#end of the attack). Only a player sequence that cannot start outside the
+	#player turn lets the step end
+	if work == "phase" and gameData.get_sequence_scripts(true):
+		var reason = gameData.get_sequence_wait_reason()
+		if reason != "player sequence: player not allowed to click":
+			work = "sequence (" + reason + ")"
+	if work != "phase":
+		if !_deferred_phase_request:
+			gameData.theStack.log_flow("phase_held", "request after " + StepStrings[current_step] + " (" + caller + ") waits for " + work)
+		_deferred_phase_request = {"caller": caller, "mode": mode}
+		return false
+	_deferred_phase_request = {}
 	
 	_pending_next_phase_reply = true	
+	gameData.check_flow_start("phase", StepStrings[current_step], done_source)
 	gameData.theStack.log_flow("phase", "request after " + StepStrings[current_step] + " (" + caller + ")")
 	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
 	#set_current_step_complete(false, caller + ", request_next_phase")
@@ -578,6 +611,7 @@ func step_signal(signal_name):
 	
 remotesync func proceed_to_next_phase(mode = 0):
 	_pending_next_phase_reply = false
+	_deferred_phase_request = {}
 	current_step_complete = false #hardcoded here to avoid calling the function and create a deadlock		
 	match mode:
 		0:

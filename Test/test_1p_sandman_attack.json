@@ -96,17 +96,16 @@
 			}
 		],
 		"board": {
-			"discard_villain": [
-				{
-					"card": "Advance"
-				},			
+			"discard_villain": [		
 				{
 					"card": "Caught Off guard"
 				},
 				{
 					"card": "Assault #01187"
 				},				
-
+				{
+					"card": "Advance"
+				},	
 			],
 			"deck_villain": [
 				{

@@ -36,6 +36,19 @@ func add(kind: String, data) -> void:
 	_entries.append({"kind": kind, "seq": _next_seq, "data": data})
 	_next_seq += 1
 
+#a number from the same counter as the entries, for work queued elsewhere
+#(priority scripts) that must be ordered against the inbox
+func take_seq() -> int:
+	_next_seq += 1
+	return _next_seq - 1
+
+#the seq of the oldest entry of that kind, or -1
+func first_seq(kind: String) -> int:
+	var i = _find_first(kind)
+	if i == -1:
+		return -1
+	return _entries[i]["seq"]
+
 func has(kind: String) -> bool:
 	return _find_first(kind) != -1
 

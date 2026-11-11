@@ -781,7 +781,7 @@
 	},
 	"Mirage - Dani Moonstar": {
 		"card_moved_to_board": {
-			"subject": "self",
+			"trigger": "self",
 			"is_optional_board": true,
 			"board": [
 				{

@@ -376,6 +376,10 @@ func attempt_yielded_script():
 	if not cfc.NMAP.has("board") or not is_instance_valid(cfc.NMAP.board):
 		return false
 		
+	#only the idle drain picks among the game flow sources; a drain at an
+	#interrupt marker belongs to the stack object being resolved
+	if stack.empty():
+		gameData.check_flow_start("inbox", str(inbox.first(StackInbox.LOCAL).get("checksum", "")))
 	var script_data = inbox.pop_first(StackInbox.LOCAL)
 	remove_yield_counter("yielded_script")
 	log_flow("inbox", str(script_data.get("type", "script")) + " '" + str(script_data.get("checksum", "")) + "'")
@@ -693,6 +697,18 @@ func _is_interrupt_or_response_trigger(trigger, trigger_details) -> bool:
 #Guard's attack vs its post_reveal sequence). Steps of an attack or an
 #encounter already under way do not wait: the encounter's own reveal scripts
 #are in the inbox while it moves on (test_1p_apocalypse_technological_interface)
+#seq of the oldest local inbox entry, -1 if none (step 4c shadow mode)
+func first_local_inbox_seq() -> int:
+	return inbox.first_seq(StackInbox.LOCAL)
+
+#true when the oldest local inbox entry stands for another player's choice
+#in progress (this client waits for it), not for new work: it comes first
+#whatever its age (step 4c). Multiplayer only: a deferred_decision (this
+#client's own choice, queued) keeps its place in time order
+func local_inbox_head_is_decision() -> bool:
+	var head = inbox.first(StackInbox.LOCAL)
+	return typeof(head) == TYPE_DICTIONARY and head.get("type", "") == "pending_network_interaction"
+
 func has_local_inbox_entries() -> bool:
 	return inbox.has(StackInbox.LOCAL)
 
@@ -1938,6 +1954,10 @@ func reset():
 		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(inbox.count(StackInbox.LOCAL)))
 	if inbox.slots_reserved or inbox.describe_slots()["fills_before_reservation"]:
 		cfc.LOG("{slots} end of game: " + to_json(inbox.describe_slots()), true)
+	#step 4c shadow mode: how often next_work() agreed with today's code
+	if gameData.next_work_stats["match"] or gameData.next_work_stats["mismatch"]:
+		cfc.LOG("{flow} next_work end of game: " + to_json(gameData.next_work_stats), true)
+	gameData.next_work_stats = {"match": 0, "mismatch": 0}
 	inbox.clear()
 	_ack_received = {}
 	

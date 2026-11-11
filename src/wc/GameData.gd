@@ -3277,6 +3277,9 @@ func finalize_get_my_system_status(all_status):
 func get_my_system_status() -> Dictionary:
 	var board_status = save_gamedata()
 	var guid_status = guidMaster.get_guids_check_data()
+	#diagnostics: the full board this client hashes, to diff the clients' logs
+	#when the hashes differ (one line per systems check)
+	cfc.LOG("{systems_check} round " + str(current_round) + " board " + to_json(board_status), true)
 
 	#reduces bandwidth by only sending hash values for comparison
 	if (CFConst.SYSTEMS_CHECK_HASH_ONLY):

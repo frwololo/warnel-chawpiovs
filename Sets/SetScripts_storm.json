@@ -178,7 +178,8 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_send_signal"
+					"sequence_ability": "do_send_signal",
+					"delay_until_no_activity": true
 				}
 			]
 		},
@@ -278,7 +279,8 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_send_signal"
+					"sequence_ability": "do_send_signal",
+					"delay_until_no_activity": true
 				}
 			]
 		},
@@ -580,7 +582,8 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_send_signal"
+					"sequence_ability": "do_send_signal",
+					"delay_until_no_activity": true
 				}
 			]
 		},
@@ -1289,7 +1292,8 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_send_signal"
+					"sequence_ability": "do_send_signal",
+					"delay_until_no_activity": true
 				}
 			]
 		},

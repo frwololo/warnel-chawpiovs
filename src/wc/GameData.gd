@@ -172,8 +172,6 @@ func start_game():
 	
 	_game_started = true
 	_game_over = ""
-	#diagnostics: the listener lists every client starts with
-	scripting_bus.log_interrupt_listener_changes()
 
 	remote_load_finalize()
 

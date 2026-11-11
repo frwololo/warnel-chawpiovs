@@ -197,6 +197,7 @@ master func master_check_fingerprint(fingerprint):
 			if !(WCUtils.json_equal(my_status, other_status)):
 				mismatch = true
 				cfc.LOG("{error} Desync at fingerprint Step", true)
+				the_stack.record_sync_problem("desync at fingerprint uid " + str(my_status.get("uid", "?")))
 				cfc.LOG("My Status:", true)
 				cfc.LOG_DICT(my_status, true)
 				cfc.LOG("Their Status:{" +str(k) +"}", true)

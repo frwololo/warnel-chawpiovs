@@ -599,6 +599,7 @@ func _process_incoming_network_events(delta):
 		if ev.waited < yield_max_wait_time:
 			return false  # keep waiting, and keep the order
 		cfc.LOG("{desync} timeout waiting for " + wait_reason + ", inserting " + ev.type + " anyway - " + ev.checksum, true)
+		record_sync_problem("timeout waiting for " + wait_reason + " (" + str(ev.checksum) + ")")
 	#removed before it is applied: applying it can add (and, with
 	#speed_run_incoming_network_event, process) further network events
 	inbox.pop_first(StackInbox.NETWORK)
@@ -709,6 +710,14 @@ func local_inbox_head_is_decision() -> bool:
 	var head = inbox.first(StackInbox.LOCAL)
 	return typeof(head) == TYPE_DICTIONARY and head.get("type", "") == "pending_network_interaction"
 
+#Multiplayer sync problems seen during the current game (timeouts waiting
+#for another client, fingerprint desyncs). The test suite fails a test that
+#has any, even if its end state is right: the clients went through different
+#orders and only a timeout brought them back together. Cleared at game end.
+var sync_problems := []
+func record_sync_problem(msg: String) -> void:
+	sync_problems.append(msg)
+
 func has_local_inbox_entries() -> bool:
 	return inbox.has(StackInbox.LOCAL)
 
@@ -764,8 +773,45 @@ remotesync func clients_fill_decision_slot_with_nothing(slot, checksum):
 func should_defer_decision(exec_config: Dictionary) -> bool:
 	return get_sync().should_defer_decision(exec_config)
 
+#slots of this client's own decisions that were deferred and are not filled
+#yet (still in the inbox, or resumed and open)
+var _my_deferred_slots := {}
+
+#true while one of this client's own deferred decisions with a lower slot is
+#not filled: a later decision of this client must not be answered first
+func has_earlier_deferred_decision(slot: int) -> bool:
+	for deferred in _my_deferred_slots.keys():
+		if !inbox.is_slot_unfilled(deferred):
+			_my_deferred_slots.erase(deferred)
+			continue
+		if deferred < slot:
+			return true
+	return false
+
+const MAX_FRAMES_WAITING_FOR_EARLIER_DECISION := 1800
+#A target or a selection is never deferred itself. When one of this
+#client's earlier decisions was deferred, it waits here until that one is
+#answered, so that both clients see the decisions in slot order (Justice
+#Served's selection, #6, was answered before the Determination dialog, #5:
+#the waiting client timed out twice and the game locked)
+func wait_for_earlier_deferred_decisions(slot: int):
+	if slot < 1 or !has_earlier_deferred_decision(slot):
+		return null
+	_log_slot("#" + str(slot) + " waits for this client's earlier deferred decision " + str(_my_deferred_slots.keys()))
+	var frames := 0
+	while has_earlier_deferred_decision(slot):
+		frames += 1
+		if frames > MAX_FRAMES_WAITING_FOR_EARLIER_DECISION:
+			cfc.LOG("{error} #" + str(slot) + " gave up waiting for earlier deferred decision " + str(_my_deferred_slots.keys()) + ", answering it out of order", true)
+			break
+		yield(get_tree(), "idle_frame")
+	_log_slot("#" + str(slot) + " done waiting")
+	return true
+
 func defer_decision(card, args: Array, decision_slot, checksum, origin: String) -> void:
 	_log_slot("deferred #" + str(decision_slot) + " '" + str(checksum) + "' at " + origin)
+	if typeof(decision_slot) in [TYPE_INT, TYPE_REAL] and int(decision_slot) > 0:
+		_my_deferred_slots[int(decision_slot)] = true
 	add_yielded_script({
 		"type": "deferred_decision",
 		"card": card,
@@ -1954,6 +2000,7 @@ func reset():
 		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(inbox.count(StackInbox.LOCAL)))
 	if inbox.slots_reserved or inbox.describe_slots()["fills_before_reservation"]:
 		cfc.LOG("{slots} end of game: " + to_json(inbox.describe_slots()), true)
+	sync_problems = []
 	#step 4c shadow mode: how often next_work() agreed with today's code
 	if gameData.next_work_stats["match"] or gameData.next_work_stats["mismatch"]:
 		cfc.LOG("{flow} next_work end of game: " + to_json(gameData.next_work_stats), true)

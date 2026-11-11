@@ -343,6 +343,18 @@ func _reserve_decision_slot(task_run_type: int, origin: String, authorized: bool
 	if parent_sceng and is_instance_valid(parent_sceng) and parent_sceng.has_method("reserve_decision_slot"):
 		parent_sceng.reserve_decision_slot(task_run_type, origin + " " + str(script_name), authorized)
 
+#deciding client: a target or selection waits for this client's earlier
+#deferred decisions (see GlobalScriptStack.wait_for_earlier_deferred_decisions)
+func _wait_for_earlier_decisions(task_run_type: int):
+	if task_run_type == CFInt.RunType.BACKGROUND_COST_CHECK:
+		return null
+	if parent_sceng and is_instance_valid(parent_sceng) and parent_sceng.has_method("wait_for_earlier_decisions"):
+		var wait = parent_sceng.wait_for_earlier_decisions()
+		if wait is GDScriptFunctionState and wait.is_valid():
+			yield(wait, "completed")
+			return true
+	return null
+
 #A background cost check of a triggered script only asks "could this be done?",
 #so the answer must not depend on which client decides: before, it failed on
 #every client but the deciding one (no target allowed), the optional script was
@@ -445,6 +457,9 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			if (run_type == CFInt.RunType.BACKGROUND_COST_CHECK):
 				c = _dry_run_card_targeting(script_definition, to_exclude)
 			else:
+				var waited = _wait_for_earlier_decisions(run_type)
+				if waited is GDScriptFunctionState and waited.is_valid():
+					yield(waited, "completed")
 				c = _initiate_card_targeting(to_exclude)
 				if c is GDScriptFunctionState && c.is_valid(): # Still working.
 					c = yield(c, "completed")
@@ -502,6 +517,9 @@ func _local_find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORM
 			return []	
 		if get_property(SP.KEY_SELECTION_IGNORE_SELF):
 			subjects_array.erase(owner)
+		var waited = _wait_for_earlier_decisions(run_type)
+		if waited is GDScriptFunctionState and waited.is_valid():
+			yield(waited, "completed")
 		var select_return = cfc.ov_utils.select_card(
 				subjects_array,  script_definition, cfc.NMAP.board, self, run_type, stored_integer)
 		# In case the owner card is still focused (say because script was triggered

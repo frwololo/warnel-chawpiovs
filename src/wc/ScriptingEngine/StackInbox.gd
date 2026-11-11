@@ -133,6 +133,13 @@ func fill_slot(slot: int, checksum: String) -> String:
 	_early_fills[slot] = checksum
 	return ""
 
+#true while that slot is reserved and not filled yet
+func is_slot_unfilled(slot: int) -> bool:
+	for entry in _entries:
+		if entry["kind"] == SLOT and entry["data"]["slot"] == slot:
+			return true
+	return false
+
 #true once this client has reached (reserved) that decision
 func is_slot_reached(slot: int) -> bool:
 	return slot < _next_slot

@@ -1,0 +1,156 @@
+{
+	"_comments": "Bug: 2P. Nebula plays Justice Served paid with Determination. Determination's paid_as_resource dialog (deferred during a flush) and Justice Served's give-to-player selection were answered in the wrong order on the deciding client; the waiting client timed out twice and the game locked.",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Justice Served #22014"
+				},
+				{
+					"card": "Determination"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Justice Served #22014",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "Yes",
+			"hero": 2,
+			"_comments": "accept Determination's optional remove 1 threat (paid_as_resource dialog, slot first)"
+		},
+		{
+			"type": "select",
+			"value": "Nebula #22001a",
+			"hero": 2,
+			"_comments": "Justice Served goes to Nebula's play area (give_to_player selection, slot second)"
+		},		
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 2
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Justice Served #22014"
+				}
+			],
+			"hand2": [],
+			"discard2": [
+				{
+					"card": "Determination"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	}
+}

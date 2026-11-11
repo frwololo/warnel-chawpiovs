@@ -28,6 +28,9 @@ var max_wait_time: = 1.0
 var multiplayer_max_wait_time = 2.0
 const shorten_animations = true
 const STOP_AFTER_FIRST_FAILURE = true
+#multiplayer: fail a test when a client timed out waiting for another one
+#or a fingerprint desync was found, even if the end state is right
+const FAIL_ON_SYNC_PROBLEMS = true
 var announce_verbose = false
 var announce_verbose_whitelist:= ["running", "rng", "error", "warning"]
 var last_rng_state = 0
@@ -1000,6 +1003,12 @@ func check_test_passed(current_gamestate):
 		return false
 		
 	if !(is_element1_in_element2(end_state, current_gamestate)):
+		return false
+
+	#multiplayer: a timeout or a desync means the clients took different
+	#paths, even when the end state comes out right
+	if FAIL_ON_SYNC_PROBLEMS and gameData.is_multiplayer_game and gameData.theStack.sync_problems:
+		failed_reason.append("sync problems: " + to_json(gameData.theStack.sync_problems))
 		return false
 	
 	for check in additional_checks:

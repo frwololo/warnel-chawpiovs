@@ -5057,6 +5057,12 @@ func pay_as_resource(script):
 	cfc.remove_ongoing_process(self, "pay_as_resource")
 	var trigger_details = script.trigger_details.duplicate()
 	trigger_details.erase("network_prepaid")
+	if !result_mana:
+		#should never happen: seen once after two decisions were answered out
+		#of order in a 2 player game (Justice Served paid with Determination)
+		cfc.LOG("{error} " + canonical_name + " paid as a resource without a resource value", true)
+		trigger_details["converted_amount"] = 0
+		return result_mana
 	trigger_details["converted_amount"] = result_mana.converted_mana_cost()
 	scripting_bus.emit_signal_on_stack("paid_as_resource", self, trigger_details)
 	return result_mana

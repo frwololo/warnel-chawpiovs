@@ -11,6 +11,16 @@ var decision_slot := -1
 var decision_checksum := ""
 var decision_slots_allowed := false
 
+#called by a task on the deciding client, right before it shows a target or
+#a selection: waits while an earlier decision of this client is deferred
+func wait_for_earlier_decisions():
+	if !decision_slots_allowed or decision_slot < 1:
+		return null
+	var wait = gameData.theStack.wait_for_earlier_deferred_decisions(decision_slot)
+	if wait is GDScriptFunctionState and wait.is_valid():
+		yield(wait, "completed")
+	return true
+
 #called by a task right before it asks for a target or a selection
 func reserve_decision_slot(task_run_type: int, origin := "", authorized = null) -> void:
 	if !decision_slots_allowed or decision_slot > 0:

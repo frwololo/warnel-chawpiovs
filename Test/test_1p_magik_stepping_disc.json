@@ -100,10 +100,18 @@
 			"value": "Stepping Disc"
 		},
 		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},		
+		{
 			"type": "select",
 			"value": "Stepping Disc",
 			"expected_to_fail": true
 		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		},			
 		{
 			"type": "select",
 			"value": "Mystical Armor"

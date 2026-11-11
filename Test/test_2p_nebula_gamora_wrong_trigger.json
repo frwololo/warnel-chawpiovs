@@ -156,51 +156,51 @@
 		{
 			"type": "other",
 			"value": "wait_a_bit",
-			"hero_id": 1,
+			"hero": 1,
 			"_comments": "attenmpt to remove aribtrary test failure"
 		},	
 		{
 			"type": "activate",
 			"value": "Nebula",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "other",
 			"value": "wait_a_bit",
-			"hero_id": 1,
+			"hero": 1,
 			"_comments": "attenmpt to remove aribtrary test failure"
 		},		
 		{
 			"type": "choose",
 			"value": "Thwart",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "target",
 			"value": "#01097b",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "Play",
 			"value": "Brains over Brawn",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "target",
 			"value": "Rhino",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "choose",
 			"value": "Yes",
-			"hero_id": 2,
+			"hero": 2,
 			"expected_to_fail": true,
 			"_comments": "attempt to remove threat with Gamora's triggered ability"
 		},
 		{
 			"type": "target",
 			"value": "#01097b",
-			"hero_id": 2,
+			"hero": 2,
 			"expected_to_fail": true,
 			"_comments": "attempt to remove threat with Gamora's triggered ability"
 		}

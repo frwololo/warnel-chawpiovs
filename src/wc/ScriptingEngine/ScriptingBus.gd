@@ -230,6 +230,24 @@ func register_card_signal(card, signal_name, has_interrupt:=false ):
 		
 		registered_signals[signal_name][card] = true		
 
+#Diagnostics: signals that only go on the stack when a card listens to them
+#with an interrupt or response (card_moved_to_board...). If the listeners
+#differ between clients, the same event is a stack object on one client and
+#not on the other. Logs each change of those listener lists.
+var _logged_interrupt_listeners := {}
+func log_interrupt_listener_changes() -> void:
+	if !gameData or !gameData.theStack or !gameData.is_game_started():
+		return
+	for signal_name in CFConst.NO_STACK_BY_DEFAULT_SIGNALS:
+		var names = []
+		for card in registered_interrupt_signals.get(signal_name, {}):
+			if is_instance_valid(card):
+				names.append(card.canonical_name + "@" + str(guidMaster.get_guid(card)))
+		names.sort()
+		if names != _logged_interrupt_listeners.get(signal_name, []):
+			_logged_interrupt_listeners[signal_name] = names
+			gameData.theStack.log_flow("listeners", signal_name + " " + to_json(names))
+
 func unregister_card(card):
 	for key in registered_signals:
 		registered_signals[key].erase(card)

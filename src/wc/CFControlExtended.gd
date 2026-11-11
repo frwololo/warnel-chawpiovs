@@ -2442,10 +2442,19 @@ func _notification(what):
 func quit_game() -> void:	
 	.quit_game()
 	gameData.cleanup_post_game()
-	
-	print_debug("printing Stray nodes:")	
-	cfc.print_stray_nodes()	
-	print_debug("End of Stray nodes")		
+
+	# Main was only queue_free()'d: its cards (and their detached nodes) are
+	# still alive at this point, so printing now lists every card in a pile.
+	# Wait until the deletion queue has been flushed.
+	_print_stray_nodes_after_cleanup()
+
+func _print_stray_nodes_after_cleanup():
+	# queued deletions are processed at the end of the frame
+	yield(get_tree(), "idle_frame")
+	yield(get_tree(), "idle_frame")
+	print_debug("printing Stray nodes:")
+	cfc.print_stray_nodes()
+	print_debug("End of Stray nodes")
 
 func get_all_cards_from_containers(container_names) -> Array:
 	if !container_names:

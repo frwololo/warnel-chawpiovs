@@ -1,0 +1,297 @@
+{
+	"_comments": "Bug: 2P sequence leads to a deadlock: Storm doing damage with thunderstorm, triggering her cape's reaction while next stage sequence happens",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1,
+						"damage": 19
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Harpoon #40098"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Greycrow #40097"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Chimera #40096"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105a",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Storm #36001a"
+				},
+				{
+					"card": "Blizzard #36005"
+				},
+				{
+					"card": "Clear Skies #36002"
+				},
+				{
+					"card": "Thunderstorm #36004"
+				},
+				{
+					"card": "Escaping with Hope - 2A"
+				},
+				{
+					"card": "Escaping with Hope - 2B"
+				},
+				{
+					"card": "Hope's Captor #40105b"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Gotta Get Away #40103b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm",
+					"tokens": {
+						"__weather_control": 1
+					},
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Hurricane #36003"
+				},
+				{
+					"card": "Storm's Cape"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Riptide #40099"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Storm",
+			"hero": 1
+		},
+		{
+			"type": "choose",
+			"value": "Weather Control",
+			"hero": 1
+		},
+		{
+			"type": "select",
+			"value": "Thunderstorm #36004",
+			"hero": 1
+		},
+		{
+			"type": "target",
+			"value": "Arclight - A",
+			"hero": 1
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 1,
+			"_comments": "multiple things happen here: each hero needs to choose a villain, hope's captor will flip, and at the end, Storm's Cape should trigger and ready Storm"
+		},
+		{
+			"type": "select",
+			"value": "Harpoon #40098",
+			"hero": 1
+		},
+		{
+			"type": "select",
+			"value": "Greycrow #40097",
+			"hero": 2
+		},
+		{
+			"type": "activate",
+			"value": "Storm's Cape",
+			"hero": 1
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 1,
+			"_comments": "wait for good measure"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Arclight - A",
+					"tokens": {
+						"stunned": 1
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Back in Action"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Chimera #40096"
+				}
+			],
+			"others": [
+				{
+					"card": "Hope's Captor #40105b",
+					"host": "Arclight"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Storm #36001a"
+				},
+				{
+					"card": "Blizzard #36005"
+				},
+				{
+					"card": "Clear Skies #36002"
+				},
+				{
+					"card": "Hurricane #36003"
+				},
+				{
+					"card": "Hope's Captor #40105a"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Escaping with Hope - 2B",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm",
+					"exhausted": false
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Storm's Cape",
+					"exhausted": true
+				},
+				{
+					"card": "Thunderstorm #36004"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Riptide #40099"
+				},
+				{
+					"card": "Harpoon #40098"
+				}
+			],
+			"allies1": [],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Greycrow #40097"
+				}
+			]
+		}
+	}
+}

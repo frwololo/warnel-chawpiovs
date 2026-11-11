@@ -172,6 +172,8 @@ func start_game():
 	
 	_game_started = true
 	_game_over = ""
+	#diagnostics: the listener lists every client starts with
+	scripting_bus.log_interrupt_listener_changes()
 
 	remote_load_finalize()
 
@@ -664,7 +666,6 @@ func get_current_game_schemes(set_code):
 		schemes.append(card)
 	return schemes
 
-var _next_scheme = null	
 func move_to_next_scheme(current_scheme):
 	#I've seen occasional bugs where "move_to_next_scheme"
 	#was called twice on the same scheme, causing false "defat" messages
@@ -674,13 +675,16 @@ func move_to_next_scheme(current_scheme):
 		return
 		
 	var ckey
+	theStack.log_flow("scheme", "next scheme after " + current_scheme.canonical_name)
 	#check to see if we have an override in the rules on how to retrieve the next villain
 	var sceng = theGameObserver._get_script_sceng("override_get_next_scheme")
 	if sceng:	
 		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 		#if not sceng.all_tasks_completed:
 		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+			theStack.log_flow("scheme", "override_get_next_scheme yields")
 			yield(sceng_return,"completed")	
+			theStack.log_flow("scheme", "override_get_next_scheme resumed")
 		for potential_scheme in sceng.all_subjects_so_far:
 			var type_code = potential_scheme.get_property("type_code")
 			if type_code == "main_scheme":
@@ -709,31 +713,24 @@ func move_to_next_scheme(current_scheme):
 		current_scheme._placement_slot.remove_occupying_card(current_scheme)
 
 
-	var new_card = board.load_scheme(ckey)
+	theStack.log_flow("scheme", "loading " + str(ckey))
+	#load without the cards_preloaded rpc: waiting for every client to report
+	#the load put the new scheme on the board whenever the last network
+	#message arrived (on one client before the reveal, on the other after).
+	#move_to_next_scheme runs at the same stack point on every client, so
+	#the order below is the same everywhere. A main scheme does not go
+	#through the encounter reveal pile: it moves to the board
+	#(self_moved_to_board, card_moved_to_board), then is revealed, then
+	#post_reveal runs. This is the order single player always had.
+	var new_card = board.load_scheme(ckey, {})
 	#some tokens such as acceleration need to be preserved
 	current_scheme.copy_tokens_to(new_card, {"to_copy":["acceleration"]})
 	set_aside(current_scheme)	
-							
-	_next_scheme = new_card
-	cfc._rpc(self,"next_scheme_loaded")	
-					
-	return new_card
 
+	theStack.log_flow("scheme", "moving " + new_card.canonical_name + " to the board")
+	board.villain.post_load_move({})
 
-var _clients_next_scheme_loaded = {}
-remotesync func next_scheme_loaded():
-	var client_id = cfc.get_rpc_sender_id() 	
-	_clients_next_scheme_loaded[client_id] = true
-	if _clients_next_scheme_loaded.size() != gameData.network_players.size():
-		return
-	
-	_clients_next_scheme_loaded = {}
-	
-	if !_next_scheme:
-		var _error = 1
-		return
-	
-	var new_card = _next_scheme
+	theStack.log_flow("scheme", "revealing " + new_card.canonical_name)
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()			
@@ -742,8 +739,7 @@ remotesync func next_scheme_loaded():
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()			
 
-	_next_scheme = null	
-	return new_card			
+	return new_card
 
 
 func check_player_side_scheme_limit():
@@ -1070,6 +1066,13 @@ func add_script_to_execute(owner, trigger_card, trigger, trigger_details = {}, r
 			"run_type": run_type
 		}
 	)
+
+#a priority script that started and is waiting (e.g. for a player's choice)
+func is_priority_script_waiting() -> bool:
+	if !_current_priority_script:
+		return false
+	var sceng = _current_priority_script.get("sceng", null)
+	return sceng is GDScriptFunctionState && sceng.is_valid()
 
 func execute_priority_scripts() -> bool:	
 	if _current_priority_script:
@@ -2512,6 +2515,12 @@ func get_sequence_wait_reason() -> String:
 		return "game over: " + str(_game_over)
 	if !_ready_for_next_sequence:
 		return "previous step still running: " + _sequence_step_waiting
+	if theStack.has_local_inbox_entries():
+		return "inbox not empty"
+	if !_priority_scripts.empty():
+		return "priority scripts pending"
+	if is_priority_script_waiting():
+		return "priority script waiting for a decision"
 	if is_targeting_ongoing():
 		return "targeting"
 	if manual_action_happened_too_recently():
@@ -2536,6 +2545,17 @@ func sequence_queue_is_ready():
 		return false
 
 	if !_ready_for_next_sequence:
+		return false
+
+	#the next step waits for the scripts already in the inbox, like a new
+	#attack or encounter does (see GlobalScriptStack)
+	if theStack.has_local_inbox_entries():
+		return false
+
+	#scripts set aside because they could not run when triggered came
+	#first: they run before the next step (they live in the inbox once
+	#priority scripts move there)
+	if !_priority_scripts.empty() or is_priority_script_waiting():
 		return false
 		
 	if is_targeting_ongoing() or manual_action_happened_too_recently():

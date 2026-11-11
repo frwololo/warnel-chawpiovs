@@ -262,7 +262,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			and sceng.user_interaction_status != CFConst.USER_INTERACTION_STATUS.DONE_AUTHORIZED_USER \
 			and trigger != "manual" and !_is_interrupt_or_response_trigger(trigger, trigger_details):
 		get_sync().record_script_created(trigger, "deferred_inbox", flush_was_pending, _draining_yielded_script)
-		add_yielded_script(yield_data)
+		add_yielded_script(yield_data, "deferred_inbox")
 		return null
 		
 	if _pending_flush and sync_enabled:
@@ -276,7 +276,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			_pending_flush.erase(interrupt_parent_stack_uid)
 		if yield_script:
 			get_sync().record_script_created(trigger, "deferred_flush", flush_was_pending, _draining_yielded_script)
-			add_yielded_script(yield_data)
+			add_yielded_script(yield_data, "deferred_flush")
 			#gameData.send_log_to_master("create_and_add_script yields (" + checksum + ")")
 			return null
 		
@@ -294,7 +294,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			return null
 		elif sync_enabled:
 			get_sync().record_script_created(trigger, "deferred_run_mode", flush_was_pending, _draining_yielded_script)
-			add_yielded_script(yield_data)
+			add_yielded_script(yield_data, "deferred_run_mode")
 			#gameData.send_log_to_master("create_and_add_script yields (runmode)")
 			return null
 	#if the script required user interaction, we send it
@@ -364,9 +364,17 @@ func get_open_decision() -> String:
 		return "remote decision " + str(pending_interaction_checksums.keys())
 	return ""
 
-func add_yielded_script(yield_data):
+func add_yielded_script(yield_data, reason := ""):
 	add_yield_counter("yielded_script")
 	inbox.add(StackInbox.LOCAL, yield_data)
+	#diagnostics: when and from where each local entry joins the inbox
+	var callers = []
+	for frame in get_stack():
+		if callers.size() >= 8:
+			break
+		callers.append(str(frame.get("function", "")))
+	log_flow("inbox_add", str(yield_data.get("type", "script")) + " '" + str(yield_data.get("checksum", "")) \
+			+ "' " + reason + " frame " + str(Engine.get_idle_frames()) + " via " + PoolStringArray(callers).join(">"))
 
 func attempt_yielded_script():
 	if !inbox.has(StackInbox.LOCAL):

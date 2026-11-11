@@ -1537,6 +1537,7 @@ func register_signals():
 		else:
 			if WCUtils.is_string_in_variant(tmp_scripts, trigger):
 				scripting_bus.register_card_signal(self, trigger)
+	scripting_bus.log_interrupt_listener_changes()
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -2551,6 +2552,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 	var sceng_return = sceng.execute(cost_check_mode)
 	#if not sceng.all_tasks_completed:
 	if sceng_return is GDScriptFunctionState && sceng_return.is_valid():		
+		_log_script_creation_wait("cost check", trigger)
 		yield(sceng_return,"completed")
 	
 	# If the dry-run of the ScriptingEngine returns that all
@@ -2568,6 +2570,7 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 			sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 			#if not sceng.all_tasks_completed:
 			if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
+				_log_script_creation_wait("prime", trigger)
 				yield(sceng_return,"completed")
 			
 			if sceng.user_interaction_status == CFConst.USER_INTERACTION_STATUS.NOK_UNAUTHORIZED_USER:
@@ -2612,6 +2615,14 @@ func execute_chosen_script(state_scripts, trigger_card,  trigger_details, run_ty
 							card.tokens.remove_resource_lock()
 	is_executing_scripts = false
 	return sceng
+
+#diagnostics: a triggered script whose cost check or prime yields is created
+#later than the scripts triggered after it, on this client only
+func _log_script_creation_wait(stage: String, trigger: String) -> void:
+	if !trigger or trigger == "manual":
+		return
+	if gameData and gameData.theStack and gameData.is_game_started():
+		gameData.theStack.log_flow("creation_waits", stage + " '" + trigger + " - " + canonical_name + "'")
 
 func add_script_to_stack(sceng, run_type, trigger, trigger_details, action_name, checksum):
 	gameData.theStack.create_and_add_script(sceng, run_type, trigger, trigger_details, action_name, checksum) 
@@ -5615,7 +5626,31 @@ func get_translated_property(property):
 	return WCUtils.get_translated_property(canonical_id, property)
 
 
+# Nodes removed by detach_unused_nodes() have no parent, so they are NOT
+# deleted along with the card. queue_free() below reattaches them, but cards
+# are often deleted without their own queue_free() being called: when an
+# ancestor is freed (e.g. Main in quit_game), the engine memdeletes the
+# children directly. PREDELETE catches every deletion path.
+func _notification(what):
+	if what == NOTIFICATION_PREDELETE:
+		_free_orphaned_nodes()
+
+func _free_orphaned_nodes():
+	var orphans = _removed_control_nodes.duplicate()
+	orphans.append(targeting_arrow)
+	#cached duplicate from get_duplicate(), usually never added to the tree
+	orphans.append(_duplicate)
+	for node in orphans:
+		if node == null or !is_instance_valid(node):
+			continue
+		#only free nodes nobody else owns (detached, or never added to the tree)
+		if !node.get_parent():
+			node.free()
+	_removed_control_nodes = []
+	_unused_nodes_detached = false
+
 func queue_free():
 	reattach_removed_nodes()
 	scripting_bus.unregister_card(self)
+	scripting_bus.log_interrupt_listener_changes()
 	.queue_free()

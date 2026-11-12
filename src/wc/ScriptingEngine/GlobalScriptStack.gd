@@ -302,7 +302,7 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			if run_mode == RUN_MODE.PENDING_REQUEST_ACK:
 				var desc = str(trigger) + " - " \
 						+ (sceng.owner.canonical_name if is_instance_valid(sceng.owner) else "?")
-				log_flow("{error} deferred by run mode PENDING_REQUEST_ACK '" + desc + "'")
+				log_flow("{error} deferred by run mode PENDING_REQUEST_ACK '" + desc + "'", "", true)
 				record_sync_problem("script deferred while waiting for a request ack: " + desc)
 			get_sync().record_script_created(trigger, "deferred_run_mode", flush_was_pending, _draining_yielded_script)
 			add_yielded_script(yield_data)
@@ -750,7 +750,17 @@ func has_local_inbox_entries() -> bool:
 func get_local_inbox_entries() -> Array:
 	return inbox.entries(StackInbox.LOCAL)
 
-func log_flow(source: String, detail := "") -> void:
+#Step 5: the routine {flow} and {slots} lines (one per phase request,
+#encounter, attacker, inbox drain, slot reserved/filled...) are only written
+#when this is true; set it to compare two clients' logs line by line.
+#Lines that report something wrong are always written: {error}, {desync},
+#{flow} mismatch, held phase changes, {slots} problems, unfilled slots
+const VERBOSE_SYNC_LOGS = false
+
+#always: written even when VERBOSE_SYNC_LOGS is false
+func log_flow(source: String, detail := "", always := false) -> void:
+	if !VERBOSE_SYNC_LOGS and !always:
+		return
 	cfc.LOG("{flow} " + source + (" " + detail if detail else "") \
 			+ " | after uid " + str(current_stack_uid) \
 			+ " stack=" + str(stack.size()) + " run=" + str(RUN_MODE.keys()[run_mode]) \
@@ -769,7 +779,7 @@ func log_decision_path(checksum, trigger, what: String, authorized) -> void:
 #One line per reservation, fill and request, so that the logs of two clients
 #can be compared side by side. Shadow mode diagnostics, removed in step 5
 func _log_slot(msg: String) -> void:
-	if !sync_enabled:
+	if !sync_enabled or !VERBOSE_SYNC_LOGS:
 		return
 	cfc.LOG("{slots} " + msg + " | after uid " + str(current_stack_uid) \
 			+ " step=" + str(gameData.phaseContainer.get_current_phase_name()), true)
@@ -2040,11 +2050,14 @@ func reset():
 	pending_stack_yield = {}
 	if inbox.has(StackInbox.LOCAL):
 		cfc.LOG("error in stack reset: yielded_scripts not empty: " + str(inbox.count(StackInbox.LOCAL)))
-	if inbox.slots_reserved or inbox.describe_slots()["fills_before_reservation"]:
-		cfc.LOG("{slots} end of game: " + to_json(inbox.describe_slots()), true)
+	var slots_summary = inbox.describe_slots()
+	if slots_summary["unfilled"] or slots_summary["fills_before_reservation"] \
+			or (VERBOSE_SYNC_LOGS and inbox.slots_reserved):
+		cfc.LOG("{slots} end of game: " + to_json(slots_summary), true)
 	sync_problems = []
-	#step 4c shadow mode: how often next_work() agreed with today's code
-	if gameData.next_work_stats["match"] or gameData.next_work_stats["mismatch"]:
+	#how often the work started agreed with next_work() (FLOW_ORDER)
+	if gameData.next_work_stats["mismatch"] \
+			or (VERBOSE_SYNC_LOGS and gameData.next_work_stats["match"]):
 		cfc.LOG("{flow} next_work end of game: " + to_json(gameData.next_work_stats), true)
 	gameData.next_work_stats = {"match": 0, "mismatch": 0}
 	gameData._stack_idle_sent_uid = -1

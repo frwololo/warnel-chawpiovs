@@ -513,7 +513,8 @@ func check_death(script = null) -> bool:
 	var total_damage:int =  tokens.get_token_count("damage")
 	var health = get_property("health", null)
 	if !script:
-		gameData.theStack.log_flow("death", canonical_name + " (automated check)")
+		#step 5: kept while 4d is new (deaths and stack_idle to watch in 2p games)
+		gameData.theStack.log_flow("death", canonical_name + " (automated check)", true)
 	var excess_damage = total_damage - health
 	
 	var tags = []

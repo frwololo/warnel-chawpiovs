@@ -443,9 +443,6 @@ func _process(_delta: float):
 			_stack_idle_timer = 5.0
 			_stack_idle_signal_sent = false
 		
-	if _game_started:
-		_watch_current_encounter()
-
 	if theAnnouncer.get_blocking_announce():
 		return
 		
@@ -689,16 +686,13 @@ func move_to_next_scheme(current_scheme):
 		return
 		
 	var ckey
-	theStack.log_flow("scheme", "next scheme after " + current_scheme.canonical_name)
 	#check to see if we have an override in the rules on how to retrieve the next villain
 	var sceng = theGameObserver._get_script_sceng("override_get_next_scheme")
 	if sceng:	
 		var sceng_return = sceng.execute(CFInt.RunType.PRIME_ONLY)
 		#if not sceng.all_tasks_completed:
 		if sceng_return is GDScriptFunctionState && sceng_return.is_valid():				
-			theStack.log_flow("scheme", "override_get_next_scheme yields")
 			yield(sceng_return,"completed")	
-			theStack.log_flow("scheme", "override_get_next_scheme resumed")
 		for potential_scheme in sceng.all_subjects_so_far:
 			var type_code = potential_scheme.get_property("type_code")
 			if type_code == "main_scheme":
@@ -727,7 +721,6 @@ func move_to_next_scheme(current_scheme):
 		current_scheme._placement_slot.remove_occupying_card(current_scheme)
 
 
-	theStack.log_flow("scheme", "loading " + str(ckey))
 	#load without the cards_preloaded rpc: waiting for every client to report
 	#the load put the new scheme on the board whenever the last network
 	#message arrived (on one client before the reveal, on the other after).
@@ -741,10 +734,8 @@ func move_to_next_scheme(current_scheme):
 	current_scheme.copy_tokens_to(new_card, {"to_copy":["acceleration"]})
 	set_aside(current_scheme)	
 
-	theStack.log_flow("scheme", "moving " + new_card.canonical_name + " to the board")
 	board.villain.post_load_move({})
 
-	theStack.log_flow("scheme", "revealing " + new_card.canonical_name)
 	var func_return = new_card.execute_scripts(new_card, "reveal")
 	while func_return is GDScriptFunctionState && func_return.is_valid():
 		func_return = func_return.resume()			
@@ -836,7 +827,7 @@ func main_scheme_stage_completed(scheme):
 	#still in play). Once the scheme has been replaced, a later completion
 	#of it is stale: it is not a defeat
 	if !scheme in find_main_schemes():
-		theStack.log_flow("scheme", "stage_completed ignored, no longer the main scheme: " + str(scheme.canonical_name if is_instance_valid(scheme) else scheme))
+		theStack.log_flow("scheme", "stage_completed ignored, no longer the main scheme: " + str(scheme.canonical_name if is_instance_valid(scheme) else scheme), true)
 		return
 	var next_scheme = move_to_next_scheme(scheme)
 	
@@ -1196,7 +1187,8 @@ func check_stack_idle() -> bool:
 		return false
 	_stack_idle_sent_uid = uid
 	_stack_idle_settling = true
-	theStack.log_flow("stack_idle")
+	#step 5: kept while 4d is new (deaths and stack_idle to watch in 2p games)
+	theStack.log_flow("stack_idle", "", true)
 	scripting_bus.emit_signal("stack_idle")
 	return true
 
@@ -1309,7 +1301,7 @@ func check_flow_start(source: String, detail := "", done_source := "") -> void:
 		next_work_stats["match"] += 1
 		return
 	next_work_stats["mismatch"] += 1
-	theStack.log_flow("mismatch", "started " + source + (" " + detail if detail else "") + ", next_work says " + expected)
+	theStack.log_flow("mismatch", "started " + source + (" " + detail if detail else "") + ", next_work says " + expected, true)
 
 var _priority_scripts = []
 var _current_priority_script = {}
@@ -2120,27 +2112,7 @@ func all_encounters_finished():
 	phaseContainer.all_encounters_done()
 	pass
 
-#diagnostics: who ends or drops the current encounter
-func _log_current_encounter(event: String) -> void:
-	var callers = []
-	for frame in get_stack():
-		if callers.size() >= 6:
-			break
-		callers.append(str(frame.get("function", "")))
-	var name = "none"
-	if _current_encounter and is_instance_valid(_current_encounter):
-		name = _current_encounter.canonical_name + " " + EncounterStatusStr[_current_encounter.encounter_status]
-	theStack.log_flow("current_encounter", event + ": " + name + " via " + PoolStringArray(callers).join(">"))
-
-var _last_seen_current_encounter = null
-func _watch_current_encounter() -> void:
-	if _current_encounter == _last_seen_current_encounter:
-		return
-	_last_seen_current_encounter = _current_encounter
-	_log_current_encounter("changed (seen in _process)")
-
 func current_encounter_finished():
-	_log_current_encounter("finished")
 	for i in immediate_encounters.size():
 		if immediate_encounters[i]["encounter"] == _current_encounter:
 			immediate_encounters.remove(i)
@@ -2333,7 +2305,6 @@ func count_all_facedown_encounters():
 func cancel_current_encounter():
 	if !_current_encounter:
 		return false
-	_log_current_encounter("cancelled")
 	_current_encounter.move_to(cfc.NMAP["discard_villain"])
 	current_encounter_finished()	
 
@@ -3278,8 +3249,6 @@ func gui_activity_ongoing_no_cache()-> bool:
 
 
 func erase_pending_scripts():
-	if _current_encounter:
-		_log_current_encounter("erased with pending scripts")
 	attackers = []
 	
 	_current_priority_script = {}

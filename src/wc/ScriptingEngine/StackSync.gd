@@ -111,7 +111,8 @@ func get_stats() -> Dictionary:
 	return _get_stats().duplicate(true)
 
 func _log_and_reset_stats() -> void:
-	if _stats and _stats.get("flushes", 0):
+	#step 5: verbose only; the counters stay in the F9 dump (ordering_stats)
+	if _stats and _stats.get("flushes", 0) and gameData.theStack.VERBOSE_SYNC_LOGS:
 		cfc.LOG("{sync_stats} " + to_json(_stats), true)
 	_stats = _new_stats()
 

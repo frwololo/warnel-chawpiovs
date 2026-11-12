@@ -603,7 +603,7 @@ func _log_if_phase_request_stuck():
 	_phase_held_last_report_ms = now
 	gameData.theStack.log_flow("phase_still_held", "request after " + StepStrings[current_step] \
 			+ " (" + str(_deferred_phase_request.get("caller", "")) + ") held for " \
-			+ str((now - _phase_held_since_ms) / 1000) + "s, " + _get_phase_held_details())
+			+ str((now - _phase_held_since_ms) / 1000) + "s, " + _get_phase_held_details(), true)
 func request_next_phase(caller = "", mode = 0):
 	if (!is_ready_for_next_phase()):
 		return false
@@ -624,7 +624,7 @@ func request_next_phase(caller = "", mode = 0):
 	if work != "phase":
 		if !_deferred_phase_request:
 			gameData.theStack.log_flow("phase_held", "request after " + StepStrings[current_step] + " (" + caller + ") waits for " + work \
-					+ " - " + _get_phase_held_details())
+					+ " - " + _get_phase_held_details(), true)
 		_deferred_phase_request = {"caller": caller, "mode": mode}
 		return false
 	_deferred_phase_request = {}

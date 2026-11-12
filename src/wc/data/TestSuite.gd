@@ -1010,6 +1010,13 @@ func check_test_passed(current_gamestate):
 	if FAIL_ON_SYNC_PROBLEMS and gameData.is_multiplayer_game and gameData.theStack.sync_problems:
 		failed_reason.append("sync problems: " + to_json(gameData.theStack.sync_problems))
 		return false
+
+	#opt-in per test: fail when the game started a piece of work that
+	#next_work() (the flow order) did not expect. Catches out-of-order
+	#flow even when both clients made the same mistake (no desync)
+	if test_conditions.get("fail_on_flow_mismatch", false) and gameData.next_work_stats["mismatch"]:
+		failed_reason.append("flow out of order: " + str(gameData.next_work_stats["mismatch"]) + " next_work mismatch(es), see {flow} mismatch in logs")
+		return false
 	
 	for check in additional_checks:
 		var func_name = check.get("func_name", "")

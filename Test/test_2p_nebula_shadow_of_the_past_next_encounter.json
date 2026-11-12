@@ -1,0 +1,149 @@
+{
+	"_comments": "Bug: 2P. Shadow of the Past reveals Nebula's nemesis, then queues two low-priority sequences (reveal_nemesis_scheme, shuffle_nemesis_other) while another encounter card is still face down. One client skipped the sequence (not ready on that frame: targeting timer, clients lining up) and revealed the next encounter first; the other played the sequence first. Fails on sync problems without sequence-transient-hold.",
+	"test_conditions": {
+		"fail_on_flow_mismatch": true,
+		"ignore_order": [
+			"deck_villain",
+			"enemies2",
+			"schemes"
+		]
+	},
+	"init": {
+		"phase": "VILLAIN_REVEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula #22001a"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Gamora #22028"
+				},
+				{
+					"card": "Self-Preservation #22029"
+				},
+				{
+					"card": "Lethal Weapon #22030"
+				},
+				{
+					"card": "Old Rivals #22031"
+				},
+				{
+					"card": "Old Rivals #22031"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Energy"
+				}
+			],
+			"encounters_facedown2": [
+				{
+					"card": "Shadow of the Past #01190"
+				},
+				{
+					"card": "Hydra Mercenary #08028"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula #22001a"
+				}
+			}
+		],
+		"board": {
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b"
+				},
+				{
+					"card": "Self-Preservation #22029"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Gamora #22028"
+				},
+				{
+					"card": "Hydra Mercenary #08028"
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Shadow of the Past #01190"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Caught Off Guard #01188"
+				},
+				{
+					"card": "Lethal Weapon #22030"
+				},
+				{
+					"card": "Old Rivals #22031"
+				},
+				{
+					"card": "Old Rivals #22031"
+				}
+			]
+		}
+	}
+}

@@ -346,6 +346,21 @@ func can_drain_local_entry() -> bool:
 	var entry = inbox.first(StackInbox.LOCAL)
 	if entry == null:
 		return false
+	#this client's own deferred decision, resumed and not answered yet, holds
+	#everything behind it, as the other clients' wait for that decision does
+	#on their side (Justice Served's last_threat_removed dialog: the deciding
+	#client drained The Senator's Support's card_defeated script before the
+	#dialog was answered, the waiting client after it)
+	var resumed = get_resumed_unfilled_decision()
+	if resumed > 0:
+		_frames_held_for_resumed_decision += 1
+		if _frames_held_for_resumed_decision <= MAX_FRAMES_WAITING_FOR_EARLIER_DECISION:
+			display_debug("inbox waits for this client's resumed decision #" + str(resumed))
+			return false
+		if _frames_held_for_resumed_decision == MAX_FRAMES_WAITING_FOR_EARLIER_DECISION + 1:
+			cfc.LOG("{error} inbox gave up waiting for resumed decision #" + str(resumed) + ", draining " + str(entry.get("checksum", "")), true)
+	else:
+		_frames_held_for_resumed_decision = 0
 	if not entry.get("type", "") in ["deferred_decision", "pending_network_interaction"]:
 		return true
 	var open_decision = get_open_decision()
@@ -776,6 +791,20 @@ func should_defer_decision(exec_config: Dictionary) -> bool:
 #slots of this client's own decisions that were deferred and are not filled
 #yet (still in the inbox, or resumed and open)
 var _my_deferred_slots := {}
+#those already resumed (taken out of the inbox), until filled
+var _resumed_deferred_slots := {}
+var _frames_held_for_resumed_decision := 0
+
+#the lowest resumed own deferred decision not filled yet, 0 if none
+func get_resumed_unfilled_decision() -> int:
+	var lowest := 0
+	for slot in _resumed_deferred_slots.keys():
+		if !inbox.is_slot_unfilled(slot):
+			_resumed_deferred_slots.erase(slot)
+			continue
+		if lowest == 0 or slot < lowest:
+			lowest = slot
+	return lowest
 
 #true while one of this client's own deferred decisions with a lower slot is
 #not filled: a later decision of this client must not be answered first
@@ -826,6 +855,8 @@ func _resume_deferred_decision(script_data) -> void:
 	var checksum = script_data["checksum"]
 	var decision_slot = script_data["decision_slot"]
 	_log_slot("resumed #" + str(decision_slot) + " '" + str(checksum) + "'")
+	if typeof(decision_slot) in [TYPE_INT, TYPE_REAL] and int(decision_slot) > 0:
+		_resumed_deferred_slots[int(decision_slot)] = true
 	if !is_instance_valid(card):
 		#the other clients are waiting for this decision
 		resume_operations_to_all(checksum, decision_slot)
@@ -2006,6 +2037,9 @@ func reset():
 		cfc.LOG("{flow} next_work end of game: " + to_json(gameData.next_work_stats), true)
 	gameData.next_work_stats = {"match": 0, "mismatch": 0}
 	inbox.clear()
+	_my_deferred_slots = {}
+	_resumed_deferred_slots = {}
+	_frames_held_for_resumed_decision = 0
 	_ack_received = {}
 	
 	all_clients_status = {}

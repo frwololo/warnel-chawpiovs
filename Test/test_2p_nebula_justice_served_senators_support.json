@@ -1,0 +1,138 @@
+{
+	"_comments": "Bug: 2P. Nebula's thwart removes the last threat from The Senator's Support. Justice Served's last_threat_removed response (Nebula decides) and The Senator's Support's card_defeated script were put on the stack in opposite orders: the deciding client drained card_defeated while its own resumed dialog was still open. Fails on sync problems without inbox-holds-resumed-decision.",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula #22001a"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1 #01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Inhibitor Collar #40092"
+				},
+				{
+					"card": "Caught Off Guard #01188"
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "The Senator's Support #40093",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Storm"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Energy"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Justice Served #22014"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Energy"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Nebula #22001a",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "Thwart",
+			"hero": 2,
+			"_comments": "Nebula's basic thwart"
+		},
+		{
+			"type": "target",
+			"value": "The Senator's Support #40093",
+			"hero": 2
+		},
+		{
+			"type": "choose",
+			"value": "Yes",
+			"hero": 2,
+			"_comments": "Justice Served: discard it to ready Nebula (optional response)"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 2
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Nebula #22001a"
+				}
+			}
+		],
+		"board": {
+			"schemes": [
+				{
+					"card": "The Break-In! - 1B #01097b",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"identity2": [
+				{
+					"card": "Nebula #22001a",
+					"exhausted": false
+				}
+			],
+			"upgrade_support2": [],
+			"discard2": [
+				{
+					"card": "Justice Served #22014"
+				}
+			]
+		}
+	}
+}

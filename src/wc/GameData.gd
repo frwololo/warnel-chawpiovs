@@ -1169,16 +1169,35 @@ func next_ready_work(done_source := "") -> String:
 				if queued:
 					return queued
 			"sequence":
-				if scripted_play_sequence and sequence_queue_is_ready():
+				if scripted_play_sequence and _sequence_holds_flow():
 					return source
 			"sequence_low":
-				if !scripted_play_sequence and scripted_play_sequence_low_priority and sequence_queue_is_ready():
+				if !scripted_play_sequence and scripted_play_sequence_low_priority and _sequence_holds_flow():
 					return source
 			_:
 				var work = _flow_source_work(source)
 				if work:
 					return work
 	return ""
+
+#A pending sequence is the pick when it is ready, and also while it waits
+#for something that clears by itself with no other work (the targeting
+#timer, the clients lining up, the stack settling): skipping it then
+#depended on timing, and the clients did not skip it alike (Shadow of the
+#Past's reveal_nemesis_scheme vs the next encounter, desync at uid 240).
+#Other reasons (a step still running, a player sequence outside the player
+#turn...) still let the next source go, as before.
+const SEQUENCE_TRANSIENT_WAITS = [
+	"targeting",
+	"targeting timer",
+	"blocking announce",
+	"stack not idle",
+	"villain sequence: phase container not allowed to next step",
+]
+func _sequence_holds_flow() -> bool:
+	if sequence_queue_is_ready():
+		return true
+	return get_sequence_wait_reason() in SEQUENCE_TRANSIENT_WAITS
 
 var next_work_stats = {"match": 0, "mismatch": 0}
 #called by today's code right before it starts a piece of work from `source`

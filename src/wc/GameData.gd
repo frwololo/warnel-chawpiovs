@@ -3552,6 +3552,8 @@ func finalize_get_my_system_status(all_status):
 		var other_status = all_status[k]
 		if !(WCUtils.json_equal(my_status, other_status)):
 			cfc.LOG("{error} Desync at Systems Check Step", true)
+			if !theStack.VERBOSE_SYNC_LOGS:
+				cfc.LOG("{systems_check} round " + str(current_round) + " board " + to_json(_last_systems_check_board), true)
 			cfc.LOG("My Status:", true)
 			cfc.LOG_DICT(my_status, true)
 			cfc.LOG("Their Status:{" +str(k) +"}", true)
@@ -3560,12 +3562,16 @@ func finalize_get_my_system_status(all_status):
 			return false
 	return true
 
+var _last_systems_check_board := {}
 func get_my_system_status() -> Dictionary:
 	var board_status = save_gamedata()
 	var guid_status = guidMaster.get_guids_check_data()
 	#diagnostics: the full board this client hashes, to diff the clients' logs
-	#when the hashes differ (one line per systems check)
-	cfc.LOG("{systems_check} round " + str(current_round) + " board " + to_json(board_status), true)
+	#when the hashes differ. Written by finalize_get_my_system_status only on
+	#a desync (every line when VERBOSE_SYNC_LOGS is on)
+	_last_systems_check_board = board_status
+	if theStack.VERBOSE_SYNC_LOGS:
+		cfc.LOG("{systems_check} round " + str(current_round) + " board " + to_json(board_status), true)
 
 	#reduces bandwidth by only sending hash values for comparison
 	if (CFConst.SYSTEMS_CHECK_HASH_ONLY):

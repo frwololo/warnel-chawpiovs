@@ -537,7 +537,13 @@ func get_delay_multiplier(my_action = {}):
 func set_test_options(test_options:Array):
 	test_list_filters = test_options
 
-func should_wait(my_action, _delta):
+#_ready_delta: the part of _delta during which the stack accepted user
+#interaction. The timeouts for the action's own window (select, target,
+#choose...) count only that time: on a remote client, the action can arrive
+#while the stack is still busy with what the previous action caused (the
+#master moves on as soon as it is settled itself), and that wait used to eat
+#the whole timeout, so the action ran before its window opened
+func should_wait(my_action, _delta, _ready_delta = -1.0):
 	var action_type = my_action.get("type", "")
 	var action_value = my_action.get("value", "")	
 	var expected_to_fail = my_action.get("expected_to_fail", false)		
@@ -597,15 +603,25 @@ func should_wait(my_action, _delta):
 		count_delay("stack")			
 		return true	
 
+	var wait_delta = _ready_delta if _ready_delta >= 0 else _delta
+
 	#step 4d: a play now would be refused (a death or stack_idle goes first)
 	if action_type in ["play", "activate"] and gameData.flow_blocks_new_action():
 		count_delay("flow")
+		return true
+
+	#a pending sequence step makes attempt_to_play refuse the click: the
+	#action would be lost (test_2p_on_the_run_sequencing_bug: "activate
+	#Storm" sent while a sequence step was still pending, no Weather Control
+	#menu, then every following action timed out)
+	if action_type in ["play", "activate"] and gameData.get_sequence_scripts():
+		count_delay("sequence")
 		return true
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
 		if !(is_instance_valid(get_current_selection_window())):
-			if (_delta <long_wait_time  * delay_multiplier):
+			if (wait_delta <long_wait_time  * delay_multiplier):
 				count_delay("action_select")
 				return true
 			elif !expected_to_fail:
@@ -613,7 +629,7 @@ func should_wait(my_action, _delta):
  
 	if (action_type == "target"):
 		if (!_current_targeting_card) :
-			if _delta <long_wait_time  * delay_multiplier:
+			if wait_delta <long_wait_time  * delay_multiplier:
 				count_delay("action_target")
 				return true
 			elif !expected_to_fail:
@@ -621,7 +637,7 @@ func should_wait(my_action, _delta):
 
 	if (action_type == "choose"):
 		if (!cfc.get_modal_menu()):
-			if  _delta <long_wait_time  * delay_multiplier:
+			if  wait_delta <long_wait_time  * delay_multiplier:
 				count_delay("action_choose")
 				return true
 			elif !expected_to_fail:
@@ -632,9 +648,9 @@ func should_wait(my_action, _delta):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer().heroesStatus[hero_id-1]
 		if (! heroPhase.can_hero_phase_action() or ! heroPhase.can_hero_pass()) :
-			if ( _delta <short_wait_time * delay_multiplier):
+			if ( wait_delta <short_wait_time * delay_multiplier):
 				count_delay("action_pass")
-				if ( _delta >0.2):
+				if ( wait_delta >0.2):
 					var _tmp = 1
 				return true
 			elif !expected_to_fail:
@@ -644,7 +660,7 @@ func should_wait(my_action, _delta):
 		var hero_id = int(action_value)
 		var heroPhase:HeroPhase = phaseContainer().heroesStatus[hero_id-1]
 		if (!heroPhase.can_hero_phase_action()):
-			if ( _delta <long_wait_time * delay_multiplier):
+			if ( wait_delta <long_wait_time * delay_multiplier):
 				count_delay("action_nextphase")
 				return true
 			elif !expected_to_fail:
@@ -655,7 +671,7 @@ func should_wait(my_action, _delta):
 		var card = get_card(action_value, hero_id)
 
 		if !gameData.theStack.is_player_allowed_to_click(card):
-			if  _delta <long_wait_time * delay_multiplier:
+			if  wait_delta <long_wait_time * delay_multiplier:
 				count_delay("action_play")
 				return	true		
 			elif !expected_to_fail:
@@ -815,18 +831,24 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 	display_debug("running " + to_json(my_action))
 	trace("run_action requested " + to_json(my_action))
 	var _delta = 0
+	var _ready_delta = 0.0
 	if !skip_play_tests:
 		start_timer("should_wait")
-		while should_wait(my_action, _delta):
+		while should_wait(my_action, _delta, _ready_delta):
 			display_debug("waiting for " + to_json(my_action))
 			#poll every frame (used to be every 0.1s, rounding every wait up)
 			if POLL_EVERY_FRAME:
 				var _before_ms = OS.get_ticks_msec()
 				yield(get_tree(), "idle_frame")
-				_delta += (OS.get_ticks_msec() - _before_ms) / 1000.0
+				var frame_time = (OS.get_ticks_msec() - _before_ms) / 1000.0
+				_delta += frame_time
+				if gameData.theStack.is_accepting_user_interaction():
+					_ready_delta += frame_time
 			else:
 				yield(get_tree().create_timer(0.1), "timeout")
 				_delta += 0.1
+				if gameData.theStack.is_accepting_user_interaction():
+					_ready_delta += 0.1
 		stop_timer("should_wait")
 	
 	display_debug("executing test step: " + to_json(my_action))

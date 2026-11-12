@@ -71,10 +71,20 @@
 	},
 	"actions": [
 		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 2
+		},	
+		{
 			"type": "activate",
 			"value": "Nebula #22001a",
 			"hero": 2
 		},
+		{
+			"type": "other",
+			"value": "wait_a_bit",
+			"hero": 2
+		},		
 		{
 			"type": "choose",
 			"value": "Thwart",

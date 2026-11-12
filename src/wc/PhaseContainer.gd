@@ -275,6 +275,11 @@ func _process(delta: float) -> void:
 			#where the checks above see the stack as it really is
 			_process_status_msg = "gameData priority scripts just ran"
 			return
+		"death":
+			#step 4d: a character with lethal damage dies before any new work
+			_process_status_msg = "gameData death"
+			gameData.process_next_death()
+			return
 		"sequence", "sequence_low":
 			#played by GameData._process, which keeps the sequence gates
 			_process_status_msg = "next_work: " + work
@@ -291,6 +296,11 @@ func _process(delta: float) -> void:
 			gameData.enemy_activates(delta)
 			return
 	#"encounter" and "phase": the step's own work below
+
+	#step 4d: nothing left but the phase step, after a new stack object
+	if work == "phase" and gameData.check_stack_idle():
+		_process_status_msg = "stack_idle"
+		return
 
 	#a step change asked for while other work was ready
 	if _deferred_phase_request and work == "phase":

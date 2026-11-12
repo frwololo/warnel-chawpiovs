@@ -230,7 +230,10 @@ func refresh_cache(forced=false):
 		
 	refresh_cost_cache(forced)	
 
-	check_death()
+	#step 4d: the automated death check is a game flow source
+	#(GameData.FLOW_ORDER "death"), picked at the same point on every client
+	if !gameData.DEATH_CHECK_IN_FLOW:
+		check_death()
 	_cache_resource_value = {}
 	_resource_special_precompute_cache = {}
 		
@@ -440,6 +443,39 @@ func _stack_event_deleted(event):
 					_died_signal_sent = false
 
 var _died_signal_sent = false
+
+#true if this card's current state kills it. script: the damage that is
+#being checked, null for the automated check (which also applies vulnerable)
+func is_lethal(script = null) -> bool:
+	if get_property("cannot_leave_play", 0, true):
+		return false
+	var total_damage:int =  tokens.get_token_count("damage")
+	var health = get_property("health", null)
+	#things that don't have health cannot die
+	if health == null:
+		return false
+	if !script:
+		if get_property("vulnerable", 0, true) and (is_stunned() or is_confused()):
+			return true
+	return total_damage >= health
+
+#step 4d: would the automated check kill this card now? No side effect
+#beyond refreshing a stale cache, so the flow can ask it every frame
+func needs_automated_death() -> bool:
+	if _died_signal_sent:
+		return false
+	#no "no damage, no death" shortcut: a character can enter play with
+	#0 health (Wasp - Janet Van Dyne #13012)
+	if !is_character():
+		return false
+	if !is_onboard():
+		return false
+	#a stale cache (health altered this frame) would answer differently
+	#depending on whether this card's _process already ran this frame
+	if _cache_refresh_needed:
+		refresh_cache()
+	return is_lethal()
+
 func check_death(script = null) -> bool:
 	if _died_signal_sent:
 		return true
@@ -453,31 +489,11 @@ func check_death(script = null) -> bool:
 		if !gameData.theStack.is_idle():
 			return false
 	
-	if get_property("cannot_leave_play", 0, true):
+	if !is_lethal(script):
 		return false
 	
-
-
-		
 	var total_damage:int =  tokens.get_token_count("damage")
 	var health = get_property("health", null)
-	
-	#things that don't have health cannot die
-	if health == null:
-		return false
-
-	var will_die = false
-	
-	if !script:
-		if get_property("vulnerable", 0, true) and (is_stunned() or is_confused()):
-			will_die = true
-	
-	if total_damage >= health:
-		will_die = true
-
-	if !will_die:
-		return false
-	
 	if !script:
 		gameData.theStack.log_flow("death", canonical_name + " (automated check)")
 	var excess_damage = total_damage - health
@@ -1557,6 +1573,11 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 		
 		#gamedata is running some automated clicks from a previous request	
 		if gameData.get_sequence_scripts():
+			return false
+
+		#step 4d: a death or stack_idle is the next pick but the flow is held
+		#(animation, announce): it goes first on every client
+		if gameData.flow_blocks_new_action():
 			return false
 		
 	#for manual attempts to play we only allow board or hand

@@ -2036,6 +2036,8 @@ func reset():
 	if gameData.next_work_stats["match"] or gameData.next_work_stats["mismatch"]:
 		cfc.LOG("{flow} next_work end of game: " + to_json(gameData.next_work_stats), true)
 	gameData.next_work_stats = {"match": 0, "mismatch": 0}
+	gameData._stack_idle_sent_uid = -1
+	gameData._stack_idle_settling = false
 	inbox.clear()
 	_my_deferred_slots = {}
 	_resumed_deferred_slots = {}

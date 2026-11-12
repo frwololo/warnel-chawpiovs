@@ -434,6 +434,11 @@ func should_wait(my_action, _delta):
 	if (!gameData.theStack.is_accepting_user_interaction()):
 		count_delay("stack")			
 		return true	
+
+	#step 4d: a play now would be refused (a death or stack_idle goes first)
+	if action_type in ["play", "activate"] and gameData.flow_blocks_new_action():
+		count_delay("flow")
+		return true
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):

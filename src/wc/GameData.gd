@@ -422,7 +422,9 @@ func _process(_delta: float):
 			_targeting_timer = max(0, _targeting_timer)
 			phaseContainer.hide_target_cancel_button()
 		
-		if theStack.is_idle() and !gui_activity_ongoing():
+		if STACK_IDLE_IN_FLOW:
+			pass #fired by the flow, see check_stack_idle
+		elif theStack.is_idle() and !gui_activity_ongoing():
 			_stack_idle_timer -= _delta
 			if _stack_idle_timer <=0 and !_stack_idle_signal_sent:
 				theStack.log_flow("stack_idle")
@@ -1074,10 +1076,14 @@ func get_flow_waiting_summary() -> Dictionary:
 #first goes first (priority scripts move into the inbox in step 4b).
 #"in_progress" = an attack or an encounter that has started and not finished;
 #what it caused (an attack, a sequence) runs before it goes on.
-#Deaths are not a source yet (still a timed check, step 4d).
+#Deaths (step 4d) come right after the inbox and priority scripts: they are
+#a state check, so they go before any new work, but they wait for a decision
+#in progress (on the deciding client the decision holds the flow, on the
+#others it is a pending entry at the head of the inbox).
 const FLOW_ORDER = [
 	"inbox",
 	"priority",
+	"death",
 	"sequence",
 	"immediate_encounter",
 	"attacker",
@@ -1103,6 +1109,8 @@ func _flow_source_work(source: String) -> String:
 			return ""
 		"sequence":
 			return source if scripted_play_sequence else ""
+		"death":
+			return source if next_dying_character() else ""
 		"immediate_encounter":
 			return source if immediate_encounters else ""
 		"attacker":
@@ -1134,6 +1142,85 @@ func next_work(done_source := "") -> String:
 		if work:
 			return work
 	return ""
+
+#Step 4d: stack_idle (Stealth, Embiggen!, Shrink, Gambit, Strong Inhuman's
+#threat reset: per-event state to clear) fires once when the flow has nothing
+#left but the phase step, after any new stack object. It used to fire after
+#5 s of idle stack, which happened at different points on each client.
+#false restores the timer.
+const STACK_IDLE_IN_FLOW = true
+var _stack_idle_sent_uid = -1
+var _stack_idle_settling = false
+
+#the stack is idle and stack_idle has not fired since the last stack object
+func stack_idle_pending() -> bool:
+	if !STACK_IDLE_IN_FLOW or !theStack.is_idle():
+		return false
+	return theStack.current_stack_uid != _stack_idle_sent_uid
+
+#a manual action now would start before the death or the stack_idle that
+#the flow is about to pick (once its hold clears); the other clients, with
+#no hold, already picked it
+func flow_blocks_new_action() -> bool:
+	#a decision in progress holds the flow until it is made, and the click
+	#may be part of it (Daredevil's thwart_happened target): only holds that
+	#clear by themselves (animation, announce) delay a new action
+	if is_targeting_ongoing() or user_input_ongoing or cfc.get_modal_menu():
+		return false
+	var work = next_ready_work()
+	if work == "death":
+		return true
+	return work == "phase" and stack_idle_pending()
+
+#called by PhaseContainer when the pick is "phase". Returns true if it just
+#emitted stack_idle: the phase step waits a frame for what it triggered
+func check_stack_idle() -> bool:
+	if !STACK_IDLE_IN_FLOW:
+		return false
+	var uid = theStack.current_stack_uid
+	if _stack_idle_settling:
+		#what stack_idle itself put on the stack does not fire it again
+		_stack_idle_settling = false
+		_stack_idle_sent_uid = uid
+		return false
+	if uid == _stack_idle_sent_uid:
+		return false
+	_stack_idle_sent_uid = uid
+	_stack_idle_settling = true
+	theStack.log_flow("stack_idle")
+	scripting_bus.emit_signal("stack_idle")
+	return true
+
+#Step 4d: false falls back to the per-card check in CardTemplate.refresh_cache
+#(each card's _process, whenever the stack is idle)
+const DEATH_CHECK_IN_FLOW = true
+
+#the first character on the board (in guid order) that the automated death
+#check would kill now, null if none
+func next_dying_character():
+	if !DEATH_CHECK_IN_FLOW:
+		return null
+	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		return null
+	var result = null
+	var result_guid = -1
+	for card in cfc.NMAP.board.get_all_cards():
+		if !is_instance_valid(card) or !card.needs_automated_death():
+			continue
+		var guid = guidMaster.get_guid(card)
+		if result == null or guid < result_guid:
+			result = card
+			result_guid = guid
+	return result
+
+#runs the automated death check of the first dying character; it puts
+#card_dies on the stack, which holds the flow until it resolves
+func process_next_death():
+	var card = next_dying_character()
+	if !card:
+		return
+	check_flow_start("death", card.canonical_name)
+	card.check_death()
 
 #"inbox" or "priority", whichever was queued first, "" if neither has work
 func _oldest_inbox_or_priority() -> String:
@@ -1189,7 +1276,6 @@ func next_ready_work(done_source := "") -> String:
 #turn...) still let the next source go, as before.
 const SEQUENCE_TRANSIENT_WAITS = [
 	"targeting",
-	"targeting timer",
 	"blocking announce",
 	"stack not idle",
 	"villain sequence: phase container not allowed to next step",
@@ -2735,8 +2821,8 @@ func get_sequence_wait_reason() -> String:
 		return "priority script waiting for a decision"
 	if is_targeting_ongoing():
 		return "targeting"
-	if manual_action_happened_too_recently():
-		return "targeting timer"
+	#step 4d: the 0.2 s targeting timer only guards clicks (attempt_to_play),
+	#it no longer delays game flow
 	var next_play_event = scripted_play_sequence.front() if scripted_play_sequence else scripted_play_sequence_low_priority.front()
 	if !scripted_play_sequence:
 		if immediate_encounters:
@@ -2770,7 +2856,7 @@ func sequence_queue_is_ready():
 	if !_priority_scripts.empty() or is_priority_script_waiting():
 		return false
 		
-	if is_targeting_ongoing() or manual_action_happened_too_recently():
+	if is_targeting_ongoing():
 		return false
 	
 		

@@ -63,8 +63,8 @@
 			"value": "Hydra Bomber",
 		},
 		{
-			"type": "choose",
-			"value": "yes",
+			"type": "activate",
+			"value": "Tigra",
 		},		
 	] ,
 	"end": {

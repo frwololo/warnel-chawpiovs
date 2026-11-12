@@ -516,10 +516,17 @@ func _on_OptionButton_item_selected(index):
 	cfc.change_locale(new_locale)
 
 
+#runs the sanity test suite in parallel instances (see TestShards.gd)
 func _on_Tests_pressed():
-	_start_test_run(["sanity"])
+	var test_filters = ["sanity"]
+	var shards = cfc.get_test_shards()
+	shards.setup_parallel_run(shards.default_instance_count(), test_filters)
+	shards.start_workers()
+	_start_test_run(test_filters)
 
 func _start_test_run(test_filters:Array):
+	#parallel run: each instance takes a quarter of the screen
+	cfc.get_test_shards().apply_window_layout()
 	gameData.init_1player()
 	var hd = HeroDeckData.new()
 	hd.set_hero_id("01001a")

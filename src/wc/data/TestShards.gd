@@ -89,6 +89,39 @@ func parse(args) -> void:
 		shard_index = 0
 		shard_count = parallel
 
+#instances used by the main menu's Tests button: half the CPU threads,
+#at most 4 (the run was measured at 4)
+func default_instance_count() -> int:
+	return int(clamp(OS.get_processor_count() / 2, 1, 4))
+
+#makes this instance the coordinator of a parallel run, as --test-shards=N
+#would (main menu's Tests button). Call start_workers() next
+func setup_parallel_run(count: int, test_filters: Array) -> void:
+	if is_worker():
+		return
+	run_tests = true
+	filters = test_filters
+	parallel = int(max(1, count))
+	shard_index = 0
+	shard_count = parallel
+
+#parallel run: tile the instances' windows on the current screen, 2x2,
+#each a quarter of the screen (960x540 on a 1920x1080 screen):
+#slice 0 (main instance) top left, 1 top right, 2 bottom left,
+#3 bottom right. More than 4 instances wrap around
+func apply_window_layout() -> void:
+	if !is_sharded():
+		return
+	var screen = OS.current_screen
+	var origin = OS.get_screen_position(screen)
+	var cell = OS.get_screen_size(screen) / 2
+	var slot = shard_index % 4
+	OS.window_fullscreen = false
+	OS.window_maximized = false
+	OS.window_size = cell
+	# warning-ignore:integer_division
+	OS.window_position = origin + Vector2((slot % 2) * cell.x, (slot / 2) * cell.y)
+
 #true for an instance started by the coordinator (or by hand) for slice >= 1
 func is_worker() -> bool:
 	return shard_count > 1 and shard_index > 0 and parallel == 1
@@ -208,6 +241,8 @@ func wait_for_workers() -> Dictionary:
 			break
 		yield(get_tree().create_timer(0.5), "timeout")
 	_worker_pids = {}
+	#allows another parallel run in the same session (Tests button)
+	_workers_started_at = 0
 	return results
 
 ###

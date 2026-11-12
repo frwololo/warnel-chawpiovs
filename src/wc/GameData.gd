@@ -1204,6 +1204,11 @@ func check_stack_idle() -> bool:
 #(each card's _process, whenever the stack is idle)
 const DEATH_CHECK_IN_FLOW = true
 
+#Step 4d: card caches are cleared when the game state or the card's state
+#changes, not at the card's next _process, and there is no forced refresh
+#2 s after a move. false restores both
+const EAGER_CACHE_INVALIDATION = true
+
 #the first character on the board (in guid order) that the automated death
 #check would kill now, null if none
 func next_dying_character():

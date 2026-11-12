@@ -221,7 +221,23 @@ func set_controller_hero_id(hero_id:int, lock = false):
 	update_hero_groups()
 
 func queue_refresh_cache():
+	#step 4d: the data caches are cleared right away. Waiting for this card's
+	#_process meant a read in the same frame got the old value, and on
+	#which frame a read falls differs between clients.
+	#The display (side icons, tokens) still refreshes in _process
+	if gameData.EAGER_CACHE_INVALIDATION:
+		invalidate_data_caches()
 	_cache_refresh_needed = true
+
+#the cached values that game logic reads (properties, traits, costs,
+#resource value, state). Recomputed on the next read
+func invalidate_data_caches():
+	refresh_cost_cache(true)
+	_cache_resource_value = {}
+	_resource_special_precompute_cache = {}
+	_state_exec_cache = ""
+	_cached_all_traits = null
+	_script_alter_cache = {}
 
 #refresh cache for all data
 func refresh_cache(forced=false):
@@ -238,8 +254,10 @@ func refresh_cache(forced=false):
 	_resource_special_precompute_cache = {}
 		
 	_state_exec_cache = ""
-	side_icons.update_state(true)
-	tokens.refresh_display()
+	if side_icons:
+		side_icons.update_state(true)
+	if tokens:
+		tokens.refresh_display()
 	_cache_refresh_needed = false
 	_cached_all_traits = null
 	_script_alter_cache = {}
@@ -1053,11 +1071,15 @@ func _process(delta) -> void:
 	#after moving zones
 	#we force refreshing the cache a few seconds after the move happened,
 	#in order to make things right
-	var current_time = Time.get_ticks_msec()
-	var move_time = last_move_result.get("time", current_time)
-	if (current_time - move_time > 2000) and !last_move_result.get("_forced_cache_refresh_happened", false):
-		last_move_result["_forced_cache_refresh_happened"] = true
-		force_refresh = true
+	#step 4d: replaced by EAGER_CACHE_INVALIDATION (caches cleared when
+	#the card changes state); this timer ran at a different point on
+	#each client
+	if !gameData.EAGER_CACHE_INVALIDATION:
+		var current_time = Time.get_ticks_msec()
+		var move_time = last_move_result.get("time", current_time)
+		if (current_time - move_time > 2000) and !last_move_result.get("_forced_cache_refresh_happened", false):
+			last_move_result["_forced_cache_refresh_happened"] = true
+			force_refresh = true
 	#/TODO	
 		
 	refresh_cache(force_refresh)
@@ -1242,6 +1264,11 @@ func set_state(value: int) -> void:
 			refresh_cost_cache(true)
 		
 		_state_exec_cache = ""
+		#step 4d: values computed while the card was moving (properties
+		#that depend on where it is) are stale once it lands. This used to
+		#be fixed by a forced refresh 2 s after each move
+		if gameData.EAGER_CACHE_INVALIDATION:
+			queue_refresh_cache()
 
 func get_state_exec() -> String:
 	#return get_state_exec_no_cache()
@@ -1879,6 +1906,15 @@ func retrieve_scripts(trigger: String, filters := {}) -> Dictionary:
 		return {}
 	
 	var result = .retrieve_scripts(trigger, filters)
+
+	#a facedown card on the board that has been given an identity
+	#(Beguiled's Enthralled minion: set_properties type_code "minion") has
+	#a blank text box: its printed scripts are hidden with its properties.
+	#Only the scripts given to it (enemy scripts) apply. Without this,
+	#core retrieve_scripts falls back to the printed ones (Mockingbird's
+	#"after enters play, stun an enemy" fired for the Enthralled minion)
+	if _hidden_properties and properties.get("type_code", ""):
+		result = get_instance_runtime_scripts(trigger, filters)
 
 	var engine_addons = retrieve_engine_scripts(trigger, filters)
 	if engine_addons:

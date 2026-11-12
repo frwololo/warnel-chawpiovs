@@ -293,6 +293,17 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			#gameData.send_log_to_master("create_and_add_script run_mod error")
 			return null
 		elif sync_enabled:
+			#Step 4d: the suites only ever defer here in NO_BRAKES (the stack
+			#is resolving, on every client alike: round_ended, reveal,
+			#preparation...). PENDING_REQUEST_ACK is only set on the client
+			#that sent a request: a script deferred then could take a
+			#different place on the other clients. Never seen so far; if it
+			#happens it is reported (and fails a multiplayer test).
+			if run_mode == RUN_MODE.PENDING_REQUEST_ACK:
+				var desc = str(trigger) + " - " \
+						+ (sceng.owner.canonical_name if is_instance_valid(sceng.owner) else "?")
+				log_flow("{error} deferred by run mode PENDING_REQUEST_ACK '" + desc + "'")
+				record_sync_problem("script deferred while waiting for a request ack: " + desc)
 			get_sync().record_script_created(trigger, "deferred_run_mode", flush_was_pending, _draining_yielded_script)
 			add_yielded_script(yield_data)
 			#gameData.send_log_to_master("create_and_add_script yields (runmode)")

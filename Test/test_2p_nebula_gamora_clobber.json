@@ -161,22 +161,22 @@
 		{
 			"type": "play",
 			"value": "Weapons Master #22007",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "play",
 			"value": "Clobber",
-			"hero_id": 2
+			"hero": 2
 		},
 		{
 			"type": "target",
 			"value": "Rhino",
-			"hero_id": 2
+			"hero": 2
 		},
 		{
 			"type": "target",
 			"value": "Cancel",
-			"hero_id": 2,
+			"hero": 2,
 			"_comments": "refuse to remove threat with Gamora's triggered ability"
 		}		
 	],

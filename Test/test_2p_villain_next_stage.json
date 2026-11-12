@@ -125,17 +125,17 @@
 		{
 			"type": "activate",
 			"value": "Spider-Man",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "choose",
 			"value": "attack",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "target",
 			"value": "Rhino",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "other",
@@ -144,27 +144,27 @@
 		{
 			"type": "play",
 			"value": "Swinging Web Kick",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "select",
 			"value": "Energy Absorption",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "target",
 			"value": "Rhino",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "play",
 			"value": "Swinging Web Kick",
-			"hero_id": "1"
+			"hero": 1
 		},
 		{
 			"type": "target",
 			"value": "Rhino",
-			"hero_id": "1"
+			"hero": 1
 		}
 	],
 	"end": {

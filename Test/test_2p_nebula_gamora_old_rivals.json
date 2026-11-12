@@ -158,17 +158,17 @@
 		{
 			"type": "other",
 			"value": "wait_a_bit",
-			"hero_id": 1
+			"hero": 1
 		},	
 		{
 			"type": "select",
 			"value": "cancel",
-			"hero_id": 1
+			"hero": 1
 		},
 		{
 			"type": "other",
 			"value": "wait_for_player_turn",
-			"hero_id": 1
+			"hero": 1
 		}
 	],
 	"end": {

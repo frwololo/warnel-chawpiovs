@@ -162,7 +162,7 @@
 		{
 			"type": "other",
 			"value": "wait_for_player_turn",
-			"hero_id": 1
+			"hero": 1
 		}
 	],
 	"end": {

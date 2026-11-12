@@ -176,6 +176,8 @@ export(float, 0.0, 1.0, 0.05) var dragged_tween_duration := 0.2
 
 var rotation_tween_duration := 0.3
 var position_tween_duration := 0.3
+# Duration of each half of the flip animation (shortened by the test suite)
+var flip_tween_duration := 0.4
 # Stores the normal size of the card as it should appear on the hand.
 # It should typically should be the same as card_size,
 # but unlike card_size, it should not be adjusted in runtime
@@ -2563,37 +2565,37 @@ func _flip_card(to_invisible: Control, to_visible: Control, instant := false) ->
 			_flip_tween.remove(n,'rect_scale')
 			_flip_tween.remove(n,'rect_position')
 		_flip_tween.interpolate_property(to_invisible,'rect_scale',
-				to_invisible.rect_scale, Vector2(0,1), 0.4,
+				to_invisible.rect_scale, Vector2(0,1), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_IN)
 		_flip_tween.interpolate_property(to_invisible,'rect_position',
 				to_invisible.rect_position, Vector2(
-				to_invisible.rect_size.x/2,0), 0.4,
+				to_invisible.rect_size.x/2,0), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_IN)
 		_flip_tween.interpolate_property(highlight,'rect_scale',
-				highlight.rect_scale, Vector2(0,1), 0.4,
+				highlight.rect_scale, Vector2(0,1), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_IN)
 		# The highlight is larger than the card size, but also offset a bit
 		# so that it's still centered. This way its borders only extend
 		# over the card borders. We need to offest to the right location.
 		_flip_tween.interpolate_property(highlight,'rect_position',
 				highlight.rect_position, Vector2(
-				(highlight.rect_size.x-3)/2,0), 0.4,
+				(highlight.rect_size.x-3)/2,0), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_IN)
 		_flip_tween.start()
 		yield(_flip_tween, "tween_all_completed")
 		to_visible.visible = true
 		to_invisible.visible = false
 		_flip_tween.interpolate_property(to_visible,'rect_scale',
-				to_visible.rect_scale, Vector2(1,1), 0.4,
+				to_visible.rect_scale, Vector2(1,1), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_OUT)
 		_flip_tween.interpolate_property(to_visible,'rect_position',
-				to_visible.rect_position, Vector2(0,0), 0.4,
+				to_visible.rect_position, Vector2(0,0), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_OUT)
 		_flip_tween.interpolate_property(highlight,'rect_scale',
-				highlight.rect_scale, Vector2(1,1), 0.4,
+				highlight.rect_scale, Vector2(1,1), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_OUT)
 		_flip_tween.interpolate_property(highlight,'rect_position',
-				highlight.rect_position, Vector2(-3,-3), 0.4,
+				highlight.rect_position, Vector2(-3,-3), flip_tween_duration,
 				Tween.TRANS_QUAD, Tween.EASE_OUT)
 		_flip_tween.start()
 

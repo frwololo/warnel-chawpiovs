@@ -33,6 +33,12 @@ const EnemyAttackStatusStr =  [
 	"ATTACK_POST_COMPLETE"
 ]
 
+#Multiplier applied to the fixed in-game pauses (encounter dealing, etc.).
+#The test suite lowers it to run games faster.
+var timer_scale := 1.0
+func scaled_time(seconds: float) -> float:
+	return seconds * timer_scale
+
 var _current_enemy_attack_step: int = EnemyAttackStatus.NONE
 
 enum EncounterStatus {
@@ -401,8 +407,11 @@ func attempt_resync(result:String):
 func manual_action_happened_too_recently():
 	return (_targeting_timer > 0)
 
+#Cooldown during which card clicks are ignored after a targeting click
+#(prevents misclicks on some touch devices). The test suite sets it to 0.
+var manual_action_cooldown := 0.2
 func restart_manual_action_stopwatch():
-	_targeting_timer = 0.2
+	_targeting_timer = manual_action_cooldown
 
 func _process(_delta: float):
 	#cache to refresh every tick:
@@ -2055,7 +2064,7 @@ func deal_encounters():
 	var finished = false
 	while !finished: #loop through all heroes. see villain_next_target call below
 		deal_one_encounter_to(_villain_current_hero_target)
-		yield(get_tree().create_timer(1), "timeout")
+		yield(get_tree().create_timer(scaled_time(1)), "timeout")
 		 # This forces to change the next facedown destination
 		#the "false" flags prevents from tirggering UI changes
 		if (!villain_next_target(false, "deal encounters")):
@@ -2074,7 +2083,7 @@ func deal_encounters():
 	
 	while hazard:
 		deal_one_encounter_to(_villain_current_hero_target)
-		yield(get_tree().create_timer(1), "timeout")
+		yield(get_tree().create_timer(scaled_time(1)), "timeout")
 		villain_next_target(false, "deal encounters")
 		hazard -=1
 		

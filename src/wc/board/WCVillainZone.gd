@@ -222,7 +222,7 @@ func load_scheme(card_id, call_preloaded = {}):
 func shuffle_deck(target_deck = "deck_villain") -> void:
 	var pile = cfc.NMAP[target_deck]
 	while pile.are_cards_still_animating():
-		yield(pile.get_tree().create_timer(0.2), "timeout")
+		yield(pile.get_tree().create_timer(gameData.scaled_time(0.2)), "timeout")
 	pile.shuffle_cards()
 
 func get_villains():

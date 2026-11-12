@@ -31,6 +31,34 @@ const STOP_AFTER_FIRST_FAILURE = true
 #multiplayer: fail a test when a client timed out waiting for another one
 #or a fingerprint desync was found, even if the end state is right
 const FAIL_ON_SYNC_PROBLEMS = true
+
+#Idle-based waits: instead of always sleeping for the full fixed duration
+#(wait_a_bit, wait_a_lot, min_time_between_steps), we move on as soon as the
+#game has been "settled" (waiting for user input, nothing animating, nothing
+#running on any client) for this many consecutive frames.
+#The fixed durations above remain the upper bound (safety net), so a wait
+#is never longer than before.
+#Set to false to get the old fixed-time behavior back.
+const USE_IDLE_WAITS = true
+#run_action wait loops check every frame instead of every 0.1s
+const POLL_EVERY_FRAME = true
+#fast flip animations and in-game pauses (gameData.timer_scale)
+const SPEED_UP_GAME = true
+const SETTLE_FRAMES_SOLO := 10
+const SETTLE_FRAMES_MULTIPLAYER := 20
+#minimum delay between two test steps, even when the game is settled
+const MIN_STEP_TIME_IDLE := 0.05
+var _settled_frames := 0
+#snapshot of the game state the last frame, the game is only considered
+#settled if it doesn't change for SETTLE_FRAMES frames
+var _last_game_signature = null
+#timeline of the current test (state changes, actions, early exits),
+#printed in the results file when the test fails
+const TRACE_TESTS = true
+var _trace := []
+#per test durations, to report the slowest tests
+var test_durations := {}
+var _test_start_ms := 0
 var announce_verbose = false
 var announce_verbose_whitelist:= ["running", "rng", "error", "warning"]
 var last_rng_state = 0
@@ -151,7 +179,120 @@ func stop_timer(func_name):
 	delays_timer[func_name]["total"] += 1
 	delays_timer[func_name]["time"]+= (my_end_time - my_start_time)
 	delays_timer[func_name]["start_time"] = 0
-		
+
+#adds an already measured duration to the "time details" report
+func add_elapsed(func_name, ms:int, calls:int = 1):
+	if !delays_timer.has(func_name):
+		delays_timer[func_name] = {}
+	delays_timer[func_name]["total"] = delays_timer[func_name].get("total", 0) + calls
+	delays_timer[func_name]["time"] = delays_timer[func_name].get("time", 0) + ms
+
+###
+### Idle detection
+###
+
+#true if the game is waiting for a player decision and nothing is
+#progressing on its own (locally, or on any client we know of)
+func is_game_settled() -> bool:
+	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		return false
+	if cfc.NMAP.board.are_cards_still_animating():
+		return false
+	if gameData.immediate_encounters:
+		return false
+	if gameData.is_ongoing_blocking_announce():
+		return false
+
+	var stack = gameData.theStack
+	for client_id in stack.all_clients_status:
+		var client_mode = stack.get_client_status(client_id, "run_mode")
+		if client_mode in [GlobalScriptStack.RUN_MODE.NO_BRAKES, GlobalScriptStack.RUN_MODE.PENDING_REQUEST_ACK]:
+			return false
+	if stack.run_mode in [GlobalScriptStack.RUN_MODE.NO_BRAKES, GlobalScriptStack.RUN_MODE.PENDING_REQUEST_ACK]:
+		return false
+	#a request was sent or a network event is still to be processed:
+	#the game is about to change even if it still shows the previous
+	#interaction window
+	if !stack.is_idle(0) or stack._has_network_event_blocking_idle():
+		return false
+
+	#Explicitly waiting on a UI element the test interacts with
+	#(the script that opened it is an ongoing process, that's expected)
+	if cfc.get_modal_menu():
+		return true
+	if is_instance_valid(get_current_selection_window()):
+		return true
+	if is_instance_valid(_current_targeting_card) and _current_targeting_card.targeting_arrow.is_targeting:
+		return true
+
+	#Scripts still executing locally (costs, targeting results, card
+	#movements...) can keep the stack looking idle for many frames
+	#before anything is sent to the stack
+	if cfc.is_process_ongoing():
+		return false
+
+	#Waiting for a player decision (e.g. interrupt window)
+	if stack.run_mode == GlobalScriptStack.RUN_MODE.PENDING_USER_INTERACTION:
+		return true
+
+	#Main player turn with nothing running: the game won't move without input
+	if phaseContainer().current_step == CFConst.PHASE_STEP.PLAYER_TURN and stack.is_idle():
+		return true
+
+	#any other phase progresses on its own
+	return false
+
+#cheap fingerprint of the game state. Any change resets the settled counter
+func _get_game_signature() -> Array:
+	var stack = gameData.theStack
+	return [
+		stack.run_mode,
+		stack.stack.size(),
+		stack.my_script_requests_pending_execution,
+		stack.pending_stack_yield.size(),
+		stack.inbox._entries.size(),
+		stack.interrupting_hero_id,
+		stack.current_stack_uid,
+		phaseContainer().current_step,
+		cfc.is_process_ongoing(),
+		is_instance_valid(get_current_selection_window()),
+		cfc.get_modal_menu() != null,
+		is_instance_valid(_current_targeting_card) and _current_targeting_card.targeting_arrow.is_targeting,
+	]
+
+func trace(msg:String):
+	if !TRACE_TESTS or _trace.size() > 500:
+		return
+	var t = OS.get_ticks_msec() - _test_start_ms if _test_start_ms else 0
+	_trace.append(str(t) + "ms f" + str(Engine.get_idle_frames()) + " " + msg)
+
+func _sort_by_duration_desc(a, b):
+	return a[0] > b[0]
+
+func _update_settled_frames():
+	var signature = _get_game_signature()
+	var changed = (signature != _last_game_signature)
+	if changed and game_loaded:
+		trace("state [run_mode, stack, requests, yields, inbox, interrupting_hero, stack_uid, step, processes, selection, menu, targeting] = " + str(signature) + " settled_check=" + str(is_game_settled()))
+	_last_game_signature = signature
+	if !changed and is_game_settled():
+		_settled_frames += 1
+	else:
+		_settled_frames = 0
+
+#called whenever the test suite does something to the game:
+#settledness has to be observed again from scratch
+func reset_settled():
+	_settled_frames = 0
+	_last_game_signature = null
+
+#game has been settled long enough that we can assume nothing else
+#will happen without a player action
+func is_settled() -> bool:
+	var needed = SETTLE_FRAMES_SOLO
+	if gameData.is_multiplayer_game:
+		needed = SETTLE_FRAMES_MULTIPLAYER
+	return _settled_frames >= needed
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
@@ -219,6 +360,8 @@ func reset():
 
 	count_delays = {}
 	delays_timer = {}
+	test_durations = {}
+	_test_start_ms = 0
 	
 	reset_between_tests()
 
@@ -326,11 +469,17 @@ func _timed_process(_delta: float) -> void:
 #		return
 
 	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		_settled_frames = 0
 		return
-		
+
+	#runs on every client: wait loops in run_action may run on remote clients
+	_update_settled_frames()
+
 	if cfc.NMAP.board.are_cards_still_animating():
-		count_delay("cards_animating")	
-		return	
+		count_delay("cards_animating")
+		if game_loaded:
+			add_elapsed("cards_animating (frames blocked)", int(_delta * 1000), 0)
+		return
 		
 	#Game is still loading on some clients, do not run tests yet
 	if (!game_loaded):
@@ -412,12 +561,17 @@ func should_wait(my_action, _delta):
 						
 			"wait_a_bit":
 				if (_delta < max_wait_time   *gameData.network_players.size() *gameData.network_players.size()):
+					if USE_IDLE_WAITS and _delta >= MIN_STEP_TIME_IDLE and is_settled():
+						trace("wait_a_bit ends early after " + str(_delta) + "s")
+						return false
 					count_delay("action_wait_a_bit")
 					return true
 			"wait_a_lot":
 				if (_delta < max_wait_time * 5 *gameData.network_players.size() *gameData.network_players.size()):
-					count_delay("action_wait_a_bit")
-					return true					
+					if USE_IDLE_WAITS and _delta >= MIN_STEP_TIME_IDLE and is_settled():
+						return false
+					count_delay("action_wait_a_lot")
+					return true
 			"wait_for_select_menu":
 				if !is_instance_valid(get_current_selection_window()):
 					if (!expected_to_fail) or (_delta <max_wait_time * delay_multiplier):
@@ -520,8 +674,13 @@ func next_action():
 	#bug fix. Introduced to temporize tests
 	#to let actions happen
 	#TODO shouldn't be needed!
+	#With idle waits, min_time_between_steps is only an upper bound: we move
+	#on as soon as the game is settled
 	if delta < min_time_between_steps:
-		return
+		if !(USE_IDLE_WAITS and delta >= MIN_STEP_TIME_IDLE and is_settled()):
+			add_elapsed("min_time_between_steps (frames waited)", int(get_process_delta_time() * 1000), 0)
+			return
+		trace("next step " + str(current_action) + " starts early after " + str(delta) + "s")
 		
 	if (actions.size() <= current_action):
 #		if (delta < time_between_tests): 
@@ -636,6 +795,8 @@ mastersync func action_complete():
 		return
 		
 	_action_ongoing -=1
+	#master side: next step only once the game is settled again
+	reset_settled()
 
 	
 remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):	
@@ -644,13 +805,20 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 	# activate: double click on a card to activate its ability 
 	#For "other", valid values are TBD
 	display_debug("running " + to_json(my_action))
+	trace("run_action requested " + to_json(my_action))
 	var _delta = 0
 	if !skip_play_tests:
 		start_timer("should_wait")
 		while should_wait(my_action, _delta):
 			display_debug("waiting for " + to_json(my_action))
-			yield(get_tree().create_timer(0.1), "timeout")
-			_delta += 0.1
+			#poll every frame (used to be every 0.1s, rounding every wait up)
+			if POLL_EVERY_FRAME:
+				var _before_ms = OS.get_ticks_msec()
+				yield(get_tree(), "idle_frame")
+				_delta += (OS.get_ticks_msec() - _before_ms) / 1000.0
+			else:
+				yield(get_tree().create_timer(0.1), "timeout")
+				_delta += 0.1
 		stop_timer("should_wait")
 	
 	display_debug("executing test step: " + to_json(my_action))
@@ -693,11 +861,18 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 			#TODO error
 			var _error = 1
 			
+	trace("action performed " + to_json(my_action))
+	reset_settled()
 	_delta = 0
 	start_timer("should_wait_after_action")
 	while should_wait_after_action(my_action, _delta):
-		yield(get_tree().create_timer(0.1), "timeout")
-		_delta += 0.1
+		if POLL_EVERY_FRAME:
+			var _before_ms = OS.get_ticks_msec()
+			yield(get_tree(), "idle_frame")
+			_delta += (OS.get_ticks_msec() - _before_ms) / 1000.0
+		else:
+			yield(get_tree().create_timer(0.1), "timeout")
+			_delta += 0.1
 	stop_timer("should_wait_after_action")				
 	cfc._rpc_id(self,1, "action_complete")
 
@@ -985,6 +1160,9 @@ mastersync func test_finalized(result):
 	var client_id = cfc.get_rpc_sender_id() 
 	_allclients_finalized[client_id] = result
 	if _allclients_finalized.size() == gameData.network_players.size():
+		if _test_start_ms:
+			test_durations[current_test_file] = OS.get_ticks_msec() - _test_start_ms
+			_test_start_ms = 0
 		for id in _allclients_finalized:
 			var success = _allclients_finalized[id]
 			if success == TestStatus.FAILED:
@@ -1061,7 +1239,10 @@ remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 			finalize_test_allclients(force_status, attempts-1)
 			return
 		failed.append(current_test_file)
-		self.fail_details.append("***expected:\n" + JSON.print(end_state, '\t') + "\n***Actual:\n" + JSON.print(current_gamestate, '\t'))	
+		var trace_text = ""
+		if TRACE_TESTS and _trace:
+			trace_text = "\n***Trace:\n" + PoolStringArray(_trace).join("\n")
+		self.fail_details.append("***expected:\n" + JSON.print(end_state, '\t') + "\n***Actual:\n" + JSON.print(current_gamestate, '\t') + trace_text)	
 		result = TestStatus.FAILED
 		
 	#Remove crap that might still be lurking around
@@ -1386,6 +1567,9 @@ func load_test(test_file)-> bool:
 		"test_conditions" : test_conditions,
 		"additional_checks" : additional_checks,
 	}
+	_test_start_ms = OS.get_ticks_msec()
+	_trace = []
+	start_timer("load_game (until all clients loaded)")
 	if initial_state.has("scenario"):
 		load_scenario(initial_state)
 	else:
@@ -1438,18 +1622,38 @@ func test_matches_filter(test_file, json_test_data, filter):
 remotesync func set_card_speeds():
 	if (!shorten_animations):
 		return
+	#fixed in-game pauses (dealing encounters 1s per card, systems check
+	#polling every 2s...)
+	if SPEED_UP_GAME:
+		gameData.timer_scale = 0.02
+	#the post-targeting click cooldown only protects against touch misclicks,
+	#but silently drops an "activate" sent right after a "target" action
+	gameData.manual_action_cooldown = 0.0
+	#cards created later in the game (drawn encounter cards, tokens, etc.)
+	#need the short durations too
+	if !get_tree().is_connected("node_added", self, "_on_node_added"):
+		get_tree().connect("node_added", self, "_on_node_added")
 	var cards = get_tree().get_nodes_in_group("cards")
 	for card in cards:
-		card.in_hand_tween_duration = 0.001
-		card.reorganization_tween_duration = 0.001
-		card.focus_tween_duration = 0.001
-		card.to_container_tween_duration = 0.001
-		card.pushed_aside_tween_duration = 0.001
-		card.to_board_tween_duration = 0.001
-		card.on_board_tween_duration = 0.001
-		card.dragged_tween_duration = 0.001
-		card.rotation_tween_duration = 0.001
-		card.position_tween_duration = 0.001
+		_shorten_card_animations(card)
+
+func _on_node_added(node):
+	if node is Card:
+		_shorten_card_animations(node)
+
+func _shorten_card_animations(card):
+	card.in_hand_tween_duration = 0.001
+	card.reorganization_tween_duration = 0.001
+	card.focus_tween_duration = 0.001
+	card.to_container_tween_duration = 0.001
+	card.pushed_aside_tween_duration = 0.001
+	card.to_board_tween_duration = 0.001
+	card.on_board_tween_duration = 0.001
+	card.dragged_tween_duration = 0.001
+	card.rotation_tween_duration = 0.001
+	card.position_tween_duration = 0.001
+	if SPEED_UP_GAME:
+		card.flip_tween_duration = 0.001
 
 func all_clients_game_loaded(details = {}):
 	#increase speed
@@ -1458,7 +1662,8 @@ func all_clients_game_loaded(details = {}):
 	#only server is allowed to run the main process	
 	if 1 != cfc.get_network_unique_id():
 		return
-			
+	
+	stop_timer("load_game (until all clients loaded)")
 	game_loaded = true
 
 	for value in details.values():
@@ -1479,7 +1684,12 @@ func next_test() -> bool:
 		multiplier = 5
 	
 	start_timer("yield_time_between_tests")
-	yield(get_tree().create_timer(time_between_tests * multiplier), "timeout")
+	if USE_IDLE_WAITS:
+		#only need the previous game's queue_free() calls to be processed
+		for _i in range(3):
+			yield(get_tree(), "idle_frame")
+	else:
+		yield(get_tree().create_timer(time_between_tests * multiplier), "timeout")
 	stop_timer("yield_time_between_tests")
 	reset_between_tests()
 	if (test_files.size() <= current_test):
@@ -1559,7 +1769,16 @@ remotesync func save_results():
 		to_print+= key + " - " + str(count_delays[key]) + "\n"
 
 	for key in delays_timer:
-		to_print+= key + " - " + str(delays_timer[key]["total"]) + " calls  - " +  str(delays_timer[key]["time"]) +  " ms\n"
+		to_print+= key + " - " + str(delays_timer[key].get("total", 0)) + " calls  - " +  str(delays_timer[key].get("time", 0)) +  " ms\n"
+
+	if test_durations:
+		var durations = []
+		for test_file in test_durations:
+			durations.append([test_durations[test_file], test_file])
+		durations.sort_custom(self, "_sort_by_duration_desc")
+		to_print+= "###\nslowest tests (ms, from load to finalize)\n"
+		for d in range(min(20, durations.size())):
+			to_print+= str(durations[d][0]) + " - " + durations[d][1] + "\n"
 
 
 		

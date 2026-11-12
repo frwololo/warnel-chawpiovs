@@ -3307,6 +3307,8 @@ func get_current_status():
 func cleanup_post_game():
 	cfc.LOG("\n###\ngameData cleanup_post_game")
 	cfc.set_game_paused(true)
+	#stack messages still queued belong to the game being cleaned up
+	cfc.cancel_pending_stack_rpcs()
 	
 	GameRecorder.finalize_game()
 	

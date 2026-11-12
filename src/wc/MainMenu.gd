@@ -260,6 +260,15 @@ func _all_downloads_completed():
 	gameData.play_music("menu")
 	check_for_new_release()
 
+	#test suite requested from the command line (see TestShards.gd)
+	var shards = cfc.get_test_shards()
+	if shards.run_tests and !shards.autostart_done:
+		shards.autostart_done = true
+		#workers are started once the card database cache is up to date,
+		#so they only read it
+		shards.start_workers()
+		call_deferred("_start_test_run", shards.filters)
+
 	debug_stuff()	
 
 
@@ -508,6 +517,9 @@ func _on_OptionButton_item_selected(index):
 
 
 func _on_Tests_pressed():
+	_start_test_run(["sanity"])
+
+func _start_test_run(test_filters:Array):
 	gameData.init_1player()
 	var hd = HeroDeckData.new()
 	hd.set_hero_id("01001a")
@@ -518,7 +530,7 @@ func _on_Tests_pressed():
 		"scheme_id" : "01097a", 
 		"modular_encounters":["bomb_scare"],
 		"expert_mode": false,
-		"scenario_options": { "testsuite" : ["sanity"]},
+		"scenario_options": { "testsuite" : test_filters},
 	}	
 	
 	gameData.set_scenario_data(launch_data)

@@ -58,6 +58,8 @@ const TRACE_TESTS = true
 var _trace := []
 #per test durations, to report the slowest tests
 var test_durations := {}
+#parallel runs: tests run by the other instances, merged by the coordinator
+var _merged_test_count := 0
 var _test_start_ms := 0
 var announce_verbose = false
 var announce_verbose_whitelist:= ["running", "rng", "error", "warning"]
@@ -235,8 +237,12 @@ func is_game_settled() -> bool:
 	if stack.run_mode == GlobalScriptStack.RUN_MODE.PENDING_USER_INTERACTION:
 		return true
 
-	#Main player turn with nothing running: the game won't move without input
-	if phaseContainer().current_step == CFConst.PHASE_STEP.PLAYER_TURN and stack.is_idle():
+	#Main player turn with nothing running: the game won't move without input.
+	#Game flow work still queued (a sequence, priority scripts, attackers...)
+	#runs on its own: a "next_phase" sent before Golden Horse's do_discard
+	#(test_1p_four_horsemen_pestilence_effect) was held and the game got stuck
+	if phaseContainer().current_step == CFConst.PHASE_STEP.PLAYER_TURN and stack.is_idle() \
+			and gameData.get_flow_waiting_summary().empty():
 		return true
 
 	#any other phase progresses on its own
@@ -258,6 +264,7 @@ func _get_game_signature() -> Array:
 		is_instance_valid(get_current_selection_window()),
 		cfc.get_modal_menu() != null,
 		is_instance_valid(_current_targeting_card) and _current_targeting_card.targeting_arrow.is_targeting,
+		to_json(gameData.get_flow_waiting_summary()),
 	]
 
 func trace(msg:String):
@@ -273,7 +280,7 @@ func _update_settled_frames():
 	var signature = _get_game_signature()
 	var changed = (signature != _last_game_signature)
 	if changed and game_loaded:
-		trace("state [run_mode, stack, requests, yields, inbox, interrupting_hero, stack_uid, step, processes, selection, menu, targeting] = " + str(signature) + " settled_check=" + str(is_game_settled()))
+		trace("state [run_mode, stack, requests, yields, inbox, interrupting_hero, stack_uid, step, processes, selection, menu, targeting, flow] = " + str(signature) + " settled_check=" + str(is_game_settled()))
 	_last_game_signature = signature
 	if !changed and is_game_settled():
 		_settled_frames += 1
@@ -362,6 +369,7 @@ func reset():
 	delays_timer = {}
 	test_durations = {}
 	_test_start_ms = 0
+	_merged_test_count = 0
 	
 	reset_between_tests()
 
@@ -1401,6 +1409,19 @@ func load_test_files():
 	for test_file in to_delete:
 		test_files.erase(test_file)			
 
+	#parallel run: only keep this instance's slice of the tests
+	var shards = cfc.get_test_shards()
+	if shards.is_sharded():
+		#same order in every instance, whatever the file system returns
+		test_files.sort()
+		var my_files = []
+		for index in test_files.size():
+			if shards.keeps_test(index):
+				my_files.append(test_files[index])
+		announce("parallel run: slice " + str(shards.shard_index) + "/" + str(shards.shard_count) \
+			+ ", " + str(my_files.size()) + " of " + str(test_files.size()) + " tests\n", false)
+		test_files = my_files
+
 	if (adapt_speed_to_number_of_tests):
 		if (test_files.size() >= 5) :
 			min_time_between_steps = sped_up_time_between_steps
@@ -1709,11 +1730,21 @@ func next_test() -> bool:
 
 #Save test results to an output file
 remotesync func save_results():
+	var shards = cfc.get_test_shards()
+	if shards.is_worker():
+		#machine readable results, merged by the coordinator
+		shards.write_results(_results_as_dict())
+	if shards.is_coordinator():
+		announce("waiting for the other test instances to finish\n", false)
+		var worker_results = yield(shards.wait_for_workers(), "completed")
+		_merge_worker_results(worker_results)
+
 	end_time = Time.get_ticks_msec()
 	
+	var total_tests = test_files.size() + _merged_test_count
 	var delta_time_sec:float = (end_time - start_time) /1000
 	var delta_time_min = stepify(delta_time_sec/60.0, 0.01)
-	var divider = test_files.size() if test_files.size() else 1
+	var divider = total_tests if total_tests else 1
 	var time_per_test:float = stepify(delta_time_sec / divider , 0.1)
 	
 	announce("all tests complete, saving\n", false)
@@ -1723,11 +1754,14 @@ remotesync func save_results():
 	if (failed.size()):
 		to_print+= "FAILED!\n\n"
 	else:
-		to_print+= "SUCCESS! (passed " +String(passed.size()) + "/" + str(test_files.size()) \
-		 + ", skipped " +  String(skipped.size()) + "/" + str(test_files.size())  + ")\n\n" 
+		to_print+= "SUCCESS! (passed " +String(passed.size()) + "/" + str(total_tests) \
+		 + ", skipped " +  String(skipped.size()) + "/" + str(total_tests)  + ")\n\n" 
 
 	announce (to_print, false)
-	to_print += "total tests: " + str(test_files.size()) + "\n"
+	to_print += "total tests: " + str(total_tests) + "\n"
+	if shards.is_coordinator():
+		to_print += "parallel run: " + str(shards.shard_count) + " instances, " \
+			+ str(delta_time_min) + " mins\n"
 	to_print +=  "###\nskipped: " + str(skipped.size()) + "\n"
 
 	var i = 0;
@@ -1785,11 +1819,74 @@ remotesync func save_results():
 
 	var player = gameData.get_player_by_network_id(cfc.get_network_unique_id())
 	var player_id = player.get_id()
-	var filename = "user://test_results_" + str(player_id) +".txt"
+	var filename = "user://test_results_" + str(player_id) + shards.file_suffix() + ".txt"
 	
 	file.open(filename, File.WRITE)
 	file.store_string(to_print + "\n")
 	file.close() 	
+
+	if (shards.is_worker() and shards.coordinated) or shards.quit_when_done:
+		cfc.FLUSH_LOG()
+		get_tree().quit()
+
+#this instance's results, for the coordinator of a parallel run
+func _results_as_dict() -> Dictionary:
+	var timers = {}
+	for key in delays_timer:
+		timers[key] = {
+			"total": delays_timer[key].get("total", 0),
+			"time": delays_timer[key].get("time", 0),
+		}
+	return {
+		"total_tests": test_files.size(),
+		"passed": passed,
+		"failed": failed,
+		"failed_reason": failed_reason,
+		"skipped": skipped,
+		"skipped_reason": skipped_reason,
+		"fail_details": fail_details,
+		"count_delays": count_delays,
+		"delays_timer": timers,
+		"test_durations": test_durations,
+	}
+
+#adds the results of the other instances of a parallel run to ours
+func _merge_worker_results(worker_results: Dictionary):
+	var keys = worker_results.keys()
+	keys.sort()
+	for shard in keys:
+		var data = worker_results[shard]
+		#keep failed/failed_reason (and skipped/skipped_reason) aligned
+		while failed_reason.size() < failed.size():
+			failed_reason.append("")
+		while skipped_reason.size() < skipped.size():
+			skipped_reason.append("")
+		if typeof(data) != TYPE_DICTIONARY:
+			failed.append("test instance " + str(shard))
+			failed_reason.append("stopped responding or crashed, some of its tests didn't run (see log_1_shard" + str(shard) + ".txt and test_results_1_shard" + str(shard) + ".txt)")
+			continue
+		_merged_test_count += int(data.get("total_tests", 0))
+		passed += data.get("passed", [])
+		var worker_failed = data.get("failed", [])
+		var worker_failed_reason = data.get("failed_reason", [])
+		for j in worker_failed.size():
+			failed.append(worker_failed[j])
+			failed_reason.append(worker_failed_reason[j] if j < worker_failed_reason.size() else "")
+		var worker_skipped = data.get("skipped", [])
+		var worker_skipped_reason = data.get("skipped_reason", [])
+		for j in worker_skipped.size():
+			skipped.append(worker_skipped[j])
+			skipped_reason.append(worker_skipped_reason[j] if j < worker_skipped_reason.size() else "")
+		fail_details += data.get("fail_details", [])
+		var worker_delays = data.get("count_delays", {})
+		for key in worker_delays:
+			count_delays[key] = count_delays.get(key, 0) + int(worker_delays[key])
+		var worker_timers = data.get("delays_timer", {})
+		for key in worker_timers:
+			add_elapsed(key, int(worker_timers[key].get("time", 0)), int(worker_timers[key].get("total", 0)))
+		var worker_durations = data.get("test_durations", {})
+		for key in worker_durations:
+			test_durations[key] = int(worker_durations[key])
 
 remotesync func set_upcoming_target(value:String):
 	_current_targeted_card = get_card(value, 1)

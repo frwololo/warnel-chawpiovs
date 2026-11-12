@@ -815,8 +815,9 @@ func post_cards_moved_load():
 	if !_has_victory_cards:
 		cfc.NMAP["victory_display"].visible = false
 		
-	#Save gamedata for restart
-	gameData.save_gamedata_to_file("user://Saves/_restart.json")	
+	#Save gamedata for restart (not in parallel test workers: shared file)
+	if !cfc.is_test_worker():
+		gameData.save_gamedata_to_file("user://Saves/_restart.json")	
 
 	cfc._rpc(self,"ready_for_step", LOADING_STEPS.READY_TO_START)
 

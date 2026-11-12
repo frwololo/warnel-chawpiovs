@@ -59,6 +59,20 @@ var TEXT_BOX_KEYWORDS
 var _debug_yielded:= {}
 var _debug_yielded_id:= 0
 
+#parallel test suite runs (command line options), see TestShards.gd
+const TestShardsScript = preload("res://src/wc/data/TestShards.gd")
+var _test_shards = null
+func get_test_shards():
+	if !_test_shards:
+		_test_shards = TestShardsScript.new()
+		_test_shards.name = "TestShards"
+		call_deferred("add_child", _test_shards)
+	return _test_shards
+
+#a test suite worker instance never writes shared files (caches, settings)
+func is_test_worker() -> bool:
+	return get_test_shards().is_worker()
+
 # warning-ignore:unused_signal
 signal json_parse_error(msg)
 
@@ -70,6 +84,12 @@ func _ready():
 	scale_grids()
 	
 	
+#workers of a parallel test run share the settings file: never write it
+func save_settings():
+	if is_test_worker():
+		return
+	.save_settings()
+
 func get_internal_setting(value):
 	return CFConst.PER_OS_INTERNAL_SETTINGS.get(OS.get_name(), {}).get(value, false)		
 
@@ -295,10 +315,13 @@ func default_button_focus(container) -> bool:
 
 func _setup() -> void:
 	._setup()
-	delete_log_files()
+	var _shards = get_test_shards()
+	if !is_test_worker():
+		delete_log_files()
 	preload_pck()
 	
-	version_first_run()
+	if !is_test_worker():
+		version_first_run()
 
 func version_first_run():
 	#First run of a new version: clear some garbage/cache from previous versions
@@ -1037,6 +1060,8 @@ func _get_set_definitions_md5_list(the_files):
 	return md5_list
 
 func save_data_to_cache (data, file_name):
+	if is_test_worker():
+		return
 	var cached_filename = get_cache_filename(file_name)
 
 	var file: File = File.new()	
@@ -1475,6 +1500,8 @@ func refresh_md5_cache(filepath, md5 = "", do_save_cache = true):
 		save_cache_toc()
 			
 func save_cache_toc():
+	if is_test_worker():
+		return
 	get_cache_toc()	
 	var file: File = File.new()	
 	file.open("user://cache/cache_index.json", File.WRITE)
@@ -2246,7 +2273,7 @@ func INIT_LOG():
 	var network_id = cfc.get_network_unique_id() if get_tree().has_network_peer() else 0
 	var player = gameData.get_player_by_network_id(network_id) if network_id else null
 	var player_id = player.get_id()	if player else 0
-	var filename = "user://log_" + str(player_id) +".txt"
+	var filename = "user://log_" + str(player_id) + get_test_shards().file_suffix() + ".txt"
 	if (file.file_exists(filename)):
 		return
 	file.open(filename, File.WRITE)
@@ -2266,7 +2293,7 @@ func FLUSH_LOG():
 	var network_id = cfc.get_network_unique_id() if get_tree().has_network_peer() else 0
 	var player = gameData.get_player_by_network_id(network_id)  if network_id else null
 	var player_id = player.get_id()	if player else 0
-	file.open("user://log_" + str(player_id) +".txt", File.READ_WRITE)
+	file.open("user://log_" + str(player_id) + get_test_shards().file_suffix() + ".txt", File.READ_WRITE)
 	file.seek_end()
 	file.store_string(_log_buffer + "\n")
 	file.close() 
@@ -2403,7 +2430,7 @@ func _rpc(object, func_name, arg0=null,
 		object.callv("rpc", [func_name] +  params)
 	else:
 		#object.callv(func_name, params)
-		object.call_deferred("callv", func_name,  params)	
+		call_deferred("_deliver_local_rpc", _local_rpc_generation, object, func_name, params)
 func _rpc_id(object, client_id, func_name, arg0=null,
 	arg1 =null,
 	arg2 =null,
@@ -2424,7 +2451,28 @@ func _rpc_id(object, client_id, func_name, arg0=null,
 	if gameData.is_multiplayer_game:
 		object.callv("rpc_id", [client_id,func_name] + params)
 	else:
-		object.call_deferred("callv", func_name,  params)	
+		call_deferred("_deliver_local_rpc", _local_rpc_generation, object, func_name, params)
+
+#Single player: _rpc and _rpc_id are deferred calls. A stack message sent
+#just before a game is cleaned up (e.g. the reply to a script request made
+#by the last action of a test) would otherwise be delivered to the next game
+#and corrupt it (test_1p_base_next_phase -> test_1p_bishop_bishops_uniform
+#stuck in VILLAIN_ACTIVATES). cleanup_post_game() calls
+#cancel_pending_stack_rpcs(), and stack messages queued before that are dropped.
+#Only the stack's: other deferred calls queued around a game load (e.g. the
+#test suite's initialize_clients_test) must still run.
+#Not covered: multiplayer, where the messages are network packets in flight.
+var _local_rpc_generation := 0
+func cancel_pending_stack_rpcs():
+	_local_rpc_generation += 1
+
+func _deliver_local_rpc(generation, object, func_name, params):
+	if !is_instance_valid(object):
+		return
+	if generation != _local_rpc_generation and object == gameData.theStack:
+		LOG("{flow} dropping stack message from a previous game: " + func_name, true)
+		return
+	object.callv(func_name, params)
 
 func get_rpc_sender_id():
 	if gameData.is_multiplayer_game:

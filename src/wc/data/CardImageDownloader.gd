@@ -259,6 +259,8 @@ func get_stats():
 	return stats
 
 func _process(_delta:float):
+	if cfc.is_test_worker():
+		return
 	#we can't start until the servers list is ready
 	#the servers list cannot be ready until the serverConfig Node
 	#has downloaded (or failed to download) the remote config
@@ -644,6 +646,9 @@ func refresh_card_destinations():
 			arr.erase(data)
 
 func add_card(card_id, priority = false):
+	#parallel test workers don't download (shared image folder)
+	if cfc.is_test_worker():
+		return
 	var img_filename = cfc.get_img_filename(card_id)
 	if is_image_download_failed(card_id):
 		return	

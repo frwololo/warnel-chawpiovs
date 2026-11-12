@@ -215,6 +215,7 @@ func _process(delta: float) -> void:
 	if !gameData.is_game_started():
 		_process_status_msg = "Game not started"
 		return
+	_log_if_phase_request_stuck()
 	
 	#don't move if the stack has something going on
 	#NOTE: calling theStack.is_processing() here doesn't work: if the stack is idle
@@ -570,6 +571,39 @@ var _pending_next_phase_reply = false
 #a step change asked for while other game flow work was ready (step 4c):
 #{caller, mode}, asked again by _process once the phase step is the pick
 var _deferred_phase_request := {}
+#when the current held request started waiting, and when it was last
+#reported, to catch a step change that never happens (a held request and
+#the sequence it waits for waiting on each other:
+#test_1p_four_horsemen_pestilence_effect, next phase during Golden Horse's
+#do_discard)
+const PHASE_HELD_REPORT_DELAY_MS := 3000
+var _phase_held_since_ms := 0
+var _phase_held_last_report_ms := 0
+
+#why the game can't move on: what the step change waits for, and why the
+#next sequence step doesn't start
+func _get_phase_held_details() -> String:
+	var details = "flow " + to_json(gameData.get_flow_waiting_summary())
+	if gameData.get_sequence_scripts(true):
+		details += ", sequence: " + gameData.get_sequence_wait_reason()
+	details += ", step_complete " + str(current_step_complete)
+	return details
+
+func _log_if_phase_request_stuck():
+	if !_deferred_phase_request:
+		_phase_held_since_ms = 0
+		return
+	var now = OS.get_ticks_msec()
+	if !_phase_held_since_ms:
+		_phase_held_since_ms = now
+		_phase_held_last_report_ms = now
+		return
+	if now - _phase_held_last_report_ms < PHASE_HELD_REPORT_DELAY_MS:
+		return
+	_phase_held_last_report_ms = now
+	gameData.theStack.log_flow("phase_still_held", "request after " + StepStrings[current_step] \
+			+ " (" + str(_deferred_phase_request.get("caller", "")) + ") held for " \
+			+ str((now - _phase_held_since_ms) / 1000) + "s, " + _get_phase_held_details())
 func request_next_phase(caller = "", mode = 0):
 	if (!is_ready_for_next_phase()):
 		return false
@@ -589,7 +623,8 @@ func request_next_phase(caller = "", mode = 0):
 			work = "sequence (" + reason + ")"
 	if work != "phase":
 		if !_deferred_phase_request:
-			gameData.theStack.log_flow("phase_held", "request after " + StepStrings[current_step] + " (" + caller + ") waits for " + work)
+			gameData.theStack.log_flow("phase_held", "request after " + StepStrings[current_step] + " (" + caller + ") waits for " + work \
+					+ " - " + _get_phase_held_details())
 		_deferred_phase_request = {"caller": caller, "mode": mode}
 		return false
 	_deferred_phase_request = {}

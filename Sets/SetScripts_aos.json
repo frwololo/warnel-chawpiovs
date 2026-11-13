@@ -3727,7 +3727,7 @@
 							"name": "mod_tokens",
 							"subject": "Alert Level",
 							"modification": 0,
-							"set_to_mopd": true,
+							"set_to_mod": true,
 							"token_name": "threat"
 						},
 						{
@@ -5241,7 +5241,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"grid_name": "allies__event_source_hero",
+					"grid_name": "allies_event_source_hero",
 					"subject": "my_ally"
 				}
 			]
@@ -10207,7 +10207,7 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"dest_grid": "allies_previous_subject",
+					"grid_name": "allies_previous_subject",
 					"subject": "tutor_and_choose",
 					"src_container": "hand_previous_subject",
 					"selection_optional": true,

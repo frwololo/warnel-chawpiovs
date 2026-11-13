@@ -313,7 +313,7 @@
 					"subject_count": "all",
 					"needs_selection": true,
 					"selection_count": 1,
-					"selectiontyp": "equal",
+					"selection_type": "equal",
 					"selection_optional": true,
 					"filter_state_tutor": [
 						{

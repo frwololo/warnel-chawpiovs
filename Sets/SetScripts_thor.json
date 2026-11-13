@@ -616,7 +616,7 @@
 				{
 					"name": "discard",
 					"subject": "index",
-					"src_countainer": "deck_villain"
+					"src_container": "deck_villain"
 				},
 				{
 					"name": "conditional_script",
@@ -753,7 +753,7 @@
 						"src_container": "hand",
 						"filter_state_tutor": [
 							{
-								"filter_propoerties": {
+								"filter_properties": {
 									"Name": "Mjolnir"
 								}
 							}
@@ -782,7 +782,7 @@
 						"src_container": "hand",
 						"filter_state_tutor": [
 							{
-								"filter_propoerties": {
+								"filter_properties": {
 									"Name": "Mjolnir"
 								}
 							}

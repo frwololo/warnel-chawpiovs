@@ -868,11 +868,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "defense",
-					"filter_state_trigger": [
-						{
-							"Name": "Black Widow"
-						}
-					],
+					"trigger": "Black Widow",
 					"alteration": 1
 				}
 			]

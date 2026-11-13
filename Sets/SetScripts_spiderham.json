@@ -728,7 +728,7 @@
 		},
 		"interrupt_attack_started": {
 			"trigger": "Spider-Ham",
-			"event_filter": {
+			"event_filters": {
 				"tags": [
 					"basic power"
 				]
@@ -1736,7 +1736,7 @@
 							"filter_group": "group_friendly_my_hero"
 						},
 						{
-							"filter_group": "upgrade_support_my_hero"
+							"filter_group": "group_upgrade_support_my_hero"
 						}
 					]
 				}

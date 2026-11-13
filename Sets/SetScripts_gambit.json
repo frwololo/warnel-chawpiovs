@@ -1228,7 +1228,7 @@
 			"board": [
 				{
 					"name": "exhaust_card",
-					"ais_cost": true,
+					"is_cost": true,
 					"subject": "self"
 				},
 				{

@@ -539,7 +539,7 @@
 						"subject_count": "all",
 						"filter_state_seek": [
 							{
-								"filter_group": "group_enemies_my_player",
+								"filter_group": "group_enemies_my_hero",
 								"filter_properties": {
 									"type_code": "minion"
 								}

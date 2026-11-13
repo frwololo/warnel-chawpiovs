@@ -4063,7 +4063,7 @@
 						},
 						{
 							"name": "sequence",
-							"sequence_name": "do_confuse"
+							"sequence_ability": "do_confuse"
 						}
 					],
 					"else": [
@@ -4112,7 +4112,7 @@
 						},
 						{
 							"name": "sequence",
-							"sequence_name": "do_confuse"
+							"sequence_ability": "do_confuse"
 						}
 					],
 					"else": [
@@ -4264,7 +4264,7 @@
 						},
 						{
 							"name": "sequence",
-							"sequence_name": "do_stun"
+							"sequence_ability": "do_stun"
 						}
 					],
 					"else": [
@@ -4313,7 +4313,7 @@
 						},
 						{
 							"name": "sequence",
-							"sequence_name": "do_stun"
+							"sequence_ability": "do_stun"
 						}
 					],
 					"else": [

@@ -1494,7 +1494,7 @@
 					"name": "discard",
 					"subject": "attachments",
 					"attachments_host": "previous",
-					"filter_state_attachments": [
+					"filter_state_attachment": [
 						{
 							"filter_properties": {
 								"shortname": "Bamf!"

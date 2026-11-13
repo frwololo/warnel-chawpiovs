@@ -1186,11 +1186,7 @@
 				{
 					"filter_task": "get_property",
 					"filter_property_name": "trait_aerial",
-					"filter_state_trigger": [
-						{
-							"filter_card_name": "War Machine"
-						}
-					],
+					"trigger": "War Machine",
 					"alteration": 1
 				}
 			]

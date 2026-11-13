@@ -3621,7 +3621,7 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"des_container": "discard_villain",
+					"dest_container": "discard_villain",
 					"subject": "self"
 				}
 			]
@@ -3878,7 +3878,7 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"des_container": "discard_villain",
+					"dest_container": "discard_villain",
 					"subject": "self"
 				}
 			]
@@ -4682,7 +4682,7 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"des_container": "discard_villain",
+					"dest_container": "discard_villain",
 					"subject": "self"
 				}
 			]
@@ -5051,9 +5051,9 @@
 					"name": "thwart",
 					"subject": "target",
 					"amount": 5,
-					"filter_state_seek": [
+					"filter_state_subject": [
 						{
-							"filter_group": "group_scheme"
+							"filter_group": "group_schemes"
 						}
 					]
 				}
@@ -6801,7 +6801,7 @@
 					"if_no_damage": [
 						{
 							"name": "move_card_to_container",
-							"des_container": "discard_villain",
+							"dest_container": "discard_villain",
 							"subject": "self"
 						}
 					]
@@ -7658,7 +7658,7 @@
 				},
 				{
 					"name": "move_card_to_container",
-					"des_container": "discard_villain",
+					"dest_container": "discard_villain",
 					"subject": "self"
 				}
 			]

@@ -5263,11 +5263,11 @@
 						"is_cost": true
 					}
 				],
-				"Villain Schemes": [
+				"villain Schemes": [
 					{
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
-						"subject": "Villain",
+						"subject": "villain",
 						"script": {
 							"alterants": {
 								"all": [
@@ -5282,7 +5282,8 @@
 						}
 					},
 					{
-						"name": "villain_schemes"
+						"name": "enemy_schemes",
+						"subject": "villain"
 					}
 				]
 			}
@@ -5299,11 +5300,11 @@
 						"is_cost": true
 					}
 				],
-				"Villain Attacks": [
+				"villain Attacks": [
 					{
 						"name": "add_script",
 						"end_condition": "enemy_activation_finished",
-						"subject": "Villain",
+						"subject": "villain",
 						"script": {
 							"alterants": {
 								"all": [

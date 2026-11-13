@@ -1267,7 +1267,7 @@
 							},
 							{
 								"filter_properties": {
-									"trait_s.h.i.e.l.d.": 1,
+									"trait_s.h.i.e.l.d": 1,
 									"comparison": "ge"
 								}
 							}

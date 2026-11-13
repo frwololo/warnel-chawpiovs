@@ -2343,7 +2343,7 @@
 							"subject_count": "all",
 							"filter_state_seek": [
 								{
-									"filer_group": "play_area_my_hero"
+									"filter_group": "play_area_my_hero"
 								}
 							]
 						}
@@ -2361,7 +2361,7 @@
 							"subject_count": "all",
 							"filter_state_seek": [
 								{
-									"filer_group": "play_area_my_hero"
+									"filter_group": "play_area_my_hero"
 								}
 							]
 						}

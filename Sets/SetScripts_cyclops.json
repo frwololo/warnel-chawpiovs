@@ -378,7 +378,7 @@
 					"attack",
 					"!dust_interrupt"
 				],
-				"filter_state_target": [
+				"filter_state_event_target": [
 					{
 						"filter_properties": {
 							"type_code": "minion"

@@ -346,7 +346,7 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_name": "do_electro"
+					"sequence_ability": "do_electro"
 				}
 			]
 		},

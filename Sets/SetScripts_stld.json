@@ -325,7 +325,7 @@
 										"card_name": "Element Gun"
 									}
 								},
-								"nested_scripts": [
+								"nested_tasks": [
 									{
 										"name": "discard",
 										"subject": "boardseek",
@@ -365,7 +365,7 @@
 										"card_name": "Element Gun"
 									}
 								},
-								"nested_scripts": [
+								"nested_tasks": [
 									{
 										"name": "discard",
 										"subject": "boardseek",
@@ -518,7 +518,7 @@
 				{
 					"name": "ready_card",
 					"subject": "target",
-					"ineeds_subject": true,
+					"needs_subject": true,
 					"filter_state_subject": [
 						{
 							"filter_group": "group_characters",

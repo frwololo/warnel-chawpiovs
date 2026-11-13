@@ -39,7 +39,7 @@
 					"up_to": true,
 					"sort_descending": true,
 					"subject_count": {
-						"func_name": "count_printed_resouces",
+						"func_name": "count_printed_resources",
 						"func_params": {
 							"resource_type": "wild",
 							"subject": "tutor",
@@ -1000,7 +1000,7 @@
 		"reveal_hero": {
 			"all": [
 				{
-					"name": "enemy_attack_you",
+					"name": "enemy_attacks_you",
 					"subject": "boardseek",
 					"subject_count": "all",
 					"is_cost": true,

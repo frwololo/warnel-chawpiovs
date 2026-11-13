@@ -402,7 +402,7 @@
 			"board": [
 				{
 					"name": "discard",
-					"subjec": "self"
+					"subject": "self"
 				}
 			]
 		}
@@ -518,7 +518,7 @@
 					"name": "exhaust_card",
 					"subject": "boardseek",
 					"subject_count": "all",
-					"selection_needed": true,
+					"needs_selection": true,
 					"selection_optional": true,
 					"selection_type": "min",
 					"selection_count": 1,
@@ -930,7 +930,7 @@
 					"is_cost": true,
 					"filter_state_seek": [
 						{
-							"filer_group": "group_enemies"
+							"filter_group": "group_enemies"
 						}
 					]
 				},

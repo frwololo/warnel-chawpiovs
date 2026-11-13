@@ -8577,7 +8577,7 @@
 					}
 				}
 			],
-			"filter_events": {
+			"event_filters": {
 				"tags": [
 					"is_ability"
 				]
@@ -9624,7 +9624,7 @@
 			"event_filters": {
 				"target": "self",
 				"amount": ">0",
-				"tag": [
+				"tags": [
 					"attack"
 				]
 			},

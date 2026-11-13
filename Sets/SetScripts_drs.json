@@ -22,7 +22,7 @@
 					"subject": "target",
 					"filter_state_subject": [
 						{
-							"filter_groups": "group_schemes"
+							"filter_group": "group_schemes"
 						}
 					],
 					"amount": {

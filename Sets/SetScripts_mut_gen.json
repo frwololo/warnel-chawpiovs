@@ -2996,7 +2996,8 @@
 					]
 				},
 				{
-					"name": "villain_schemes",
+					"name": "enemy_schemes",
+					"subject": "villain",
 					"is_else": true
 				}
 			]
@@ -3896,7 +3897,7 @@
 					"attachments_host": "previous",
 					"needs_selection": true,
 					"selection_optional": true,
-					"filter_state_attachments": [
+					"filter_state_attachment": [
 						{
 							"filter_func": {
 								"func_name": "property_contains",

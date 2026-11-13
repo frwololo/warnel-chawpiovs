@@ -677,6 +677,20 @@
 		}
 	},
 	"Green Goblin - 1 #02001b": {
+		"on_load": {
+			"all": [
+				{
+					"name": "modify_properties",
+					"subject": "self",
+					"set_properties": {
+						"next_villain_on_death": "#02002b"
+					},
+					"tags": [
+						"Init"
+					]
+				}
+			]
+		},
 		"reveal": {
 			"all": {
 				"_rules": {
@@ -724,6 +738,29 @@
 		}
 	},
 	"Green Goblin - 2 #02002b": {
+		"on_load": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "expert_mode"
+					},
+					"then": [
+						{
+							"name": "modify_properties",
+							"subject": "self",
+							"set_properties": {
+								"next_villain_on_death": "#02003b"
+							},
+							"tags": [
+								"Init"
+							]
+						}
+					]
+				}
+			]
+		},
 		"reveal": {
 			"all": {
 				"_rules": {
@@ -733,7 +770,7 @@
 				"Indirect Damage": [
 					{
 						"name": "indirect_damage",
-						"amount": 3,
+						"amount": 4,
 						"subject": "my_identity"
 					}
 				]
@@ -1344,6 +1381,11 @@
 		"_comments": "X = number of Goblin enemies (incl. Green Goblin) in play; printed escalation is -1+X"
 	},
 	"Norman Osborn - 1": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Green Goblin #02001b"
+			}
+		],
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
 			"display_section": "forced interrupt",
@@ -1383,6 +1425,11 @@
 		}
 	},
 	"Norman Osborn - 2": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Green Goblin #02002b"
+			}
+		],
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
 			"display_section": "forced interrupt",
@@ -1422,6 +1469,11 @@
 		}
 	},
 	"Norman Osborn - 3": {
+		"additional_cards_set_aside": [
+			{
+				"card": "Green Goblin #02003b"
+			}
+		],
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
 			"display_section": "forced interrupt",

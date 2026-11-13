@@ -1,0 +1,333 @@
+{
+	"_comments": "Osborn/GreenGoblin: instant victory when defeating Green Goblin 1",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02034",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02001b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 13
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hostile Takeover - 1B #02004b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "State of Madness #02006b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"madness": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Norman Osborn - 2 #02002a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02002b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corporate Acquisition - 2A #02005a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corporate Acquisition - 2B #02005b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Norman Osborn - 1 #02001a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Criminal Enterprise #02006a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 2
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Hostile Takeover - 1A #02004a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man Noir",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tenacity",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "SP//dr Suit #31001a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Green Goblin - 1 #02001b"
+		},
+		{
+			"type": "select",
+			"value": [
+				"SP//dr Suit #31001a",
+				"SP//dr Suit #31001a",
+				"SP//dr Suit #31001a",
+				"SP//dr Suit #31001a"
+			]
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02034",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 2 #02002b",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hostile Takeover - 1B #02004b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "State of Madness #02006b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"madness": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Norman Osborn - 2 #02002a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corporate Acquisition - 2A #02005a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corporate Acquisition - 2B #02005b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Norman Osborn - 1 #02001a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Criminal Enterprise #02006a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 2
+				},
+				{
+					"card": "Green Goblin - 1 #02001b"
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Hostile Takeover - 1A #02004a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 4
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man Noir",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tenacity",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,255 @@
+{
+	"_comments": "Bug: Induced Panic blocking entire actions",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mysterio - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Maze of Mirrors",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Open the Dark Dimension"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				},
+				{
+					"card": "Manipulated Mind"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Med Team",
+					"tokens": {
+						"medical": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Pinpoint #29035"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Unflappable"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		},
+		{
+			"type": "activate",
+			"value": "Med Team"
+		},
+		{
+			"type": "target",
+			"value": "Doctor Strange"
+		},
+		{
+			"type": "activate",
+			"value": "Pinpoint #29035",
+			"expected_to_fail": true
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Doctor Strange"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mysterio - 1",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Maze of Mirrors",
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "Open the Dark Dimension"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Friends and Family"
+				},
+				{
+					"card": "Caught Off guard"
+				},
+				{
+					"card": "Loose Ends"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Sandman"
+				},
+
+			],
+			"deck1": [
+				{
+					"card": "Magic Blast"
+				},
+				{
+					"card": "Astral Projection"
+				}
+			],
+			"deck_invocation1": [
+				{
+					"card": "Crimson Bands of Cyttorak"
+				},
+				{
+					"card": "Images of Ikonn"
+				},
+				{
+					"card": "Seven Rings of Raggadorr"
+				},
+				{
+					"card": "Vapors of Valtorr"
+				},
+				{
+					"card": "Winds of Watoomb"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Doctor Strange",
+					"tokens": {
+						"damage": 1
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Med Team"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Pinpoint #29035"
+				}
+			],
+			"others":[
+							{
+					"card": "Manipulated Mind",
+					"host": "Pinpoint #29035"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},
+				{
+					"card": "The Power of Protection"
+				},
+				{
+					"card": "Momentum Shift"
+				},
+				{
+					"card": "Unflappable"
+				}
+			],
+			"others": [
+				{
+					"card": "Manipulated Mind",
+					"host": "Pinpoint #29035"
+				}
+			]
+		}
+	}
+}

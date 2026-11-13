@@ -588,6 +588,10 @@ func dont_load_this_card(card_data:Dictionary):
 			return false
 		return true
 	
+	var card_set_code =  card_data.get("card_set_code", "")
+	if card_set_code in CFConst.EXCLUDED_SETS:
+		return true
+	
 	return false
 
 func cleanup_bb_code(text):
@@ -1665,7 +1669,8 @@ func load_script_definitions() -> void:
 					var card_datas = box_contents_by_name[box_name].get(card_name, [])
 					if !card_datas:
 						var error_msg = "scripting for non existing card: " + card_name + ". Check case, character subname, etc..."
-						cfc.emit_signal("json_parse_error", error_msg)				
+						print_debug(error_msg)
+						#cfc.emit_signal("json_parse_error", error_msg)				
 					for card_data in card_datas:
 						var card_id = card_data["_code"]
 						if not combined_scripts.get(card_id):  #this ensures the first data that was read gets precedence

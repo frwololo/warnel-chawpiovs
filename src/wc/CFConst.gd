@@ -1162,6 +1162,11 @@ const DEFAULT_SETTINGS:= {
 	
 }
 
+#sets that are not supported by the code and should not be loaded
+const EXCLUDED_SETS := [
+	"standard_pvp"
+]
+
 const BETA_SETS:= [
 	"twc",
 	"toafk",
@@ -1169,6 +1174,7 @@ const BETA_SETS:= [
 	"mojo",
 	"deadpool",
 	"iceman",
+	"rogue",
 	"jubilee",
 	"bp",
 	"silk",
@@ -1263,7 +1269,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
 const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261106-1916"
+const BUILD_NUMBER := "20261113-1502"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

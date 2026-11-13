@@ -1,0 +1,387 @@
+{
+	"_comments": [
+		"Mutagen Formula not giving goblins on defeat",
+		"SP/DR + Tony Stark. Green Goblin schemes, completing mutagen scheme",
+		"we epxect that this will give each hero a goblin + discard 6 cards from encounter deck"
+	],
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Shadow of the past",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Yon-Rogg",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Soldier",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Knight #02022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"tokens": {
+						"stunned": 1
+					},
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 13
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man Noir",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tenacity",
+					"owner_hero_id": 1
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Tony Stark"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Hydra Soldier",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault",
+					"owner_hero_id": 0
+				},				
+			],
+			"deck_villain": [
+				{
+					"card": "Shadow of the past",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b"
+				},				
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Goblin Knight #02022"
+				},
+				{
+					"card": "Yon-Rogg",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man Noir",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tenacity",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hydra Mercenary",
+					"owner_hero_id": 0
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Tony Stark"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	}
+}

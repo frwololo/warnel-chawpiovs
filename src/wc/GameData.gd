@@ -1244,6 +1244,16 @@ func _oldest_inbox_or_priority() -> String:
 	#do_get_minion, hero 1) before the next priority script (hero 2)
 	if theStack.local_inbox_head_is_decision():
 		return "inbox"
+	#an inbox entry created after the last priority script started is part
+	#of that script (a conditional_script's nested tasks run when it resolves
+	#on the stack): it goes before the next priority script. With
+	#for_each_player, hero 2's copy used to run between hero 1's condition
+	#and hero 1's discard (Unleashing the Mutagen - 1B,
+	#test_2p_mutagen_formula_complete)
+	#(any such entry, not only the oldest one: an older entry can still be
+	#waiting in front of it)
+	if _priority_started_seq >= 0 and theStack.last_local_inbox_seq() > _priority_started_seq:
+		return "inbox"
 	var priority_seq = _priority_scripts.front().get("seq", -1)
 	if priority_seq < 0:
 		return "inbox"
@@ -1304,6 +1314,8 @@ func check_flow_start(source: String, detail := "", done_source := "") -> void:
 	theStack.log_flow("mismatch", "started " + source + (" " + detail if detail else "") + ", next_work says " + expected, true)
 
 var _priority_scripts = []
+#inbox seq taken when the last priority script started, -1 if none
+var _priority_started_seq := -1
 var _current_priority_script = {}
 func add_script_to_execute(owner, trigger_card, trigger, trigger_details = {}, run_type = CFInt.RunType.NORMAL):
 	_priority_scripts.append(
@@ -1373,6 +1385,9 @@ func execute_priority_scripts() -> bool:
 		var next_owner = _priority_scripts.front().get("owner", null)
 		check_flow_start("priority", next_owner.canonical_name if is_instance_valid(next_owner) else "")
 		var script_data = _priority_scripts.pop_front()
+		#what this script creates later (scripts nested in it, created while
+		#it resolves on the stack) gets a newer seq: see _oldest_inbox_or_priority
+		_priority_started_seq = theStack.inbox.take_seq()
 		_current_priority_script = script_data
 		var script_owner = script_data.get("owner", null)
 		var trigger_card = script_data.get("trigger_card", null)

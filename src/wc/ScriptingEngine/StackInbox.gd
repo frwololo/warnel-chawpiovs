@@ -49,6 +49,14 @@ func first_seq(kind: String) -> int:
 		return -1
 	return _entries[i]["seq"]
 
+#the seq of the newest entry of that kind, or -1
+func last_seq(kind: String) -> int:
+	var result = -1
+	for entry in _entries:
+		if entry["kind"] == kind and entry["seq"] > result:
+			result = entry["seq"]
+	return result
+
 func has(kind: String) -> bool:
 	return _find_first(kind) != -1
 

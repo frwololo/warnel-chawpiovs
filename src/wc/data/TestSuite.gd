@@ -1767,11 +1767,13 @@ func next_test() -> bool:
 	else:
 		yield(get_tree().create_timer(time_between_tests * multiplier), "timeout")
 	stop_timer("yield_time_between_tests")
-	reset_between_tests()
 	if (test_files.size() <= current_test):
 		finished = true
 		cfc._rpc(self,"save_results")
 		return false
+
+	reset_between_tests()		
+		
 	var found = false
 	while !found and current_test < test_files.size():
 		current_test+=1		

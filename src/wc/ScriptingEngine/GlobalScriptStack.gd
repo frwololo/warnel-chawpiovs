@@ -744,6 +744,9 @@ func _is_interrupt_or_response_trigger(trigger, trigger_details) -> bool:
 func first_local_inbox_seq() -> int:
 	return inbox.first_seq(StackInbox.LOCAL)
 
+func last_local_inbox_seq() -> int:
+	return inbox.last_seq(StackInbox.LOCAL)
+
 #true when the oldest local inbox entry stands for another player's choice
 #in progress (this client waits for it), not for new work: it comes first
 #whatever its age (step 4c). Multiplayer only: a deferred_decision (this
@@ -2076,6 +2079,7 @@ func reset():
 			or (VERBOSE_SYNC_LOGS and gameData.next_work_stats["match"]):
 		cfc.LOG("{flow} next_work end of game: " + to_json(gameData.next_work_stats), true)
 	gameData.next_work_stats = {"match": 0, "mismatch": 0}
+	gameData._priority_started_seq = -1
 	gameData._stack_idle_sent_uid = -1
 	gameData._stack_idle_settling = false
 	inbox.clear()

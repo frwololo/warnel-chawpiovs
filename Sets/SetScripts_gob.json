@@ -2051,7 +2051,8 @@
 										"subject": "index",
 										"subject_index": "top",
 										"subject_count": 3,
-										"src_container": "deck_villain"
+										"src_container": "deck_villain",
+										"tags": ["immediate"]
 									},
 									{
 										"name": "move_card_to_board",

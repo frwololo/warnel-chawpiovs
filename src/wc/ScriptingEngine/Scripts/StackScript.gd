@@ -146,14 +146,101 @@ func next_execute_mode():
 #a token could pay both the resource and a token cost on the other clients
 #(Spider-Ham's toon for "I Don't Think So!": refused on the deciding client,
 #paid elsewhere, desync in test_2p_spider_ham_i_dont_think_so_resource_bug)
+#cards whose tokens _lock_prepaid_payments locked, unlocked again if the
+#costs are refused (see the error case at the end of execute)
+var _payment_locked_cards := []
+
 func _lock_prepaid_payments():
+	_payment_locked_cards = []
 	for task in sceng.scripts_queue:
 		if task.script_name != "pay_as_resource" or !task.is_cost:
 			continue
-		for subject in task.subjects:
+		#the subjects are not always primed yet at this point (none were
+		#locked in test_2p_spider_ham_i_dont_think_so_resource_bug): read
+		#them from the payment data, which is what will be paid
+		var subjects = task.subjects
+		var prepaid = task.script_definition.get("network_prepaid", null)
+		if typeof(prepaid) == TYPE_DICTIONARY and prepaid.get("subjects", null):
+			subjects = guidMaster.array_of_guid_to_objects(prepaid["subjects"], true)
+		if !subjects:
+			cfc.LOG("{payment} " + (sceng.owner.canonical_name if is_instance_valid(sceng.owner) else "?") \
+					+ ": pay_as_resource without subjects, no token lock", true)
+		for subject in subjects:
 			if typeof(subject) == TYPE_OBJECT and is_instance_valid(subject) \
 					and subject.has_method("lock_tokens_for_network_payment"):
 				subject.lock_tokens_for_network_payment(task)
+				_payment_locked_cards.append(subject)
+			else:
+				cfc.LOG("{payment} pay_as_resource subject skipped: " + str(subject), true)
+
+#Narrow version of the payment plan (design doc): add up the tokens the
+#action removes, its own mod_tokens costs plus the "self" token costs of the
+#resource scripts of the cards paying for it, and compare with what each
+#card holds. Static: script definitions, primed subjects, payment data.
+#Special payments (resource_special) are not counted yet.
+func _tokens_suffice_for_payment() -> bool:
+	var needed = {}
+	for task in sceng.scripts_queue:
+		if !task.is_cost:
+			continue
+		if task.script_name == "mod_tokens":
+			var modification = task.script_definition.get("modification", 0)
+			if !(typeof(modification) in [TYPE_INT, TYPE_REAL]) or modification >= 0:
+				continue
+			var targets = task.subjects
+			var subject_kind = task.script_definition.get("subject", "")
+			if !targets and subject_kind == "self":
+				targets = [sceng.owner]
+			elif !targets and subject_kind == "my_identity" and is_instance_valid(sceng.owner):
+				targets = [gameData.get_identity_card(sceng.owner.get_controller_hero_id())]
+			for card in targets:
+				_add_token_need(needed, card, task.script_definition.get("token_name", ""), -int(modification))
+		elif task.script_name == "pay_as_resource":
+			for card in _paying_cards(task):
+				if card._get_network_resource_special_data(task):
+					continue
+				var card_scripts = card.retrieve_filtered_scripts(sceng.owner, "resource", {})
+				for definition in card.get_state_scripts(card_scripts, sceng.owner, {}):
+					if typeof(definition) != TYPE_DICTIONARY:
+						continue
+					if definition.get("name", "") != "mod_tokens" or !definition.get("is_cost", false) \
+							or definition.get("subject", "") != "self":
+						continue
+					var modification = definition.get("modification", 0)
+					if typeof(modification) in [TYPE_INT, TYPE_REAL] and modification < 0:
+						_add_token_need(needed, card, definition.get("token_name", ""), -int(modification))
+	for card in needed:
+		for token_name in needed[card]:
+			var available = card.tokens.get_token_count(token_name)
+			if needed[card][token_name] > available:
+				cfc.LOG("{payment} " + (sceng.owner.canonical_name if is_instance_valid(sceng.owner) else "?") \
+						+ " refused: needs " + str(needed[card][token_name]) + " " + token_name \
+						+ " on " + card.canonical_name + ", has " + str(available), true)
+				return false
+	return true
+
+func _add_token_need(needed: Dictionary, card, token_name: String, amount: int) -> void:
+	if !token_name or !(typeof(card) == TYPE_OBJECT and is_instance_valid(card)) or !card.get("tokens"):
+		return
+	if !needed.has(card):
+		needed[card] = {}
+	needed[card][token_name] = needed[card].get(token_name, 0) + amount
+
+#the cards paying in a pay_as_resource task: from the payment data when
+#there is some (what will be paid), else from the primed subjects
+func _paying_cards(task) -> Array:
+	var result = []
+	var subjects = task.subjects
+	var prepaid = task.script_definition.get("network_prepaid", null)
+	if typeof(prepaid) == TYPE_DICTIONARY and prepaid.get("subjects", null):
+		subjects = guidMaster.array_of_guid_to_objects(prepaid["subjects"], true)
+	for card in subjects:
+		if typeof(card) == TYPE_OBJECT and is_instance_valid(card) and card.has_method("_get_network_resource_special_data"):
+			result.append(card)
+	cfc.LOG("{payment} " + (sceng.owner.canonical_name if is_instance_valid(sceng.owner) else "?") \
+			+ " paid with " + str(result.size()) + " card(s) (task subjects " + str(task.subjects.size()) \
+			+ ", prepaid " + str(typeof(prepaid) == TYPE_DICTIONARY) + ")", true)
+	return result
 
 func execute():
 	var run_mode = next_execute_mode()
@@ -183,6 +270,19 @@ func execute():
 			#TODO this shouldn't happen because at this stage all costs should have been prepaid
 			var _error = 1
 			yield(sceng,"tasks_completed")	
+		#every client checks that the tokens this action spends (its own token
+		#costs plus the token costs of the resources paying for it) are
+		#there, from the board and the payment data only. The payment window
+		#lock did this on the deciding client only
+		if sceng.can_all_costs_be_paid and !_tokens_suffice_for_payment():
+			sceng.can_all_costs_be_paid = false
+		#diagnostics (complex resources): which cost refused the script
+		var cost_report = []
+		for task in sceng.scripts_queue:
+			if task.is_cost:
+				cost_report.append(task.script_name + (" valid" if task.is_valid else " INVALID"))
+		cfc.LOG("{payment} cost check for " + (owner.canonical_name if is_instance_valid(owner) else "?") \
+				+ ": " + ("paid" if sceng.can_all_costs_be_paid else "refused") + " " + to_json(cost_report), true)
 		
 		if sceng.can_all_costs_be_paid:
 
@@ -239,6 +339,13 @@ func execute():
 					if card as Card:
 						card.remove_resource_lock()
 						card.tokens.remove_resource_lock()			
+			#the locks set before the cost check, whether or not the
+			#subjects above were primed
+			for card in _payment_locked_cards:
+				if is_instance_valid(card):
+					card.remove_resource_lock()
+					card.tokens.remove_resource_lock()
+			_payment_locked_cards = []
 				
 	cfc.remove_ongoing_process(self)
 	return run_mode

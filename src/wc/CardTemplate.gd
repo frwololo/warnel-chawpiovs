@@ -5030,18 +5030,30 @@ func set_resource_lock(script, owner = null):
 func lock_tokens_for_network_payment(script):
 	#special payments do not lock (see set_resource_lock)
 	if _get_network_resource_special_data(script):
+		cfc.LOG("{payment} " + canonical_name + ": special payment, no token lock", true)
 		return
 	if get_potential_scripts("precompute_resource_special"):
+		cfc.LOG("{payment} " + canonical_name + ": has precompute_resource_special, no token lock", true)
 		return
 	var sceng = _get_resource_sceng(script)
 	if !sceng or !sceng.can_all_costs_be_paid:
+		cfc.LOG("{payment} " + canonical_name + ": resource script " + ("cannot be paid" if sceng else "missing") + ", no token lock", true)
 		return
+	var locked = 0
 	for task in sceng.scripts_queue:
 		if task.is_cost and task.script_name in ["mod_tokens"]:
 			var token_name = task.script_definition["token_name"]
 			var modification = task.retrieve_integer_property("modification")
-			for s in task.subjects:
+			var targets = task.subjects
+			#the cost check may leave "self" unprimed
+			if !targets and task.script_definition.get("subject", "") == "self":
+				targets = [self]
+			for s in targets:
 				s.tokens.lock_for_payment(token_name, modification, task)
+				locked += 1
+				cfc.LOG("{payment} " + canonical_name + ": locked " + str(modification) + " " + token_name + " on " + s.canonical_name, true)
+	if !locked:
+		cfc.LOG("{payment} " + canonical_name + ": no token cost in its resource script, no token lock", true)
 
 func is_subject_locked_as_resource(script,owner = null):
 	return is_resource_locked(script, owner, true)

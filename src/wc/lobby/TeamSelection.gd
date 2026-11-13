@@ -174,7 +174,7 @@ func _ready():
 			
 #Quickstart for tests
 #TODO remove
-	if (cfc.is_game_master() and CFConst.DEBUG_AUTO_START_MULTIPLAYER):
+	if (cfc.is_game_master() and (CFConst.DEBUG_AUTO_START_MULTIPLAYER or gameData.run_auto_tests)):
 		if (gameData.is_multiplayer_game):
 			yield(get_tree().create_timer(0.5), "timeout")	
 			owner_changed(1, 1)
@@ -186,9 +186,8 @@ func _ready():
 			cfc._rpc(self, "assign_hero", hero2 , 1, {"deck_data": deck_data2})
 			yield(get_tree().create_timer(0.5), "timeout")
 			scenario_select("01097a")
-			yield(get_tree().create_timer(0.5), "timeout")	
-			if CFConst.DEBUG_AUTO_START_MULTIPLAYER:			
-				_launch_server_game()
+			yield(get_tree().create_timer(0.5), "timeout")				
+			_launch_server_game()
 		pass	
 
 	resize()
@@ -1240,6 +1239,8 @@ func _launch_server_game():
 		save_last_used_deck(hero_data.get_hero_id(), hero_data.get_deck_id())
 	
 	var scenario_options = {}
+	if gameData.run_auto_tests:
+		scenario_options["testsuite"] = gameData.run_auto_tests
 	for key in _scenario_options:
 		var option_button:OptionButton =  _scenario_options[key]
 		scenario_options[key] = option_button.get_selected_metadata()

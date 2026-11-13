@@ -14,6 +14,7 @@ var roomSelect = preload("res://src/wc/menus/JoinRoom.tscn")
 
 var http_request: HTTPRequest = null
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	v_host_ip_box.text = ""
@@ -84,7 +85,7 @@ func _check_rooms_list(result, response_code, headers, body):
 			rooms_list.add_child(new_room)
 		cfc.default_button_focus(rooms_list)
 		show_buttons()
-		if CFConst.DEBUG_AUTO_START_MULTIPLAYER:
+		if CFConst.DEBUG_AUTO_START_MULTIPLAYER or gameData.run_auto_tests:
 			var room_name = rooms_list.get_child(0).room_name
 			request_join_room(room_name)
 

@@ -20,9 +20,9 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 733.0
-margin_top = 245.0
+margin_top = 190.0
 margin_right = 1187.0
-margin_bottom = 834.0
+margin_bottom = 889.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -44,7 +44,7 @@ align = 1
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
 margin_top = 229.0
 margin_right = 454.0
-margin_bottom = 549.0
+margin_bottom = 659.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
@@ -69,10 +69,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Cancel" type="Button" parent="CenterContainer/VBox/VButtons"]
+[node name="JoinTests" type="Button" parent="CenterContainer/VBox/VButtons"]
+unique_name_in_owner = true
 margin_top = 220.0
 margin_right = 454.0
 margin_bottom = 320.0
+rect_min_size = Vector2( 0, 100 )
+size_flags_horizontal = 3
+text = "Tests (Join)"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Cancel" type="Button" parent="CenterContainer/VBox/VButtons"]
+margin_top = 330.0
+margin_right = 454.0
+margin_bottom = 430.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 text = "Cancel"
@@ -81,9 +93,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 559.0
+margin_top = 669.0
 margin_right = 128.0
-margin_bottom = 589.0
+margin_bottom = 699.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

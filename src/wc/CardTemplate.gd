@@ -5023,6 +5023,26 @@ func set_resource_lock(script, owner = null):
 	
 
 
+#the token part of set_resource_lock, decided from the board and the payment
+#data only (not from what this client primed in a payment window), so that
+#every client makes the same reservation. Same signatures as
+#set_resource_lock: the deciding client's window lock is simply renewed
+func lock_tokens_for_network_payment(script):
+	#special payments do not lock (see set_resource_lock)
+	if _get_network_resource_special_data(script):
+		return
+	if get_potential_scripts("precompute_resource_special"):
+		return
+	var sceng = _get_resource_sceng(script)
+	if !sceng or !sceng.can_all_costs_be_paid:
+		return
+	for task in sceng.scripts_queue:
+		if task.is_cost and task.script_name in ["mod_tokens"]:
+			var token_name = task.script_definition["token_name"]
+			var modification = task.retrieve_integer_property("modification")
+			for s in task.subjects:
+				s.tokens.lock_for_payment(token_name, modification, task)
+
 func is_subject_locked_as_resource(script,owner = null):
 	return is_resource_locked(script, owner, true)
 #script can either be a script object (in which case its owner will be computed)
@@ -5070,6 +5090,18 @@ func pay_as_resource(script):
 		return null
 		
 	cfc.add_ongoing_process(self, "pay_as_resource")
+
+	#complex resource paid through the stack: every client (the one who chose
+	#included) rebuilds the special payment from the choices in network_prepaid
+	var special_data = _get_network_resource_special_data(script)
+	if special_data:
+		_cache_resource_value = {}
+		_resource_special_precompute_cache = {}
+		var special_sceng = _build_resource_special_sceng_from_network(script, special_data)
+		if special_sceng:
+			set_resource_special_sceng(special_sceng)
+		else:
+			cfc.LOG("{error} " + canonical_name + ": could not rebuild its special resource payment from network_prepaid", true)
 
 	#generate a summary of resources generated
 	var result_mana:ManaCost = get_resource_value_as_mana(script)
@@ -5264,6 +5296,60 @@ func set_resource_special_sceng(new_sceng):
 	_resource_special_sceng = new_sceng
 	
 		
+
+#multiplayer: the choices made for this card's special resource payment
+#(resource_special script primed in the payment window), so that every client
+#pays it the same way. null if this card has no special payment in progress
+func get_resource_special_network_data():
+	if !_resource_special_sceng:
+		return null
+	var prepaid_uids = []
+	for entry in _resource_special_sceng.network_prepaid:
+		var subjects = entry.get("subjects", null)
+		if subjects != null:
+			subjects = guidMaster.array_of_objects_to_guid(subjects, true)
+		prepaid_uids.append({"is_valid": entry.get("is_valid", true), "subjects": subjects})
+	if !prepaid_uids:
+		return null
+	return {
+		"network_prepaid": prepaid_uids,
+		"stored_integers": _resource_special_sceng.stored_integers.duplicate()
+	}
+
+#the special payment data for this card in a pay_as_resource task that came
+#through the stack, null if none
+func _get_network_resource_special_data(script):
+	if !script or typeof(script) == TYPE_DICTIONARY:
+		return null
+	var prepaid = script.script_definition.get("network_prepaid", null)
+	if typeof(prepaid) != TYPE_DICTIONARY:
+		return null
+	var special = prepaid.get("special", {})
+	if typeof(special) != TYPE_DICTIONARY:
+		return null
+	return special.get(guidMaster.get_guid(self), null)
+
+#the resource_special script engine, primed from the choices sent over the
+#network instead of asking the player again
+func _build_resource_special_sceng_from_network(script, special_data):
+	var trigger_card = script.owner if script else self
+	var card_scripts = retrieve_filtered_scripts(trigger_card, "resource_special", {})
+	var state_scripts = get_state_scripts(card_scripts, trigger_card, {})
+	if !state_scripts:
+		return null
+	var prepaid = special_data.get("network_prepaid", [])
+	if prepaid.size() != state_scripts.size():
+		cfc.LOG("{error} " + canonical_name + ": special resource prepaid has " + str(prepaid.size()) \
+				+ " entries for " + str(state_scripts.size()) + " tasks", true)
+		return null
+	var sceng = cfc.scripting_engine.new(
+			state_scripts,
+			self,
+			trigger_card,
+			{"network_prepaid": prepaid.duplicate(true)})
+	sceng.stored_integers = special_data.get("stored_integers", []).duplicate()
+	sceng.network_prepaid_prime()
+	return sceng
 
 func get_resource_value_as_int_special(mode, script):
 	var cache_key = {

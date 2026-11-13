@@ -123,6 +123,11 @@ func prime_ask_integer(_run_type: int) -> int:
 	#check first if the number was already provided from an online call
 	var prepaid = prime_integer_from_network_prepaid()
 	if prepaid:
+		#same as the player's answer below: later tasks read it as
+		#"my_stored_integer" (the card's script variable). Without this,
+		#a client that did not answer used 0 (Fury's Watch removed no threat
+		#on the other client: desync, test_2p_nick_fury_s_watch_double_use)
+		set_stored_integer(prepaid["result"])
 		_set_primed()
 		return prepaid["result"]		
 			

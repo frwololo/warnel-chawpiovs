@@ -140,6 +140,21 @@ func next_execute_mode():
 		return CFInt.RunMode.NON_COST_SCRIPTS_ONLY
 	return CFInt.RunMode.COST_SCRIPTS_ONLY	
 
+#Every client reserves the tokens its chosen resources will spend before
+#checking the costs, as the deciding client did in its payment window
+#(CardTemplate.set_resource_lock). Only the deciding client had that lock, so
+#a token could pay both the resource and a token cost on the other clients
+#(Spider-Ham's toon for "I Don't Think So!": refused on the deciding client,
+#paid elsewhere, desync in test_2p_spider_ham_i_dont_think_so_resource_bug)
+func _lock_prepaid_payments():
+	for task in sceng.scripts_queue:
+		if task.script_name != "pay_as_resource" or !task.is_cost:
+			continue
+		for subject in task.subjects:
+			if typeof(subject) == TYPE_OBJECT and is_instance_valid(subject) \
+					and subject.has_method("lock_tokens_for_network_payment"):
+				subject.lock_tokens_for_network_payment(task)
+
 func execute():
 	var run_mode = next_execute_mode()
 
@@ -158,6 +173,7 @@ func execute():
 		cfc.remove_ongoing_process(self)
 		return
 	if run_mode == CFInt.RunMode.COST_SCRIPTS_ONLY:
+		_lock_prepaid_payments()
 		#we re-run some pre-execution scripts here to set everything right
 		owner.common_pre_run(sceng)
 		# In case the script involves targetting, we need to wait on further

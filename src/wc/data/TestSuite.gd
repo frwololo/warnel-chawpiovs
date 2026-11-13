@@ -279,7 +279,8 @@ func _sort_by_duration_desc(a, b):
 func _update_settled_frames():
 	var signature = _get_game_signature()
 	var changed = (signature != _last_game_signature)
-	if changed and game_loaded:
+	#remote clients too: their trace is the only view of their local work
+	if changed and (game_loaded or !cfc.is_game_master()):
 		trace("state [run_mode, stack, requests, yields, inbox, interrupting_hero, stack_uid, step, processes, selection, menu, targeting, flow] = " + str(signature) + " settled_check=" + str(is_game_settled()))
 	_last_game_signature = signature
 	if !changed and is_game_settled():
@@ -557,6 +558,17 @@ func should_wait(my_action, _delta, _ready_delta = -1.0):
 
 	var delay_multiplier = get_delay_multiplier(my_action)
 
+	#the master only starts a test step once its own cards are still, but a
+	#remote client can still be moving cards (test loaded just before): a
+	#click on a card still on its way to the hand is refused (state_exec is
+	#not "hand" yet), and the action is lost (test_2p_spdr_suit_resource:
+	#"play Psychic Link" did nothing, its payment window never opened)
+	if action_type in ["play", "activate"] and cfc.NMAP.has("board") \
+			and is_instance_valid(cfc.NMAP.board) and cfc.NMAP.board.are_cards_still_animating() \
+			and _delta < max_wait_time * delay_multiplier:
+		count_delay("cards_animating_before_action")
+		return true
+
 	if (action_type == "other"):
 		match action_value:
 			"wait_for_interrupt":
@@ -681,7 +693,19 @@ func should_wait(my_action, _delta, _ready_delta = -1.0):
 
 func should_wait_after_action(my_action, _delta):
 	var wait_time = long_wait_time *gameData.network_players.size() *gameData.network_players.size()
-	if !gameData.theStack.is_player_allowed_to_click() and _delta < wait_time:
+	if _delta >= wait_time:
+		return false
+	if !gameData.theStack.is_player_allowed_to_click():
+		return true
+	#remote client: the master only sees this client's work once it reaches
+	#the stack. Report the action complete only when this client is settled
+	#itself (the payment it just confirmed has been processed and sent, or a
+	#window is waiting for the next action). Reported earlier, the master
+	#saw nothing going on and sent the next action while the previous one
+	#was still being paid locally (test_2p_spdr_suit_resource: "play
+	#Tenacity" ran before Psychic Link was paid and played)
+	if !cfc.is_game_master() and !is_settled():
+		count_delay("remote_settle")
 		return true
 	return false
 
@@ -966,6 +990,15 @@ func action_select(hero_id, action_value):
 	if (chosen_cards):
 		result = current_window.select_cards_by_name(chosen_cards)
 		chosen_cards = result.get("selected_cards", [])
+		#diagnostics: what the window counted, and whether it closed
+		var selected_names = []
+		for c in chosen_cards:
+			selected_names.append(c.canonical_name if is_instance_valid(c) else str(c))
+		trace("select in '" + str(current_window.window_title) + "': selected " + to_json(selected_names) \
+				+ " count=" + str(current_window.get_count(chosen_cards)) \
+				+ " needed=" + str(current_window.get_selection_count(chosen_cards)) \
+				+ " type=" + str(current_window.selection_type) \
+				+ " closed=" + str(result.get("window_closed", false)))
 		
 	if (chosen_cards and result.get("window_closed", false)):
 		remove_selection_window(current_window)

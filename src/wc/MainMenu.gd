@@ -61,9 +61,6 @@ func _ready() -> void:
 	exit_button.visible = true
 	exit_button.grab_focus()
 
-	if cfc._debug:
-		get_node("%Tests").visible = true
-
 	if gamepadHandler.is_controller_input() or !cfc.game_settings.get("can_toggle_fullscreen", true):
 			get_node("%FullscreenCheck").visible = false
 
@@ -223,7 +220,7 @@ func _recursive_visible_buttons(node, value = true):
 	if node.name == "Multiplayer" and cfc.get_internal_setting("disable_multiplayer"):
 		node.visible = false
 	
-	if node.name == "Tests" and !OS.has_feature("editor"):
+	if node.name == "Tests" and !OS.has_feature("editor") and !OS.is_debug_build():
 		node.visible = false
 
 	for child in node.get_children():
@@ -516,17 +513,24 @@ func _on_OptionButton_item_selected(index):
 	cfc.change_locale(new_locale)
 
 
+#if test list exists, runs the test suite single threaded for more visual control,
+#otherwise
 #runs the sanity test suite in parallel instances (see TestShards.gd)
 func _on_Tests_pressed():
 	var test_filters = ["sanity"]
-	var shards = cfc.get_test_shards()
-	shards.setup_parallel_run(shards.default_instance_count(), test_filters)
-	shards.start_workers()
-	_start_test_run(test_filters)
+	var file:File = File.new()
+	if file.file_exists("res://Test/_tests.txt"):
+		_start_test_run(test_filters, false)
+	else:	
+		var shards = cfc.get_test_shards()
+		shards.setup_parallel_run(shards.default_instance_count(), test_filters)
+		shards.start_workers()
+		_start_test_run(test_filters)
 
-func _start_test_run(test_filters:Array):
-	#parallel run: each instance takes a quarter of the screen
-	cfc.get_test_shards().apply_window_layout()
+func _start_test_run(test_filters:Array, parallelized = true):
+	if parallelized:
+		#parallel run: each instance takes a quarter of the screen
+		cfc.get_test_shards().apply_window_layout()
 	gameData.init_1player()
 	var hd = HeroDeckData.new()
 	hd.set_hero_id("01001a")

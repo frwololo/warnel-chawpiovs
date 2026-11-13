@@ -198,10 +198,26 @@ func serialize_sceng(sceng, trigger_details):
 
 	#NOTE in some cases it is ok for prepaid to be empty. E.g. when refusing to defend
 
+	var i = 0
 	for array in prepaid:
 		var data = {"is_valid": array["is_valid"]}
 		data["subjects"] =  guidMaster.array_of_objects_to_guid(array["subjects"], true)
+		#complex resources (Organizational Support, Spider-Ham, SP//dr Suit,
+		#Fury's Watch): paying with them took a second decision (which cards
+		#to exhaust, how many tokens...). The other clients need it too, or
+		#they only discard the card without paying its cost
+		if i < sceng.scripts_queue.size() and sceng.scripts_queue[i].script_name == "pay_as_resource":
+			var special = {}
+			for subject in array["subjects"]:
+				if typeof(subject) == TYPE_OBJECT and is_instance_valid(subject) \
+						and subject.has_method("get_resource_special_network_data"):
+					var subject_data = subject.get_resource_special_network_data()
+					if subject_data:
+						special[guidMaster.get_guid(subject)] = subject_data
+			if special:
+				data["special"] = special
 		prepaid_uids.append(data)
+		i += 1
 	var remote_trigger_details: Dictionary = trigger_details.duplicate()
 	remote_trigger_details["network_prepaid"] =  prepaid_uids
 	remote_trigger_details["network_rng_state"] =  cfc.game_rng.state
@@ -214,11 +230,11 @@ func serialize_sceng(sceng, trigger_details):
 		var task_object = trigger_details.get("event_object", null)
 		if task_object:
 			var tasks = stack_object.get_tasks()
-			var i = 0
+			var j = 0
 			for task in tasks:
 				if task == task_object:
-					remote_trigger_details["event_object"] = i
-				i+= 1
+					remote_trigger_details["event_object"] = j
+				j+= 1
 	
 	var trigger_card_uid = guidMaster.get_guid(sceng.trigger_object)
 	var owner_uid = guidMaster.get_guid(sceng.owner)

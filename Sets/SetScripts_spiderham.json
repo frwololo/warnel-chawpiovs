@@ -70,6 +70,7 @@
 		"interrupt": {
 			"event_name": "about_to_reveal",
 			"is_optional_hand": true,
+			"filter_state_trigger": "filter_same_controller",
 			"hand": [
 				{
 					"name": "constraints",

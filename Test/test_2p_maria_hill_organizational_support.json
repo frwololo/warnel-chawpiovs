@@ -1,0 +1,239 @@
+{
+	"_comments": "Organizational Support Mana resource test",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					}
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "The douglass"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "The douglass"
+		},
+		{
+			"type": "select",
+			"value": "Organizational Support"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Nick Fury #50002",
+				"Support Staff",
+				"The Iliad"
+			]
+		},
+		{
+			"type": "select",
+			"value": "Strength"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}			
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Maria Hill"
+				}
+			],
+			"allies1": [
+				{
+					"card": "Nick Fury #50002",
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Support Staff",
+					"tokens": {
+						"staff": 1
+					},
+					"exhausted": true
+				},
+				{
+					"card": "The Iliad",
+					"tokens": {
+						"mission": 1
+					},
+					"exhausted": true
+				},
+				{
+					"card": "The douglass",
+					"tokens": {
+						"operation": 3
+					}
+				}
+			],
+			"discard1": [
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	}
+}

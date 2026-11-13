@@ -1,0 +1,189 @@
+{
+	"_comments": "Bug: I don't think so double use of token",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Yon-Rogg #01177"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham",
+					"tokens": {
+						"toon": 1
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "\"I Don't Think So!\""
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "\"I Don't Think So!\"",
+			"expected_to_fail": true,
+			"_comments": "shouldn't be possible since it costs 1 mana + 1 token"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn",
+		}		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Ham"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Mister sinister - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "Taking Off - 2B"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"others": [
+				{
+					"card": "Flight #40151",
+					"host": "Mister sinister"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Spider-Ham",
+					"tokens": {
+						"toon": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"hand1": [
+				{
+					"card": "\"I Don't Think So!\""
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"enemies2": [
+				{
+					"card": "Yon-Rogg #01177"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	}
+}

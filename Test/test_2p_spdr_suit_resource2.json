@@ -1,0 +1,360 @@
+{
+	"_comments": "SP//DR Suit resource test",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man Noir",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tenacity",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength",
+					"owner_hero_id": 1
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Psychic Link"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Spider-Man Noir",
+				"VEN#m - Addy Brock #31003"
+			]
+		},
+		{
+			"type": "play",
+			"value": "Tenacity"
+		},
+		{
+			"type": "select",
+			"value": "SP//dr Suit"
+		},
+		{
+			"type": "select",
+			"value": "Psychic Link"
+		},
+		{
+			"type": "select",
+			"value": "Ejection Protocol"
+		},		
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "Iron Man"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Tenacity"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Spider-Man Noir",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Strength",
+					"owner_hero_id": 1
+				}
+			],
+			"deck2": [
+				{
+					"card": "Rocket Boots #01039"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Iron Man"
+				}
+			],
+			"upgrade_support2": [
+				{
+					"card": "Mark V Helmet #01037"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Powered Gauntlets"
+				}
+			]
+		}
+	}
+}

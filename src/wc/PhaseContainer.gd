@@ -430,7 +430,10 @@ func _step_ended(
 	var step = trigger_details["step"]
 	match step:
 		CFConst.PHASE_STEP.GAME_READY:
-			if gameData.run_auto_tests:
+			if gameData.run_auto_tests and cfc.is_game_master():
+				if gameData.is_multiplayer_game:
+					#in multiplayer, wait before starting auto tests, so that all clients are settled
+					yield(get_tree().create_timer(5.0), "timeout")
 				gameData.start_tests(gameData.run_auto_tests)
 				gameData.run_auto_tests = []	
 			pass	

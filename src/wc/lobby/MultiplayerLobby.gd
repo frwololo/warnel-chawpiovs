@@ -21,7 +21,7 @@ onready var status := $MainMenu/HBox/StatusLabel
 var peer = null
 # dictionary indexed by network_id for each player.
 var players = {}
-var my_info = {name = "Name Unset"}
+var my_info = {name = "Name Unset", tests = []}
 var _multiplayer_desync = null
 
 var person = preload("res://src/wc/lobby/Player.tscn")
@@ -227,7 +227,9 @@ remote func register_player(info):
 		cfc._rpc_id(self, id, "multiplayer_database_comparison")
 
 		launch_button.disabled = false	
-		if CFConst.DEBUG_AUTO_START_MULTIPLAYER:	
+		if CFConst.DEBUG_AUTO_START_MULTIPLAYER or info.tests:
+			if info.tests:
+				gameData.run_auto_tests = info.tests	
 			on_button_pressed(launch_button.name)
 	else:
 		new_person.kick.hide()
@@ -382,6 +384,7 @@ func _join_as_server(port = 0):
 		add_log("failed starting host after 10 attempts")
 	
 	my_info.name = "Player 1"	
+	my_info.tests = gameData.run_auto_tests
 	_set_status("Waiting for players...", true)
 	register_self(my_info)		
 
@@ -415,6 +418,7 @@ func _join_as_client(host_ip, host_port = 0, own_port = 0):
 		
 	get_tree().set_network_peer(peer)
 	my_info.name = "Player " + str(cfc.get_network_unique_id())
+	my_info.tests = gameData.run_auto_tests
 	_set_status("Connecting...", true)
 	network_is_ready = true
 	register_self(my_info)		

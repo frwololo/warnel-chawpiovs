@@ -24,6 +24,11 @@ func _ready() -> void:
 		v_folder_label.text = " "
 	else:
 		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
+
+
+	if !OS.has_feature("editor") and !OS.is_debug_build():
+		get_node("%JoinTests").visible = false
+
 	resize()
 
 
@@ -36,7 +41,9 @@ func on_button_pressed(_button_name : String) -> void:
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerJoin.tscn')
 		"Cancel":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
-
+		"JoinTests":
+			gameData.run_auto_tests =  ["sanity"]
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerJoin.tscn')
 	
 func _on_Menu_resized() -> void:
 	resize()
@@ -52,3 +59,5 @@ func resize():
 	self.margin_bottom = target_size.y
 	self.rect_size = target_size
 	$CenterContainer.rect_size = target_size
+
+

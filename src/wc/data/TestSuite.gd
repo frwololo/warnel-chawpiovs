@@ -49,6 +49,13 @@ const SETTLE_FRAMES_MULTIPLAYER := 20
 #minimum delay between two test steps, even when the game is settled
 const MIN_STEP_TIME_IDLE := 0.05
 var _settled_frames := 0
+#after an action, a client (master or remote) reports it complete once it is
+#done processing it locally (is_locally_done), instead of waiting until
+#"allowed to click" or the full timer. Set to false for the old behavior
+const COMPLETE_WHEN_LOCALLY_DONE = true
+var _locally_done_frames := 0
+#master only: the last remote action ended with an input window open there
+var _remote_waiting_for_input := false
 #snapshot of the game state the last frame, the game is only considered
 #settled if it doesn't change for SETTLE_FRAMES frames
 var _last_game_signature = null
@@ -61,6 +68,10 @@ var test_durations := {}
 #parallel runs: tests run by the other instances, merged by the coordinator
 var _merged_test_count := 0
 var _test_start_ms := 0
+#the test _test_start_ms belongs to. In multiplayer, the last client's result
+#can arrive after reset_between_tests cleared current_test_file: every
+#duration was then stored under "" and only the last one was reported
+var _test_start_file := ""
 var announce_verbose = false
 var announce_verbose_whitelist:= ["running", "rng", "error", "warning"]
 var last_rng_state = 0
@@ -233,6 +244,10 @@ func is_game_settled() -> bool:
 	if cfc.is_process_ongoing():
 		return false
 
+	#a remote client reported it waits for its player's input
+	if _remote_waiting_for_input:
+		return true
+
 	#Waiting for a player decision (e.g. interrupt window)
 	if stack.run_mode == GlobalScriptStack.RUN_MODE.PENDING_USER_INTERACTION:
 		return true
@@ -287,20 +302,89 @@ func _update_settled_frames():
 		_settled_frames += 1
 	else:
 		_settled_frames = 0
+	if !changed and is_locally_done():
+		_locally_done_frames += 1
+	else:
+		_locally_done_frames = 0
 
 #called whenever the test suite does something to the game:
 #settledness has to be observed again from scratch
 func reset_settled():
 	_settled_frames = 0
+	_locally_done_frames = 0
 	_last_game_signature = null
 
 #game has been settled long enough that we can assume nothing else
 #will happen without a player action
 func is_settled() -> bool:
-	var needed = SETTLE_FRAMES_SOLO
+	return _settled_frames >= _settle_frames_needed()
+
+func _settle_frames_needed() -> int:
 	if gameData.is_multiplayer_game:
-		needed = SETTLE_FRAMES_MULTIPLAYER
-	return _settled_frames >= needed
+		return SETTLE_FRAMES_MULTIPLAYER
+	return SETTLE_FRAMES_SOLO
+
+#true if a window, menu or targeting arrow on this client waits for input
+func _is_waiting_for_local_input() -> bool:
+	if cfc.get_modal_menu():
+		return true
+	if is_instance_valid(get_current_selection_window()):
+		return true
+	if is_instance_valid(_current_targeting_card) and _current_targeting_card.targeting_arrow.is_targeting:
+		return true
+	return false
+
+#true if this client has finished processing what its last action caused.
+#Unlike is_game_settled, this doesn't look at the other clients or at the
+#phase: whether the game as a whole is ready for the next step is the
+#master's call (next_action waits for its own is_settled)
+func is_locally_done() -> bool:
+	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		return false
+	if cfc.NMAP.board.are_cards_still_animating():
+		return false
+	if gameData.is_ongoing_blocking_announce():
+		return false
+	var stack = gameData.theStack
+	#something was sent and is still to come back: the window on screen may
+	#be about to change
+	if stack.run_mode == GlobalScriptStack.RUN_MODE.PENDING_REQUEST_ACK:
+		return false
+	if !stack.is_idle(0) or stack._has_network_event_blocking_idle():
+		return false
+	#a script (even one still running) waits for this player's input
+	if _is_waiting_for_local_input():
+		return true
+	if stack.run_mode == GlobalScriptStack.RUN_MODE.NO_BRAKES:
+		return false
+	if cfc.is_process_ongoing():
+		return false
+	return true
+
+#short description of what this client is waiting on, for the reports
+func get_local_wait_reason() -> String:
+	var stack = gameData.theStack
+	var parts = [GlobalScriptStack.RunModeStr[stack.run_mode]]
+	if stack.run_mode == GlobalScriptStack.RUN_MODE.PENDING_USER_INTERACTION:
+		parts.append("interrupting hero " + str(stack.interrupting_hero_id) \
+			+ (" (mine)" if stack.interrupting_hero_id in gameData.get_my_heroes() else " (other)"))
+	if phaseContainer().current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+		parts.append("step " + str(phaseContainer().current_step))
+	if cfc.is_process_ongoing():
+		parts.append("process ongoing")
+	if _is_waiting_for_local_input():
+		parts.append("local input window")
+	if !stack.is_idle(0):
+		parts.append("request pending")
+	if stack._has_network_event_blocking_idle():
+		parts.append("network event")
+	if cfc.NMAP.board.are_cards_still_animating():
+		parts.append("animating")
+	if !stack.is_player_allowed_to_click():
+		parts.append("not allowed to click")
+	if !is_settled():
+		parts.append("not settled")
+	return PoolStringArray(parts).join(", ")
 
 func _init():
 	scripting_bus.connect("all_clients_game_loaded", self, "all_clients_game_loaded")
@@ -346,6 +430,7 @@ func reset_between_tests():
 	_current_targeting_card = null
 	_current_targeted_card = null
 	_action_ongoing = 0
+	_remote_waiting_for_input = false
 	_force_failed = ""	
 	if cfc.is_game_master():
 		var my_seed = "test suite"
@@ -694,9 +779,18 @@ func should_wait(my_action, _delta, _ready_delta = -1.0):
 func should_wait_after_action(my_action, _delta):
 	var wait_time = long_wait_time *gameData.network_players.size() *gameData.network_players.size()
 	if _delta >= wait_time:
+		#the action is reported complete only because the timer ran out:
+		#this is the wait we want to get rid of, record why it happened
+		var reason = get_local_wait_reason()
+		count_delay("after_action_timeout: " + str(my_action.get("type", "")) + " / " + reason)
+		trace("after_action timeout (" + str(wait_time) + "s) for " + to_json(my_action) + ": " + reason)
 		return false
-	if !gameData.theStack.is_player_allowed_to_click():
-		return true
+	#old rule: done once clicking is allowed again (and, on a remote client,
+	#once it is settled). It answers on the first frame in most cases
+	#(play, activate, pass: 0 ms in the 2p suite)
+	var allowed_to_click = gameData.theStack.is_player_allowed_to_click()
+	if allowed_to_click and (cfc.is_game_master() or is_settled()):
+		return false
 	#remote client: the master only sees this client's work once it reaches
 	#the stack. Report the action complete only when this client is settled
 	#itself (the payment it just confirmed has been processed and sent, or a
@@ -704,10 +798,18 @@ func should_wait_after_action(my_action, _delta):
 	#saw nothing going on and sent the next action while the previous one
 	#was still being paid locally (test_2p_spdr_suit_resource: "play
 	#Tenacity" ran before Psychic Link was paid and played)
-	if !cfc.is_game_master() and !is_settled():
+	if allowed_to_click:
 		count_delay("remote_settle")
-		return true
-	return false
+	#but "allowed to click" stays false while another hero has the
+	#interrupt window, outside the player turn, or while a script waits for
+	#this player's own target: the client then waited for the full timer.
+	#So it's also done as soon as it has finished processing its own action
+	#locally (the master checks the whole game before the next step)
+	if COMPLETE_WHEN_LOCALLY_DONE:
+		if _delta >= MIN_STEP_TIME_IDLE and _locally_done_frames >= _settle_frames_needed():
+			return false
+		count_delay("after_action_not_locally_done")
+	return true
 
 
 #processes the next action for the current test
@@ -825,6 +927,7 @@ func process_action(my_action:Dictionary, skip_play_tests:= false):
 			
 	
 	current_playing_hero_id = get_hero_for_action(my_action)
+	_remote_waiting_for_input = false
 	my_action["hero"] = current_playing_hero_id #This will pass the determined hero id to the rpc call 
 	var network_player_id = get_hero_player_network_owner(current_playing_hero_id)
 	_action_ongoing +=1
@@ -837,12 +940,17 @@ func get_hero_player_network_owner(hero_id):
 		player = player_data.get_id()		
 	return gameData.id_to_network_id[player]
 	
-mastersync func action_complete():
+mastersync func action_complete(waiting_for_input = false):
 	if !_action_ongoing:
 		var _error = 1
 		return
 		
 	_action_ongoing -=1
+	#a remote client finished its action with a window, menu or targeting
+	#arrow open: the game waits for its input, even if the master sees
+	#nothing to do locally (e.g. outside the player turn)
+	var sender = cfc.get_rpc_sender_id()
+	_remote_waiting_for_input = bool(waiting_for_input) and sender and sender != 1
 	#master side: next step only once the game is settled again
 	reset_settled()
 
@@ -928,7 +1036,10 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 			yield(get_tree().create_timer(0.1), "timeout")
 			_delta += 0.1
 	stop_timer("should_wait_after_action")				
-	cfc._rpc_id(self,1, "action_complete")
+	#per action type, to see which kind of step the clients wait on
+	add_elapsed("after_action " + action_type, int(_delta * 1000))
+	trace("action complete after " + str(_delta) + "s")
+	cfc._rpc_id(self,1, "action_complete", _is_waiting_for_local_input())
 
 	var new_rng_state = cfc.game_rng.state
 	if new_rng_state != last_rng_state:
@@ -1224,7 +1335,7 @@ mastersync func test_finalized(result):
 	_allclients_finalized[client_id] = result
 	if _allclients_finalized.size() == gameData.network_players.size():
 		if _test_start_ms:
-			test_durations[current_test_file] = OS.get_ticks_msec() - _test_start_ms
+			test_durations[_test_start_file] = OS.get_ticks_msec() - _test_start_ms
 			_test_start_ms = 0
 		for id in _allclients_finalized:
 			var success = _allclients_finalized[id]
@@ -1644,6 +1755,7 @@ func load_test(test_file)-> bool:
 		"additional_checks" : additional_checks,
 	}
 	_test_start_ms = OS.get_ticks_msec()
+	_test_start_file = current_test_file
 	_trace = []
 	start_timer("load_game (until all clients loaded)")
 	if initial_state.has("scenario"):
@@ -1816,6 +1928,9 @@ remotesync func save_results():
 
 	announce (to_print, false)
 	to_print += "total tests: " + str(total_tests) + "\n"
+	var run_tests = total_tests - skipped.size()
+	to_print += "total time: " + str(delta_time_min) + " mins (" \
+		+ str(stepify(delta_time_sec / (run_tests if run_tests > 0 else 1), 0.1)) + " secs per test run)\n"
 	if shards.is_coordinator():
 		to_print += "parallel run: " + str(shards.shard_count) + " instances, " \
 			+ str(delta_time_min) + " mins\n"

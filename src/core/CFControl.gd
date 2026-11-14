@@ -24,6 +24,23 @@ var load_start_time := OS.get_ticks_msec()
 var modal_menus := [] 
 
 var perf_monitors = {}
+#which scripting bus signals the printed scripts of a card id listen to
+#(CardTemplate.register_signals). Only depends on set_scripts: cleared
+#whenever they change
+var signal_registration_cache := {}
+#Performance profiling. Off by default (the ticks cost a little themselves).
+#Turn on with the "perf_profiling" setting (works in release builds too,
+#to measure on older machines), or with PERF_PROFILING_IN_DEBUG in debug
+#builds. The report is printed and saved to user://perf_report.txt
+#(output_perf_monitors, called from the Debug button and at test suite end)
+const PERF_PROFILING_IN_DEBUG = false
+var perf_profiling := false
+#nested calls of the same tick (e.g. alterants computing alterants) each
+#get their own start time
+var _perf_stopwatches := {}
+#per frame counters, to find frames where everything gets recomputed
+var _perf_frame_counts := {}
+var _perf_frame_start_usec := 0
 #-----------------------------------------------------------------------------
 # BEGIN Unit Testing Variables
 #-----------------------------------------------------------------------------
@@ -129,6 +146,7 @@ func _ready() -> void:
 
 func _process(_delta:float):
 	flush_cache_as_needed()
+	_perf_end_frame()
 
 func reset_settings_to_default():
 	var dir = Directory.new()
@@ -158,41 +176,90 @@ func _setup() -> void:
 	if !cfc.game_settings.get("load_cards_online", true):	
 		load_cards_database()
 
+func is_perf_profiling() -> bool:
+	return perf_profiling or (PERF_PROFILING_IN_DEBUG and OS.is_debug_build())
+
 func add_performance_call_count(var_name, count = 1):
-	var_name = var_name + " (count)"
-	if !perf_monitors.has(var_name):
-		perf_monitors[var_name] = 0
-	perf_monitors[var_name] += count
+	if !is_perf_profiling():
+		return
+	var count_name = var_name + " (count)"
+	perf_monitors[count_name] = perf_monitors.get(count_name, 0) + count
+	#how many times in the current frame, the max is kept in the report
+	_perf_frame_counts[var_name] = _perf_frame_counts.get(var_name, 0) + count
 
 func start_performance_tick(var_name):
-	if !OS.is_debug_build():
+	if !is_perf_profiling():
 		return
-	var start = OS.get_ticks_usec()
-	perf_monitors[var_name + "_stopwatch"] = start
+	if !_perf_stopwatches.has(var_name):
+		_perf_stopwatches[var_name] = []
+	_perf_stopwatches[var_name].append(OS.get_ticks_usec())
 
 func stop_performance_tick(var_name):
-	if !OS.is_debug_build():
+	if !is_perf_profiling():
 		return	
 	var stop = OS.get_ticks_usec()	
-	var timer_name = var_name + "_stopwatch"
-	if !perf_monitors.has(timer_name):
+	var watches = _perf_stopwatches.get(var_name, [])
+	if !watches:
 		return
+	var elapsed = stop - watches.pop_back()
 
 	add_performance_call_count(var_name)
 	var total_time_name = var_name + " (total usec)"
-	var avg_time_name = var_name + " (avg per call usec)"	
-	if !perf_monitors.has(total_time_name):
-		perf_monitors[total_time_name] = 0
-	perf_monitors[total_time_name] += stop - perf_monitors[timer_name]
-	perf_monitors.erase(timer_name)
-	perf_monitors[avg_time_name] = perf_monitors[total_time_name] / perf_monitors[var_name + " (count)"]
-	
-	
+	var max_time_name = var_name + " (max usec)"
+	perf_monitors[total_time_name] = perf_monitors.get(total_time_name, 0) + elapsed
+	perf_monitors[max_time_name] = max(perf_monitors.get(max_time_name, 0), elapsed)
+	perf_monitors[var_name + " (avg per call usec)"] = perf_monitors[total_time_name] / perf_monitors[var_name + " (count)"]
+
+#called once per frame (CFControl._process): frame time histogram and
+#the max per frame of every counter
+func _perf_end_frame():
+	if !is_perf_profiling():
+		_perf_frame_counts = {}
+		return
+	var now = OS.get_ticks_usec()
+	if _perf_frame_start_usec:
+		var frame_ms = (now - _perf_frame_start_usec) / 1000.0
+		perf_monitors["frames (count)"] = perf_monitors.get("frames (count)", 0) + 1
+		perf_monitors["frame (max ms)"] = max(perf_monitors.get("frame (max ms)", 0), frame_ms)
+		for limit in [33, 50, 100, 250]:
+			if frame_ms > limit:
+				var key = "frames over " + str(limit) + "ms (count)"
+				perf_monitors[key] = perf_monitors.get(key, 0) + 1
+	_perf_frame_start_usec = now
+	for key in _perf_frame_counts:
+		var max_key = key + " (max per frame)"
+		perf_monitors[max_key] = max(perf_monitors.get(max_key, 0), _perf_frame_counts[key])
+		if _perf_frame_counts[key]:
+			var frames_key = key + " (frames with calls)"
+			perf_monitors[frames_key] = perf_monitors.get(frames_key, 0) + 1
+	_perf_frame_counts = {}
+
+func reset_perf_monitors():
+	perf_monitors = {}
+	_perf_stopwatches = {}
+	_perf_frame_counts = {}
+	_perf_frame_start_usec = 0
 
 func output_perf_monitors():
+	var report = get_perf_report()
 	print_debug("Performance checks:")
-	print_debug(JSON.print(perf_monitors, "\t"))
+	print_debug(report)
 	print_debug("END - Performance checks:")
+	var file = File.new()
+	if file.open("user://perf_report.txt", File.WRITE) == OK:
+		file.store_string(report + "\n")
+		file.close()
+
+#sorted report: one line per measure, grouped by name
+func get_perf_report() -> String:
+	if !perf_monitors:
+		return "no performance data (turn on the perf_profiling setting)"
+	var keys = perf_monitors.keys()
+	keys.sort()
+	var lines = []
+	for key in keys:
+		lines.append(key + ": " + str(perf_monitors[key]))
+	return PoolStringArray(lines).join("\n")
 
 func load_scripts():
 	# Removed threading since I optimized this loading function
@@ -396,6 +463,7 @@ func load_script_definitions() -> void:
 #			print(unmodified_card_script)
 			if not card_script.empty():
 				combined_scripts[card_name] = card_script
+				signal_registration_cache.erase(card_name)
 				set_scripts[card_name] = card_script
 				unmodified_set_scripts[card_name] = unmodified_card_script
 	emit_signal("scripts_loaded")
@@ -480,6 +548,8 @@ func init_settings_from_file() -> void:
 		game_settings['focus_style'] = CFConst.FOCUS_STYLE
 	if not game_settings.has('hand_use_oval_shape'):
 		game_settings['hand_use_oval_shape'] = CFConst.HAND_USE_OVAL_SHAPE
+	#performance profiling: add "perf_profiling": true to the settings file
+	perf_profiling = bool(game_settings.get("perf_profiling", false))
 
 
 func set_font_cache() -> void:
@@ -579,6 +649,7 @@ func flush_cache(force = false) -> void:
 func flush_cache_as_needed() -> void:
 	if !_flush_cache_requested:
 		return
+	add_performance_call_count("cache: flush (alterant cache cleared, all cards refresh)")
 	alterant_cache.clear()
 	emit_signal("cache_cleared")
 	_flush_cache_requested = false

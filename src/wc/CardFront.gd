@@ -31,11 +31,21 @@ func _process(delta:float):
 func _handle_horizontal_card():
 	if !text_enabled:
 		return
-	_card_text = find_node("CardText")
+	#runs every frame: find_node searched the whole front each time
+	if !is_instance_valid(_card_text):
+		_card_text = find_node("CardText")
+		if !_card_text:
+			return
 	if card_owner._horizontal:
+		var target_size = Vector2(self.rect_min_size.y - 4, self.rect_min_size.x - 4)
+		#setting rect properties triggers a layout pass even with the same
+		#values: only write them when something is different
+		if _card_text.rect_rotation == -90 and _card_text.rect_position.y == self.rect_size.y \
+				and _card_text.rect_min_size == target_size and _card_text.rect_size == target_size:
+			return
 		_card_text.rect_rotation = -90
 		_card_text.rect_position.y = self.rect_size.y
-		_card_text.rect_min_size = Vector2(self.rect_min_size.y - 4, self.rect_min_size.x - 4) 
+		_card_text.rect_min_size = target_size
 		_card_text.rect_size = _card_text.rect_min_size
 
 func warning():

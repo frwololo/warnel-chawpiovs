@@ -243,6 +243,7 @@ func invalidate_data_caches():
 func refresh_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
 		return
+	cfc.start_performance_tick("cache: card refresh_cache")
 		
 	refresh_cost_cache(forced)	
 
@@ -262,7 +263,10 @@ func refresh_cache(forced=false):
 	_cached_all_traits = null
 	_script_alter_cache = {}
 	
+	cfc.start_performance_tick("cache: refresh_dummy_alterants")
 	refresh_dummy_alterants()
+	cfc.stop_performance_tick("cache: refresh_dummy_alterants")
+	cfc.stop_performance_tick("cache: card refresh_cache")
 
 func refresh_cost_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
@@ -651,6 +655,7 @@ func load_from_card_id(card_id):
 	scripting_bus.emit_signal("card_reloaded", self, {"before_id": previous_id })
 	
 func setup() -> void:
+	cfc.start_performance_tick("instancing: card setup")
 	var ingame = cfc.NMAP.has("board")
 	
 	if ingame:
@@ -660,6 +665,7 @@ func setup() -> void:
 	_runtime_properties_setup()
 	
 	if !ingame:
+		cfc.stop_performance_tick("instancing: card setup")
 		return
 		
 	update_groups()
@@ -691,6 +697,7 @@ func setup() -> void:
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
 	disable_dragging_from_board = true	
 	disable_dropping_to_cardcontainers = true
+	cfc.stop_performance_tick("instancing: card setup")
 
 
 func _current_playing_hero_changed (trigger_details: Dictionary = {}):
@@ -1065,6 +1072,11 @@ func display_shadow():
 func _process(delta) -> void:
 	if cfc.game_paused:
 		return
+	cfc.start_performance_tick("card: _process (wc)")
+	_wc_process(delta)
+	cfc.stop_performance_tick("card: _process (wc)")
+
+func _wc_process(delta) -> void:
 
 	var force_refresh = false
 	
@@ -1145,6 +1157,7 @@ func _process(delta) -> void:
 func display_play_highlight():
 	if not gameData.is_game_started():
 		return
+	cfc.add_performance_call_count("costs: display_play_highlight")
 
 	var can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK):
@@ -1578,14 +1591,39 @@ func get_property(property: String, default = null, force_alterant_check = false
 
 
 func register_signals():
+	cfc.start_performance_tick("instancing: register_signals")
 	scripting_bus.unregister_card(self)
-	var tmp_scripts = retrieve_all_scripts()
+	#cards without extra scripts use their printed scripts only: what they
+	#listen to is the same for every copy of the card id, computed once.
+	#(Each lookup is 62 recursive walks of the script tree, plus a deep
+	#copy of it in retrieve_all_scripts)
+	var registrations = null
+	var use_cache = extra_scripts.empty() and scripts.empty()
+	#only regular cards: subclasses override retrieve_all_scripts (ghost
+	#cards use their real card's scripts, game observers their own)
+	if get_script().resource_path != "res://src/wc/CardTemplate.gd":
+		use_cache = false
+	if use_cache:
+		registrations = cfc.signal_registration_cache.get(canonical_id, null)
+	if registrations == null:
+		var tmp_scripts = cfc.set_scripts.get(canonical_id, {}) if use_cache else retrieve_all_scripts()
+		registrations = _compute_signal_registrations(tmp_scripts)
+		if use_cache:
+			cfc.signal_registration_cache[canonical_id] = registrations
+	for registration in registrations:
+		scripting_bus.register_card_signal(self, registration[0], registration[1])
+	cfc.stop_performance_tick("instancing: register_signals")
+
+#[[signal name, has interrupt or response], ...]. Read only: scripts aren't modified
+static func _compute_signal_registrations(tmp_scripts) -> Array:
+	var result = []
 	for trigger in CFConst.OPTIONAL_SIGNALS + CFConst.NO_STACK_BY_DEFAULT_SIGNALS:
 		if WCUtils.has_interrupt_or_response (tmp_scripts, trigger):
-			scripting_bus.register_card_signal(self, trigger, true)
+			result.append([trigger, true])
 		else:
 			if WCUtils.is_string_in_variant(tmp_scripts, trigger):
-				scripting_bus.register_card_signal(self, trigger)
+				result.append([trigger, false])
+	return result
 		
 
 #Tries to play the card assuming costs aren't impossible to pay
@@ -3161,7 +3199,9 @@ func check_play_costs(params:Dictionary = {}, _debug = false) -> Color:
 	if (_check_play_costs_cache.get(hero_id,CFConst.CostsState.CACHE_INVALID) != CFConst.CostsState.CACHE_INVALID):
 		return _check_play_costs_cache[hero_id]
 
+	cfc.start_performance_tick("costs: check_play_cost_refresh (cache miss)")
 	var result = check_play_cost_refresh(hero_id, params, _debug)
+	cfc.stop_performance_tick("costs: check_play_cost_refresh (cache miss)")
 	return result["status"]
 
 func cant_pay_cost_report(category, message):

@@ -494,7 +494,9 @@ func _class_specific_process(delta):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta) -> void:
+	cfc.start_performance_tick("card: _process (core state machine)")
 	_class_specific_process(delta)
+	cfc.stop_performance_tick("card: _process (core state machine)")
 
 
 
@@ -1915,7 +1917,9 @@ func retrieve_all_scripts() -> Dictionary:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
 		# execution
+		cfc.start_performance_tick("scripts: retrieve_all_scripts deep copy")
 		found_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
+		cfc.stop_performance_tick("scripts: retrieve_all_scripts deep copy")
 	return(found_scripts)
 
 

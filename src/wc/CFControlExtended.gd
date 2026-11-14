@@ -159,7 +159,9 @@ func get_external_texture(filename):
 	return _card_texture_cache[filename]
 
 func get_external_texture_no_cache(filename):	
+	start_performance_tick("instancing: card art decode")
 	var new_img = WCUtils.load_img(filename)
+	stop_performance_tick("instancing: card art decode")
 	if not new_img:
 		return	null
 
@@ -1620,6 +1622,7 @@ func load_script_definitions() -> void:
 		var tmp2 = load_data_from_cache("unmodified_set_scripts")
 		if tmp1 and tmp2 and (typeof(tmp1) == TYPE_DICTIONARY) and (typeof(tmp2) == TYPE_DICTIONARY):
 			set_scripts = tmp1
+			signal_registration_cache = {}
 			unmodified_set_scripts = tmp2
 		else:
 			all_cache_valid = false
@@ -1691,6 +1694,7 @@ func load_script_definitions() -> void:
 	#		print(unmodified_card_script)
 			if not card_script.empty():
 				combined_scripts[card_id] = card_script
+				signal_registration_cache.erase(card_id)
 				set_scripts[card_id] = card_script
 				unmodified_set_scripts[card_id] = unmodified_card_script
 	
@@ -2012,7 +2016,9 @@ func instance_card(card_id: String, owner_id:int) -> Card:
 		var _error = 1
 		return null
 		
+	start_performance_tick("instancing: instance_card")
 	var card = ._instance_card(card_id)
+	stop_performance_tick("instancing: instance_card")
 	#TODO We set GUID here in the hope that all clients create their cards in the exact 
 	#same order. This might be a very flawed assertion could need a significant overhaul
 	#we also don't assign a GUID to cards created without an owner, those are usually

@@ -17,6 +17,7 @@ onready var owner_card = get_parent().get_parent()
 var _is_horizontal:= false
 var show_manipulation_buttons:= true
 var _locked_for_payment := {}
+var _last_drawer_size = null
 
 
 func _ready() -> void:
@@ -32,11 +33,17 @@ func _process(_delta: float) -> void:
 	# Every process tick, it will ensure the collsion shape for the
 	# drawer is adjusted to its current size
 	if cfc.NMAP.has('board') and owner_card.get_parent() == cfc.NMAP.board:
-		$Drawer/Area2D.position = $Drawer.rect_size/2
+		#only when the drawer size changed (this ran for every card on the
+		#board, every frame)
+		var drawer_size = $Drawer.rect_size
+		if drawer_size == _last_drawer_size:
+			return
+		_last_drawer_size = drawer_size
+		$Drawer/Area2D.position = drawer_size/2
 		var shape: RectangleShape2D = $Drawer/Area2D/CollisionShape2D.shape
 		# We're extending the area of the drawer a bit, to try and avoid it
 		# glitching when moving from card to drawer and back
-		shape.extents = $Drawer.rect_size/2 + Vector2(10,0)
+		shape.extents = drawer_size/2 + Vector2(10,0)
 		
 
 # Setter for is_drawer_open

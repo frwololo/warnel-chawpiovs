@@ -163,8 +163,9 @@ static func get_altered_value(
 	# use the previously discovered value.
 	if cfc.alterant_cache.get(alterant_cache_key):
 		return_dict = cfc.alterant_cache[alterant_cache_key]
+		cfc.add_performance_call_count("alterants: cache hit")
 	else:
-#		cfc.start_performance_tick(fn_uncached)
+		cfc.start_performance_tick("alterants: computed (cache miss)")
 		var value_alteration := 0
 		var alterants_details := {}
 		var scriptables_array :Array =\
@@ -244,7 +245,7 @@ static func get_altered_value(
 		# If this is the first time we discover this alteration value
 		# we also store it in our alterant cache
 		cfc.alterant_cache[alterant_cache_key] = return_dict
-#		cfc.stop_performance_tick(fn_uncached)
+		cfc.stop_performance_tick("alterants: computed (cache miss)")
 #	cfc.stop_performance_tick(fn)
 	return(return_dict)
 

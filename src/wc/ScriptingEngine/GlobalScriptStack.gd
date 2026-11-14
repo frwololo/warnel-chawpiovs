@@ -71,6 +71,9 @@ var _ack_received = {}
 var all_clients_status:= {}
 var _local_status_counter = 0
 var run_mode = RUN_MODE.NOTHING_TO_RUN
+#performance: only tell the cards the game state changed when the run mode
+#settles (see set_run_mode). false = old behavior (every run mode change)
+const SKIP_STATE_CHANGE_ON_TRANSIENT_RUN_MODES = true
 var interrupt_mode = InterruptMode.NONE
 var interrupting_hero_id = 0
 var _heroes_passed_optional_interrupt := {}
@@ -1711,7 +1714,16 @@ func set_run_mode(new_value, caller = ""):
 	
 #	if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
 #		var _tmp =1
-	gameData.game_state_changed()
+	cfc.add_performance_call_count("stack: run_mode changed")
+	#the run mode is stack bookkeeping: entering a transient mode (a request
+	#sent, scripts running) doesn't change anything on the cards, and the
+	#player can't act until the stack settles. Telling every card to
+	#recompute its caches (and flushing the alterant cache) on those
+	#transitions made all cards recompute several times per action.
+	#Cards and the alterant cache are still refreshed on the actual game
+	#changes (moves, tokens, properties), and when the stack settles here
+	if !SKIP_STATE_CHANGE_ON_TRANSIENT_RUN_MODES or run_mode in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
+		gameData.game_state_changed()
 	cfc._rpc(self,"client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
 
 remote func client_run_mode_changed (new_status):

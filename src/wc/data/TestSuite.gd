@@ -1989,6 +1989,9 @@ remotesync func save_results():
 
 		
 
+	if cfc.is_perf_profiling():
+		to_print += "###\nperformance (perf_profiling setting)\n" + cfc.get_perf_report() + "\n"
+
 	var player = gameData.get_player_by_network_id(cfc.get_network_unique_id())
 	var player_id = player.get_id()
 	var filename = "user://test_results_" + str(player_id) + shards.file_suffix() + ".txt"

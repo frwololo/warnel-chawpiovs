@@ -2263,31 +2263,6 @@ func enemy_activates_against_you(script: ScriptTask) -> int:
 		retcode = gameData.add_enemy_activation(card, "activate", script, target_id)
 	return retcode
 
-func character_attacks_you(script: ScriptTask) -> int:
-	var retcode = CFConst.ReturnCode.FAILED
-
-	#here we try to predict if the attack will actually happen, but we'll need something better,
-	#signal based... (e.g. for Titania's Fury
-	if (costs_dry_run()):
-		if !script.subjects:
-			return CFConst.ReturnCode.FAILED
-		for card in script.subjects:
-			if (card.can_attack() and !card.is_stunned()):
-				retcode = CFConst.ReturnCode.CHANGED
-		return retcode	
-
-	var character = script.subjects[0]
-	var type_code = character.get_property("type_code", "")
-	if type_code == "ally":
-		var target = _get_identity_from_script(script)
-		script.subjects = [target]
-		script.owner = character
-		return attack(script)
-
-
-	return enemy_attacks_you(script)
-
-
 	
 func enemy_attacks_engaged_hero(script: ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.FAILED
@@ -2346,23 +2321,6 @@ func i_attack(script: ScriptTask) -> int:
 			
 		retcode = gameData.add_enemy_activation(attacker, "attack", script, target)
 	return retcode
-	
-#adds specific attacker against specific targets
-func source_attacks_subjects(script: ScriptTask) -> int:
-	var retcode = CFConst.ReturnCode.FAILED
-
-	var attacker = script.owner
-
-	#here we try to predict if the attack will actually happen, but we'll need something better,
-	#signal based... (e.g. for Titania's Fury
-	if (costs_dry_run()):
-		if !script.subjects:
-			return CFConst.ReturnCode.FAILED
-		return CFConst.ReturnCode.CHANGED	
-
-	for card in script.subjects:
-		retcode = gameData.add_enemy_activation(attacker, "attack", script, card.get_controller_hero_id())
-	return retcode	
 
 func swap_villain(script:ScriptTask) -> int:
 	var retcode = CFConst.ReturnCode.CHANGED
@@ -3226,87 +3184,6 @@ func send_signal(script: ScriptTask) -> int:
 
 	scripting_bus.emit_signal_on_stack(user_signal, script.owner, script.script_definition )		
 	return CFConst.ReturnCode.CHANGED
-
-func add_properties_from(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.FAILED
-
-	if !script.subjects:
-		return CFConst.ReturnCode.FAILED	
-
-	var properties_list = script.get_property("properties", [])
-	if !properties_list:
-		return CFConst.ReturnCode.FAILED	
-	
-	if (costs_dry_run()):
-		return CFConst.ReturnCode.CHANGED
-	
-	if typeof(properties_list) == TYPE_STRING:
-		properties_list = [properties_list]
-	
-	var target = script.owner
-	
-	var subjects = script.subjects
-	for subject in subjects:
-		var properties_to_copy = compile_property_list(subject, properties_list)
-		for property in properties_to_copy:
-			#we're intentionally not using get_properties here to not copy an altered value
-			var value = subject.properties.get(property)
-			match typeof(value):
-				TYPE_INT:
-					var v1 = target.properties.get(property, 0)
-					target.properties[property] = v1 + value
-				_:
-					target.properties[property] = value					
-				
-	return retcode
-	
-func subtract_properties_from(script: ScriptTask) -> int:
-	var retcode: int = CFConst.ReturnCode.FAILED
-
-	if !script.subjects:
-		return CFConst.ReturnCode.FAILED	
-
-	var properties_list= script.get_property("properties", [])
-	if !properties_list:
-		return CFConst.ReturnCode.FAILED	
-	
-	if (costs_dry_run()):
-		return CFConst.ReturnCode.CHANGED
-	
-	if typeof(properties_list) == TYPE_STRING:
-		properties_list = [properties_list]
-	
-	var target = script.owner
-	
-	var subjects = script.subjects
-	for subject in subjects:
-		var properties_to_copy = compile_property_list(subject, properties_list)
-		for property in properties_to_copy:
-			#we're intentionally not using get_properties here to not copy an altered value
-			var value = subject.properties.get(property)
-			match typeof(value):
-				TYPE_INT:
-					var v1 = target.properties.get(property, 0)
-					target.properties[property] = v1 - value
-				TYPE_STRING:	
-					target.properties[property] = "value"	
-				_:
-					target.properties.erase(property)					
-				
-	return retcode			
-
-func compile_property_list(subject, properties_list):
-	var properties_to_copy = []
-	for property_name in properties_list:
-		if property_name.ends_with("*"):
-			property_name = property_name.substr(0, property_name.length() - 1)
-			for property in subject.properties:
-				if property.begins_with(property_name):
-					properties_to_copy.append(property)
-		else:
-			if subject.properties.has(property_name):
-				properties_to_copy.append(property_name)
-	return properties_to_copy	
 		
 # Task for executing nested tasks
 # This task will execute internal non-cost cripts accordin to its own

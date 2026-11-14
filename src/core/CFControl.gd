@@ -45,6 +45,7 @@ var _perf_frame_start_usec := 0
 #the play highlight cost checks. Reset every frame
 const FRAME_BUDGETS_USEC := {
 	"cost_checks": 8000,
+	"visual_alterants": 3000,
 }
 var _frame_budget_spent := {}
 #-----------------------------------------------------------------------------

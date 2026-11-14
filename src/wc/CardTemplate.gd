@@ -9,6 +9,25 @@ const _SPINBOX_SCENE = preload(_SPINBOX_SCENE_FILE)
 #performance: skip the IN_PILE state handling while nothing it depends on
 #changed (see _process_card_state). false = old behavior
 const SKIP_UNCHANGED_PILE_STATE = true
+#same for cards idle on the board (ON_PLAY_BOARD)
+const SKIP_UNCHANGED_BOARD_STATE = true
+#refresh_dummy_alterants: skip the alterants that have no effect in the
+#card's current zone. false = old behavior
+const SKIP_IRRELEVANT_DUMMY_ALTERANTS = true
+#refresh the visual-only alterants (trait_aerial) within a per frame budget
+#instead of all in the frame of the cache flush. false = old behavior
+const SPREAD_VISUAL_ALTERANTS = true
+#skip the shadow computation when the card state was skipped (unchanged)
+const SKIP_UNCHANGED_SHADOW = true
+#profiling: name of each card state, for the per state ticks
+const _STATE_TICK_NAMES = [
+	"card state: IN_HAND", "card state: FOCUSED_IN_HAND", "card state: MOVING_TO_CONTAINER",
+	"card state: REORGANIZING", "card state: PUSHED_ASIDE", "card state: DRAGGED",
+	"card state: DROPPING_TO_BOARD", "card state: ON_PLAY_BOARD", "card state: FOCUSED_ON_BOARD",
+	"card state: IN_PILE", "card state: VIEWED_IN_PILE", "card state: IN_POPUP",
+	"card state: FOCUSED_IN_POPUP", "card state: VIEWPORT_FOCUS", "card state: PREVIEW",
+	"card state: DECKBUILDER_GRID", "card state: MOVING_TO_SPAWN_DESTINATION",
+]
 
 #this is emitted from front_card_container
 # warning-ignore:unused_signal
@@ -284,6 +303,11 @@ func refresh_cost_cache(forced=false):
 #This is for alterants that are "rare" but also have complicated impacts on
 #card properties, etc...
 var _dummy_alterants_cache = {}
+#alterants that only change how the card looks (no scripts, no rules):
+#refreshed within a per frame budget instead of all in the flush frame
+const VISUAL_DUMMY_ALTERANTS = ["trait_aerial"]
+var _pending_visual_alterants := []
+
 func refresh_dummy_alterants():
 	for alterant in [
 		"can_play_as_if_in_hand", 
@@ -292,17 +316,50 @@ func refresh_dummy_alterants():
 	]:
 		if !CFScriptUtils.game_has_alterants(alterant):
 			continue	
+		#after a cache flush every card refreshed its aerial lookup in the
+		#same frame (~0.7ms each on a full board): queue it instead
+		if SPREAD_VISUAL_ALTERANTS and alterant in VISUAL_DUMMY_ALTERANTS:
+			if !alterant in _pending_visual_alterants:
+				_pending_visual_alterants.append(alterant)
+			continue
+		_refresh_dummy_alterant(alterant)
 
-		var before = _dummy_alterants_cache.get(alterant, null)			
-		var after = get_property(alterant, 0, true)
+#called every frame: queued visual alterants, within the frame budget
+func process_pending_visual_alterants():
+	while _pending_visual_alterants:
+		if !cfc.has_frame_budget("visual_alterants"):
+			cfc.add_performance_call_count("cache: visual alterant deferred (frame budget)")
+			return
+		var start_usec = OS.get_ticks_usec()
+		var alterant = _pending_visual_alterants.pop_front()
+		_refresh_dummy_alterant(alterant)
+		cfc.spend_frame_budget("visual_alterants", OS.get_ticks_usec() - start_usec)
 
-		if ((before != null) and !after) or (after and (before == null)):
-			var func_name = "refresh_alterant_" + alterant
-			var result = self.call(func_name, before, after)
-			if result == null:
-				_dummy_alterants_cache.erase(alterant)
-			else:
-				_dummy_alterants_cache[alterant] = result
+func _refresh_dummy_alterant(alterant):
+	var before = _dummy_alterants_cache.get(alterant, null)			
+	#every card ran these alterant lookups at each cache refresh. Two of
+	#them only have an effect in one zone: skip the lookup elsewhere,
+	#unless the effect is currently applied (it then has to be undone)
+	if SKIP_IRRELEVANT_DUMMY_ALTERANTS and before == null:
+		if alterant == "can_play_as_if_in_hand":
+			#playing from a pile
+			if get_state_exec() != "pile":
+				return
+		elif alterant == "trait_aerial":
+			#flying animation, board only
+			if !is_onboard():
+				return
+	cfc.start_performance_tick("cache: dummy alterant " + alterant)
+	var after = get_property(alterant, 0, true)
+	cfc.stop_performance_tick("cache: dummy alterant " + alterant)
+
+	if ((before != null) and !after) or (after and (before == null)):
+		var func_name = "refresh_alterant_" + alterant
+		var result = self.call(func_name, before, after)
+		if result == null:
+			_dummy_alterants_cache.erase(alterant)
+		else:
+			_dummy_alterants_cache[alterant] = result
 	
 func refresh_alterant_can_play_as_if_in_hand(before, after):		
 	var can_play_as_if_in_hand = after
@@ -940,8 +997,8 @@ func _class_specific_input(event) -> void:
 
 	
 
+var _state_skipped_this_frame = false
 func _class_specific_process(delta):
-	display_shadow()
 	
 	if !CFConst.PERFORMANCE_HACKS:
 		if cfc._debug and not get_parent().is_in_group("piles"):
@@ -990,7 +1047,14 @@ func _class_specific_process(delta):
 			_tween_stuck_time = 0
 	else:
 		_tween_stuck_time = 0
+	_state_skipped_this_frame = false
 	_process_card_state()
+	#the shadow only depends on what the state signatures cover (placement,
+	#scale, rotation, highlight, flying, place in the pile): unchanged state,
+	#unchanged shadow. It now runs after the state handling, so it uses this
+	#frame's scale and highlight instead of the previous frame's
+	if !(SKIP_UNCHANGED_SHADOW and _state_skipped_this_frame):
+		display_shadow()
 	pass
 		
 
@@ -1003,44 +1067,41 @@ func reload_shadow_tex(file_name):
 
 	
 func display_shadow():
-	_shadow.visible = false	
+	cfc.start_performance_tick("card: display_shadow")
+	_display_shadow()
+	cfc.stop_performance_tick("card: display_shadow")
+
+#ran every frame for every card, and wrote the shadow's visibility (false,
+#then true again), size and position each time. Writing a visibility,
+#size or position triggers notifications and a redraw even with the same
+#value: compute what the shadow should be, then only write what differs
+func _display_shadow():
 	var parent = get_parent()	
 	var is_in_pile = parent and parent.is_in_group("piles")	
 	if is_onboard() or (is_in_pile and self == parent.get_card(1)):
-		reload_shadow_tex("res://assets/card_backs/card_shadow.png")
-		_shadow.visible = true
-		_shadow.rect_min_size = _card_front_container.rect_min_size
-		_shadow.rect_size = _shadow.rect_min_size
+		var texture_file = "res://assets/card_backs/card_shadow.png"
+		var size = _card_front_container.rect_min_size
 		var offset = 3.5 / scale.x
 		var alpha_modulate = 1.0		
 		if highlight.visible:
-			_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(6.0, 6.0)
-			_shadow.rect_size = _shadow.rect_min_size			
-			reload_shadow_tex("res://assets/card_backs/card_shadow_highlight.png")
+			size = _card_front_container.rect_min_size + Vector2(6.0, 6.0)
+			texture_file = "res://assets/card_backs/card_shadow_highlight.png"
 			offset = 1.0
 			
 		if is_flying():
-			reload_shadow_tex("res://assets/card_backs/card_shadow_far.png")
+			texture_file = "res://assets/card_backs/card_shadow_far.png"
 			var target_scale = .compute_expected_scale()
 			var percent_diff = 100 * (scale.x - target_scale) / target_scale
 			offset = 10.0 * percent_diff
 			alpha_modulate = 1.0 / (percent_diff * percent_diff / 13)
-#			if scale.x > 1.0:
-#				var multiplier = scale.x  * scale.x * scale.x 
-#				alpha_modulate = 0.6  / (multiplier)	
-#				offset *= multiplier		
 		if offset < 0:
 			offset = 0
 			alpha_modulate = 1.0
 		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
-		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
-		_shadow.self_modulate.a = alpha_modulate
+		_set_shadow(true, texture_file, size, _control.rect_position + (Vector2(offset_x, offset_y)), alpha_modulate)
 	elif get_state_exec() == "hand":
-		reload_shadow_tex("res://assets/card_backs/card_shadow_far.png")
-		_shadow.visible = true
-		_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(20.0, 20.0)
-		_shadow.rect_size = _shadow.rect_min_size
+		var size = _card_front_container.rect_min_size + Vector2(20.0, 20.0)
 		var offset = 20.0
 		var alpha_modulate = 0.8
 		if scale.x > 1.0:
@@ -1049,28 +1110,31 @@ func display_shadow():
 			offset *= multiplier
 		var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
 		var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
-		_shadow.rect_position = _control.rect_position + (Vector2(offset_x, offset_y))
-
-		if alpha_modulate < 0.6:
-			var _tmp =1
-		_shadow.self_modulate.a = alpha_modulate
-			
+		_set_shadow(true, "res://assets/card_backs/card_shadow_far.png", size,
+				_control.rect_position + (Vector2(offset_x, offset_y)), alpha_modulate)
+	elif is_in_pile and !is_animating() and self == parent.get_bottom_card():
+		var offset_x = 25.0 + (float(parent.get_card_count()) * 1.4)
+		var offset_y =  25.0 + (float(parent.get_card_count())) * 1.3
+		_set_shadow(true, "res://assets/card_backs/card_shadow_volume.png",
+				_card_front_container.rect_min_size + Vector2(offset_x, offset_y),
+				_control.rect_position + (Vector2(-2.0, 0)), 1.0)
 	else:
-		if is_in_pile:
-			if is_animating():
-				_shadow.visible = false
-				return				
-			if self == parent.get_bottom_card():
-				reload_shadow_tex("res://assets/card_backs/card_shadow_volume.png")
-				var offset_x = 25.0 + (float(parent.get_card_count()) * 1.4)
-				var offset_y =  25.0 + (float(parent.get_card_count())) * 1.3
-				_shadow.rect_min_size = _card_front_container.rect_min_size + Vector2(offset_x, offset_y)
-				_shadow.rect_size = _shadow.rect_min_size				
-				_shadow.self_modulate.a = 1.0 #/ max(1.0, abs(offset_x/20.0))
-#				var offset_x = (sin(deg2rad(_control.rect_rotation)) + cos(deg2rad(_control.rect_rotation))) * offset
-#				var offset_y = (cos(deg2rad(_control.rect_rotation)) - sin(deg2rad(_control.rect_rotation))) * offset
-				_shadow.rect_position = _control.rect_position + (Vector2(-2.0, 0))					
-				_shadow.visible = true
+		_set_shadow(false)
+
+func _set_shadow(shadow_visible:bool, texture_file:String = "", shadow_size = null, shadow_position = null, alpha:float = 1.0):
+	if _shadow.visible != shadow_visible:
+		_shadow.visible = shadow_visible
+	if !shadow_visible:
+		return
+	reload_shadow_tex(texture_file)
+	if _shadow.rect_min_size != shadow_size:
+		_shadow.rect_min_size = shadow_size
+	if _shadow.rect_size != shadow_size:
+		_shadow.rect_size = shadow_size
+	if _shadow.rect_position != shadow_position:
+		_shadow.rect_position = shadow_position
+	if _shadow.self_modulate.a != alpha:
+		_shadow.self_modulate.a = alpha
 	
 func _process(delta) -> void:
 	if cfc.game_paused:
@@ -1099,6 +1163,8 @@ func _wc_process(delta) -> void:
 	#/TODO	
 		
 	refresh_cache(force_refresh)
+	if _pending_visual_alterants:
+		process_pending_visual_alterants()
 
 	if info_icon and info_icon.visible:
 		info_icon.modulate.a -= delta
@@ -1810,7 +1876,10 @@ func can_interrupt(
 		if script_is_optional:
 			#optional interrupts need to check costs
 			var cost_check_params = {"state_exec": interrupt_data["state_exec"]}
-			if check_play_costs_no_cache(hero_id, cost_check_params, _debug) == CFConst.CostsState.IMPOSSIBLE:
+			cfc.start_performance_tick("costs: optional interrupt check (not cached, not deferred)")
+			var interrupt_cost_state = check_play_costs_no_cache(hero_id, cost_check_params, _debug)
+			cfc.stop_performance_tick("costs: optional interrupt check (not cached, not deferred)")
+			if interrupt_cost_state == CFConst.CostsState.IMPOSSIBLE:
 				if (_debug):
 					display_debug("allowed to interrupt but can't pay cost")
 				return CFConst.CanInterrupt.NO			
@@ -3151,6 +3220,38 @@ var _cached_state = -1
 #scale, faceup, ensure_proper): for the many cards in piles, that was the
 #largest per-frame cost. Unchanged = nothing to apply
 var _pile_state_signature = null
+
+func _get_pile_state_signature() -> Array:
+	var parent = get_parent()
+	#also what display_shadow uses for pile cards: place in the pile, card
+	#count, animation, control position and size
+	return [state, parent, parent.get("faceup_cards") if parent else null, is_viewed, is_faceup,
+			_card_back_container.visible, scale, _control.rect_rotation, z_index,
+			highlight.visible if highlight else null,
+			get_index(), parent.get_card_count() if parent and parent.has_method("get_card_count") else 0,
+			is_animating(), _control.rect_position, _card_front_container.rect_min_size]
+
+#what the ON_PLAY_BOARD handling depends on: the card's own placement and
+#tween, its host (attachments follow it), its attachments, and the board's
+#child count (a card added or removed changes the draw order the
+#attachments are sorted by)
+func _get_board_state_signature() -> Array:
+	var parent = get_parent()
+	var host_data = null
+	if current_host_card and is_instance_valid(current_host_card):
+		host_data = [current_host_card, current_host_card.state, current_host_card.position, current_host_card.get_index()]
+	var attachments_data = []
+	for card in attachments:
+		if is_instance_valid(card):
+			attachments_data.append([card, card.position, card.state, card.get_index(), card.get_node("Tween").is_active()])
+	return [state, parent, parent.get_child_count() if parent else 0, get_index(),
+			position, _target_position, scale, compute_expected_scale(), $Tween.is_active(),
+			z_index, is_faceup, _card_back_container.visible, _control.rect_rotation, _horizontal, _is_boost,
+			highlight.visible if highlight else null, $Control.mouse_filter, monitorable,
+			host_data, attachments_data,
+			#also what display_shadow uses for board cards
+			_control.rect_position, _card_front_container.rect_min_size, is_flying()]
+
 func _process_card_state() -> void:
 	
 	#if state hasn't changed and we're on a low fps machine,
@@ -3169,19 +3270,31 @@ func _process_card_state() -> void:
 		if cfc.throttle_process_for_performance():
 			return
 	
-	if SKIP_UNCHANGED_PILE_STATE and state == CardState.IN_PILE and _cached_state == state:
-		var parent = get_parent()
-		var signature = [parent, parent.get("faceup_cards") if parent else null, is_viewed, is_faceup,
-				_card_back_container.visible, scale, _control.rect_rotation, z_index,
-				highlight.visible if highlight else null]
-		if signature == _pile_state_signature:
-			return
-		_pile_state_signature = signature
-	else:
-		_pile_state_signature = null
+	var signature = null
+	cfc.start_performance_tick("card state: signature")
+	if _cached_state == state:
+		match state:
+			CardState.IN_PILE:
+				if SKIP_UNCHANGED_PILE_STATE:
+					signature = _get_pile_state_signature()
+			CardState.ON_PLAY_BOARD:
+				if SKIP_UNCHANGED_BOARD_STATE:
+					signature = _get_board_state_signature()
+	cfc.stop_performance_tick("card state: signature")
+	if signature != null and signature == _pile_state_signature:
+		cfc.add_performance_call_count("card state: skipped (unchanged)")
+		_state_skipped_this_frame = true
+		return
+	_pile_state_signature = signature
 
 	_cached_state = state	
+	var tick_name = ""
+	if cfc.is_perf_profiling() and state < _STATE_TICK_NAMES.size():
+		tick_name = _STATE_TICK_NAMES[state]
+		cfc.start_performance_tick(tick_name)
 	._process_card_state()
+	if tick_name:
+		cfc.stop_performance_tick(tick_name)
 
 	#TODO bug?
 	#sometimes the card reports being "faceup" while actually showing the back

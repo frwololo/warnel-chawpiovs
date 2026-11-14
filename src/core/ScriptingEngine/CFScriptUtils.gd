@@ -119,6 +119,18 @@ static func get_altered_value(
 		task_properties: Dictionary,
 		value: int,
 		subject = null) -> Dictionary:
+	#profiling: every lookup, cache hits included (key hashing, super cache)
+	cfc.start_performance_tick("alterants: get_altered_value (all lookups)")
+	var result = _get_altered_value(_owner, task_name, task_properties, value, subject)
+	cfc.stop_performance_tick("alterants: get_altered_value (all lookups)")
+	return result
+
+static func _get_altered_value(
+		_owner,
+		task_name: String,
+		task_properties: Dictionary,
+		value: int,
+		subject = null) -> Dictionary:
 
 #	var fn = "CFScriptUtils.get_altered_value"
 #	var fn_uncached = fn + " uncached"

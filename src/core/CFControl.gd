@@ -41,6 +41,12 @@ var _perf_stopwatches := {}
 #per frame counters, to find frames where everything gets recomputed
 var _perf_frame_counts := {}
 var _perf_frame_start_usec := 0
+#per frame time budgets (usec) for work that can wait a few frames, such as
+#the play highlight cost checks. Reset every frame
+const FRAME_BUDGETS_USEC := {
+	"cost_checks": 8000,
+}
+var _frame_budget_spent := {}
 #-----------------------------------------------------------------------------
 # BEGIN Unit Testing Variables
 #-----------------------------------------------------------------------------
@@ -147,6 +153,15 @@ func _ready() -> void:
 func _process(_delta:float):
 	flush_cache_as_needed()
 	_perf_end_frame()
+	_frame_budget_spent = {}
+
+#true if some of the budget is left in this frame (the first call of
+#the frame always gets to run, whatever its duration)
+func has_frame_budget(budget_name:String) -> bool:
+	return _frame_budget_spent.get(budget_name, 0) < FRAME_BUDGETS_USEC.get(budget_name, 0)
+
+func spend_frame_budget(budget_name:String, usec:int):
+	_frame_budget_spent[budget_name] = _frame_budget_spent.get(budget_name, 0) + usec
 
 func reset_settings_to_default():
 	var dir = Directory.new()

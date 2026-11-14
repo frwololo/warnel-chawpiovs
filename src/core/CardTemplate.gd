@@ -3006,7 +3006,7 @@ func _process_card_state() -> void:
 			set_card_rotation(0)
 			if scale != Vector2(1,1):
 				set_scale(Vector2(1,1))
-			if get_parent() in get_tree().get_nodes_in_group("piles"):
+			if get_parent().is_in_group("piles"):
 				if card_front.resizing_labels.size() and not get_parent().faceup_cards:
 					return
 				var faceup = get_parent().faceup_cards
@@ -3024,7 +3024,7 @@ func _process_card_state() -> void:
 			set_card_rotation(0)
 			if scale != Vector2(1,1):
 				set_scale(Vector2(1,1))
-			if get_parent() in get_tree().get_nodes_in_group("piles"):
+			if get_parent().is_in_group("piles"):
 				var faceup = get_parent().faceup_cards
 				if is_viewed: 
 					faceup = true

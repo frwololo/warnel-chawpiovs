@@ -6,6 +6,9 @@ extends Card
 
 const _SPINBOX_SCENE_FILE = CFConst.PATH_CUSTOM + "cards/SpinPanel.tscn"
 const _SPINBOX_SCENE = preload(_SPINBOX_SCENE_FILE)
+#performance: skip the IN_PILE state handling while nothing it depends on
+#changed (see _process_card_state). false = old behavior
+const SKIP_UNCHANGED_PILE_STATE = true
 
 #this is emitted from front_card_container
 # warning-ignore:unused_signal
@@ -1159,7 +1162,22 @@ func display_play_highlight():
 		return
 	cfc.add_performance_call_count("costs: display_play_highlight")
 
-	var can_play = check_play_costs()
+	#a cost check costs about 1ms. After a game change, every card needs a
+	#new one, and they all ran in the same frame (up to 131 in one frame
+	#in the test suite: frames of 100ms+). Spread them over several frames:
+	#a card whose check doesn't fit in this frame's budget keeps its
+	#current highlight until a later frame
+	var can_play
+	var hero_id = gameData.get_current_local_hero_id()
+	if _check_play_costs_cache.get(hero_id, CFConst.CostsState.CACHE_INVALID) == CFConst.CostsState.CACHE_INVALID:
+		if !cfc.has_frame_budget("cost_checks"):
+			cfc.add_performance_call_count("costs: highlight check deferred (frame budget)")
+			return
+		var start_usec = OS.get_ticks_usec()
+		can_play = check_play_costs()
+		cfc.spend_frame_budget("cost_checks", OS.get_ticks_usec() - start_usec)
+	else:
+		can_play = check_play_costs()
 	if (can_play == CFConst.CostsState.OK):
 		#if modal menu is displayed we don't want to mess up those cards highlights
 		var colour = can_play
@@ -3128,6 +3146,11 @@ func die(script):
 	return CFConst.ReturnCode.OK		
 
 var _cached_state = -1
+#what the IN_PILE state handling depends on. The core state machine applies
+#the whole state every frame (focus, highlight, mouse filters, rotation,
+#scale, faceup, ensure_proper): for the many cards in piles, that was the
+#largest per-frame cost. Unchanged = nothing to apply
+var _pile_state_signature = null
 func _process_card_state() -> void:
 	
 	#if state hasn't changed and we're on a low fps machine,
@@ -3146,6 +3169,16 @@ func _process_card_state() -> void:
 		if cfc.throttle_process_for_performance():
 			return
 	
+	if SKIP_UNCHANGED_PILE_STATE and state == CardState.IN_PILE and _cached_state == state:
+		var parent = get_parent()
+		var signature = [parent, parent.get("faceup_cards") if parent else null, is_viewed, is_faceup,
+				_card_back_container.visible, scale, _control.rect_rotation, z_index,
+				highlight.visible if highlight else null]
+		if signature == _pile_state_signature:
+			return
+		_pile_state_signature = signature
+	else:
+		_pile_state_signature = null
 
 	_cached_state = state	
 	._process_card_state()

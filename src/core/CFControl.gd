@@ -139,7 +139,25 @@ var scripts_loading := true
 var cards_load_thread : Thread
 var cards_loading := true
 
+#profiling: time of the whole _process phase of a frame (all scripts).
+#cfc processes first (lowest priority), a small node processes last
+class _PerfEndOfProcess extends Node:
+	func _process(_delta):
+		cfc._perf_end_of_process()
+
+var _perf_process_start_usec := 0
+var _perf_last_process_ms := -1.0
+
+func _perf_end_of_process():
+	if _perf_process_start_usec:
+		_perf_last_process_ms = (OS.get_ticks_usec() - _perf_process_start_usec) / 1000.0
+
 func _ready() -> void:
+	process_priority = -1000
+	var end_node = _PerfEndOfProcess.new()
+	end_node.name = "PerfEndOfProcess"
+	end_node.process_priority = 1000
+	add_child(end_node)
 	var load_end_time = OS.get_ticks_msec()
 	if OS.has_feature("debug") and not cfc.is_testing:
 		print_debug("DEBUG INFO:CFControl: instance time = %sms" % [str(load_end_time - load_start_time)])
@@ -152,6 +170,8 @@ func _ready() -> void:
 	_setup()
 
 func _process(_delta:float):
+	if is_perf_profiling():
+		_perf_process_start_usec = OS.get_ticks_usec()
 	flush_cache_as_needed()
 	_perf_end_frame()
 	_frame_budget_spent = {}
@@ -241,6 +261,7 @@ func _perf_end_frame():
 			if frame_ms > limit:
 				var key = "frames over " + str(limit) + "ms (count)"
 				perf_monitors[key] = perf_monitors.get(key, 0) + 1
+		_perf_frame_engine_monitors(frame_ms)
 	_perf_frame_start_usec = now
 	for key in _perf_frame_counts:
 		var max_key = key + " (max per frame)"
@@ -249,6 +270,36 @@ func _perf_end_frame():
 			var frames_key = key + " (frames with calls)"
 			perf_monitors[frames_key] = perf_monitors.get(frames_key, 0) + 1
 	_perf_frame_counts = {}
+
+#Where the frame time goes, beyond our own ticks. "scripts (_process) ms"
+#is the whole _process phase of the previous frame (all nodes' _process,
+#timed from cfc, which runs first, to a node that runs last). The rest of
+#the frame is input, physics, rendering and waiting for vsync.
+#(Godot's TIME_PROCESS monitor can't be used: in Godot 3 it holds the
+#maximum over the last second, not the last frame's value)
+#Slow frames (over 33ms) are accumulated separately, to see what makes
+#them slow (scripts, or the number of things drawn)
+func _perf_frame_engine_monitors(frame_ms: float):
+	var values = {
+		"frame time ms": frame_ms,
+		"scripts (_process) ms": max(_perf_last_process_ms, 0.0),
+		"rest of the frame ms": max(frame_ms - max(_perf_last_process_ms, 0.0), 0.0),
+		"godot: 2D draw calls": Performance.get_monitor(Performance.RENDER_2D_DRAW_CALLS_IN_FRAME),
+		"godot: 2D items drawn": Performance.get_monitor(Performance.RENDER_2D_ITEMS_IN_FRAME),
+		"godot: nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+	}
+	var prefixes = ["all frames"]
+	if frame_ms > 33:
+		prefixes.append("slow frames (>33ms)")
+	for prefix in prefixes:
+		var count_key = prefix + ": frames"
+		perf_monitors[count_key] = perf_monitors.get(count_key, 0) + 1
+		for name in values:
+			var total_key = prefix + ": " + name + " (total)"
+			var max_key = prefix + ": " + name + " (max)"
+			perf_monitors[total_key] = perf_monitors.get(total_key, 0) + values[name]
+			perf_monitors[max_key] = max(perf_monitors.get(max_key, 0), values[name])
+			perf_monitors[prefix + ": " + name + " (avg)"] = perf_monitors[total_key] / perf_monitors[count_key]
 
 func reset_perf_monitors():
 	perf_monitors = {}
@@ -665,7 +716,6 @@ func flush_cache(force = false) -> void:
 func flush_cache_as_needed() -> void:
 	if !_flush_cache_requested:
 		return
-	add_performance_call_count("cache: flush (alterant cache cleared, all cards refresh)")
 	alterant_cache.clear()
 	emit_signal("cache_cleared")
 	_flush_cache_requested = false

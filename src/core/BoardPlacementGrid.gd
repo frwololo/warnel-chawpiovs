@@ -41,6 +41,13 @@ export var card_play_scale := CFConst.PLAY_AREA_SCALE
 onready var name_label = $Control/Label
 
 func _ready() -> void:
+	#grids don't take clicks (slots use the mouse pointer's Area2D, cards
+	#handle their own): an invisible grid covered a hero portrait
+	_ignore_mouse(self)
+	_ignore_mouse($Control)
+	_ignore_mouse($GridContainer)
+	for slot in $GridContainer.get_children():
+		_ignore_mouse(slot)
 	rescale(card_play_scale)
 	# We ensure the separation of the grid slots is always 1 pixel larger
 	# Than the radius of the mouse pointer collision area.
@@ -95,6 +102,7 @@ func get_slot(idx: int) -> BoardPlacementSlot:
 # Returns the slot object
 func add_slot() -> BoardPlacementSlot:
 	var new_slot : BoardPlacementSlot = _SLOT_SCENE.instance()
+	_ignore_mouse(new_slot)
 	$GridContainer.add_child(new_slot)
 	return(new_slot)
 
@@ -194,3 +202,7 @@ func set_h_separation(value):
 
 func set_columns(value):
 	$GridContainer.columns = value
+
+
+static func _ignore_mouse(control: Control) -> void:
+	control.mouse_filter = Control.MOUSE_FILTER_IGNORE

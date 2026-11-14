@@ -1917,9 +1917,7 @@ func retrieve_all_scripts() -> Dictionary:
 		# This retrieves all the script from the card, stored in cfc
 		# The seeks in them the specific trigger we're using in this
 		# execution
-		cfc.start_performance_tick("scripts: retrieve_all_scripts deep copy")
 		found_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
-		cfc.stop_performance_tick("scripts: retrieve_all_scripts deep copy")
 	return(found_scripts)
 
 

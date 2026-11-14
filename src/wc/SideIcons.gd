@@ -180,6 +180,10 @@ func update_state(forced = false):
 		_refresh_icon_passes = 2
 
 func _process(_delta):
+	#nothing to refresh (the usual case): return before the other checks,
+	#this runs every frame for every card
+	if !_refresh_icon_passes:
+		return
 	if cfc.throttle_process_for_performance():
 		return
 	

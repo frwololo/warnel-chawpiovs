@@ -292,19 +292,30 @@ func display_new_positions():
 			var new_scale = my_scale * rescale * child_data["scale"] * CFConst.PLAY_AREA_SCALE
 			child.rescale(new_scale)
 		elif child as Pile:
-			child.set_position(new_position)
-			child.set_global_position(new_position)
+			#moving a pile notifies all its cards, even to the same place
+			if child.position != new_position:
+				child.set_position(new_position)
+			if child.global_position != new_position:
+				child.set_global_position(new_position)
 			var new_scale =  my_scale * rescale * child_data["scale"]
-			child.scale = Vector2(new_scale, new_scale)				
+			if child.scale != Vector2(new_scale, new_scale):
+				child.scale = Vector2(new_scale, new_scale)				
 		elif child_data["type"] == "spacer":
 			pass			
 		else: #this is a hbox/vbox entiry
 			child.display_new_positions()
 			
-func organize():
+var _last_layout_signature = null
 
+func organize():
+	#nothing to do while the layout inputs are unchanged (checked first:
+	#are_cards_still_animating goes through the whole board)
+	var signature = _layout_signature()
+	if signature == _last_layout_signature:
+		return
 	if cfc.NMAP.board.are_cards_still_animating():
 		return
+	_last_layout_signature = signature
 #	var previous_data = to_json(retrieve_all_children_data())	
 	
 	# warning-ignore:return_value_discarded
@@ -316,6 +327,22 @@ func organize():
 #	var new_data = to_json(retrieve_all_children_data())	
 #	if new_data != previous_data:
 #		cfc.LOG_DICT({"positions" : retrieve_all_children_data()})
+
+func _layout_signature() -> Array:
+	var result = [my_absolute_position, my_scale, cfc.hardcoded_positions_modifier]
+	for child_data in my_children:
+		var child = child_data["item"]
+		if !is_instance_valid(child):
+			result.append(null)
+		elif child as BoardPlacementGrid:
+			result.append(child.get_all_cards())
+		elif child as Pile:
+			result.append([child, child.card_size])
+		elif child_data["type"] == "spacer":
+			result.append("spacer")
+		else: #this is a hbox/vbox entiry
+			result.append(child._layout_signature())
+	return result
 
 func retrieve_all_children_data():
 	var children = []

@@ -6,28 +6,6 @@ extends Card
 
 const _SPINBOX_SCENE_FILE = CFConst.PATH_CUSTOM + "cards/SpinPanel.tscn"
 const _SPINBOX_SCENE = preload(_SPINBOX_SCENE_FILE)
-#performance: skip the IN_PILE state handling while nothing it depends on
-#changed (see _process_card_state). false = old behavior
-const SKIP_UNCHANGED_PILE_STATE = true
-#same for cards idle on the board (ON_PLAY_BOARD)
-const SKIP_UNCHANGED_BOARD_STATE = true
-#refresh_dummy_alterants: skip the alterants that have no effect in the
-#card's current zone. false = old behavior
-const SKIP_IRRELEVANT_DUMMY_ALTERANTS = true
-#refresh the visual-only alterants (trait_aerial) within a per frame budget
-#instead of all in the frame of the cache flush. false = old behavior
-const SPREAD_VISUAL_ALTERANTS = true
-#skip the shadow computation when the card state was skipped (unchanged)
-const SKIP_UNCHANGED_SHADOW = true
-#profiling: name of each card state, for the per state ticks
-const _STATE_TICK_NAMES = [
-	"card state: IN_HAND", "card state: FOCUSED_IN_HAND", "card state: MOVING_TO_CONTAINER",
-	"card state: REORGANIZING", "card state: PUSHED_ASIDE", "card state: DRAGGED",
-	"card state: DROPPING_TO_BOARD", "card state: ON_PLAY_BOARD", "card state: FOCUSED_ON_BOARD",
-	"card state: IN_PILE", "card state: VIEWED_IN_PILE", "card state: IN_POPUP",
-	"card state: FOCUSED_IN_POPUP", "card state: VIEWPORT_FOCUS", "card state: PREVIEW",
-	"card state: DECKBUILDER_GRID", "card state: MOVING_TO_SPAWN_DESTINATION",
-]
 
 #this is emitted from front_card_container
 # warning-ignore:unused_signal
@@ -265,7 +243,6 @@ func invalidate_data_caches():
 func refresh_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
 		return
-	cfc.start_performance_tick("cache: card refresh_cache")
 		
 	refresh_cost_cache(forced)	
 
@@ -285,10 +262,7 @@ func refresh_cache(forced=false):
 	_cached_all_traits = null
 	_script_alter_cache = {}
 	
-	cfc.start_performance_tick("cache: refresh_dummy_alterants")
 	refresh_dummy_alterants()
-	cfc.stop_performance_tick("cache: refresh_dummy_alterants")
-	cfc.stop_performance_tick("cache: card refresh_cache")
 
 func refresh_cost_cache(forced=false):
 	if !forced and ! _cache_refresh_needed:
@@ -303,8 +277,8 @@ func refresh_cost_cache(forced=false):
 #This is for alterants that are "rare" but also have complicated impacts on
 #card properties, etc...
 var _dummy_alterants_cache = {}
-#alterants that only change how the card looks (no scripts, no rules):
-#refreshed within a per frame budget instead of all in the flush frame
+#alterants that only change how the card looks: refreshed within a per
+#frame budget (process_pending_visual_alterants), not all in the flush frame
 const VISUAL_DUMMY_ALTERANTS = ["trait_aerial"]
 var _pending_visual_alterants := []
 
@@ -316,9 +290,7 @@ func refresh_dummy_alterants():
 	]:
 		if !CFScriptUtils.game_has_alterants(alterant):
 			continue	
-		#after a cache flush every card refreshed its aerial lookup in the
-		#same frame (~0.7ms each on a full board): queue it instead
-		if SPREAD_VISUAL_ALTERANTS and alterant in VISUAL_DUMMY_ALTERANTS:
+		if alterant in VISUAL_DUMMY_ALTERANTS:
 			if !alterant in _pending_visual_alterants:
 				_pending_visual_alterants.append(alterant)
 			continue
@@ -328,7 +300,6 @@ func refresh_dummy_alterants():
 func process_pending_visual_alterants():
 	while _pending_visual_alterants:
 		if !cfc.has_frame_budget("visual_alterants"):
-			cfc.add_performance_call_count("cache: visual alterant deferred (frame budget)")
 			return
 		var start_usec = OS.get_ticks_usec()
 		var alterant = _pending_visual_alterants.pop_front()
@@ -337,21 +308,7 @@ func process_pending_visual_alterants():
 
 func _refresh_dummy_alterant(alterant):
 	var before = _dummy_alterants_cache.get(alterant, null)			
-	#every card ran these alterant lookups at each cache refresh. Two of
-	#them only have an effect in one zone: skip the lookup elsewhere,
-	#unless the effect is currently applied (it then has to be undone)
-	if SKIP_IRRELEVANT_DUMMY_ALTERANTS and before == null:
-		if alterant == "can_play_as_if_in_hand":
-			#playing from a pile
-			if get_state_exec() != "pile":
-				return
-		elif alterant == "trait_aerial":
-			#flying animation, board only
-			if !is_onboard():
-				return
-	cfc.start_performance_tick("cache: dummy alterant " + alterant)
 	var after = get_property(alterant, 0, true)
-	cfc.stop_performance_tick("cache: dummy alterant " + alterant)
 
 	if ((before != null) and !after) or (after and (before == null)):
 		var func_name = "refresh_alterant_" + alterant
@@ -715,7 +672,6 @@ func load_from_card_id(card_id):
 	scripting_bus.emit_signal("card_reloaded", self, {"before_id": previous_id })
 	
 func setup() -> void:
-	cfc.start_performance_tick("instancing: card setup")
 	var ingame = cfc.NMAP.has("board")
 	
 	if ingame:
@@ -725,7 +681,6 @@ func setup() -> void:
 	_runtime_properties_setup()
 	
 	if !ingame:
-		cfc.stop_performance_tick("instancing: card setup")
 		return
 		
 	update_groups()
@@ -757,7 +712,6 @@ func setup() -> void:
 	#this prevents moving cards around. A bit annoying but avoids weird double click envents leading to a drag and drop
 	disable_dragging_from_board = true	
 	disable_dropping_to_cardcontainers = true
-	cfc.stop_performance_tick("instancing: card setup")
 
 
 func _current_playing_hero_changed (trigger_details: Dictionary = {}):
@@ -1049,11 +1003,8 @@ func _class_specific_process(delta):
 		_tween_stuck_time = 0
 	_state_skipped_this_frame = false
 	_process_card_state()
-	#the shadow only depends on what the state signatures cover (placement,
-	#scale, rotation, highlight, flying, place in the pile): unchanged state,
-	#unchanged shadow. It now runs after the state handling, so it uses this
-	#frame's scale and highlight instead of the previous frame's
-	if !(SKIP_UNCHANGED_SHADOW and _state_skipped_this_frame):
+	#the state signature covers what the shadow depends on
+	if !_state_skipped_this_frame:
 		display_shadow()
 	pass
 		
@@ -1066,16 +1017,9 @@ func reload_shadow_tex(file_name):
 	_last_loaded_texture = file_name
 
 	
+#computes the shadow, then only writes what differs: visibility, size and
+#position writes trigger a redraw even with the same value
 func display_shadow():
-	cfc.start_performance_tick("card: display_shadow")
-	_display_shadow()
-	cfc.stop_performance_tick("card: display_shadow")
-
-#ran every frame for every card, and wrote the shadow's visibility (false,
-#then true again), size and position each time. Writing a visibility,
-#size or position triggers notifications and a redraw even with the same
-#value: compute what the shadow should be, then only write what differs
-func _display_shadow():
 	var parent = get_parent()	
 	var is_in_pile = parent and parent.is_in_group("piles")	
 	if is_onboard() or (is_in_pile and self == parent.get_card(1)):
@@ -1226,13 +1170,9 @@ func _wc_process(delta) -> void:
 func display_play_highlight():
 	if not gameData.is_game_started():
 		return
-	cfc.add_performance_call_count("costs: display_play_highlight")
 
-	#a cost check costs about 1ms. After a game change, every card needs a
-	#new one, and they all ran in the same frame (up to 131 in one frame
-	#in the test suite: frames of 100ms+). Spread them over several frames:
-	#a card whose check doesn't fit in this frame's budget keeps its
-	#current highlight until a later frame
+	#cost checks (~1ms each) share a per frame budget: a card whose check
+	#doesn't fit keeps its current highlight until a later frame
 	var can_play
 	var hero_id = gameData.get_current_local_hero_id()
 	if _check_play_costs_cache.get(hero_id, CFConst.CostsState.CACHE_INVALID) == CFConst.CostsState.CACHE_INVALID:
@@ -1675,7 +1615,6 @@ func get_property(property: String, default = null, force_alterant_check = false
 
 
 func register_signals():
-	cfc.start_performance_tick("instancing: register_signals")
 	scripting_bus.unregister_card(self)
 	#cards without extra scripts use their printed scripts only: what they
 	#listen to is the same for every copy of the card id, computed once.
@@ -1696,7 +1635,6 @@ func register_signals():
 			cfc.signal_registration_cache[canonical_id] = registrations
 	for registration in registrations:
 		scripting_bus.register_card_signal(self, registration[0], registration[1])
-	cfc.stop_performance_tick("instancing: register_signals")
 
 #[[signal name, has interrupt or response], ...]. Read only: scripts aren't modified
 static func _compute_signal_registrations(tmp_scripts) -> Array:
@@ -1876,10 +1814,7 @@ func can_interrupt(
 		if script_is_optional:
 			#optional interrupts need to check costs
 			var cost_check_params = {"state_exec": interrupt_data["state_exec"]}
-			cfc.start_performance_tick("costs: optional interrupt check (not cached, not deferred)")
-			var interrupt_cost_state = check_play_costs_no_cache(hero_id, cost_check_params, _debug)
-			cfc.stop_performance_tick("costs: optional interrupt check (not cached, not deferred)")
-			if interrupt_cost_state == CFConst.CostsState.IMPOSSIBLE:
+			if check_play_costs_no_cache(hero_id, cost_check_params, _debug) == CFConst.CostsState.IMPOSSIBLE:
 				if (_debug):
 					display_debug("allowed to interrupt but can't pay cost")
 				return CFConst.CanInterrupt.NO			
@@ -3215,26 +3150,28 @@ func die(script):
 	return CFConst.ReturnCode.OK		
 
 var _cached_state = -1
-#what the IN_PILE state handling depends on. The core state machine applies
-#the whole state every frame (focus, highlight, mouse filters, rotation,
-#scale, faceup, ensure_proper): for the many cards in piles, that was the
-#largest per-frame cost. Unchanged = nothing to apply
-var _pile_state_signature = null
+#The core state machine applies the whole state every frame. For cards in a
+#pile or idle on the board, it is skipped (with the shadow) while nothing it
+#depends on changed: _get_state_signature lists those values
+var _state_signature = null
 
-func _get_pile_state_signature() -> Array:
+#null: always process (other states)
+func _get_state_signature():
 	var parent = get_parent()
-	#also what display_shadow uses for pile cards: place in the pile, card
-	#count, animation, control position and size
-	return [state, parent, parent.get("faceup_cards") if parent else null, is_viewed, is_faceup,
-			_card_back_container.visible, scale, _control.rect_rotation, z_index,
-			highlight.visible if highlight else null,
-			get_index(), parent.get_card_count() if parent and parent.has_method("get_card_count") else 0,
-			is_animating(), _control.rect_position, _card_front_container.rect_min_size]
+	match state:
+		CardState.IN_PILE:
+			#place in the pile, card count and animation are for the shadow
+			return [state, parent, parent.get("faceup_cards") if parent else null, is_viewed, is_faceup,
+					_card_back_container.visible, scale, _control.rect_rotation, z_index,
+					highlight.visible if highlight else null,
+					get_index(), parent.get_card_count() if parent and parent.has_method("get_card_count") else 0,
+					is_animating(), _control.rect_position, _card_front_container.rect_min_size]
+		CardState.ON_PLAY_BOARD:
+			return _get_board_state_signature()
+	return null
 
-#what the ON_PLAY_BOARD handling depends on: the card's own placement and
-#tween, its host (attachments follow it), its attachments, and the board's
-#child count (a card added or removed changes the draw order the
-#attachments are sorted by)
+#the card's placement and tween, its host (attachments follow it), its
+#attachments, the board's child count (draw order), and the shadow's inputs
 func _get_board_state_signature() -> Array:
 	var parent = get_parent()
 	var host_data = null
@@ -3249,7 +3186,6 @@ func _get_board_state_signature() -> Array:
 			z_index, is_faceup, _card_back_container.visible, _control.rect_rotation, _horizontal, _is_boost,
 			highlight.visible if highlight else null, $Control.mouse_filter, monitorable,
 			host_data, attachments_data,
-			#also what display_shadow uses for board cards
 			_control.rect_position, _card_front_container.rect_min_size, is_flying()]
 
 func _process_card_state() -> void:
@@ -3270,31 +3206,14 @@ func _process_card_state() -> void:
 		if cfc.throttle_process_for_performance():
 			return
 	
-	var signature = null
-	cfc.start_performance_tick("card state: signature")
-	if _cached_state == state:
-		match state:
-			CardState.IN_PILE:
-				if SKIP_UNCHANGED_PILE_STATE:
-					signature = _get_pile_state_signature()
-			CardState.ON_PLAY_BOARD:
-				if SKIP_UNCHANGED_BOARD_STATE:
-					signature = _get_board_state_signature()
-	cfc.stop_performance_tick("card state: signature")
-	if signature != null and signature == _pile_state_signature:
-		cfc.add_performance_call_count("card state: skipped (unchanged)")
+	var signature = _get_state_signature() if _cached_state == state else null
+	if signature != null and signature == _state_signature:
 		_state_skipped_this_frame = true
 		return
-	_pile_state_signature = signature
+	_state_signature = signature
 
 	_cached_state = state	
-	var tick_name = ""
-	if cfc.is_perf_profiling() and state < _STATE_TICK_NAMES.size():
-		tick_name = _STATE_TICK_NAMES[state]
-		cfc.start_performance_tick(tick_name)
 	._process_card_state()
-	if tick_name:
-		cfc.stop_performance_tick(tick_name)
 
 	#TODO bug?
 	#sometimes the card reports being "faceup" while actually showing the back

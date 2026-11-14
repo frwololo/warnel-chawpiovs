@@ -111,7 +111,9 @@ func _process(_delta) -> void:
 		if not obj.get_child_count():
 			obj.queue_free()
 	# We make sure to adjust our popup if cards were removed from it while it's open
-	pile_popup.set_as_minsize()
+	# (only while it's open: this resized the hidden popup every frame)
+	if pile_popup.visible:
+		pile_popup.set_as_minsize()
 	if gamepadHandler.is_mouse_input():
 		check_mouse_overlap()
 	
@@ -623,13 +625,18 @@ func lose_focus():
 	if top_card and top_card.state == Card.CardState.VIEWED_IN_PILE:
 		top_card.set_state(Card.CardState.IN_PILE)
 
+#ran every frame for every pile: overlaps_area instead of building the
+#list of overlapping areas, and lose_focus only when the mouse just left
+var _mouse_was_over := false
 func check_mouse_overlap():		
 	if _has_cards and cfc.game_settings.focus_style:
-		if cfc.NMAP.board.mouse_pointer in get_overlapping_areas()\
+		if overlaps_area(cfc.NMAP.board.mouse_pointer)\
 				and not cfc.card_drag_ongoing:
 			gain_focus()
-		else:
+			_mouse_was_over = true
+		elif _mouse_was_over:
 			lose_focus() 
+			_mouse_was_over = false
 
 
 func _on_ClosePopup_pressed():

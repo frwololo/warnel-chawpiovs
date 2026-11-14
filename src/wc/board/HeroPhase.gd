@@ -22,6 +22,7 @@ onready var selected :=  get_node("%ColorRect")
 onready var ping :=  get_node("%Ping")
 onready var first_player :=  get_node("%FirstPlayer")
 onready var control = get_node("%Control")
+var _ping_color = null
 
 # Declare member variables here. Examples:
 # var a = 2
@@ -57,23 +58,32 @@ func _process(_delta):
 	
 	var network_owner = gameData.get_network_id_by_hero_id(hero_index)
 	var ping_int = cfc.get_avg_ping(network_owner)
+	var ping_text
+	var ping_color
 	if ping_int:
-		ping.text = str(ping_int) + " ms"
+		ping_text = str(ping_int) + " ms"
 		if ping_int < 100:
-			ping.add_color_override("font_color", Color8(50, 255, 50))
+			ping_color = Color8(50, 255, 50)
 		elif ping_int < 200:
-			ping.add_color_override("font_color", Color8(220, 150, 50))
+			ping_color = Color8(220, 150, 50)
 		else:
-			ping.add_color_override("font_color", Color8(255, 50, 50))
+			ping_color = Color8(255, 50, 50)
 	else:
 		var fps = Performance.get_monitor(Performance.TIME_FPS)
-		ping.text = str(fps) + " fps"
+		ping_text = str(fps) + " fps"
 		if fps > 40:
-			ping.add_color_override("font_color", Color8(50, 255, 50))
+			ping_color = Color8(50, 255, 50)
 		elif fps > 20:
-			ping.add_color_override("font_color", Color8(220, 150, 50))
+			ping_color = Color8(220, 150, 50)
 		else:
-			ping.add_color_override("font_color", Color8(255, 50, 50))		
+			ping_color = Color8(255, 50, 50)
+	#a colour override is a theme change for the label (and a new layout
+	#of its container), even with the same colour: only on changes
+	if ping.text != ping_text:
+		ping.text = ping_text
+	if ping_color != _ping_color:
+		_ping_color = ping_color
+		ping.add_color_override("font_color", ping_color)
 
 	if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.PLAYER_TURN:
 		match current_state:

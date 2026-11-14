@@ -25,8 +25,12 @@ func _process(delta:float):
 	
 	if !$Tween.is_active():
 		if art.texture:
-			art.self_modulate = Color(1,1,1)	
-			art.modulate = Color(1,1,1)
+			#a modulate write sends a command to the renderer even with the
+			#same value: every card did two per frame
+			if art.self_modulate != Color(1,1,1):
+				art.self_modulate = Color(1,1,1)	
+			if art.modulate != Color(1,1,1):
+				art.modulate = Color(1,1,1)
 
 func _handle_horizontal_card():
 	if !text_enabled:

@@ -837,7 +837,6 @@ func main_scheme_stage_completed(scheme):
 func game_state_changed(_trigger_object = null,
 		trigger: String = "manual",
 		_trigger_details: Dictionary = {}):
-	cfc.add_performance_call_count("cache: game_state_changed")
 	emit_signal("game_state_changed",{})
 	cfc.flush_cache()
 

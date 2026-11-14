@@ -1263,6 +1263,19 @@
 				}
 			]
 		},
+		"response_reveal_encounter": {
+			"trigger": "another",
+			"filter_same_controller": true,
+			"board": [
+				{
+					"name": "execute_scripts",
+					"subject": "trigger",
+					"exec_trigger": "reveal",
+					"delayed": true,
+					"_comments": "Resolve each When Revealed ability that you reveal 1 additional time"
+				}
+			]
+		},		
 		"manual": {
 			"board": [
 				{
@@ -1285,7 +1298,6 @@
 				}
 			]
 		},
-		"TODO": "Resolve each When Revealed ability that you reveal 1 additional time"
 	},
 	"Monster": {
 		"reveal": {

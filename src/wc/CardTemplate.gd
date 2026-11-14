@@ -1541,6 +1541,11 @@ func set_process_recursive(value, node = self):
 func get_property(property: String, default = null, force_alterant_check = false):
 	if not (properties.has(property)) and not force_alterant_check:
 		return default
+	
+	if self.is_inactive_attachment():
+		#there are a few exceptions we accept to return for inactive attachment cards
+		if !property in ["_code"]:
+			return default
 		
 	if CFConst.PERFORMANCE_HACKS:
 		if !state in [

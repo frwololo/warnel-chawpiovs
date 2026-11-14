@@ -935,10 +935,15 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 
 func compare_string_properties(property_filters, card, property, comparison_type):
 	var card_property
+	var use_printed_property: bool = property_filters.get("use_printed_property", false)
+	
 	if property == "Name":
 		card_property = card.canonical_name
 	else:
-		card_property = card.get_property(property, "")
+		if use_printed_property:
+			card_property = card.properties.get(property, "")
+		else:
+			card_property = card.get_property(property, "")
 	var result =  CFUtils.compare_strings(
 					str(property_filters[property]),
 					str(card_property),
@@ -946,8 +951,14 @@ func compare_string_properties(property_filters, card, property, comparison_type
 	if result:
 		return true
 		
-		
-	card_property = card.get_property("secondary_" + property, "", true)
+	#fallback to secondary property, used in a handful of cards
+	#that have two types (e.g. environment + scheme)
+	var secondary_property = "secondary_" + property
+	if use_printed_property:
+		card_property = card.properties.get( secondary_property, "")
+	else:
+		card_property = card.get_property( secondary_property, "", true)		
+
 	
 	#if there's nothing to compare to for secondary, we fail
 	if !card_property:

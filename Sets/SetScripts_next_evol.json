@@ -609,7 +609,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -986,7 +988,9 @@
 								"filter_state_attachment": [
 									{
 										"filter_properties": {
-											"type_code": "villain"
+											"type_code": "villain",
+											"use_printed_property": true,
+											"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 										}
 									}
 								]
@@ -1030,7 +1034,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -1266,7 +1272,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -4003,7 +4011,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -4517,7 +4527,9 @@
 					"filter_state_attachment": [
 						{
 							"filter_properties": {
-								"type_code": "villain"
+								"type_code": "villain",
+								"use_printed_property": true,
+								"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 							}
 						}
 					]
@@ -5021,7 +5033,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -5851,7 +5865,9 @@
 					"filter_state_attachment": [
 						{
 							"filter_properties": {
-								"type_code": "villain"
+								"type_code": "villain",
+								"use_printed_property": true,
+								"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 							}
 						}
 					]
@@ -7027,7 +7043,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -7045,7 +7063,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]
@@ -7465,7 +7485,7 @@
 					"modification": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_seek":  "group_friendly_my_hero"
+					"filter_state_seek": "group_friendly_my_hero"
 				}
 			]
 		},
@@ -7614,7 +7634,9 @@
 											"filter_state_attachment": [
 												{
 													"filter_properties": {
-														"type_code": "villain"
+														"type_code": "villain",
+														"use_printed_property": true,
+														"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 													}
 												}
 											]
@@ -9327,7 +9349,9 @@
 							"filter_state_attachment": [
 								{
 									"filter_properties": {
-										"type_code": "villain"
+										"type_code": "villain",
+										"use_printed_property": true,
+										"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 									}
 								}
 							]

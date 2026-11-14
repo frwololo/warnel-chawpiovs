@@ -1576,17 +1576,30 @@ static func check_properties(card, property_filters: Dictionary) -> bool:
 	var card_matches := true
 	var comparison_type : String = property_filters.get(
 			KEY_COMPARISON, get_default(KEY_COMPARISON))
+	var use_printed_property: bool = property_filters.get("use_printed_property", false)
+	
 	for property in property_filters:
-		if property == KEY_COMPARISON:
+		if property in [KEY_COMPARISON, "use_printed_property"]:
 			continue
+		
+		#grab value on the card, printed value or current gameplay value
+		var value
+		if use_printed_property:
+			value = card.properties.get(property, null)
+		else:
+			if property in CardConfig.PROPERTIES_NUMBERS:
+				value = card.get_property(property, 0, true)
+			else:
+				value = card.get_property(property)
+
 		if property in CardConfig.PROPERTIES_ARRAYS:
 			# If it's an array, we assume they passed on element
 			# of that array to check against the card properties
-			if not property_filters[property] in card.get_property(property)\
+			if not property_filters[property] in value\
 					and comparison_type == "eq":
 				card_matches = false
 			# We use the "ne" as a "not in" operator for Arrays.
-			elif property_filters[property] in card.get_property(property)\
+			elif property_filters[property] in value\
 					and comparison_type == "ne":
 				card_matches = false
 		elif property in CardConfig.PROPERTIES_NUMBERS:
@@ -1603,15 +1616,15 @@ static func check_properties(card, property_filters: Dictionary) -> bool:
 				# Then it must be a special value provided by the designer
 				# We obviously cannot compare it as int, so we will compare is as string.
 				comparison_value = property_filters[property]	
-			if typeof(comparison_value) == TYPE_INT and typeof(card.get_property(property, 0, true)) == TYPE_INT:
+			if typeof(comparison_value) == TYPE_INT and typeof(value) == TYPE_INT:
 				if not CFUtils.compare_numbers(
-						card.get_property(property, 0, true),
+						value,
 						comparison_value,
 						comparison_type):
 					card_matches = false
 			elif not CFUtils.compare_strings(
 					str(comparison_value),
-					str(card.get_property(property)),
+					str(value),
 					comparison_type):
 				card_matches = false
 		else:

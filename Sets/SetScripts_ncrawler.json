@@ -695,13 +695,14 @@
 					"var_name": "my_boost_count",
 					"var_type": "int",
 					"value": {
-						"func_name": "count_boost_icons",
+						"func_name": "get_subject_int_printed_property",
 						"func_params": {
-							"subject": "previous"
+							"subject": "previous",
+							"property": "boost"
 						}
 					},
-					"_comments": "remembering the card for damage"
-				}
+					"_comments": "remembering the card for attribute boost"
+				},
 			]
 		},
 		"alterants": {

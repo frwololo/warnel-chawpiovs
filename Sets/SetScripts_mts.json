@@ -4795,7 +4795,9 @@
 					"filter_state_attachment": [
 						{
 							"filter_properties": {
-								"shortname": "Odin"
+								"shortname": "Odin",
+								"use_printed_property": true,
+								"_comments": "tucked cards have 100% blank properties so we force use_printed_property in filters"
 							}
 						}
 					]

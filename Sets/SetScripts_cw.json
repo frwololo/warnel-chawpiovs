@@ -309,7 +309,7 @@
 					"subject": "self",
 					"end_condition": "enemy_activation_finished",
 					"script": {
-						"interrupt_enemy_activation_finished": {
+						"enemy_activation_finished": {
 							"all": [
 								{
 									"name": "mod_tokens",

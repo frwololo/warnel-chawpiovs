@@ -982,6 +982,14 @@ func check_validity_post_selection(card, script):
 	#this might be a bad design, but currently is required at least for cards with "use" keywords
 	if card == script.owner:
 		return true
+
+	#a constraint only looks at the board (e.g. "play only if you control a
+	#Web-Warrior card", checked before the cost is paid): a card paying for
+	#the same script still counts there. Otherwise paying Spider-Ham with
+	#SP//dr Suit's resource made SP//dr Suit stop being a Web-Warrior card
+	#you control
+	if script.script_name == "constraints":
+		return true
 		
 	if card.is_subject_locked_as_resource(script):
 		return false

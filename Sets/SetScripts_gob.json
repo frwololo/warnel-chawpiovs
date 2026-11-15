@@ -178,7 +178,7 @@
 					"token_name": "madness",
 					"modification": "2p",
 					"subject": "self"
-				},
+				}
 			]
 		}
 	},
@@ -818,15 +818,39 @@
 		}
 	},
 	"Green Goblin - 1 #02014": {
-		"attacks_gain": {
-			"__trigger__": "self",
-			"__tags__": "1_threat_on_main_scheme_if_damage"
+		"response_card_damaged": {
+			"filter_state_trigger": "group_identities",
+			"event_filters": {
+				"attacker": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 1
+				}
+			]
 		}
 	},
 	"Green Goblin - 2 #02015": {
-		"attacks_gain": {
-			"__trigger__": "self",
-			"__tags__": "1_threat_on_main_scheme_if_damage"
+		"response_card_damaged": {
+			"filter_state_trigger": "group_identities",
+			"event_filters": {
+				"attacker": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 1
+				}
+			]
 		},
 		"reveal": {
 			"all": {
@@ -845,9 +869,21 @@
 		}
 	},
 	"Green Goblin - 3 #02016": {
-		"attacks_gain": {
-			"__trigger__": "self",
-			"__tags__": "2_threat_on_main_scheme_if_damage"
+		"response_card_damaged": {
+			"filter_state_trigger": "group_identities",
+			"event_filters": {
+				"attacker": "self",
+				"tags": [
+					"attack"
+				]
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": 2
+				}
+			]
 		},
 		"reveal": {
 			"all": {
@@ -917,7 +953,7 @@
 						"deck_villain",
 						"set_aside"
 					],
-					"filter_state_tutor":  "Criminal Enterprise"
+					"filter_state_tutor": "Criminal Enterprise"
 				},
 				{
 					"name": "move_card_to_container",
@@ -926,7 +962,7 @@
 					"src_container": "deck_villain",
 					"dest_container": "set_aside",
 					"filter_state_tutor": "State of Madness"
-				},				
+				},
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -1270,7 +1306,7 @@
 					"_comments": "Resolve each When Revealed ability that you reveal 1 additional time"
 				}
 			]
-		},		
+		},
 		"manual": {
 			"board": [
 				{
@@ -1292,7 +1328,7 @@
 					"subject": "self"
 				}
 			]
-		},
+		}
 	},
 	"Monster": {
 		"reveal": {
@@ -2057,7 +2093,9 @@
 										"subject_index": "top",
 										"subject_count": 3,
 										"src_container": "deck_villain",
-										"tags": ["immediate"]
+										"tags": [
+											"immediate"
+										]
 									},
 									{
 										"name": "move_card_to_board",

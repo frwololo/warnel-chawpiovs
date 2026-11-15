@@ -191,7 +191,7 @@
 					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "scheme",
@@ -222,7 +222,7 @@
 					"subject": "self",
 					"script": {
 						"alterants": {
-							"board": [
+							"all": [
 								{
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
@@ -917,14 +917,16 @@
 						"deck_villain",
 						"set_aside"
 					],
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Criminal Enterprise"
-							}
-						}
-					]
+					"filter_state_tutor":  "Criminal Enterprise"
 				},
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"dest_container": "set_aside",
+					"filter_state_tutor": "State of Madness"
+				},				
 				{
 					"name": "flip_doublesided_card",
 					"subject": "self"
@@ -1590,33 +1592,31 @@
 	"Overrun": {
 		"card_defeated": {
 			"trigger": "self",
-			"all": [
-				{
-					"_rules": {
-						"forced": true,
-						"for_each_player": true
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Goblins": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 2,
+						"src_container": "deck_villain"
 					},
-					"Goblins": [
-						{
-							"name": "discard",
-							"subject": "index",
-							"subject_index": "top",
-							"subject_count": 2,
-							"src_container": "deck_villain"
-						},
-						{
-							"name": "move_card_to_board",
-							"subject": "previous",
-							"subject_count": "all",
-							"grid_name": "enemies_my_hero",
-							"filter_state_subject": [
-								"trait_goblin",
-								"minion"
-							]
-						}
-					]
-				}
-			]
+					{
+						"name": "move_card_to_board",
+						"subject": "previous",
+						"subject_count": "all",
+						"grid_name": "enemies_my_hero",
+						"filter_state_subject": [
+							"trait_goblin",
+							"minion"
+						]
+					}
+				]
+			}
 		}
 	},
 	"Payoff": {

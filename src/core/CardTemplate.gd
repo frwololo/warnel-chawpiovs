@@ -1567,7 +1567,8 @@ func move_to(targetHost: Node,
 			if "facedown" in tags:
 				set_is_faceup(false)	
 			if "force_emit_card_moved_signal" in tags:
-				signal_to_emit = "card_moved_to_board"			
+				signal_to_emit = "card_moved_to_board"
+				execute_self_moved_to_board = true			
 		elif parentHost == targetHost and index != get_my_card_index():
 			parentHost.move_child(self,
 					parentHost.translate_card_index_to_node_index(index))

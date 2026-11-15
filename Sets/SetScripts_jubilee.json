@@ -40,11 +40,7 @@
 					"subject": "tutor",
 					"src_container": "deck",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Shopping Spree"
-							}
-						}
+						"Shopping Spree"
 					]
 				},
 				{
@@ -109,12 +105,7 @@
 						"discard_event_source_hero"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"trait_item": 1,
-								"comparison": "ge"
-							}
-						}
+						"trait_item"
 					]
 				}
 			]
@@ -134,13 +125,9 @@
 		},
 		"response_card_played": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "event",
-						"trait_thwart": 1
-					},
-					"filter_same_controller": true
-				}
+				"event",
+				"trait_thwart",
+				"filter_same_controller"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -184,13 +171,9 @@
 		},
 		"response_card_played": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "event",
-						"trait_attack": 1
-					},
-					"filter_same_controller": true
-				}
+				"event",
+				"trait_attack",
+				"filter_same_controller"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -257,9 +240,7 @@
 						"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
 					},
 					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies"
-						}
+						"group_enemies"
 					]
 				},
 				{
@@ -1128,9 +1109,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_current_hero_target"
-						}
+						"group_allies_current_hero_target"
 					]
 				}
 			},
@@ -1144,11 +1123,7 @@
 						"set_aside"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "\"Lost\" Child"
-							}
-						}
+						"\"Lost\" Child"
 					]
 				}
 			]
@@ -1192,11 +1167,7 @@
 					"sort_name": "get_remaining_damage",
 					"is_cost": true,
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -1248,11 +1219,7 @@
 								"func_params": {
 									"subject": "trigger",
 									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"shortname": "\"Lost\" Child"
-											}
-										}
+										"\"Lost\" Child"
 									]
 								}
 							}
@@ -1291,20 +1258,11 @@
 				},
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_characters",
-							"filter_properties": {
-								"trait_x-force": 1,
-								"comparison": "ge"
-							},
-							"filter_is_exhausted": false
-						}
+						"group_characters",
+						"trait_x-force",
+						"!filter_is_exhausted"
 					],
 					"is_cost": true
 				},
@@ -1316,20 +1274,11 @@
 				},
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_characters",
-							"filter_properties": {
-								"trait_x-men": 1,
-								"comparison": "ge"
-							},
-							"filter_is_exhausted": false
-						}
+						"group_characters",
+						"trait_x-men",
+						"!filter_is_exhausted"
 					],
 					"is_cost": true
 				},
@@ -1370,15 +1319,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"trait_trap": 1,
-								"comparison": "ge"
-							}
-						}
+						"side_scheme",
+						"trait_trap"
 					]
 				}
 			},
@@ -1397,15 +1339,8 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"trait_trap": 1,
-								"comparison": "ge"
-							}
-						}
+						"side_scheme",
+						"trait_trap"
 					]
 				},
 				{
@@ -1453,11 +1388,7 @@
 							"nested_tasks": [
 								{
 									"name": "discard",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_type": "equal",
+									"subject": "boardseek_and_choose",
 									"filter_state_seek": [
 										{
 											"filter_group": "group_allies_event_source_hero"
@@ -1533,15 +1464,8 @@
 					"exec_trigger": "card_defeated",
 					"is_cost": true,
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"trait_trap": 1,
-								"comparison": "ge"
-							}
-						}
+						"side_scheme",
+						"trait_trap"
 					],
 					"delayed": true,
 					"_comments": "TODO resolve as if you defeated it"
@@ -1551,15 +1475,8 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							},
-							"filter_properties2": {
-								"trait_trap": 1,
-								"comparison": "ge"
-							}
-						}
+						"side_scheme",
+						"trait_trap"
 					],
 					"is_else": true
 				},

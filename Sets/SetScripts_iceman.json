@@ -15,11 +15,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
@@ -36,11 +32,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
@@ -61,11 +53,7 @@
 					],
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					]
 				}
 			]
@@ -92,21 +80,12 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_properties": {
-										"shortname": "Frostbite"
-									}
-								}
+								"Frostbite"
 							]
 						}
 					},
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"trait_ice": 1,
-								"comparison": "ge"
-							}
-						}
+						"trait_ice"
 					]
 				}
 			],
@@ -286,11 +265,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
@@ -322,9 +297,7 @@
 				"amount": ">0"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_identities"
-				}
+				"group_identities"
 			],
 			"board": [
 				{
@@ -355,11 +328,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
@@ -389,11 +358,7 @@
 						"subject": "tutor",
 						"src_container": "set_aside",
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"shortname": "Frostbite"
-								}
-							}
+							"Frostbite"
 						],
 						"_comments": "attach a set-aside copy of Frostbite"
 					}
@@ -419,11 +384,7 @@
 									"func_params": {
 										"subject": "trigger",
 										"filter_state_attachment": [
-											{
-												"filter_properties": {
-													"shortname": "Frostbite"
-												}
-											}
+											"Frostbite"
 										]
 									}
 								}
@@ -455,11 +416,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				},
@@ -476,11 +433,7 @@
 								"func_params": {
 									"subject": "trigger",
 									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"shortname": "Frostbite"
-											}
-										}
+										"Frostbite"
 									]
 								}
 							}
@@ -516,11 +469,7 @@
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Frostbite"
-							}
-						}
+						"Frostbite"
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
@@ -546,11 +495,7 @@
 										"func_params": {
 											"subject": "trigger_details_target",
 											"filter_state_attachment": [
-												{
-													"filter_properties": {
-														"type_code": "upgrade"
-													}
-												}
+												"upgrade"
 											]
 										}
 									},
@@ -580,11 +525,7 @@
 								"func_params": {
 									"subject": "trigger",
 									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"type_code": "upgrade"
-											}
-										}
+										"upgrade"
 									]
 								}
 							}
@@ -703,11 +644,7 @@
 								"func_params": {
 									"subject": "trigger",
 									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"type_code": "upgrade"
-											}
-										}
+										"upgrade"
 									]
 								}
 							}
@@ -732,11 +669,7 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					],
 					"is_cost": true
 				},
@@ -782,12 +715,8 @@
 						],
 						"dest_container": "hand_my_hero",
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"type_code": "event",
-									"trait_attack": 1
-								}
-							}
+							"event",
+							"trait_attack"
 						]
 					},
 					{
@@ -821,13 +750,8 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_allies_my_hero",
-									"filter_properties": {
-										"trait_x-men": 1,
-										"comparison": "ge"
-									}
-								}
+								"group_allies_my_hero",
+								"trait_x-men"
 							]
 						}
 					}
@@ -873,9 +797,7 @@
 						}
 					},
 					"filter_state_tutor": [
-						{
-							"filter_shares_trait_with_identity": true
-						}
+						"filter_shares_trait_with_identity"
 					]
 				},
 				{
@@ -951,11 +873,7 @@
 		},
 		"response_card_attached": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"shortname": "Frostbite"
-					}
-				}
+				"Frostbite"
 			],
 			"board": [
 				{
@@ -1144,11 +1062,7 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Life Drain"
-							}
-						}
+						"Life Drain"
 					]
 				}
 			]
@@ -1181,11 +1095,7 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Sauron"
-							}
-						}
+						"Sauron"
 					],
 					"target_identity": "event_source_hero"
 				}
@@ -1205,11 +1115,7 @@
 					"sort_descending": true,
 					"is_cost": true,
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -1309,9 +1215,7 @@
 					"needs_selection": true,
 					"selection_type": "equal",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					],
 					"selection_count": {
 						"func_name": "count_printed_resources",

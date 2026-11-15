@@ -28,11 +28,7 @@
 						"hand"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Alias Investigations"
-							}
-						}
+						"Alias Investigations"
 					]
 				}
 			]
@@ -74,11 +70,7 @@
 	"Alias Investigations": {
 		"response_card_defeated": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "side_scheme"
-					}
-				}
+				"side_scheme"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -254,11 +246,7 @@
 			"event_name": "card_token_added",
 			"filter_token_name": "evidence",
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"shortname": "Alias Investigations"
-					}
-				}
+				"Alias Investigations"
 			],
 			"is_optional_hand": true,
 			"hand": [
@@ -375,18 +363,10 @@
 				{
 					"name": "add_script",
 					"end_condition": "card_played",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "deck",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
-						}
+						"ally"
 					],
 					"script": {
 						"alterants": {
@@ -430,20 +410,10 @@
 				{
 					"name": "nop",
 					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_elite": 0
-							}
-						}
+						"minion",
+						"!trait_elite"
 					]
 				},
 				{
@@ -478,9 +448,7 @@
 	"Circumstantial Evidence": {
 		"response_card_dies": {
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_enemies"
-				}
+				"group_enemies"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -562,12 +530,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies_current_hero_target",
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"group_enemies_current_hero_target",
+						"minion"
 					]
 				},
 				{
@@ -747,9 +711,7 @@
 		"response": {
 			"event_name": "thwart_happened",
 			"filter_state_trigger": [
-				{
-					"filter_same_controller": true
-				}
+				"filter_same_controller"
 			],
 			"board": [
 				{
@@ -884,13 +846,7 @@
 						"then": 4,
 						"else": 3
 					},
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"subject": "a_scheme"
 				}
 			]
 		}
@@ -916,11 +872,7 @@
 						"src_container": "deck_previous_subject",
 						"dest_container": "hand_previous_subject",
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"type_code": "player_side_scheme"
-								}
-							}
+							"player_side_scheme"
 						]
 					}
 				],
@@ -938,11 +890,7 @@
 						"subject": "target",
 						"needs_subject": true,
 						"filter_state_subject": [
-							{
-								"filter_properties": {
-									"type_code": "player_side_scheme"
-								}
-							}
+							"player_side_scheme"
 						]
 					}
 				]
@@ -1117,33 +1065,19 @@
 					},
 					{
 						"name": "exhaust_card",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_identities",
-								"filter_properties": {
-									"type_code": "alter_ego",
-									"trait_civilian": 1
-								}
-							}
+							"group_identities",
+							"alter_ego",
+							"trait_civilian"
 						],
 						"is_cost": true
 					},
 					{
 						"name": "ready_card",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_allies_and_heroes"
-							}
+							"group_allies_and_heroes"
 						]
 					}
 				],
@@ -1157,33 +1091,19 @@
 					},
 					{
 						"name": "exhaust_card",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_allies_and_heroes"
-							}
+							"group_allies_and_heroes"
 						],
 						"is_cost": true
 					},
 					{
 						"name": "ready_card",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_identities",
-								"filter_properties": {
-									"type_code": "alter_ego",
-									"trait_civilian": 1
-								}
-							}
+							"group_identities",
+							"alter_ego",
+							"trait_civilian"
 						]
 					}
 				]
@@ -1213,11 +1133,7 @@
 				{
 					"name": "heal",
 					"amount": 3,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_properties": {
@@ -1349,15 +1265,9 @@
 					{
 						"name": "move_card_to_container",
 						"dest_container": "removed_from_game",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_allies_my_hero"
-							}
+							"group_allies_my_hero"
 						],
 						"is_cost": true
 					},
@@ -1404,9 +1314,7 @@
 							"sort_name": "scheme",
 							"sort_descending": true,
 							"filter_state_seek": [
-								{
-									"filter_group": "group_characters"
-								}
+								"group_characters"
 							],
 							"property": "scheme"
 						}
@@ -1424,9 +1332,7 @@
 							"sort_name": "attack",
 							"sort_descending": true,
 							"filter_state_seek": [
-								{
-									"filter_group": "group_characters"
-								}
+								"group_characters"
 							],
 							"property": "attack"
 						}
@@ -1450,22 +1356,14 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Suggestion"
-							}
-						}
+						"Suggestion"
 					]
 				}
 			]
 		},
 		"response_card_moved_to_board": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"shortname": "Suggestion"
-					}
-				}
+				"Suggestion"
 			],
 			"board": [
 				{
@@ -1710,11 +1608,7 @@
 				"source": "my_hero"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "minion"
-					}
-				}
+				"minion"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1759,9 +1653,7 @@
 					"filter_property_name": "health",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_allies_my_hero"
-						}
+						"group_allies_my_hero"
 					]
 				}
 			]

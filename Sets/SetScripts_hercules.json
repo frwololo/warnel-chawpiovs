@@ -5,12 +5,7 @@
 		},
 		"response_card_moved_to_pile": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"trait_labor": 1,
-						"comparison": "ge"
-					}
-				}
+				"trait_labor"
 			],
 			"filter_destination": "victory_display",
 			"is_optional_board": true,
@@ -27,7 +22,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"src_container": "deck_gift",
+					"src_container": "deck_gift_my_hero",
 					"_comments": "TODO gift deck container name"
 				},
 				{
@@ -57,7 +52,7 @@
 		}
 	},
 	"Hercules #59001b": {
-		"extra_decks": [
+		"extra_player_decks": [
 			{
 				"name": "deck_labor"
 			},
@@ -72,14 +67,9 @@
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "deck",
-					"dest_container": "deck_labor",
+					"dest_container": "deck_labor_my_hero",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"trait_labor": 1,
-								"comparison": "ge"
-							}
-						}
+						"trait_labor"
 					]
 				},
 				{
@@ -87,26 +77,20 @@
 					"subject": "tutor",
 					"subject_count": "all",
 					"src_container": "deck",
-					"dest_container": "deck_gift",
+					"dest_container": "deck_gift_my_hero",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"trait_gift": 1,
-								"comparison": "ge"
-							}
-						}
+						"trait_gift"
 					]
 				},
 				{
 					"name": "shuffle_container",
-					"dest_container": "deck_labor"
+					"dest_container": "deck_labor_my_hero"
 				},
 				{
 					"name": "shuffle_container",
-					"dest_container": "deck_gift"
+					"dest_container": "deck_gift_my_hero"
 				}
-			],
-			"_comments": "TODO extra_decks pattern from Upgrading Adaptoids (main scheme); verify it works on a hero card"
+			]
 		},
 		"manual": {
 			"board": [
@@ -122,12 +106,7 @@
 							"func_params": {
 								"subject": "boardseek",
 								"filter_state_seek": [
-									{
-										"filter_properties": {
-											"trait_labor": 1,
-											"comparison": "ge"
-										}
-									}
+									"trait_labor"
 								]
 							}
 						}
@@ -138,7 +117,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": 1,
-					"src_container": "deck_labor"
+					"src_container": "deck_labor_my_hero"
 				}
 			]
 		}
@@ -231,11 +210,7 @@
 						"set_aside"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							}
-						}
+						"side_scheme"
 					]
 				},
 				{
@@ -272,11 +247,7 @@
 					"name": "move_card_to_board",
 					"subject": "find",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Amadeus Cho"
-							}
-						}
+						"Amadeus Cho"
 					]
 				}
 			]
@@ -384,11 +355,7 @@
 				"target": "my_hero"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "minion"
-					}
-				}
+				"minion"
 			],
 			"board": [
 				{
@@ -431,13 +398,8 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_same_controller": true,
-									"filter_properties": {
-										"trait_gift": 1,
-										"comparison": "ge"
-									}
-								}
+								"filter_same_controller",
+								"trait_gift"
 							],
 							"multiplier": -1
 						},
@@ -459,13 +421,7 @@
 				{
 					"name": "attack",
 					"amount": 5,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"subject": "an_enemy"
 				}
 			]
 		}
@@ -494,13 +450,8 @@
 									"subject": "boardseek",
 									"subject_count": "all",
 									"filter_state_seek": [
-										{
-											"filter_same_controller": true,
-											"filter_properties": {
-												"trait_gift": 1,
-												"comparison": "ge"
-											}
-										}
+										"filter_same_controller",
+										"trait_gift"
 									]
 								},
 								"_comments": "TODO Appeal to Athena: count as 0"
@@ -508,11 +459,7 @@
 							"nested_tasks": [
 								{
 									"name": "ready_card",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_type": "equal",
+									"subject": "boardseek_and_choose",
 									"filter_state_seek": [
 										{
 											"filter_group": "group_upgrade_support_my_hero",
@@ -537,13 +484,8 @@
 									"subject": "boardseek",
 									"subject_count": "all",
 									"filter_state_seek": [
-										{
-											"filter_same_controller": true,
-											"filter_properties": {
-												"trait_gift": 1,
-												"comparison": "ge"
-											}
-										}
+										"filter_same_controller",
+										"trait_gift"
 									]
 								},
 								"_comments": "TODO Appeal to Athena: count as 0"
@@ -569,13 +511,8 @@
 									"subject": "boardseek",
 									"subject_count": "all",
 									"filter_state_seek": [
-										{
-											"filter_same_controller": true,
-											"filter_properties": {
-												"trait_gift": 1,
-												"comparison": "ge"
-											}
-										}
+										"filter_same_controller",
+										"trait_gift"
 									]
 								},
 								"_comments": "TODO Appeal to Athena: count as 0"
@@ -604,13 +541,8 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_same_controller": true,
-									"filter_properties": {
-										"trait_gift": 1,
-										"comparison": "ge"
-									}
-								}
+								"filter_same_controller",
+								"trait_gift"
 							],
 							"multiplier": -1
 						},
@@ -632,13 +564,7 @@
 				{
 					"name": "thwart",
 					"amount": 4,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"subject": "a_scheme"
 				}
 			]
 		}
@@ -659,13 +585,8 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_same_controller": true,
-									"filter_properties": {
-										"trait_gift": 1,
-										"comparison": "ge"
-									}
-								}
+								"filter_same_controller",
+								"trait_gift"
 							]
 						},
 						"_comments": "TODO Appeal to Athena: count as 0"
@@ -708,13 +629,8 @@
 											"subject": "boardseek",
 											"subject_count": "all",
 											"filter_state_seek": [
-												{
-													"filter_same_controller": true,
-													"filter_properties": {
-														"trait_gift": 1,
-														"comparison": "ge"
-													}
-												}
+												"filter_same_controller",
+												"trait_gift"
 											]
 										},
 										"_comments": "TODO Appeal to Athena: count as 0"
@@ -760,13 +676,8 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_same_controller": true,
-									"filter_properties": {
-										"trait_gift": 1,
-										"comparison": "ge"
-									}
-								}
+								"filter_same_controller",
+								"trait_gift"
 							]
 						},
 						"_comments": "TODO Appeal to Athena: count as 0"
@@ -794,11 +705,7 @@
 				]
 			},
 			"filter_state_event_source": [
-				{
-					"filter_properties": {
-						"type_code": "villain"
-					}
-				}
+				"villain"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -892,9 +799,7 @@
 							"subject_count": "all",
 							"plus": -1,
 							"filter_state_seek": [
-								{
-									"filter_group": "group_allies_my_hero"
-								}
+								"group_allies_my_hero"
 							]
 						}
 					},
@@ -912,11 +817,7 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -952,10 +853,8 @@
 					"is_cost": true,
 					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero",
-							"filter_is_exhausted": false
-						}
+						"group_allies_my_hero",
+						"!filter_is_exhausted"
 					]
 				},
 				{
@@ -1011,10 +910,8 @@
 					"is_cost": true,
 					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero",
-							"filter_is_exhausted": false
-						}
+						"group_allies_my_hero",
+						"!filter_is_exhausted"
 					]
 				},
 				{
@@ -1071,11 +968,7 @@
 							"discard_my_hero"
 						],
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"type_code": "ally"
-								}
-							}
+							"ally"
 						]
 					},
 					{
@@ -1475,12 +1368,7 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_properties": {
-										"trait_olympus": 1,
-										"comparison": "ge"
-									}
-								}
+								"trait_olympus"
 							]
 						}
 					},
@@ -1527,11 +1415,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					],
 					"_comments": "TODO each minion attacks the player it is engaged with"
 				},
@@ -1540,11 +1424,7 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					],
 					"is_else": true
 				},
@@ -1592,11 +1472,7 @@
 					"name": "reveal_encounter",
 					"subject": "find",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "All Versus All"
-							}
-						}
+						"All Versus All"
 					]
 				}
 			]
@@ -1608,11 +1484,7 @@
 					"name": "reveal_encounter",
 					"subject": "find",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "All Versus All"
-							}
-						}
+						"All Versus All"
 					]
 				}
 			]
@@ -1669,11 +1541,7 @@
 					"name": "reveal_encounter",
 					"subject": "find",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "All Versus All"
-							}
-						}
+						"All Versus All"
 					]
 				}
 			]

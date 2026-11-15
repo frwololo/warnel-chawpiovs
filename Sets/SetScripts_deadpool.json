@@ -156,16 +156,10 @@
 					{
 						"name": "exhaust_card",
 						"is_cost": true,
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_identities",
-								"filter_is_exhausted": false
-							}
+							"group_identities",
+							"!filter_is_exhausted"
 						]
 					},
 					{
@@ -195,8 +189,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": {
+					"ask_int_min": 1,
+					"ask_int_max": {
 						"func_name": "get_remaining_damage",
 						"func_params": {
 							"subject": "my_hero"
@@ -271,8 +265,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": {
+					"ask_int_min": 1,
+					"ask_int_max": {
 						"func_name": "get_remaining_damage",
 						"func_params": {
 							"subject": "my_hero"
@@ -463,14 +457,8 @@
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_elite": 0
-							}
-						}
+						"minion",
+						"!trait_elite"
 					]
 				}
 			]
@@ -697,11 +685,7 @@
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
-						}
+						"ally"
 					]
 				},
 				{
@@ -814,9 +798,7 @@
 									"subject": "target",
 									"needs_subject": true,
 									"filter_state_subject": [
-										{
-											"filter_group": "group_allies_my_hero"
-										}
+										"group_allies_my_hero"
 									]
 								}
 							]
@@ -872,11 +854,7 @@
 				{
 					"name": "deal_damage",
 					"amount": "trigger_details_amount",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_identities_my_hero"
@@ -975,9 +953,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_schemes"
-						}
+						"group_schemes"
 					]
 				}
 			]
@@ -991,9 +967,7 @@
 					"filter_property_name": "hand_size",
 					"alteration": 2,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
+						"group_identities"
 					]
 				}
 			]
@@ -1097,9 +1071,7 @@
 	"Git Gud": {
 		"interrupt_card_dies": {
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_identities"
-				}
+				"group_identities"
 			],
 			"board": [
 				{
@@ -1239,9 +1211,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero"
-						}
+						"group_allies_my_hero"
 					]
 				}
 			]
@@ -1253,9 +1223,7 @@
 					"filter_property_name": "cannot_ready",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_allies_my_hero"
-						}
+						"group_allies_my_hero"
 					]
 				}
 			]
@@ -1561,11 +1529,7 @@
 								"func_params": {
 									"subject": "trigger",
 									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"shortname": "'Pool-ized"
-											}
-										}
+										"'Pool-ized"
 									]
 								}
 							}
@@ -1604,13 +1568,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_characters",
-							"filter_properties": {
-								"trait_deadpool_corps": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_characters",
+						"trait_deadpool_corps"
 					]
 				},
 				{
@@ -1647,11 +1606,7 @@
 	"Negasonic Teenage Warhead - Ellie Phimister": {
 		"interrupt_reveal_encounter": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "treachery"
-					}
-				}
+				"treachery"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1680,8 +1635,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 0,
-					"max": 30,
+					"ask_int_min": 0,
+					"ask_int_max": 30,
 					"_comments": "minutes away"
 				},
 				{
@@ -1690,9 +1645,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
+						"group_identities"
 					]
 				}
 			]
@@ -1702,11 +1655,7 @@
 	"Get in Front of Me!": {
 		"interrupt_reveal_encounter": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "treachery"
-					}
-				}
+				"treachery"
 			],
 			"is_optional_hand": true,
 			"hand": [
@@ -1882,20 +1831,10 @@
 			"board": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_elite": 0
-							}
-						}
+						"minion",
+						"!trait_elite"
 					]
 				}
 			],

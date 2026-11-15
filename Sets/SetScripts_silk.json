@@ -57,11 +57,7 @@
 		},
 		"response_reveal_encounter": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "treachery"
-					}
-				}
+				"treachery"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -152,11 +148,7 @@
 				{
 					"name": "nop",
 					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_enemies"
@@ -343,11 +335,7 @@
 							"discard"
 						],
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"shortname": "Get the Scoop"
-								}
-							}
+							"Get the Scoop"
 						]
 					}
 				],
@@ -370,11 +358,7 @@
 						"subject": "target",
 						"needs_subject": true,
 						"filter_state_subject": [
-							{
-								"filter_properties": {
-									"type_code": "side_scheme"
-								}
-							}
+							"side_scheme"
 						]
 					}
 				]
@@ -492,13 +476,8 @@
 				"amount": ">0"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_friendly",
-					"filter_properties": {
-						"trait_web-warrior": 1,
-						"comparison": "ge"
-					}
-				}
+				"group_friendly",
+				"trait_web-warrior"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -526,13 +505,8 @@
 							"subject_count": "all",
 							"multiplier": -1,
 							"filter_state_seek": [
-								{
-									"filter_same_controller": true,
-									"filter_properties": {
-										"trait_tech": 1,
-										"comparison": "ge"
-									}
-								}
+								"filter_same_controller",
+								"trait_tech"
 							]
 						}
 					},
@@ -682,8 +656,8 @@
 			"board": [
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": "trigger_details_amount",
+					"ask_int_min": 1,
+					"ask_int_max": "trigger_details_amount",
 					"is_cost": true
 				},
 				{
@@ -760,11 +734,7 @@
 						"subject": "target",
 						"needs_subject": true,
 						"filter_state_subject": [
-							{
-								"filter_properties": {
-									"type_code": "minion"
-								}
-							}
+							"minion"
 						]
 					}
 				],
@@ -813,19 +783,10 @@
 				{
 					"name": "ready_card",
 					"subject_exclude": "self",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"trait_web-warrior": 1,
-								"comparison": "ge"
-							},
-							"filter_group": "group_friendly"
-						}
+						"trait_web-warrior",
+						"group_friendly"
 					]
 				}
 			]
@@ -843,19 +804,10 @@
 				},
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"trait_web-warrior": 1,
-								"comparison": "ge"
-							},
-							"filter_same_controller": true
-						}
+						"trait_web-warrior",
+						"filter_same_controller"
 					],
 					"is_cost": true
 				},
@@ -864,12 +816,8 @@
 					"subject": "tutor_and_choose",
 					"src_container": "discard",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally",
-								"trait_web-warrior": 1
-							}
-						}
+						"ally",
+						"trait_web-warrior"
 					]
 				}
 			]
@@ -932,9 +880,7 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_identities"
-								}
+								"group_identities"
 							]
 						}
 					},
@@ -949,9 +895,7 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_identities"
-								}
+								"group_identities"
 							]
 						}
 					},
@@ -967,11 +911,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Hunting the Spider-Bride"
-							}
-						}
+						"Hunting the Spider-Bride"
 					],
 					"_comments": "TODO tucked cards may not be found by boardseek"
 				}
@@ -990,9 +930,7 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_identities"
-								}
+								"group_identities"
 							]
 						}
 					},
@@ -1047,18 +985,10 @@
 			"board": [
 				{
 					"name": "return_card_to_owner_hand",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "ally",
-								"trait_web-warrior": 1
-							}
-						}
+						"ally",
+						"trait_web-warrior"
 					]
 				}
 			]
@@ -1067,12 +997,8 @@
 	"Spider-Woman - Jessica Drew": {
 		"response_card_moved_to_board": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "ally",
-						"trait_web-warrior": 1
-					}
-				}
+				"ally",
+				"trait_web-warrior"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1097,20 +1023,11 @@
 				{
 					"name": "deal_damage",
 					"amount": 1,
-					"subject": "boardseek",
+					"subject": "boardseek_and_choose",
 					"is_cost": true,
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"trait_web-warrior": 1,
-								"comparison": "ge"
-							},
-							"filter_group": "group_friendly_my_hero"
-						}
+						"trait_web-warrior",
+						"group_friendly_my_hero"
 					]
 				},
 				{

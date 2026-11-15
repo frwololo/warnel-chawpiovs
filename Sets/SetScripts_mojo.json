@@ -355,12 +355,8 @@
 				"func_params": {
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "The Champion",
-								"trait_cheering_crowd": 1
-							}
-						}
+						"The Champion",
+						"trait_cheering_crowd"
 					]
 				}
 			},
@@ -797,11 +793,7 @@
 						"set_aside"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "The Search for Spiral"
-							}
-						}
+						"The Search for Spiral"
 					]
 				},
 				{
@@ -971,11 +963,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_attachment": [
-										{
-											"filter_properties": {
-												"shortname": "Spiral's Swords"
-											}
-										}
+										"Spiral's Swords"
 									]
 								}
 							},
@@ -997,11 +985,7 @@
 								"discard_villain"
 							],
 							"filter_state_tutor": [
-								{
-									"filter_properties": {
-										"shortname": "Spiral's Swords"
-									}
-								}
+								"Spiral's Swords"
 							]
 						},
 						{
@@ -1209,9 +1193,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				}
 			]
@@ -1319,9 +1301,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				}
 			]
@@ -1338,12 +1318,8 @@
 						"set_aside"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Wheel of Genres",
-								"trait_spinning": 1
-							}
-						}
+						"Wheel of Genres",
+						"trait_spinning"
 					]
 				},
 				{
@@ -1498,9 +1474,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_current_hero_target"
-						}
+						"group_friendly_current_hero_target"
 					]
 				}
 			]
@@ -1534,15 +1508,9 @@
 					},
 					{
 						"name": "exhaust_card",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_friendly_my_hero"
-							}
+							"group_friendly_my_hero"
 						],
 						"is_cost": true
 					},
@@ -1684,9 +1652,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					],
 					"is_else": true
 				}
@@ -1797,9 +1763,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				},
 				{
@@ -1809,9 +1773,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				}
 			]
@@ -1825,9 +1787,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_current_hero_target"
-						}
+						"group_friendly_current_hero_target"
 					]
 				}
 			]
@@ -1842,15 +1802,8 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							},
-							"filter_properties2": {
-								"trait_setting": 1,
-								"comparison": "ge"
-							}
-						}
+						"environment",
+						"trait_setting"
 					]
 				}
 			]
@@ -1863,9 +1816,7 @@
 					"filter_property_name": "thwart",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				}
 			]
@@ -1884,11 +1835,7 @@
 		},
 		"card_defeated": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "side_scheme"
-					}
-				}
+				"side_scheme"
 			],
 			"all": [
 				{
@@ -1932,8 +1879,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": 10,
+					"ask_int_min": 1,
+					"ask_int_max": 10,
 					"is_cost": true,
 					"_comments": "TODO X selection; verify ask_integer usage"
 				},
@@ -1968,8 +1915,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": 10,
+					"ask_int_min": 1,
+					"ask_int_max": 10,
 					"is_cost": true,
 					"_comments": "TODO X selection; verify ask_integer usage"
 				},
@@ -1994,9 +1941,7 @@
 					"filter_property_name": "attack",
 					"alteration": -2,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				}
 			]
@@ -2017,8 +1962,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": 10,
+					"ask_int_min": 1,
+					"ask_int_max": 10,
 					"is_cost": true,
 					"_comments": "TODO X selection; verify ask_integer usage"
 				},
@@ -2068,17 +2013,9 @@
 					{
 						"name": "nop",
 						"is_cost": true,
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_properties": {
-									"type_code": "side_scheme"
-								}
-							}
+							"side_scheme"
 						]
 					},
 					{
@@ -2110,11 +2047,7 @@
 						"subject": "grab_until",
 						"src_container": "deck_villain",
 						"filter_state_grab_until": [
-							{
-								"filter_properties": {
-									"type_code": "side_scheme"
-								}
-							}
+							"side_scheme"
 						]
 					},
 					{
@@ -2137,15 +2070,8 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							},
-							"filter_properties2": {
-								"trait_setting": 1,
-								"comparison": "ge"
-							}
-						}
+						"environment",
+						"trait_setting"
 					]
 				}
 			]
@@ -2158,9 +2084,7 @@
 					"filter_property_name": "hand_size",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
+						"group_identities"
 					]
 				}
 			]
@@ -2271,19 +2195,11 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "discard_event_source_hero",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
 					"selection_optional": true,
-					"subject_count": "all",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
-						}
+						"ally"
 					]
 				}
 			]
@@ -2438,15 +2354,8 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							},
-							"filter_properties2": {
-								"trait_setting": 1,
-								"comparison": "ge"
-							}
-						}
+						"environment",
+						"trait_setting"
 					]
 				}
 			]
@@ -2459,11 +2368,7 @@
 					"filter_property_name": "quickstrike",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				}
 			]
@@ -2568,11 +2473,7 @@
 					],
 					"grid_name": "enemies_active_player",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "The Kraken"
-							}
-						}
+						"The Kraken"
 					]
 				},
 				{
@@ -2601,9 +2502,7 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_characters"
-						}
+						"group_characters"
 					]
 				}
 			]
@@ -2617,9 +2516,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				}
 			]
@@ -2686,15 +2583,9 @@
 				{
 					"name": "nop",
 					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero"
-						}
+						"group_allies_my_hero"
 					]
 				},
 				{
@@ -2743,15 +2634,8 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							},
-							"filter_properties2": {
-								"trait_setting": 1,
-								"comparison": "ge"
-							}
-						}
+						"environment",
+						"trait_setting"
 					]
 				}
 			]
@@ -2784,15 +2668,9 @@
 			"board": [
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				},
 				{
@@ -2806,15 +2684,9 @@
 			"all": [
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_current_hero_target"
-						}
+						"group_friendly_current_hero_target"
 					]
 				}
 			]
@@ -2913,18 +2785,10 @@
 					"tags": [
 						"facedown"
 					],
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade"
 					]
 				}
 			]
@@ -2948,11 +2812,7 @@
 					"filter_property_name": "guard",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -2960,11 +2820,7 @@
 					"filter_property_name": "patrol",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				}
 			]
@@ -2973,22 +2829,14 @@
 			"board": [
 				{
 					"name": "move_card_to_board",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": [
 						"deck_villain",
 						"discard_villain"
 					],
 					"grid_name": "enemies_first_player",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"subject_count": "all",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -3008,15 +2856,8 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							},
-							"filter_properties2": {
-								"trait_setting": 1,
-								"comparison": "ge"
-							}
-						}
+						"environment",
+						"trait_setting"
 					]
 				}
 			]
@@ -3026,16 +2867,11 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "acceleration_icon",
+					"filter_property_name": "scheme_acceleration",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "obligation"
-							}
-						}
-					],
-					"_comments": "TODO verify property"
+						"obligation"
+					]
 				}
 			]
 		},
@@ -3070,12 +2906,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "support"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"support"
 					]
 				},
 				{
@@ -3104,11 +2936,7 @@
 					"alteration": 2,
 					"filter_same_controller": true,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"upgrade"
 					]
 				}
 			]
@@ -3125,18 +2953,10 @@
 					},
 					{
 						"name": "discard",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_upgrade_support_my_hero",
-								"filter_properties": {
-									"type_code": "upgrade"
-								}
-							}
+							"group_upgrade_support_my_hero",
+							"upgrade"
 						],
 						"is_cost": true
 					},
@@ -3158,11 +2978,7 @@
 						"subject": "tutor_and_choose",
 						"src_container": "hand",
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"type_code": "upgrade"
-								}
-							}
+							"upgrade"
 						],
 						"is_cost": true
 					},
@@ -3186,11 +3002,7 @@
 									"subject_count": "all",
 									"src_container": "discard_my_hero",
 									"filter_state_tutor": [
-										{
-											"filter_properties": {
-												"type_code": "upgrade"
-											}
-										}
+										"upgrade"
 									]
 								}
 							},
@@ -3221,10 +3033,9 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "max_allies",
+					"filter_property_name": "ally_limit",
 					"alteration": -2,
-					"trigger": "my_identity",
-					"_comments": "TODO verify ally limit property name"
+					"trigger": "my_identity"
 				}
 			]
 		},
@@ -3245,9 +3056,7 @@
 					"selection_count": 2,
 					"selection_type": "equal",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					],
 					"is_cost": true
 				},
@@ -3257,11 +3066,7 @@
 					"src_container": "discard",
 					"dest_container": "deck",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "ally"
-							}
-						}
+						"ally"
 					]
 				},
 				{
@@ -3364,15 +3169,8 @@
 					"subject_count": "all",
 					"subject_exclude": "self",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "environment"
-							},
-							"filter_properties2": {
-								"trait_setting": 1,
-								"comparison": "ge"
-							}
-						}
+						"environment",
+						"trait_setting"
 					]
 				}
 			]
@@ -3388,9 +3186,7 @@
 				"amount": ">0"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_characters"
-				}
+				"group_characters"
 			],
 			"board": [
 				{
@@ -3414,11 +3210,7 @@
 					"sort_descending": true,
 					"is_cost": true,
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -3642,15 +3434,9 @@
 							"nested_tasks": [
 								{
 									"name": "discard",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_type": "equal",
+									"subject": "boardseek_and_choose",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero"
-										}
+										"group_upgrade_support_my_hero"
 									]
 								}
 							]
@@ -3671,15 +3457,9 @@
 							"nested_tasks": [
 								{
 									"name": "discard",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_type": "equal",
+									"subject": "boardseek_and_choose",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero"
-										}
+										"group_upgrade_support_my_hero"
 									]
 								}
 							]
@@ -3700,15 +3480,9 @@
 							"nested_tasks": [
 								{
 									"name": "discard",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_type": "equal",
+									"subject": "boardseek_and_choose",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero"
-										}
+										"group_upgrade_support_my_hero"
 									]
 								}
 							]
@@ -3729,15 +3503,9 @@
 							"nested_tasks": [
 								{
 									"name": "discard",
-									"subject": "boardseek",
-									"subject_count": "all",
-									"needs_selection": true,
-									"selection_count": 1,
-									"selection_type": "equal",
+									"subject": "boardseek_and_choose",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero"
-										}
+										"group_upgrade_support_my_hero"
 									]
 								}
 							]

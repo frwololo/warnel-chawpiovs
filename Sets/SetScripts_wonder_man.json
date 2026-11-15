@@ -22,7 +22,7 @@
 					"name": "discard",
 					"subject": "attachments",
 					"subject_count": "all",
-					"host": "Ionic Physiology",
+					"attachments_host": "Ionic Physiology",
 					"_comments": "TODO discard each card tucked under Ionic Physiology"
 				}
 			]
@@ -39,11 +39,7 @@
 						"hand"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Ionic Physiology"
-							}
-						}
+						"Ionic Physiology"
 					]
 				}
 			]
@@ -190,8 +186,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": 3,
+					"ask_int_min": 1,
+					"ask_int_max": 3,
 					"is_cost": true
 				},
 				{
@@ -278,11 +274,7 @@
 						"fail_cost_on_skip": true,
 						"is_cost": true,
 						"filter_state_trigger": [
-							{
-								"filter_properties": {
-									"type_code": "event"
-								}
-							}
+							"event"
 						]
 					},
 					{
@@ -312,7 +304,7 @@
 					{
 						"name": "discard",
 						"subject": "attachments",
-						"host": "Ionic Physiology",
+						"attachments_host": "Ionic Physiology",
 						"subject_count": 1,
 						"needs_selection": true,
 						"selection_count": 1,
@@ -375,7 +367,7 @@
 					{
 						"name": "return_card_to_owner_hand",
 						"subject": "attachments",
-						"host": "Ionic Physiology",
+						"attachments_host": "Ionic Physiology",
 						"subject_count": 1,
 						"_comments": "TODO select tucked card"
 					}
@@ -500,11 +492,7 @@
 		},
 		"response_basic_thwart_happened": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "ally"
-					}
-				}
+				"ally"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -521,11 +509,7 @@
 					"subject": "target",
 					"needs_subject": true,
 					"filter_state_subject": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				}
 			]
@@ -551,11 +535,7 @@
 								"func_params": {
 									"subject": "previous",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"type_code": "treachery"
-											}
-										}
+										"treachery"
 									]
 								}
 							},
@@ -578,19 +558,11 @@
 			"board": [
 				{
 					"name": "reveal_encounter",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "deck_villain",
 					"is_cost": true,
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"subject_count": "all",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							}
-						}
+						"side_scheme"
 					]
 				},
 				{
@@ -646,14 +618,9 @@
 					"is_cost": true,
 					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_is_exhausted": false,
-							"filter_group": "group_friendly_my_hero",
-							"filter_properties": {
-								"trait_aerial": 1,
-								"comparison": "ge"
-							}
-						}
+						"!filter_is_exhausted",
+						"group_friendly_my_hero",
+						"trait_aerial"
 					]
 				},
 				{
@@ -699,9 +666,7 @@
 						"func_name": "count_paid_resources"
 					},
 					"filter_state_seek": [
-						{
-							"filter_group": "group_schemes"
-						}
+						"group_schemes"
 					],
 					"amount": {
 						"if": {
@@ -722,10 +687,8 @@
 				"amount": ">0"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_characters",
-					"filter_shares_trait_with_identity": true
-				}
+				"group_characters",
+				"filter_shares_trait_with_identity"
 			],
 			"is_optional_hand": true,
 			"hand": [
@@ -764,9 +727,7 @@
 					"alteration": 3,
 					"filter_same_controller": true,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
+						"group_identities"
 					]
 				},
 				{
@@ -808,12 +769,7 @@
 				"after": "alter_ego"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"trait_avenger": 1,
-						"comparison": "ge"
-					}
-				}
+				"trait_avenger"
 			],
 			"is_optional_board": true,
 			"board": {
@@ -913,7 +869,7 @@
 					{
 						"name": "discard",
 						"subject": "attachments",
-						"host": "Ionic Physiology",
+						"attachments_host": "Ionic Physiology",
 						"subject_count": 3,
 						"_comments": "TODO",
 						"is_cost": true
@@ -931,11 +887,7 @@
 		"character_died": {
 			"filter_event_source": "self",
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "ally"
-					}
-				}
+				"ally"
 			],
 			"board": [
 				{
@@ -1013,9 +965,7 @@
 		},
 		"interrupt_attack_started": {
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_friendly"
-				}
+				"group_friendly"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1087,11 +1037,7 @@
 						"if_no_damage": [
 							{
 								"name": "discard",
-								"subject": "boardseek",
-								"subject_count": "all",
-								"needs_selection": true,
-								"selection_count": 1,
-								"selection_type": "equal",
+								"subject": "boardseek_and_choose",
 								"filter_state_seek": [
 									{
 										"filter_properties": {
@@ -1131,11 +1077,7 @@
 						"subject": "tutor_and_choose",
 						"src_container": "hand",
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"type_code": "ally"
-								}
-							}
+							"ally"
 						]
 					}
 				],

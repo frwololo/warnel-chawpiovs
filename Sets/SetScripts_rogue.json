@@ -11,11 +11,7 @@
 					],
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Touched"
-							}
-						}
+						"Touched"
 					]
 				}
 			]
@@ -38,11 +34,7 @@
 					],
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Touched"
-							}
-						}
+						"Touched"
 					],
 					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
 				}
@@ -87,16 +79,9 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_enemies_my_hero",
-									"filter_properties": {
-										"type_code": "minion"
-									},
-									"filter_properties2": {
-										"trait_reaver": 1,
-										"comparison": "ge"
-									}
-								}
+								"group_enemies_my_hero",
+								"minion",
+								"trait_reaver"
 							]
 						}
 					},
@@ -115,11 +100,7 @@
 						"func_params": {
 							"subject": "trigger",
 							"filter_state_attachment": [
-								{
-									"filter_properties": {
-										"shortname": "Touched"
-									}
-								}
+								"Touched"
 							]
 						}
 					}
@@ -171,17 +152,9 @@
 				{
 					"name": "attach_to_card",
 					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -241,11 +214,7 @@
 												"func_params": {
 													"subject": "trigger",
 													"filter_state_attachment": [
-														{
-															"filter_properties": {
-																"shortname": "Touched"
-															}
-														}
+														"Touched"
 													]
 												}
 											}
@@ -266,11 +235,7 @@
 												"func_params": {
 													"subject": "trigger",
 													"filter_state_attachment": [
-														{
-															"filter_properties": {
-																"shortname": "Touched"
-															}
-														}
+														"Touched"
 													]
 												}
 											}
@@ -303,14 +268,8 @@
 					"fail_cost_on_skip": true,
 					"is_cost": true,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"trait_defense": 1
-							},
-							"filter_properties2": {
-								"type_code": "event"
-							}
-						}
+						"trait_defense",
+						"event"
 					]
 				},
 				{
@@ -334,15 +293,8 @@
 					"src_container": "discard_villain",
 					"sort_descending": true,
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_reaver": 1,
-								"comparison": "ge"
-							}
-						}
+						"minion",
+						"trait_reaver"
 					],
 					"_comments": "TODO 'topmost' ordering"
 				}
@@ -362,16 +314,10 @@
 				{
 					"name": "nop",
 					"is_cost": true,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"subject_exclude": "my_hero",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_characters"
-						}
+						"group_characters"
 					]
 				},
 				{
@@ -389,11 +335,7 @@
 						"board"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Touched"
-							}
-						}
+						"Touched"
 					],
 					"_comments": "TODO move Touched from wherever it is (set aside or attached elsewhere) to the chosen character"
 				},
@@ -532,11 +474,7 @@
 		},
 		"response_card_moved_to_board": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "minion"
-					}
-				}
+				"minion"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -707,11 +645,7 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Cybernetic Enhancements"
-							}
-						}
+						"Cybernetic Enhancements"
 					],
 					"tags": [
 						"disable_attach_trigger"
@@ -737,11 +671,7 @@
 					],
 					"dest_container": "deck_my_hero",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Misled"
-							}
-						}
+						"Misled"
 					]
 				}
 			]
@@ -760,11 +690,7 @@
 					],
 					"dest_container": "deck_event_source_hero",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Misled"
-							}
-						}
+						"Misled"
 					]
 				}
 			]
@@ -870,16 +796,10 @@
 					{
 						"name": "nop",
 						"is_cost": true,
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"subject_exclude": "my_hero",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_characters"
-							}
+							"group_characters"
 						]
 					},
 					{
@@ -897,11 +817,7 @@
 							"board"
 						],
 						"filter_state_tutor": [
-							{
-								"filter_properties": {
-									"shortname": "Touched"
-								}
-							}
+							"Touched"
 						],
 						"_comments": "TODO move Touched from wherever it is (set aside or attached elsewhere) to the chosen character"
 					}
@@ -924,11 +840,7 @@
 					],
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Touched"
-							}
-						}
+						"Touched"
 					],
 					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
 				}
@@ -955,11 +867,7 @@
 											"func_params": {
 												"subject": "trigger",
 												"filter_state_attachment": [
-													{
-														"filter_properties": {
-															"shortname": "Touched"
-														}
-													}
+													"Touched"
 												]
 											}
 										}
@@ -988,11 +896,7 @@
 											"func_params": {
 												"subject": "trigger",
 												"filter_state_attachment": [
-													{
-														"filter_properties": {
-															"shortname": "Touched"
-														}
-													}
+													"Touched"
 												]
 											}
 										}
@@ -1019,16 +923,9 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_enemies_my_hero",
-									"filter_properties": {
-										"type_code": "minion"
-									},
-									"filter_properties2": {
-										"trait_reaver": 1,
-										"comparison": "ge"
-									}
-								}
+								"group_enemies_my_hero",
+								"minion",
+								"trait_reaver"
 							]
 						}
 					},
@@ -1131,11 +1028,7 @@
 											"func_params": {
 												"subject": "trigger",
 												"filter_state_attachment": [
-													{
-														"filter_properties": {
-															"shortname": "Touched"
-														}
-													}
+													"Touched"
 												]
 											}
 										}
@@ -1158,15 +1051,8 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							},
-							"filter_properties2": {
-								"trait_reaver": 1,
-								"comparison": "ge"
-							}
-						}
+						"minion",
+						"trait_reaver"
 					]
 				},
 				{
@@ -1192,11 +1078,7 @@
 							"func_params": {
 								"subject": "host",
 								"filter_state_trigger": [
-									{
-										"filter_properties": {
-											"type_code": "villain"
-										}
-									}
+									"villain"
 								]
 							}
 						},
@@ -1214,11 +1096,7 @@
 							"func_params": {
 								"subject": "host",
 								"filter_state_trigger": [
-									{
-										"filter_properties": {
-											"type_code": "ally"
-										}
-									}
+									"ally"
 								]
 							}
 						},
@@ -1236,11 +1114,7 @@
 							"func_params": {
 								"subject": "host",
 								"filter_state_trigger": [
-									{
-										"filter_properties": {
-											"type_code": "hero"
-										}
-									}
+									"hero"
 								]
 							}
 						},
@@ -1263,11 +1137,7 @@
 				"func_params": {
 					"subject": "host",
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				}
 			},
@@ -1319,11 +1189,7 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Cybernetic Enhancements"
-							}
-						}
+						"Cybernetic Enhancements"
 					],
 					"tags": [
 						"disable_attach_trigger"

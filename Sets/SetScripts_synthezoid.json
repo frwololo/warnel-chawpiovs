@@ -22,11 +22,7 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Superhuman Strength"
-							}
-						}
+						"Superhuman Strength"
 					]
 				},
 				{
@@ -121,11 +117,7 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Superhuman Strength"
-							}
-						}
+						"Superhuman Strength"
 					]
 				},
 				{
@@ -422,10 +414,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero",
-							"filter_is_exhausted": false
-						}
+						"group_friendly_my_hero",
+						"!filter_is_exhausted"
 					]
 				},
 				{
@@ -438,15 +428,9 @@
 			"all": [
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_current_hero_target"
-						}
+						"group_friendly_current_hero_target"
 					]
 				}
 			]
@@ -567,11 +551,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				}
 			]
@@ -776,15 +756,9 @@
 						{
 							"name": "deal_damage",
 							"amount": 2,
-							"subject": "boardseek",
-							"subject_count": "all",
-							"needs_selection": true,
-							"selection_count": 1,
-							"selection_type": "equal",
+							"subject": "boardseek_and_choose",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_friendly_my_hero"
-								}
+								"group_friendly_my_hero"
 							]
 						}
 					]
@@ -809,15 +783,9 @@
 						{
 							"name": "deal_damage",
 							"amount": 1,
-							"subject": "boardseek",
-							"subject_count": "all",
-							"needs_selection": true,
-							"selection_count": 1,
-							"selection_type": "equal",
+							"subject": "boardseek_and_choose",
 							"filter_state_seek": [
-								{
-									"filter_group": "group_friendly_current_hero_target"
-								}
+								"group_friendly_current_hero_target"
 							]
 						}
 					]
@@ -834,11 +802,7 @@
 					"subject_count": "all",
 					"is_cost": true,
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -866,12 +830,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion",
-								"trait_thunderbolt": 1
-							}
-						}
+						"minion",
+						"trait_thunderbolt"
 					]
 				}
 			},
@@ -1126,11 +1086,7 @@
 					"is_cost": true,
 					"subject": "enemy_team_boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					]
 				},
 				{
@@ -1164,18 +1120,10 @@
 			"all": [
 				{
 					"name": "attach_to_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies_current_hero_target",
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"group_enemies_current_hero_target",
+						"minion"
 					]
 				}
 			]
@@ -1210,18 +1158,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_current_hero_target",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_current_hero_target",
+						"upgrade"
 					]
 				}
 			]
@@ -1398,11 +1338,7 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Dense"
-							}
-						}
+						"Dense"
 					],
 					"_comments": "TODO Dense side faceup (double-sided attachment)"
 				},
@@ -1514,11 +1450,7 @@
 					"subject": "tutor",
 					"src_container": "deck_villain",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Dense"
-							}
-						}
+						"Dense"
 					],
 					"_comments": "TODO Dense side faceup (double-sided attachment)"
 				},
@@ -2065,15 +1997,9 @@
 			"all": [
 				{
 					"name": "exhaust_card",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				},
 				{
@@ -2120,12 +2046,8 @@
 					"name": "nop",
 					"subject": "enemy_team_boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade"
 					]
 				},
 				{
@@ -2223,18 +2145,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade"
 					]
 				}
 			]
@@ -2245,18 +2159,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "support"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"support"
 					]
 				}
 			]
@@ -2374,9 +2280,7 @@
 		},
 		"interrupt_play_card": {
 			"filter_state_trigger": [
-				{
-					"filter_same_controller": true
-				}
+				"filter_same_controller"
 			],
 			"board": [
 				{
@@ -2421,11 +2325,7 @@
 					"exec_trigger": "reveal",
 					"delayed": true,
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "treachery"
-							}
-						}
+						"treachery"
 					],
 					"_comments": "TODO 'topmost' treachery in the encounter discard pile"
 				}
@@ -2497,11 +2397,7 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "treachery"
-							}
-						}
+						"treachery"
 					]
 				},
 				{
@@ -2702,11 +2598,7 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Blood Debt"
-							}
-						}
+						"Blood Debt"
 					],
 					"target_identity": "event_source_hero"
 				}

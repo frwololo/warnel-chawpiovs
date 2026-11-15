@@ -2,13 +2,8 @@
 	"Falcon": {
 		"response_card_played": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"trait_aerial": 1,
-						"comparison": "ge"
-					},
-					"filter_same_controller": true
-				}
+				"trait_aerial",
+				"filter_same_controller"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -58,12 +53,7 @@
 					],
 					"dest_container": "hand",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"trait_bird": 1,
-								"comparison": "ge"
-							}
-						}
+						"trait_bird"
 					]
 				},
 				{
@@ -321,12 +311,7 @@
 					"fail_cost_on_skip": true,
 					"is_cost": true,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"trait_aerial": 1,
-								"comparison": "ge"
-							}
-						}
+						"trait_aerial"
 					]
 				},
 				{
@@ -386,9 +371,7 @@
 				"amount": ">0"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_friendly"
-				}
+				"group_friendly"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -722,13 +705,7 @@
 								{
 									"name": "remove_threat",
 									"amount": 3,
-									"subject": "target",
-									"needs_subject": true,
-									"filter_state_subject": [
-										{
-											"filter_group": "group_schemes"
-										}
-									]
+									"subject": "a_scheme"
 								}
 							]
 						},
@@ -747,9 +724,7 @@
 									"subject": "boardseek",
 									"needs_subject": true,
 									"filter_state_seek": [
-										{
-											"filter_group": "group_identities"
-										}
+										"group_identities"
 									]
 								}
 							]
@@ -766,13 +741,7 @@
 								{
 									"name": "deal_damage",
 									"amount": 3,
-									"subject": "target",
-									"needs_subject": true,
-									"filter_state_subject": [
-										{
-											"filter_group": "group_enemies"
-										}
-									]
+									"subject": "an_enemy"
 								}
 							]
 						},
@@ -802,13 +771,7 @@
 					{
 						"name": "remove_threat",
 						"amount": 3,
-						"subject": "target",
-						"needs_subject": true,
-						"filter_state_subject": [
-							{
-								"filter_group": "group_schemes"
-							}
-						]
+						"subject": "a_scheme"
 					}
 				],
 				"Heal 3": [
@@ -818,9 +781,7 @@
 						"subject": "boardseek",
 						"needs_subject": true,
 						"filter_state_seek": [
-							{
-								"filter_group": "group_identities"
-							}
+							"group_identities"
 						]
 					}
 				],
@@ -828,13 +789,7 @@
 					{
 						"name": "deal_damage",
 						"amount": 3,
-						"subject": "target",
-						"needs_subject": true,
-						"filter_state_subject": [
-							{
-								"filter_group": "group_enemies"
-							}
-						]
+						"subject": "an_enemy"
 					}
 				]
 			}
@@ -858,17 +813,8 @@
 				{
 					"name": "temporary_effect",
 					"end_condition": "phase_ended",
-					"subject": "boardseek",
+					"subject": "a_player",
 					"needs_subject": true,
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					],
 					"effect": {
 						"alterants": {
 							"all": [
@@ -877,13 +823,8 @@
 									"filter_property_name": "attack",
 									"alteration": 1,
 									"filter_state_trigger": [
-										{
-											"filter_group": "group_characters{__subject_hero_id__}",
-											"filter_properties": {
-												"trait_aerial": 1,
-												"comparison": "ge"
-											}
-										}
+										"group_characters{__subject_hero_id__}",
+										"trait_aerial"
 									]
 								}
 							]
@@ -912,17 +853,8 @@
 				{
 					"name": "temporary_effect",
 					"end_condition": "phase_ended",
-					"subject": "boardseek",
+					"subject": "a_player",
 					"needs_subject": true,
-					"subject_count": "all",
-					"selection_count": 1,
-					"selection_type": "equal",
-					"needs_selection": true,
-					"filter_state_seek": [
-						{
-							"filter_group": "group_identities"
-						}
-					],
 					"effect": {
 						"alterants": {
 							"all": [
@@ -930,13 +862,8 @@
 									"filter_task": "get_property",
 									"filter_property_name": "thwart",
 									"filter_state_trigger": [
-										{
-											"filter_group": "group_characters{__subject_hero_id__}",
-											"filter_properties": {
-												"trait_aerial": 1,
-												"comparison": "ge"
-											}
-										}
+										"group_characters{__subject_hero_id__}",
+										"trait_aerial"
 									],
 									"alteration": 1
 								}
@@ -954,19 +881,11 @@
 				{
 					"name": "move_card_to_board",
 					"is_cost": true,
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "deck_villain",
 					"grid_name": "enemies_active_player",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"subject_count": "all",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"minion"
 					],
 					"_comments": "TODO only the top 10 cards"
 				},
@@ -997,9 +916,7 @@
 					"selection_type": "max",
 					"selection_count": "my_icons",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				}
 			]
@@ -1035,11 +952,7 @@
 					"subject": "tutor_and_choose",
 					"src_container": "hand",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "resource"
-							}
-						}
+						"resource"
 					]
 				}
 			]
@@ -1051,10 +964,9 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "max_allies",
+					"filter_property_name": "ally_limit",
 					"alteration": 1,
-					"trigger": "my_identity",
-					"_comments": "TODO verify ally limit property"
+					"trigger": "my_identity"
 				}
 			]
 		}
@@ -1086,11 +998,7 @@
 					"subject": "find",
 					"dest_container": "hand",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Captain America's Shield"
-							}
-						}
+						"Captain America's Shield"
 					]
 				}
 			]
@@ -1117,12 +1025,8 @@
 				]
 			},
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "ally",
-						"trait_aerial": 1
-					}
-				}
+				"ally",
+				"trait_aerial"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1148,11 +1052,7 @@
 					"fail_cost_on_skip": true,
 					"is_cost": true,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"trait_aerial": 1
-							}
-						}
+						"trait_aerial"
 					]
 				},
 				{
@@ -1228,12 +1128,8 @@
 	"Serpent Solutions": {
 		"card_discarded_from_top_of_deck": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "minion",
-						"trait_serpent_society": 1
-					}
-				}
+				"minion",
+				"trait_serpent_society"
 			],
 			"board": [
 				{
@@ -1267,12 +1163,8 @@
 					"src_container": "discard_villain",
 					"dest_container": "deck_villain",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "minion",
-								"trait_serpent_society": 1
-							}
-						}
+						"minion",
+						"trait_serpent_society"
 					]
 				}
 			]
@@ -1302,9 +1194,7 @@
 				"source": "self"
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_enemies"
-				}
+				"group_enemies"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1386,9 +1276,7 @@
 				]
 			},
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_friendly"
-				}
+				"group_friendly"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -1487,12 +1375,7 @@
 						"func_params": {
 							"subject": "host",
 							"filter_state_attachment": [
-								{
-									"filter_properties": {
-										"trait_tech": 1,
-										"comparison": "ge"
-									}
-								}
+								"trait_tech"
 							],
 							"plus": -1
 						}
@@ -1514,12 +1397,8 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "attachment",
-								"trait_tech": 1
-							}
-						}
+						"attachment",
+						"trait_tech"
 					]
 				},
 				{
@@ -1530,12 +1409,7 @@
 							"subject": "boardseek",
 							"subject_count": "all",
 							"filter_state_seek": [
-								{
-									"filter_properties": {
-										"trait_tech": 1,
-										"comparison": "ge"
-									}
-								}
+								"trait_tech"
 							]
 						}
 					},

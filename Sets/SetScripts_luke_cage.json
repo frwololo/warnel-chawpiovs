@@ -4,10 +4,9 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "max_tough",
+					"filter_property_name": "max_tokens_tough",
 					"alteration": 99,
-					"trigger": "self",
-					"_comments": "TODO verify property for 'any number of tough status cards'"
+					"trigger": "self"
 				}
 			]
 		},
@@ -54,10 +53,9 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "max_tough",
+					"filter_property_name": "max_tokens_tough",
 					"alteration": 99,
-					"trigger": "self",
-					"_comments": "TODO verify property for 'any number of tough status cards'"
+					"trigger": "self"
 				}
 			]
 		},
@@ -109,11 +107,7 @@
 					],
 					"dest_container": "hand",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Burstein Process"
-							}
-						}
+						"Burstein Process"
 					]
 				},
 				{
@@ -172,9 +166,7 @@
 						}
 					},
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				}
 			]
@@ -298,12 +290,8 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_enemies_my_hero",
-							"filter_properties": {
-								"type_code": "minion"
-							}
-						}
+						"group_enemies_my_hero",
+						"minion"
 					]
 				}
 			]
@@ -312,13 +300,8 @@
 	"Fogwell's Gym": {
 		"card_token_modified": {
 			"filter_state_trigger": [
-				{
-					"filter_group": "group_characters",
-					"filter_properties": {
-						"trait_defender": 1,
-						"comparison": "ge"
-					}
-				}
+				"group_characters",
+				"trait_defender"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -549,11 +532,7 @@
 	"Valkyrie - Brunnhilde": {
 		"interrupt_card_dies": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "ally"
-					}
-				}
+				"ally"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -611,9 +590,7 @@
 									"filter_property_name": "thwart",
 									"alteration": 1,
 									"filter_state_trigger": [
-										{
-											"filter_group": "group_allies_my_hero"
-										}
+										"group_allies_my_hero"
 									]
 								},
 								{
@@ -621,9 +598,7 @@
 									"filter_property_name": "attack",
 									"alteration": 1,
 									"filter_state_trigger": [
-										{
-											"filter_group": "group_allies_my_hero"
-										}
+										"group_allies_my_hero"
 									]
 								}
 							]
@@ -649,15 +624,9 @@
 				{
 					"name": "heal",
 					"amount": 1,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero"
-						}
+						"group_allies_my_hero"
 					]
 				}
 			],
@@ -717,18 +686,10 @@
 					"name": "mod_tokens",
 					"token_name": "tough",
 					"modification": 1,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "ally",
-								"trait_defender": 1
-							}
-						}
+						"ally",
+						"trait_defender"
 					]
 				}
 			]
@@ -880,15 +841,9 @@
 					"name": "mod_tokens",
 					"token_name": "tough",
 					"modification": 1,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_characters"
-						}
+						"group_characters"
 					]
 				}
 			]
@@ -916,11 +871,7 @@
 				{
 					"name": "heal",
 					"amount": 3,
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
 						{
 							"filter_properties": {
@@ -1029,12 +980,8 @@
 					"filter_property_name": "cannot_be_attacked",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_properties": {
-								"type_code": "minion",
-								"trait_serpent_society": 1
-							}
-						}
+						"minion",
+						"trait_serpent_society"
 					],
 					"_comments": "TODO verify property"
 				}
@@ -1048,12 +995,8 @@
 					"subject": "grab_until",
 					"src_container": "deck_villain",
 					"filter_state_grab_until": [
-						{
-							"filter_properties": {
-								"type_code": "minion",
-								"trait_serpent_society": 1
-							}
-						}
+						"minion",
+						"trait_serpent_society"
 					]
 				},
 				{

@@ -13,22 +13,11 @@
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_black_panther": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
 					]
 				}
 			]
@@ -62,12 +51,8 @@
 				{
 					"name": "add_script",
 					"end_condition": "card_played",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "deck",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -126,22 +111,11 @@
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_black_panther": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
 					]
 				}
 			]
@@ -160,34 +134,17 @@
 				{
 					"name": "attack",
 					"amount": 4,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_enemies"
-						}
-					]
+					"subject": "an_enemy"
 				},
 				{
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_black_panther": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
 					]
 				}
 			]
@@ -206,34 +163,17 @@
 				{
 					"name": "thwart",
 					"amount": 3,
-					"subject": "target",
-					"needs_subject": true,
-					"filter_state_subject": [
-						{
-							"filter_group": "group_schemes"
-						}
-					]
+					"subject": "a_scheme"
 				},
 				{
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_black_panther": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
 					]
 				}
 			]
@@ -256,16 +196,9 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_black_panther": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
 					],
 					"_comments": "TODO 'in any order'"
 				}
@@ -345,19 +278,11 @@
 				},
 				{
 					"name": "heal",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_identities",
-							"filter_properties": {
-								"type_code": "alter_ego",
-								"trait_wakanda": 1
-							}
-						}
+						"group_identities",
+						"alter_ego",
+						"trait_wakanda"
 					],
 					"amount": {
 						"func_name": "get_subject_int_property",
@@ -538,12 +463,8 @@
 						"subject": "boardseek",
 						"subject_count": "all",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_enemies_my_hero",
-								"filter_properties": {
-									"type_code": "minion"
-								}
-							}
+							"group_enemies_my_hero",
+							"minion"
 						],
 						"_comments": "TODO the chosen player is not carried into this sequence; group_enemies_my_player is not a valid group (stuns nothing for now)"
 					}
@@ -619,11 +540,7 @@
 					],
 					"dest_container": "hand_previous_subject",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "player_side_scheme"
-							}
-						}
+						"player_side_scheme"
 					],
 					"_comments": "TODO verify *_previous_subject containers"
 				}
@@ -643,8 +560,8 @@
 				},
 				{
 					"name": "ask_integer",
-					"min": 1,
-					"max": 5,
+					"ask_int_min": 1,
+					"ask_int_max": 5,
 					"is_cost": true
 				},
 				{
@@ -662,13 +579,9 @@
 				},
 				{
 					"name": "move_card_to_board",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"src_container": "discard_villain",
 					"grid_name": "enemies_active_player",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
-					"subject_count": "all",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -692,11 +605,7 @@
 		"response": {
 			"event_name": "card_leaves_play",
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "minion"
-					}
-				}
+				"minion"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -799,14 +708,8 @@
 	"Sting Operation": {
 		"response_enemy_scheme_happened": {
 			"filter_state_trigger": [
-				{
-					"filter_properties": {
-						"type_code": "minion"
-					},
-					"filter_properties2": {
-						"trait_elite": 0
-					}
-				}
+				"minion",
+				"!trait_elite"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -834,19 +737,10 @@
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero",
-							"filter_properties": {
-								"trait_dora_milaje": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_allies_my_hero",
+						"trait_dora_milaje"
 					],
 					"subject_exclude": "self"
 				}
@@ -875,19 +769,10 @@
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero",
-							"filter_properties": {
-								"trait_dora_milaje": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_allies_my_hero",
+						"trait_dora_milaje"
 					],
 					"subject_exclude": "self"
 				}
@@ -916,19 +801,10 @@
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero",
-							"filter_properties": {
-								"trait_dora_milaje": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_allies_my_hero",
+						"trait_dora_milaje"
 					],
 					"subject_exclude": "self"
 				}
@@ -938,19 +814,10 @@
 			"board": [
 				{
 					"name": "nop",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly",
-							"filter_properties": {
-								"trait_wakanda": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_friendly",
+						"trait_wakanda"
 					]
 				},
 				{
@@ -1001,12 +868,8 @@
 						"discard"
 					],
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "upgrade",
-								"trait_black_panther": 1
-							}
-						}
+						"upgrade",
+						"trait_black_panther"
 					]
 				},
 				{
@@ -1019,16 +882,9 @@
 					"selection_type": "max",
 					"selection_count": 4,
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							},
-							"filter_properties2": {
-								"trait_black_panther": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
 					]
 				}
 			]
@@ -1114,19 +970,10 @@
 					"name": "execute_scripts",
 					"exec_trigger": "special",
 					"trigger_identity": "my_identity",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_my_hero",
-							"filter_properties": {
-								"trait_dora_milaje": 1,
-								"comparison": "ge"
-							}
-						}
+						"group_allies_my_hero",
+						"trait_dora_milaje"
 					]
 				},
 				{
@@ -1224,11 +1071,7 @@
 					"subject": "find",
 					"grid_name": "enemies_active_player",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "M.U.S.I.C."
-							}
-						}
+						"M.U.S.I.C."
 					]
 				}
 			]
@@ -1250,11 +1093,7 @@
 					"name": "move_card_to_board",
 					"subject": "find",
 					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"shortname": "Manipulated M.U.S.I.C."
-							}
-						}
+						"Manipulated M.U.S.I.C."
 					]
 				}
 			]
@@ -1308,9 +1147,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				}
 			]
@@ -1464,9 +1301,7 @@
 					"filter_property_name": "hand_size",
 					"alteration": 1,
 					"filter_state_trigger": [
-						{
-							"filter_group": "group_identities"
-						}
+						"group_identities"
 					]
 				}
 			]

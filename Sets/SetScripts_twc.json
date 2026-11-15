@@ -61,11 +61,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							}
-						}
+						"side_scheme"
 					]
 				},
 				{
@@ -125,11 +121,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -152,11 +144,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -179,11 +167,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -206,11 +190,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -336,11 +316,7 @@
 					"name": "nop",
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Wrecker"
-							}
-						}
+						"Wrecker"
 					]
 				}
 			]
@@ -363,9 +339,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				},
 				{
@@ -392,11 +366,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Wrecker"
-											}
-										}
+										"Wrecker"
 									]
 								}
 							},
@@ -413,11 +383,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderball"
-											}
-										}
+										"Thunderball"
 									]
 								}
 							},
@@ -434,11 +400,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Piledriver"
-											}
-										}
+										"Piledriver"
 									]
 								}
 							},
@@ -455,11 +417,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Bulldozer"
-											}
-										}
+										"Bulldozer"
 									]
 								}
 							},
@@ -508,11 +466,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -529,11 +483,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -550,11 +500,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -571,11 +517,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -786,11 +728,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -846,11 +784,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -906,11 +840,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -966,11 +896,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -1079,11 +1005,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -1103,11 +1025,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -1127,11 +1045,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -1151,11 +1065,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -1226,11 +1136,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -1253,11 +1159,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -1280,11 +1182,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -1307,11 +1205,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -1345,12 +1239,8 @@
 					"is_cost": true,
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade"
 					]
 				},
 				{
@@ -1367,12 +1257,8 @@
 									"subject": "boardseek",
 									"subject_count": "all",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero",
-											"filter_properties": {
-												"type_code": "upgrade"
-											}
-										}
+										"group_upgrade_support_my_hero",
+										"upgrade"
 									]
 								}
 							},
@@ -1395,18 +1281,10 @@
 				"Discard an upgrade you control": [
 					{
 						"name": "discard",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_upgrade_support_my_hero",
-								"filter_properties": {
-									"type_code": "upgrade"
-								}
-							}
+							"group_upgrade_support_my_hero",
+							"upgrade"
 						]
 					}
 				],
@@ -1420,11 +1298,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Wrecker"
-												}
-											}
+											"Wrecker"
 										]
 									}
 								},
@@ -1438,12 +1312,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -1456,11 +1326,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Thunderball"
-												}
-											}
+											"Thunderball"
 										]
 									}
 								},
@@ -1474,12 +1340,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -1492,11 +1354,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Piledriver"
-												}
-											}
+											"Piledriver"
 										]
 									}
 								},
@@ -1510,12 +1368,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -1528,11 +1382,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Bulldozer"
-												}
-											}
+											"Bulldozer"
 										]
 									}
 								},
@@ -1546,12 +1396,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -1573,18 +1419,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_current_hero_target",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_current_hero_target",
+						"upgrade"
 					]
 				}
 			]
@@ -1666,11 +1504,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -1693,11 +1527,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -1720,11 +1550,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -1747,11 +1573,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -1828,11 +1650,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -1849,11 +1667,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -1870,11 +1684,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -1891,11 +1701,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -1963,11 +1769,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -1984,11 +1786,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -2005,11 +1803,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -2026,11 +1820,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -2115,11 +1905,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -2146,11 +1932,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -2177,11 +1959,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -2208,11 +1986,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -2251,11 +2025,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "side_scheme"
-							}
-						}
+						"side_scheme"
 					]
 				}
 			]
@@ -2305,9 +2075,7 @@
 					"sort_by": "function",
 					"sort_name": "get_remaining_damage",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_allies_and_heroes"
-						}
+						"group_allies_and_heroes"
 					]
 				},
 				{
@@ -2361,9 +2129,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_current_hero_target"
-						}
+						"group_friendly_current_hero_target"
 					]
 				}
 			]
@@ -2397,9 +2163,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_current_hero_target"
-						}
+						"group_friendly_current_hero_target"
 					]
 				}
 			]
@@ -2412,11 +2176,7 @@
 					"name": "nop",
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Thunderball"
-							}
-						}
+						"Thunderball"
 					]
 				}
 			]
@@ -2440,9 +2200,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly"
-						}
+						"group_friendly"
 					]
 				},
 				{
@@ -2518,11 +2276,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Wrecker"
-											}
-										}
+										"Wrecker"
 									]
 								}
 							},
@@ -2539,11 +2293,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderball"
-											}
-										}
+										"Thunderball"
 									]
 								}
 							},
@@ -2560,11 +2310,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Piledriver"
-											}
-										}
+										"Piledriver"
 									]
 								}
 							},
@@ -2581,11 +2327,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Bulldozer"
-											}
-										}
+										"Bulldozer"
 									]
 								}
 							},
@@ -2634,11 +2376,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -2655,11 +2393,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -2676,11 +2410,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -2697,11 +2427,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -2796,11 +2522,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -2856,11 +2578,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -2916,11 +2634,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -2976,11 +2690,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -3089,11 +2799,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -3113,11 +2819,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -3137,11 +2839,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -3161,11 +2859,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -3236,11 +2930,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -3263,11 +2953,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -3290,11 +2976,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -3317,11 +2999,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -3355,12 +3033,8 @@
 					"is_cost": true,
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade"
 					]
 				},
 				{
@@ -3377,12 +3051,8 @@
 									"subject": "boardseek",
 									"subject_count": "all",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero",
-											"filter_properties": {
-												"type_code": "upgrade"
-											}
-										}
+										"group_upgrade_support_my_hero",
+										"upgrade"
 									]
 								}
 							},
@@ -3405,18 +3075,10 @@
 				"Discard an upgrade you control": [
 					{
 						"name": "discard",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_upgrade_support_my_hero",
-								"filter_properties": {
-									"type_code": "upgrade"
-								}
-							}
+							"group_upgrade_support_my_hero",
+							"upgrade"
 						]
 					}
 				],
@@ -3430,11 +3092,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Wrecker"
-												}
-											}
+											"Wrecker"
 										]
 									}
 								},
@@ -3448,12 +3106,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -3466,11 +3120,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Thunderball"
-												}
-											}
+											"Thunderball"
 										]
 									}
 								},
@@ -3484,12 +3134,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -3502,11 +3148,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Piledriver"
-												}
-											}
+											"Piledriver"
 										]
 									}
 								},
@@ -3520,12 +3162,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -3538,11 +3176,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Bulldozer"
-												}
-											}
+											"Bulldozer"
 										]
 									}
 								},
@@ -3556,12 +3190,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -3583,18 +3213,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_current_hero_target",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_current_hero_target",
+						"upgrade"
 					]
 				}
 			]
@@ -3609,9 +3231,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_friendly_my_hero"
-						}
+						"group_friendly_my_hero"
 					]
 				}
 			]
@@ -3678,11 +3298,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -3699,11 +3315,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -3720,11 +3332,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -3741,11 +3349,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -3813,11 +3417,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -3834,11 +3434,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -3855,11 +3451,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -3876,11 +3468,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -3965,11 +3553,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -3996,11 +3580,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -4027,11 +3607,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -4058,11 +3634,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -4294,11 +3866,7 @@
 					"name": "nop",
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Piledriver"
-							}
-						}
+						"Piledriver"
 					]
 				}
 			]
@@ -4343,9 +3911,7 @@
 						"sort_name": "cost",
 						"sort_descending": true,
 						"filter_state_seek": [
-							{
-								"filter_group": "group_upgrade_support_my_hero"
-							}
+							"group_upgrade_support_my_hero"
 						],
 						"_comments": "TODO ties: player should choose"
 					}
@@ -4408,11 +3974,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Wrecker"
-											}
-										}
+										"Wrecker"
 									]
 								}
 							},
@@ -4429,11 +3991,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderball"
-											}
-										}
+										"Thunderball"
 									]
 								}
 							},
@@ -4450,11 +4008,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Piledriver"
-											}
-										}
+										"Piledriver"
 									]
 								}
 							},
@@ -4471,11 +4025,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Bulldozer"
-											}
-										}
+										"Bulldozer"
 									]
 								}
 							},
@@ -4524,11 +4074,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -4545,11 +4091,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -4566,11 +4108,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -4587,11 +4125,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -4665,11 +4199,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -4725,11 +4255,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -4785,11 +4311,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -4845,11 +4367,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -4958,11 +4476,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -4982,11 +4496,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -5006,11 +4516,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -5030,11 +4536,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -5105,11 +4607,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -5132,11 +4630,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -5159,11 +4653,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -5186,11 +4676,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -5267,11 +4753,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -5288,11 +4770,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -5309,11 +4787,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -5330,11 +4804,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -5402,11 +4872,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -5423,11 +4889,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -5444,11 +4906,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -5465,11 +4923,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -5554,11 +5008,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -5585,11 +5035,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -5616,11 +5062,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -5647,11 +5089,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -5692,12 +5130,8 @@
 					"sort_name": "cost",
 					"sort_descending": true,
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "support"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"support"
 					]
 				},
 				{
@@ -5718,11 +5152,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Wrecker"
-											}
-										}
+										"Wrecker"
 									]
 								}
 							},
@@ -5740,11 +5170,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderball"
-											}
-										}
+										"Thunderball"
 									]
 								}
 							},
@@ -5762,11 +5188,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Piledriver"
-											}
-										}
+										"Piledriver"
 									]
 								}
 							},
@@ -5784,11 +5206,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Bulldozer"
-											}
-										}
+										"Bulldozer"
 									]
 								}
 							},
@@ -5808,18 +5226,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_current_hero_target",
-							"filter_properties": {
-								"type_code": "support"
-							}
-						}
+						"group_upgrade_support_current_hero_target",
+						"support"
 					]
 				}
 			]
@@ -5880,11 +5290,7 @@
 												"func_params": {
 													"subject": "villain",
 													"filter_state_trigger": [
-														{
-															"filter_properties": {
-																"shortname": "Wrecker"
-															}
-														}
+														"Wrecker"
 													]
 												}
 											},
@@ -5902,11 +5308,7 @@
 												"func_params": {
 													"subject": "villain",
 													"filter_state_trigger": [
-														{
-															"filter_properties": {
-																"shortname": "Thunderball"
-															}
-														}
+														"Thunderball"
 													]
 												}
 											},
@@ -5924,11 +5326,7 @@
 												"func_params": {
 													"subject": "villain",
 													"filter_state_trigger": [
-														{
-															"filter_properties": {
-																"shortname": "Piledriver"
-															}
-														}
+														"Piledriver"
 													]
 												}
 											},
@@ -5946,11 +5344,7 @@
 												"func_params": {
 													"subject": "villain",
 													"filter_state_trigger": [
-														{
-															"filter_properties": {
-																"shortname": "Bulldozer"
-															}
-														}
+														"Bulldozer"
 													]
 												}
 											},
@@ -6084,11 +5478,7 @@
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"type_code": "villain"
-							}
-						}
+						"villain"
 					]
 				}
 			],
@@ -6160,11 +5550,7 @@
 					"name": "nop",
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_properties": {
-								"shortname": "Bulldozer"
-							}
-						}
+						"Bulldozer"
 					]
 				}
 			]
@@ -6278,11 +5664,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Wrecker"
-											}
-										}
+										"Wrecker"
 									]
 								}
 							},
@@ -6299,11 +5681,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderball"
-											}
-										}
+										"Thunderball"
 									]
 								}
 							},
@@ -6320,11 +5698,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Piledriver"
-											}
-										}
+										"Piledriver"
 									]
 								}
 							},
@@ -6341,11 +5715,7 @@
 								"func_params": {
 									"subject": "villain",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Bulldozer"
-											}
-										}
+										"Bulldozer"
 									]
 								}
 							},
@@ -6394,11 +5764,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -6415,11 +5781,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -6436,11 +5798,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -6457,11 +5815,7 @@
 								"func_params": {
 									"subject": "host",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -6556,11 +5910,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -6616,11 +5966,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -6676,11 +6022,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -6736,11 +6078,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -6849,11 +6187,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -6873,11 +6207,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -6897,11 +6227,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -6921,11 +6247,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -6996,11 +6318,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -7023,11 +6341,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -7050,11 +6364,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -7077,11 +6387,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -7134,12 +6440,8 @@
 					"is_cost": true,
 					"subject": "boardseek",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_my_hero",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_my_hero",
+						"upgrade"
 					]
 				},
 				{
@@ -7156,12 +6458,8 @@
 									"subject": "boardseek",
 									"subject_count": "all",
 									"filter_state_seek": [
-										{
-											"filter_group": "group_upgrade_support_my_hero",
-											"filter_properties": {
-												"type_code": "upgrade"
-											}
-										}
+										"group_upgrade_support_my_hero",
+										"upgrade"
 									]
 								}
 							},
@@ -7184,18 +6482,10 @@
 				"Discard an upgrade you control": [
 					{
 						"name": "discard",
-						"subject": "boardseek",
-						"subject_count": "all",
-						"needs_selection": true,
-						"selection_count": 1,
-						"selection_type": "equal",
+						"subject": "boardseek_and_choose",
 						"filter_state_seek": [
-							{
-								"filter_group": "group_upgrade_support_my_hero",
-								"filter_properties": {
-									"type_code": "upgrade"
-								}
-							}
+							"group_upgrade_support_my_hero",
+							"upgrade"
 						]
 					}
 				],
@@ -7209,11 +6499,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Wrecker"
-												}
-											}
+											"Wrecker"
 										]
 									}
 								},
@@ -7227,12 +6513,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -7245,11 +6527,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Thunderball"
-												}
-											}
+											"Thunderball"
 										]
 									}
 								},
@@ -7263,12 +6541,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -7281,11 +6555,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Piledriver"
-												}
-											}
+											"Piledriver"
 										]
 									}
 								},
@@ -7299,12 +6569,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -7317,11 +6583,7 @@
 									"func_params": {
 										"subject": "villain",
 										"filter_state_trigger": [
-											{
-												"filter_properties": {
-													"shortname": "Bulldozer"
-												}
-											}
+											"Bulldozer"
 										]
 									}
 								},
@@ -7335,12 +6597,8 @@
 												"subject": "boardseek",
 												"subject_count": "all",
 												"filter_state_seek": [
-													{
-														"filter_group": "group_upgrade_support_my_hero",
-														"filter_properties": {
-															"type_code": "upgrade"
-														}
-													}
+													"group_upgrade_support_my_hero",
+													"upgrade"
 												]
 											}
 										}
@@ -7362,18 +6620,10 @@
 			"all": [
 				{
 					"name": "discard",
-					"subject": "boardseek",
-					"subject_count": "all",
-					"needs_selection": true,
-					"selection_count": 1,
-					"selection_type": "equal",
+					"subject": "boardseek_and_choose",
 					"filter_state_seek": [
-						{
-							"filter_group": "group_upgrade_support_current_hero_target",
-							"filter_properties": {
-								"type_code": "upgrade"
-							}
-						}
+						"group_upgrade_support_current_hero_target",
+						"upgrade"
 					]
 				}
 			]
@@ -7430,11 +6680,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -7451,11 +6697,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -7472,11 +6714,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -7493,11 +6731,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},
@@ -7565,11 +6799,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Day of Reckoning"
-											}
-										}
+										"Day of Reckoning"
 									]
 								}
 							},
@@ -7586,11 +6816,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Thunderstruck"
-											}
-										}
+										"Thunderstruck"
 									]
 								}
 							},
@@ -7607,11 +6833,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Pile It On!"
-											}
-										}
+										"Pile It On!"
 									]
 								}
 							},
@@ -7628,11 +6850,7 @@
 								"func_params": {
 									"subject": "my_scheme",
 									"filter_state_trigger": [
-										{
-											"filter_properties": {
-												"shortname": "Clear the Road"
-											}
-										}
+										"Clear the Road"
 									]
 								}
 							},

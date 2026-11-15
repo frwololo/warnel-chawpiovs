@@ -2682,6 +2682,10 @@ func enemy_attack_damage(_script: ScriptTask) -> int:
 #	var my_hero:Card = target_friendly.get_controller_hero_card()
 	
 	var amount = attacker.get_property("attack", 0)
+	#no printed attack (e.g. Norman Osborn after Green Goblin flipped
+	#mid-attack): the attack resolves with a base attack of 0 (official ruling)
+	if amount == null:
+		amount = 0
 	var boost_data = script.get_property("boost", [])
 	for boost_amount in boost_data:
 		amount+= boost_amount	

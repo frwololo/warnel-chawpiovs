@@ -296,6 +296,9 @@
 			"victory_display": [],
 			"set_aside": [
 				{
+					"card": "Baron Zemo - A1 #50165a"
+				},			
+				{
 					"card": "Medical Officer's Aid #50181b"
 				},
 				{
@@ -306,9 +309,6 @@
 				},
 				{
 					"card": "The Accusation - 2B #50168b"
-				},
-				{
-					"card": "Baron Zemo - A1 #50165a"
 				},
 				{
 					"card": "Chief Tactical Officer #50183a"

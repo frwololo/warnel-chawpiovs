@@ -663,11 +663,18 @@ func load_from_card_id(card_id):
 	_runtime_properties_setup()
 	
 	_get_extra_scripts_cache = {}
-	
+	#listen to the triggers of the new id, not the previous one
+	if cfc.NMAP.has("board"):
+		register_signals()
 	
 	update_groups()
 	side_icons.set_icons()
 	_duplicate = null
+	
+	var func_return = self.execute_scripts_no_stack(self, "on_load")
+	if func_return is GDScriptFunctionState && func_return.is_valid():
+		yield(func_return, "completed")	
+				
 	CFScriptUtils.add_update_alterant_super_cache_object(self)
 	scripting_bus.emit_signal("card_reloaded", self, {"before_id": previous_id })
 	

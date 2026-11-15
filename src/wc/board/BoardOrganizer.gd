@@ -315,7 +315,6 @@ func organize():
 		return
 	if cfc.NMAP.board.are_cards_still_animating():
 		return
-	_last_layout_signature = signature
 #	var previous_data = to_json(retrieve_all_children_data())	
 	
 	# warning-ignore:return_value_discarded
@@ -323,6 +322,8 @@ func organize():
 	rescale()
 	reposition_children()
 	display_new_positions()
+	#taken after the piles are placed, so that it holds where they ended up
+	_last_layout_signature = _layout_signature()
 
 #	var new_data = to_json(retrieve_all_children_data())	
 #	if new_data != previous_data:
@@ -337,7 +338,9 @@ func _layout_signature() -> Array:
 		elif child as BoardPlacementGrid:
 			result.append(child.get_all_cards())
 		elif child as Pile:
-			result.append([child, child.card_size])
+			#where the pile is, not only what it is: anything else that moves
+			#it (e.g. during the board setup) gets corrected on the next pass
+			result.append([child, child.card_size, child.global_position, child.scale])
 		elif child_data["type"] == "spacer":
 			result.append("spacer")
 		else: #this is a hbox/vbox entiry

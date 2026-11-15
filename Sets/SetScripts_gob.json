@@ -179,13 +179,6 @@
 					"modification": "2p",
 					"subject": "self"
 				},
-				{
-					"name": "execute_scripts",
-					"subject": "villain",
-					"exec_trigger": "reveal",
-					"delayed": true,
-					"_comments": "Resolve Green Goblin's When Revealed after the flip"
-				}
 			]
 		}
 	},

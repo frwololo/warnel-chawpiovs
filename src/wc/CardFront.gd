@@ -175,12 +175,23 @@ func _transition_texture(texture):
 
 
 func _enable_texture(texture):
-	
-	#if texture already exists, we do a transition
-	if art.texture and art.texture != texture:
+	var previous_texture = art.texture
+	#also on a transition: to_color()/to_grayscale() would bring back the old art
+	color_texture = texture
+	grayscale_texture = null
+
+	#if texture already exists, we do a transition. It plays in _process,
+	#which is off for cards in some piles (set_aside...: see PERFORMANCE_HACKS
+	#in _process_card_state): there it would never end, and the old art would
+	#stay on top of the new one (e.g. a villain's other side, reloaded in set_aside)
+	if previous_texture and previous_texture != texture and is_processing():
 		_transition_texture(texture)
 		return
-	color_texture = texture
+	#a transition that started before processing stopped can't end either
+	if shader_active:
+		$Tween.remove_all()
+		art.modulate = Color(1,1,1)
+		end_texture_transition()
 	set_texture(art, texture)
 	if CFConst.PERFORMANCE_HACKS and !_perf_hacks_done:
 		$Margin.queue_free()

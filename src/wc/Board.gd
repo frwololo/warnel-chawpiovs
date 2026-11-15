@@ -1437,8 +1437,13 @@ func shuffle_decks() -> void:
 		var pile = cfc.NMAP[pile_name]
 		while pile.are_cards_still_animating():
 			yield(pile.get_tree().create_timer(0.2), "timeout")
-		cfc.LOG("shuffling deck " + str(pile_name))	
-		pile.shuffle_cards()
+		cfc.LOG("shuffling deck " + str(pile_name))
+		if gameData.testSuite:
+			#accelerate for testSuite stuff (remove animation)
+			pile.shuffle_cards(false)
+		else:	
+			#normal gameplay
+			pile.shuffle_cards()
 	
 func draw_starting_hand() -> void:
 	gameData.draw_all_players()
@@ -1706,6 +1711,9 @@ func swap_card(card:WCCard, to_card_id):
 		)
 		card.execute_scripts(card, "self_moved_to_board")
 		return card
+
+	elif type_code == "villain" and to_card_id == card.get_card_back_code():
+		return _flip_villain_in_place(card, to_card_id)
 		
 	else:
 		var new_card = gameData.retrieve_from_side_or_instance(to_card_id,card.get_owner_hero_id())
@@ -1753,6 +1761,46 @@ func swap_card(card:WCCard, to_card_id):
 			func_return = func_return.resume()									
 		#new_card.reorganize_self()
 		return new_card
+
+
+#A villain flipping to its other side (e.g. Green Goblin and Norman Osborn)
+#never leaves play: it stays the same card, like heroes changing form, so its
+#attack in progress, boost cards, tokens, attachments, queued activations and
+#guid all stay with it. The set aside card of the other side takes the side
+#we are leaving, so that there is still one card per side (same approach as
+#swap_villain for two stages of the same character)
+func _flip_villain_in_place(card:WCCard, to_card_id):
+	var other_side = gameData.retrieve_from_side_or_instance(to_card_id, card.get_owner_hero_id())
+	other_side.load_from_card_id(card.canonical_id)
+	card.load_from_card_id(to_card_id)
+
+	#properties the new side sets up when the game loads (e.g. next_villain_on_death)
+#	var func_return = card.execute_scripts_no_stack(card, "on_load")
+#	while func_return is GDScriptFunctionState && func_return.is_valid():
+#		func_return = func_return.resume()
+
+	#same signals as the other in-place changes (heroes, swap_villain)
+	scripting_bus.emit_signal_on_stack(
+		"card_moved_to_board",
+		card,
+		 {
+			"destination": "board",
+			"destination_grid": "",
+			"source": "board",
+			"tags": ["change_form"]
+		}
+	)
+	card.execute_scripts(card, "self_moved_to_board")
+
+	var func_return = card.execute_scripts(card, "reveal")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+	func_return = card.execute_scripts(card, "post_reveal")
+	while func_return is GDScriptFunctionState && func_return.is_valid():
+		func_return = func_return.resume()
+		
+	gameData.play_sfx("type_villain-next_stage")	
+	return card
 
 
 func count_card_per_player_in_play(unique_card:WCCard, hero_id = 0, exclude_self = false):

@@ -159,7 +159,7 @@
 			]
 		}
 	},
-	"actions": [
+	"actions": [	
 		{
 			"type": "play",
 			"value": "Psychic Link",
@@ -180,9 +180,19 @@
 		},
 		{
 			"type": "select",
+			"value": "SP//dr Suit",
+			"hero": 2
+		},		
+		{
+			"type": "select",
 			"value": "Psychic Link",
 			"hero": 2
-		}
+		},
+		{
+			"type": "select",
+			"value": "Ejection Protocol",
+			"hero": 2
+		}		
 	],
 	"end": {
 		"phase": "PLAYER_TURN",

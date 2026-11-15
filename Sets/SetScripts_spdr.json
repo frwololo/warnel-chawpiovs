@@ -1241,6 +1241,7 @@
 						"func_name": "count_printed_resources",
 						"func_params": {
 							"subject": "boardseek",
+							"subject_count": "all",
 							"filter_state_seek": [
 								{
 									"filter_group": "group_upgrade_support_my_hero",
@@ -1262,6 +1263,7 @@
 						"func_name": "count_printed_resources",
 						"func_params": {
 							"subject": "boardseek",
+							"subject_count": "all",
 							"filter_state_seek": [
 								{
 									"filter_group": "group_upgrade_support_my_hero",
@@ -1283,6 +1285,7 @@
 						"func_name": "count_printed_resources",
 						"func_params": {
 							"subject": "boardseek",
+							"subject_count": "all",
 							"filter_state_seek": [
 								{
 									"filter_group": "group_upgrade_support_my_hero",
@@ -1304,6 +1307,7 @@
 						"func_name": "count_printed_resources",
 						"func_params": {
 							"subject": "boardseek",
+							"subject_count": "all",
 							"filter_state_seek": [
 								{
 									"filter_group": "group_upgrade_support_my_hero",
@@ -1344,6 +1348,7 @@
 					"name": "exhaust_card",
 					"is_cost": true,
 					"subject": "boardseek_and_choose",
+					"selection_type": "min",
 					"filter_state_seek": [
 						{
 							"filter_group": "group_upgrade_support_my_hero",
@@ -1357,7 +1362,7 @@
 				},
 				{
 					"name": "save_variable",
-					"var_name": "my_interface",
+					"var_name": "my_interfaces",
 					"var_type": "subject",
 					"value": "previous",
 					"force_run_at_prime": true
@@ -1367,7 +1372,7 @@
 					"amount": {
 						"func_name": "count_printed_resources",
 						"func_params": {
-							"subject": "my_interface",
+							"subject": "my_interfaces",
 							"resource_type": "energy"
 						}
 					},
@@ -1378,7 +1383,7 @@
 					"amount": {
 						"func_name": "count_printed_resources",
 						"func_params": {
-							"subject": "my_interface",
+							"subject": "my_interfaces",
 							"resource_type": "mental"
 						}
 					},
@@ -1389,7 +1394,7 @@
 					"amount": {
 						"func_name": "count_printed_resources",
 						"func_params": {
-							"subject": "my_interface",
+							"subject": "my_interfaces",
 							"resource_type": "physical"
 						}
 					},
@@ -1400,7 +1405,7 @@
 					"amount": {
 						"func_name": "count_printed_resources",
 						"func_params": {
-							"subject": "my_interface",
+							"subject": "my_interfaces",
 							"resource_type": "wild"
 						}
 					},

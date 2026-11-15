@@ -1222,11 +1222,15 @@ func load_card_definitions() -> Dictionary:
 		card_definitions = combined_sets	
 		print_debug("successfully loaded card definitions from cache")	
 	else:
+		var load_beta_cards = get_setting("enable_beta_sets")				
 		for set_file in set_files:
 			var fanmade = "fanmade" in set_file
 			var prefix_length = set_file.find(CFConst.CARD_SET_NAME_PREPEND) + CFConst.CARD_SET_NAME_PREPEND.length()
 			var extension_idx = set_file.find(".")
 			var box_name = set_file.substr(prefix_length, extension_idx-prefix_length)
+			if !load_beta_cards and (box_name in CFConst.BETA_SETS):
+				continue
+							
 			var json_array = WCUtils.read_json_file_with_user_override	(set_file)
 			_total_cards += json_array.size() 
 			json_card_data[box_name] = {
@@ -1237,7 +1241,7 @@ func load_card_definitions() -> Dictionary:
 			
 		var i = 0
 		var linked_id_cache = {}
-		var load_beta_cards = get_setting("enable_beta_sets")
+
 		
 		for box_name in json_card_data.keys():
 			if !load_beta_cards and (box_name in CFConst.BETA_SETS):

@@ -26,7 +26,7 @@
 							"piercing"
 						]
 					},
-					"_comments": "TODO verify tag removal in replacement_effect"
+					"_comments": "TODO not supported: replacement_effect has no remove_tags (only additional_tags), so attacks against Luke Cage keep piercing"
 				}
 			]
 		},
@@ -75,7 +75,7 @@
 							"piercing"
 						]
 					},
-					"_comments": "TODO verify tag removal in replacement_effect"
+					"_comments": "TODO not supported: replacement_effect has no remove_tags (only additional_tags), so attacks against Luke Cage keep piercing"
 				}
 			]
 		},
@@ -734,8 +734,7 @@
 					]
 				}
 			]
-		},
-		"_comments": "TODO verify get_remaining_damage returns remaining hit points"
+		}
 	},
 	"Hulk - Bruce Banner": {
 		"alterants": {
@@ -982,8 +981,7 @@
 					"filter_state_trigger": [
 						"minion",
 						"trait_serpent_society"
-					],
-					"_comments": "TODO verify property"
+					]
 				}
 			]
 		},
@@ -1116,7 +1114,7 @@
 								"func_name": "has_printed_script",
 								"func_params": {
 									"subject": "previous",
-									"script_name": "boost"
+									"trigger_name": "boost"
 								}
 							},
 							"nested_tasks": [
@@ -1130,8 +1128,7 @@
 						}
 					]
 				}
-			],
-			"_comments": "TODO verify has_printed_script params"
+			]
 		}
 	},
 	"Size Advantage": {

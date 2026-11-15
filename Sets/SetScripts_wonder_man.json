@@ -124,11 +124,10 @@
 						"func_name": "get_overpaid_amount",
 						"func_params": {
 							"resource": "energy",
-							"max": 3,
+							"max": 6,
 							"multiplier": 2
 						}
-					},
-					"_comments": "TODO verify order of max/multiplier"
+					}
 				}
 			]
 		}
@@ -833,8 +832,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "can_attack",
 					"alteration": -1,
-					"trigger": "Wonder Man",
-					"_comments": "TODO verify 'cannot attack' property"
+					"trigger": "Wonder Man"
 				}
 			]
 		},

@@ -19,8 +19,7 @@
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
-			],
-			"_comments": "TODO verify target detail of the attack event"
+			]
 		},
 		"interrupt_defender_chosen": {
 			"trigger": "self",
@@ -28,7 +27,7 @@
 			"board": [
 				{
 					"name": "host_card",
-					"host": "current_activation_source",
+					"host": "current_activation_enemy",
 					"subject": "tutor",
 					"src_container": "set_aside",
 					"filter_state_tutor": [
@@ -36,8 +35,7 @@
 					],
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
-			],
-			"_comments": "TODO verify subject for the attacking enemy during defense"
+			]
 		}
 	},
 	"Bobby Drake": {
@@ -88,8 +86,7 @@
 						"trait_ice"
 					]
 				}
-			],
-			"_comments": "TODO verify 'after' value for alter-ego form"
+			]
 		}
 	},
 	"Frostbite": {
@@ -131,8 +128,7 @@
 					"subject": "self",
 					"dest_container": "set_aside"
 				}
-			],
-			"_comments": "TODO verify event"
+			]
 		}
 	},
 	"Snow Clone": {
@@ -294,18 +290,17 @@
 				"tags": [
 					"attack"
 				],
-				"amount": ">0"
+				"amount": ">0",
+				"filter_state_event_target": [
+					"group_identities"
+				]
 			},
-			"filter_state_trigger": [
-				"group_identities"
-			],
 			"board": [
 				{
 					"name": "save_variable",
 					"var_name": "my_attacker",
 					"var_type": "subject",
-					"value": "current_activation_source",
-					"_comments": "TODO verify subject for the attacking enemy"
+					"value": "current_activation_enemy"
 				},
 				{
 					"name": "deal_damage",
@@ -505,8 +500,7 @@
 						}
 					}
 				}
-			],
-			"_comments": "TODO verify target detail"
+			]
 		}
 	},
 	"Glob - Robert Herman": {
@@ -871,7 +865,7 @@
 				}
 			]
 		},
-		"response_card_attached": {
+		"card_attached": {
 			"filter_state_trigger": [
 				"Frostbite"
 			],
@@ -881,8 +875,7 @@
 					"amount": 1,
 					"subject": "my_identity"
 				}
-			],
-			"_comments": "TODO verify signal"
+			]
 		},
 		"recovery_happened": {
 			"trigger": "my_identity",
@@ -899,7 +892,7 @@
 			"__trigger__": "self",
 			"__tags__": "indirect"
 		},
-		"_comments": "TODO verify 'indirect' attack tag"
+		"_comments": "TODO indirect attacks are not supported by the engine (there is no 'indirect' tag)"
 	},
 	"Playing with Fire": {
 		"card_defeated": {
@@ -1229,8 +1222,7 @@
 					"name": "forget_variable",
 					"var_name": "my_discarded"
 				}
-			],
-			"_comments": "TODO verify count_printed_resources on a subject variable holding several cards"
+			]
 		}
 	}
 }

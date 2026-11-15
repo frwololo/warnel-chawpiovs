@@ -12,7 +12,7 @@
 					"subject": "trigger"
 				}
 			],
-			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero; TODO verify trigger subject"
+			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero"
 		},
 		"setup": {
 			"all": [
@@ -59,7 +59,7 @@
 					"subject": "trigger"
 				}
 			],
-			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero; TODO verify trigger subject"
+			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero"
 		},
 		"reveal": {
 			"all": {
@@ -107,7 +107,7 @@
 					"subject": "trigger"
 				}
 			],
-			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero; TODO verify trigger subject"
+			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero"
 		},
 		"setup": {
 			"all": [
@@ -154,7 +154,7 @@
 					"subject": "trigger"
 				}
 			],
-			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero; TODO verify trigger subject"
+			"_comments": "after an alter-ego changes to hero form, deal 1 damage to that hero"
 		},
 		"reveal": {
 			"all": {
@@ -841,8 +841,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify event filter"
+			]
 		}
 	},
 	"Taskmaster": {
@@ -2295,8 +2294,7 @@
 					"name": "discard",
 					"subject": "self"
 				}
-			],
-			"_comments": "TODO verify interrupt_play_card / filter on the played card's owner"
+			]
 		}
 	},
 	"Superpowered Siblings": {

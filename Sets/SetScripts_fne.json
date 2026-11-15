@@ -295,13 +295,13 @@
 					"plus_amount": {
 						"func_name": "count_attachments",
 						"func_params": {
-							"subject": "previous",
+							"subject": "current_subject",
 							"filter_state_attachment": [
 								"upgrade"
 							]
 						}
 					},
-					"_comments": "TODO 'you may'; verify plus_amount with target's attachments"
+					"_comments": "TODO 'you may'"
 				}
 			]
 		}
@@ -351,13 +351,13 @@
 					"plus_amount": {
 						"func_name": "count_attachments",
 						"func_params": {
-							"subject": "previous",
+							"subject": "current_subject",
 							"filter_state_attachment": [
 								"upgrade"
 							]
 						}
 					},
-					"_comments": "TODO 'you may'; verify"
+					"_comments": "TODO 'you may'"
 				}
 			]
 		}
@@ -2723,8 +2723,7 @@
 					"modification": 1,
 					"subject": "trigger_details_target"
 				}
-			],
-			"_comments": "TODO verify target detail; 'already stunned' check before stunning"
+			]
 		}
 	},
 	"Hammerhead - 2": {
@@ -2760,8 +2759,7 @@
 					"modification": 1,
 					"subject": "trigger_details_target"
 				}
-			],
-			"_comments": "TODO verify target detail; 'already stunned' check before stunning"
+			]
 		}
 	},
 	"Hammerhead - 3": {
@@ -2797,8 +2795,7 @@
 					"modification": 1,
 					"subject": "trigger_details_target"
 				}
-			],
-			"_comments": "TODO verify target detail; 'already stunned' check before stunning"
+			]
 		}
 	},
 	"Energy Gatling Gun": {
@@ -3161,7 +3158,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"attacks_gain": {
 			"__trigger__": "self",
@@ -3198,7 +3195,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -3225,7 +3222,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -3257,7 +3254,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -3626,16 +3623,12 @@
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_activate",
 					"alteration": 1,
-					"trigger": "host",
-					"_comments": "TODO verify property"
+					"trigger": "host"
 				}
 			]
 		},
 		"response": {
-			"event_name": [
-				"card_damaged",
-				"round_ended"
-			],
+			"event_name": "card_damaged",
 			"board": [
 				{
 					"name": "sequence",
@@ -3647,6 +3640,18 @@
 				}
 			],
 			"_comments": "TODO only villain damage"
+		},
+		"round_ended": {
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_deal"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		},
 		"do_deal": {
 			"all": {
@@ -4581,8 +4586,7 @@
 						"else": 1
 					}
 				}
-			],
-			"_comments": "TODO verify card_defeated with filter_state_trigger for other cards"
+			]
 		}
 	},
 	"Master Key": {
@@ -6217,8 +6221,7 @@
 					"amount": 1,
 					"subject": "self"
 				}
-			],
-			"_comments": "TODO verify"
+			]
 		}
 	},
 	"Bystanders In Peril": {
@@ -6280,7 +6283,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"interrupt_enemy_would_scheme": {
 			"trigger": "self",
@@ -6329,7 +6332,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -6888,8 +6891,7 @@
 					"name": "discard",
 					"subject": "self"
 				}
-			],
-			"_comments": "TODO verify 'first_player' subject"
+			]
 		}
 	},
 	"Hard As Marble": {
@@ -7036,7 +7038,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"interrupt_card_dies": {
 			"trigger": "self",
@@ -7078,7 +7080,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "Vulnerable: discard if stunned or confused; TODO verify list filter_token_name"
+			"_comments": "Vulnerable: discard if stunned or confused"
 		},
 		"interrupt_card_dies": {
 			"trigger": "self",

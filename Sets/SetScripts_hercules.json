@@ -145,7 +145,7 @@
 							}
 						}
 					],
-					"_comments": "TODO verify comparison on printed_health; 'find' also searches play"
+					"_comments": "TODO 'find' also searches play"
 				},
 				{
 					"name": "heal",
@@ -177,16 +177,16 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"target": "host"
+				"target": "host",
+				"filter_state_event_source": [
+					{
+						"filter_properties": {
+							"shortname": "Hercules",
+							"comparison": "ne"
+						}
+					}
+				]
 			},
-			"filter_state_event_source": [
-				{
-					"filter_properties": {
-						"shortname": "Hercules"
-					},
-					"_comments": "TODO verify"
-				}
-			],
 			"board": [
 				{
 					"name": "prevent",
@@ -194,7 +194,23 @@
 					"amount": "all"
 				}
 			],
-			"_comments": "TODO prevent unless from Hercules's attacks"
+			"_comments": "damage not from Hercules"
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"!attack"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				}
+			],
+			"_comments": "damage from Hercules that is not an attack"
 		},
 		"_comments": "Victory 0: goes to the victory display when attached minion is defeated (TODO)"
 	},
@@ -702,11 +718,11 @@
 				"amount": ">0",
 				"tags": [
 					"attack"
+				],
+				"filter_state_event_source": [
+					"villain"
 				]
 			},
-			"filter_state_event_source": [
-				"villain"
-			],
 			"is_optional_board": true,
 			"board": [
 				{
@@ -726,8 +742,7 @@
 					"subject": "interrupted_event",
 					"amount": 1
 				}
-			],
-			"_comments": "TODO verify villain source filter"
+			]
 		}
 	},
 	"Lion of Olympus": {
@@ -1178,7 +1193,7 @@
 				]
 			}
 		},
-		"TODO": "reduce the cost of each of those cards by 2 until the end of the phase; verify S.H.I.E.L.D. trait key"
+		"TODO": "reduce the cost of each of those cards by 2 until the end of the phase"
 	},
 	"Helicarrier": {
 		"manual": {

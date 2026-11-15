@@ -170,7 +170,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "TODO only if your identity has the Enthralled trait; verify token interrupt"
+			"_comments": "TODO not working: card_token_added is not a stack event, so this interrupt never fires. Needs event_name mod_tokens with event_filters token_name charm, and a check that the identity has the Enthralled trait"
 		}
 	},
 	"Sovereign Sorceress - 2A": {
@@ -243,7 +243,7 @@
 					"subject": "self"
 				}
 			],
-			"_comments": "TODO only if your identity has the Enthralled trait; verify token interrupt"
+			"_comments": "TODO not working: card_token_added is not a stack event, so this interrupt never fires. Needs event_name mod_tokens with event_filters token_name charm, and a check that the identity has the Enthralled trait"
 		}
 	},
 	"Future of Despair": {
@@ -2163,7 +2163,7 @@
 				}
 			]
 		},
-		"_comments": "TODO verify '2p' alteration; When Revealed in standard mode"
+		"_comments": "TODO When Revealed in standard mode"
 	},
 	"Total Focus": {
 		"alterants": {
@@ -2479,8 +2479,7 @@
 								"treachery"
 							]
 						}
-					},
-					"_comments": "TODO verify counting treacheries among previous"
+					}
 				},
 				{
 					"name": "add_script",
@@ -2750,8 +2749,7 @@
 						}
 					]
 				}
-			],
-			"_comments": "TODO verify trigger is the attacker"
+			]
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -3088,11 +3086,11 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"amount": ">0"
+				"amount": ">0",
+				"filter_state_event_target": [
+					"group_identities"
+				]
 			},
-			"filter_state_trigger": [
-				"group_identities"
-			],
 			"is_optional_board": true,
 			"board": [
 				{
@@ -3174,8 +3172,7 @@
 								}
 							],
 							"property": "cost"
-						},
-						"_comments": "TODO verify sort inside a func subject"
+						}
 					},
 					"trigger": "self"
 				}

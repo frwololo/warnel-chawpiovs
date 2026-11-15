@@ -633,11 +633,14 @@
 												"func_params": {
 													"wild": 1
 												}
-											}
+											},
+											"force_printed_cost": true
 										}
-									}
+									},
+									"force_printed_cost": true
 								}
-							}
+							},
+							"force_printed_cost": true
 						},
 						"_comments": "number of different resource types used to pay (sum of paid_with_includes per type)"
 					}
@@ -652,8 +655,7 @@
 					"subject": "an_enemy"
 				}
 			]
-		},
-		"_comments": "TODO verify sequence count accepts a func"
+		}
 	},
 	"Chamber - Jono Starsmore": {
 		"TODO": "takes -1 consequential damage after he attacks a confused enemy"
@@ -1303,8 +1305,7 @@
 					"name": "forget_variable",
 					"var_name": "my_a"
 				}
-			],
-			"_comments": "TODO verify add_threat event filter on main scheme"
+			]
 		}
 	},
 	"Arcade": {

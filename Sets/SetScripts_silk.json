@@ -168,8 +168,7 @@
 								"card_set_code": "compare_with_previous"
 							}
 						}
-					],
-					"_comments": "TODO verify compare_with_previous semantics (from Dark Beast)"
+					]
 				},
 				{
 					"name": "tuck_card_under_me",
@@ -473,12 +472,18 @@
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"amount": ">0"
+				"amount": ">0",
+				"filter_state_event_target": [
+					{
+						"filter_group": "group_friendly",
+						"filter_properties": {
+							"trait_web-warrior": 1,
+							"comparison": "ge"
+						},
+						"is_script_owner": false
+					}
+				]
 			},
-			"filter_state_trigger": [
-				"group_friendly",
-				"trait_web-warrior"
-			],
 			"is_optional_board": true,
 			"board": [
 				{
@@ -488,8 +493,7 @@
 						"subject": "self"
 					}
 				}
-			],
-			"_comments": "TODO exclude Scarlet Spider himself"
+			]
 		}
 	},
 	"Spider-Byte - Margo Kess": {
@@ -587,15 +591,14 @@
 				},
 				{
 					"name": "deal_damage",
-					"subject": "trigger",
+					"subject": "trigger_details_attacker",
 					"amount": {
 						"func_name": "get_subject_int_property",
 						"func_params": {
 							"subject": "my_hero",
 							"property": "defense"
 						}
-					},
-					"_comments": "TODO verify trigger is the attacking enemy"
+					}
 				}
 			]
 		}
@@ -672,8 +675,7 @@
 					"subject": "interrupted_event",
 					"amount": "retrieve_integer"
 				}
-			],
-			"_comments": "TODO verify ask_integer and dynamic pay_cost"
+			]
 		}
 	},
 	"Ready for a Fight": {

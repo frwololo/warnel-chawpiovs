@@ -61,8 +61,7 @@
 								}
 							]
 						}
-					},
-					"_comments": "TODO verify add_script survives the form change"
+					}
 				}
 			]
 		}
@@ -242,9 +241,10 @@
 		}
 	},
 	"Breakthrough": {
-		"response": {
-			"event_name": "card_token_added",
-			"filter_token_name": "evidence",
+		"card_token_added": {
+			"event_filters": {
+				"token_name": "evidence"
+			},
 			"filter_state_trigger": [
 				"Alias Investigations"
 			],
@@ -259,8 +259,7 @@
 					"subject": "self",
 					"dest_container": "deck"
 				}
-			],
-			"_comments": "TODO verify card_token_added signal usage"
+			]
 		}
 	},
 	"Snooping Around": {
@@ -1341,7 +1340,7 @@
 				}
 			]
 		},
-		"_comments": "TODO SCH = highest SCH or THW; verify sorted boardseek inside func params; printed values are 0"
+		"_comments": "TODO SCH = highest SCH or THW; printed values are 0"
 	},
 	"Indomitable Will": {
 		"hinder": {

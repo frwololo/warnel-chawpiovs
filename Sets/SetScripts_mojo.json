@@ -418,7 +418,7 @@
 				}
 			]
 		},
-		"TODO": "You may place ratings counters on The Champion to reduce this damage by 1 each; verify comparator with variable"
+		"TODO": "TODO You may place ratings counters on The Champion to reduce this damage by 1 each"
 	},
 	"Defend the Title": {
 		"reveal_alter_ego": {
@@ -523,8 +523,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify event filter syntax"
+			]
 		},
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
@@ -616,8 +615,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify event filter syntax"
+			]
 		},
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
@@ -709,8 +707,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify event filter syntax"
+			]
 		},
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
@@ -998,8 +995,7 @@
 		}
 	},
 	"Mojo - 1": {
-		"response": {
-			"event_name": "phase_ended",
+		"phase_ended": {
 			"event_filters": {
 				"phase": "player_phase"
 			},
@@ -1089,11 +1085,10 @@
 				}
 			]
 		},
-		"_comments": "TODO verify 'after your turn ends' signal and per-player turn handling"
+		"_comments": "TODO 'after your turn ends' is checked once per player phase, not per player"
 	},
 	"Mojo - 2": {
-		"response": {
-			"event_name": "phase_ended",
+		"phase_ended": {
 			"event_filters": {
 				"phase": "player_phase"
 			},
@@ -1183,7 +1178,7 @@
 				}
 			]
 		},
-		"_comments": "TODO verify 'after your turn ends' signal and per-player turn handling",
+		"_comments": "TODO 'after your turn ends' is checked once per player phase, not per player",
 		"reveal": {
 			"all": [
 				{
@@ -1200,8 +1195,7 @@
 		}
 	},
 	"Mojo - 3": {
-		"response": {
-			"event_name": "phase_ended",
+		"phase_ended": {
 			"event_filters": {
 				"phase": "player_phase"
 			},
@@ -1291,7 +1285,7 @@
 				}
 			]
 		},
-		"_comments": "TODO verify 'after your turn ends' signal and per-player turn handling",
+		"_comments": "TODO 'after your turn ends' is checked once per player phase, not per player",
 		"reveal": {
 			"all": [
 				{
@@ -1381,8 +1375,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_villain",
-					"subject_count": "trigger_details_damage",
-					"_comments": "TODO verify damage detail name"
+					"subject_count": "trigger_details_damage"
 				}
 			]
 		}
@@ -1881,8 +1874,7 @@
 					"name": "ask_integer",
 					"ask_int_min": 1,
 					"ask_int_max": 10,
-					"is_cost": true,
-					"_comments": "TODO X selection; verify ask_integer usage"
+					"is_cost": true
 				},
 				{
 					"name": "pay_cost",
@@ -1917,8 +1909,7 @@
 					"name": "ask_integer",
 					"ask_int_min": 1,
 					"ask_int_max": 10,
-					"is_cost": true,
-					"_comments": "TODO X selection; verify ask_integer usage"
+					"is_cost": true
 				},
 				{
 					"name": "pay_cost",
@@ -1964,8 +1955,7 @@
 					"name": "ask_integer",
 					"ask_int_min": 1,
 					"ask_int_max": 10,
-					"is_cost": true,
-					"_comments": "TODO X selection; verify ask_integer usage"
+					"is_cost": true
 				},
 				{
 					"name": "pay_cost",
@@ -2109,8 +2099,7 @@
 					"subject": "interrupted_event",
 					"amount": "trigger_details_amount"
 				}
-			],
-			"_comments": "TODO verify source/printed resource detection"
+			]
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -2155,8 +2144,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify"
+			]
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -2187,8 +2175,7 @@
 					"subject": "interrupted_event",
 					"amount": 1
 				}
-			],
-			"_comments": "TODO verify"
+			]
 		},
 		"card_defeated": {
 			"trigger": "self",
@@ -2536,8 +2523,7 @@
 					"subject": "interrupted_event",
 					"amount": "trigger_details_amount"
 				}
-			],
-			"_comments": "TODO verify piercing tag on damage event"
+			]
 		},
 		"attack_happened": {
 			"trigger": "self",
@@ -2798,8 +2784,7 @@
 			"all": [
 				{
 					"name": "return_attachments_to_owner",
-					"subject": "self",
-					"_comments": "TODO verify returns to owner's hand"
+					"subject": "self"
 				}
 			]
 		}
@@ -3175,19 +3160,35 @@
 				}
 			]
 		},
-		"_comments": "TODO verify attacks_gain trigger for 'each enemy'",
-		"attacks_gain": {
-			"__trigger__": "enemy",
-			"__tags__": "overkill"
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"filter_state_trigger": [
+				"group_enemies"
+			],
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			]
 		},
 		"interrupt": {
 			"event_name": "receive_damage",
 			"event_filters": {
-				"amount": ">0"
+				"amount": ">0",
+				"filter_state_event_target": [
+					"group_characters"
+				]
 			},
-			"filter_state_trigger": [
-				"group_characters"
-			],
 			"board": [
 				{
 					"name": "increase",
@@ -3230,8 +3231,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "health",
 					"alteration": "3p",
-					"trigger": "host",
-					"_comments": "TODO verify '3p' alteration"
+					"trigger": "host"
 				}
 			]
 		},

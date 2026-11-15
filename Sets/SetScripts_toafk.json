@@ -497,8 +497,7 @@
 					"name": "discard",
 					"subject": "self"
 				}
-			],
-			"_comments": "TODO verify event name for 'would ready'"
+			]
 		},
 		"boost": {
 			"all": [
@@ -1057,8 +1056,7 @@
 					"subject": "self",
 					"dest_container": "deck_villain"
 				}
-			],
-			"_comments": "TODO verify defeated side scheme goes through card_moved_to_pile; pattern from Cybermods"
+			]
 		}
 	},
 	"Kang (The Conqueror) - 1 #11034": {

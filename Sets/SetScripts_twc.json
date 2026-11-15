@@ -225,7 +225,7 @@
 				}
 			]
 		},
-		"_comments": "TODO verify escalation 1[per_hero]*, event name villain_step_one_threat_added; ties: first player should choose"
+		"_comments": "TODO escalation 1[per_hero]*; ties: first player should choose"
 	},
 	"Wrecker - A": {
 		"interrupt_enemy_scheme_threat": {
@@ -445,8 +445,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify thwart tag filter"
+			]
 		},
 		"manual": {
 			"board": [
@@ -2355,8 +2354,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify thwart tag filter"
+			]
 		},
 		"manual": {
 			"board": [
@@ -3241,8 +3239,7 @@
 				{
 					"name": "deal_damage",
 					"amount": 1,
-					"subject": "current_activation_target",
-					"_comments": "TODO verify subject for defending character"
+					"subject": "current_activation_target"
 				}
 			]
 		}
@@ -4053,8 +4050,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify thwart tag filter"
+			]
 		},
 		"manual": {
 			"board": [
@@ -5617,8 +5613,7 @@
 					"subject": "index",
 					"subject_index": "top",
 					"src_container": "deck_current_hero_target",
-					"subject_count": "trigger_details_damage",
-					"_comments": "TODO verify damage amount from attack details"
+					"subject_count": "trigger_details_damage"
 				}
 			]
 		},
@@ -5743,8 +5738,7 @@
 					"subject": "interrupted_event",
 					"amount": "all"
 				}
-			],
-			"_comments": "TODO verify thwart tag filter"
+			]
 		},
 		"manual": {
 			"board": [

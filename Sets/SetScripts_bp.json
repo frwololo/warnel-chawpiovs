@@ -255,8 +255,7 @@
 							"subject": "previous",
 							"plus": 1
 						}
-					},
-					"_comments": "TODO verify counting previous subjects"
+					}
 				}
 			]
 		}
@@ -287,11 +286,10 @@
 					"amount": {
 						"func_name": "get_subject_int_property",
 						"func_params": {
-							"subject": "previous",
+							"subject": "current_subject",
 							"property": "recover"
 						}
-					},
-					"_comments": "TODO verify subject/amount pairing"
+					}
 				}
 			]
 		}
@@ -541,8 +539,7 @@
 					"dest_container": "hand_previous_subject",
 					"filter_state_tutor": [
 						"player_side_scheme"
-					],
-					"_comments": "TODO verify *_previous_subject containers"
+					]
 				}
 			],
 			"is_optional_board": true
@@ -979,8 +976,7 @@
 				{
 					"name": "heal",
 					"amount": 1,
-					"subject": "previous",
-					"_comments": "TODO verify previous is the chosen ally"
+					"subject": "previous"
 				}
 			]
 		}
@@ -1316,8 +1312,7 @@
 					"name": "draw_boost_card",
 					"subject": "trigger"
 				}
-			],
-			"_comments": "TODO verify trigger is the activating enemy"
+			]
 		}
 	},
 	"Extreme Risk": {

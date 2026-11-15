@@ -196,8 +196,7 @@
 							"subject": "my_hero"
 						}
 					},
-					"is_cost": true,
-					"_comments": "TODO verify ask_integer params; remaining hit points"
+					"is_cost": true
 				},
 				{
 					"name": "deal_damage",
@@ -272,8 +271,7 @@
 							"subject": "my_hero"
 						}
 					},
-					"is_cost": true,
-					"_comments": "TODO verify ask_integer params; remaining hit points"
+					"is_cost": true
 				},
 				{
 					"name": "deal_damage",
@@ -322,8 +320,7 @@
 					"name": "ready_card",
 					"subject": "trigger"
 				}
-			],
-			"_comments": "TODO verify trigger is the recovering identity"
+			]
 		}
 	},
 	"Armed to the Teeth": {
@@ -573,8 +570,7 @@
 					"subject": "previous"
 				}
 			]
-		},
-		"_comments": "TODO verify 'previous' refers to the attacked enemy"
+		}
 	},
 	"Da Bomb": {
 		"manual": {
@@ -864,8 +860,7 @@
 						}
 					]
 				}
-			],
-			"_comments": "TODO verify add_threat amount detail"
+			]
 		}
 	},
 	"'Pool Inspection": {
@@ -1032,8 +1027,7 @@
 						}
 					}
 				}
-			],
-			"_comments": "TODO verify nested if/then/else values"
+			]
 		}
 	},
 	"Self Preservation": {
@@ -1064,8 +1058,7 @@
 						}
 					}
 				}
-			],
-			"_comments": "TODO verify nested if/then/else values"
+			]
 		}
 	},
 	"Git Gud": {
@@ -1424,8 +1417,7 @@
 					"subject": "self",
 					"target_identity": "event_source_hero"
 				}
-			],
-			"_comments": "TODO verify target_identity event_source_hero"
+			]
 		}
 	},
 	"Dreadful Deeds": {
@@ -1808,7 +1800,9 @@
 						"subject": "attachments",
 						"subject_count": 1,
 						"needs_selection": true,
-						"_comments": "TODO verify choosing an attachment"
+						"attachments_host": "self",
+						"selection_count": 1,
+						"selection_type": "equal"
 					}
 				]
 			},
@@ -1837,8 +1831,7 @@
 						"!trait_elite"
 					]
 				}
-			],
-			"_comments": "TODO verify event name for scheme defeat interrupt"
+			]
 		}
 	},
 	"Bazooka": {
@@ -1950,8 +1943,7 @@
 					"filter_task": "get_property",
 					"filter_property_name": "cannot_activate",
 					"alteration": 1,
-					"trigger": "host",
-					"_comments": "TODO verify property name"
+					"trigger": "host"
 				}
 			]
 		}

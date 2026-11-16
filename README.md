@@ -26,68 +26,56 @@ _This is a fan-created work and is not affiliated with, endorsed by, or sponsore
 * [Users FAQ and Troubleshooting](#users-faq-and-troubleshooting)
 
 ## How is Warnel Chawpiovs different from the original game?
-Generally Speaking this tries to perfectly mimic the rules of the orginal board game (currently supporting v1.8 of the rules). There are a few intentional exceptions (see below), the rest can probably be considered bugs
+Generally Speaking this tries to perfectly mimic the rules of the orginal board game (currently supporting v1.8 of the rules), while giving a more dynamic "video game" feel to the experience. There are a few intentional exceptions (see below), the rest can probably be considered bugs
 
 * Unlike Marvel Champions, Warnel Chawpiovs allows heroes to play their turn in parallel. This is particularly obvious in Multiplayer mode. Because this is a video game, it felt important to me to minimize friction on that aspect, and allow clients to play simultaneously. If you'd rather follow the actual rules and play your turns in order, nothing prevents you from coordinating with your fellow players ;)
 * In Warnel Chawpiovs, minions attack in the order in which they appeared on the board, instead of letting the players choose the order. This is mostly a design decision for gameplay speed.
 
-Other than that, here are known limitations with the engine at the moment:
-* Warnel Chawpiovs doesn't support Campaign mode currently
+Other than that, scroll below for known limitations of the game
 
 ## Current Status (General)
 ![Warnel Chawpiovs Supported Characters](doc/pictures/characters_and_scenarios.jpg "Warnel Chawpiovs Supported Characters")
 ![Warnel Chawpiovs Supported Scenarios](doc/pictures/scenarios.jpg "Warnel Chawpiovs SupportedScenarios")
-This simulator supports the following cards from the original game (current total 51 heroes, 43 villains, as well as associated player cards and encounters):
-* Cycle 1:
-  * Core box (5 heroes, 3 villains)
-  * Captain America (1 Hero)
-  * Ms. Marvel (1 Hero)
-  * Thor (1 Hero)
-  * Black Widow (1 Hero)
-  * Hulk (1 Hero)
-  * Doctor Strange (1 Hero)
-* Cycle 2: 
-  * The Rise of Red skull ( 2 heroes, 5 villains)
-  * Ant-Man (1 Hero)
-  * Wasp (1 Hero)
-  * Quicksilver (1 Hero)
-  * Scarlet Witch ( 1 Hero)
-* Cycle 3:
-  * The Galaxy's Most Wanted (2 heroes, 5 villains)
-  * Star-Lord (1 Hero)
-  * Gamora (1 Hero)
-  * Drax (1 Hero)
-  * Venom (1 Hero)
-* Cycle 4:
-  * The Mad Titan's Shadow ( 2 heroes, 5 villains)
-  * Nebula (1 Hero)
-  * War Machine (1 Hero)
-  * Valkyrie (1 Hero)
-  * Vision (1 Hero)
-* Cycle 5:
-  * Sinister Motives ( 2 heroes, 5 villains)
-  * Nova (1 Hero) 
-  * Ironheart (1 Hero) 
-  * Spider-Ham (1 Hero)
-* Cycle 6:
-  * Mutant Genesis ( 2 heroes, 5 villains)
-  * Cyclops (1 Hero)
-  * Phoenix (1 Hero)
-  * Wolverine (1 Hero)
-  * Storm (1 Hero)
-  * Gambit (1 Hero)
-* Cycle 7:
-  * Next Evolution ( 2 Heroes, 5 villains)
-  * Psylocke (1 Hero)
-  * X-23 (1 Hero)
-* Cycle 8:
-  * The Age of Apocalypse ( 2 Heroes, 5 villains)
-  * Nightcrawler (1 Hero)  
-* Cycle 9:
-  * Agents of S.H.I.E.L.D. ( 2 Heroes, 5 villains) 
-  * Winter soldier (1 Hero)  
+This section used to report what heroes/scenarios are supported by the engine, but it is now easier to list what the engine does *not* support yet. I add more cards with every release and the list of unsupported content is quickly shrinking, so if your favorite hero isn't supported yet, come back soon.
 
-This represents roughly 65% of all official cards (excluding campaigns) at the time of this writing.
+As of November 2026, this simulator supports *all* official cards from the game, with the following exceptions:
+
+### Unsupported content
+* Campaign mode is not supported
+* The PvP mode introduced in Civil War is not supported
+* unsupported hero packs and expansions:
+  * Cycle 1:
+    * The Wrecking Crew
+  * Cycle 2: 
+    * The Once and Future Kang
+  * Cycle 4:
+    * The Hood
+  * Cycle 6:
+    * Mojo Mania
+    * Rogue
+  * Cycle 7:
+    * Deadpool
+  * Cycle 8:
+    * Iceman
+    * Jubilee
+  * Cycle 9:
+    * Black Panther
+    * Silk
+    * Falcon
+    * Trickster Takeover
+   * Cycle 10:
+    * Synthezoid Smackdown
+    * Wonder Man
+    * Hercules
+   * Cycle 11:
+    * Fear No Evil
+    * Jessica Jones
+    * Luke Cage
+    * Shadowland
+    * Elektra
+    * Iron Fist  
+
+The game currently support 56 heroes and 48 scenarios. This represents roughly 70% of all official cards (excluding campaigns) at the time of this writing.
 
 There is no tutorial included, and, although the rules are automatically handled by the engine, it will quickly become confusing if you are not already familiar with the original game.
 
@@ -99,7 +87,7 @@ For all intents and purposes, Warnel Chawpiovs works for a single player using 1
   * 1 Player, 2 heroes: Generally works, with the occasional glitch or game-breaking bug
   * 1 Player, 3 or 4 heroes: Should work but is quite untested
 * Multiplayer Mode:
-  * The multiplayer mode occasionally runs into desync issues. To mitigate this, the host can try and click on the "force sync" option button to force other clients to reload the host's current board state. ![force_resync_image](doc/pictures/resync.png "force resync")
+  * The multiplayer mode occasionally runs into desync issues. Those are usually automatically corrected by the game, but if you run into an issue, the host can try and click on the "force sync" option button to force other clients to reload the host's current board state. ![force_resync_image](doc/pictures/resync.png "force resync")
 
  
 ### Current Status of the Nintendo Switch version

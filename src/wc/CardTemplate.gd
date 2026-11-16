@@ -5725,8 +5725,16 @@ func export_to_json():
 		card_description["extra_scripts"] = extra_scripts
 		card_description["extra_scripts_uid"] = extra_script_uid
 		
-	if _dummy_alterants_cache:
-		card_description["_dummy_alterants_cache"] = _dummy_alterants_cache
+	#visual-only alterants (trait_aerial) are refreshed within a per frame
+	#budget, so each client gets to them at a different time: they stay out
+	#of the saved board (and of the systems check hash). They come back on
+	#their own after a load.
+	var saved_dummy_alterants = {}
+	for alterant in _dummy_alterants_cache:
+		if !alterant in VISUAL_DUMMY_ALTERANTS:
+			saved_dummy_alterants[alterant] = _dummy_alterants_cache[alterant]
+	if saved_dummy_alterants:
+		card_description["_dummy_alterants_cache"] = saved_dummy_alterants
 		
 	return card_description
 

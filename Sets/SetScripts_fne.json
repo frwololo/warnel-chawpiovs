@@ -425,7 +425,7 @@
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
-								"card_set_code": "daredevil_by_ffg"
+								"card_set_code": "daredevil"
 							}
 						}
 					]
@@ -2201,7 +2201,7 @@
 			]
 		}
 	},
-	"Raise The Stakes": {
+	"Raise the Stakes": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -2354,7 +2354,7 @@
 			]
 		}
 	},
-	"Everything Is A Weapon": {
+	"Everything is a Weapon": {
 		"reveal_alter_ego": {
 			"all": [
 				{
@@ -2604,7 +2604,7 @@
 			}
 		}
 	},
-	"Drained Of Power": {
+	"Drained of Power": {
 		"uses": {
 			"__name__": "drain",
 			"__amount__": 3
@@ -2985,7 +2985,7 @@
 			]
 		}
 	},
-	"\"head First!\"": {
+	"\"Head First!\"": {
 		"reveal_alter_ego": {
 			"all": [
 				{
@@ -3267,7 +3267,7 @@
 			]
 		}
 	},
-	"\"fight.\"": {
+	"\"Fight.\"": {
 		"uses": {
 			"__name__": "command",
 			"__amount__": 3
@@ -3314,7 +3314,7 @@
 			"_comments": "TODO Forced Action"
 		}
 	},
-	"\"protect.\"": {
+	"\"Protect.\"": {
 		"uses": {
 			"__name__": "command",
 			"__amount__": 3
@@ -3359,7 +3359,7 @@
 			"_comments": "TODO Forced Action"
 		}
 	},
-	"\"serve.\"": {
+	"\"Serve.\"": {
 		"uses": {
 			"__name__": "command",
 			"__amount__": 3
@@ -3403,7 +3403,7 @@
 			"_comments": "TODO Forced Action"
 		}
 	},
-	"Power Of Suggestion": {
+	"Power of Suggestion": {
 		"hinder": {
 			"__amount__": 3
 		},
@@ -3420,7 +3420,7 @@
 			]
 		}
 	},
-	"Sway The Masses": {
+	"Sway the Masses": {
 		"reveal": {
 			"all": [
 				{
@@ -3873,7 +3873,7 @@
 		},
 		"TODO": "8 damage threshold in expert mode"
 	},
-	"Hail Of Blades": {
+	"Hail of Blades": {
 		"reveal": {
 			"all": [
 				{
@@ -4299,7 +4299,7 @@
 		},
 		"TODO": "Boost: move an Art attachment from an identity to the villain"
 	},
-	"Tug Of War": {
+	"Tug of War": {
 		"TODO": "may spend [physical]x3 to move an Art attachment to your identity; otherwise move one to the villain and surge"
 	},
 	"The Getaway - 1A": {
@@ -4455,19 +4455,19 @@
 	"Protection Racket - 1A #60134a": {
 		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
 	},
-	"Battle In The Bodega - 1B": {
+	"Battle in the Bodega - 1B": {
 		"TODO": "after a character in this play area is attacked: 1 damage to attacker, 1 threat here"
 	},
 	"Protection Racket - 1A #60135a": {
 		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
 	},
-	"Bull In A China Shop - 1B": {
+	"Bull in a China Shop - 1B": {
 		"TODO": "excess damage to an ally in this play area becomes threat here"
 	},
 	"Protection Racket - 1A #60136a": {
 		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
 	},
-	"Hung Out To Dry - 1B": {
+	"Hung Out to Dry - 1B": {
 		"TODO": "after a character enters play in this play area: 1 damage to it, 1 threat here"
 	},
 	"Protection Racket - 1A #60137a": {
@@ -4479,7 +4479,7 @@
 	"Protection Racket - 1A #60138a": {
 		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
 	},
-	"A Slice Of The Pizza Dough - 1B": {
+	"A Slice of the Pizza Dough - 1B": {
 		"TODO": "after a character here defeats a character or side scheme: heal 1, 1 threat here"
 	},
 	"Shop Proprietor": {
@@ -4510,7 +4510,7 @@
 	"Man-Bull": {
 		"TODO": "after Man-Bull attacks, place threat equal to excess damage on the main scheme (also as Boost)"
 	},
-	"Change Of Venue": {
+	"Change of Venue": {
 		"TODO": "swap your main scheme with a random set-aside one, keeping threat"
 	},
 	"The Raft Breakout - 1A": {
@@ -4859,7 +4859,7 @@
 		},
 		"TODO": "You cannot thwart, attack, or change to alter-ego form"
 	},
-	"Stop The Presses! - 1A": {
+	"Stop the Presses! - 1A": {
 		"setup": {
 			"all": [
 				{
@@ -4910,7 +4910,7 @@
 		},
 		"TODO": "remove each remaining Daily Bugle support from the game"
 	},
-	"Stop The Presses! - 1B": {
+	"Stop the Presses! - 1B": {
 		"TODO": "after an undefended attack against you choose: 2 (3) threat here or remove 1 stamina from a Daily Bugle support; lose if a Daily Bugle support leaves play"
 	},
 	"Daily Bugle": {
@@ -5650,7 +5650,7 @@
 			]
 		}
 	},
-	"Mountain Of Muscle": {
+	"Mountain of Muscle": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -6018,7 +6018,7 @@
 			]
 		}
 	},
-	"Bag Of Tricks": {
+	"Bag of Tricks": {
 		"TODO": "reveal a random card from your set-aside nemesis set (or surge); Boost variant"
 	},
 	"Unrelenting Hate": {
@@ -6224,7 +6224,7 @@
 			]
 		}
 	},
-	"Bystanders In Peril": {
+	"Bystanders in Peril": {
 		"reveal": {
 			"all": [
 				{
@@ -6845,7 +6845,7 @@
 		},
 		"_comments": "TODO add_script end condition: should end after these activations"
 	},
-	"Cold As Ice": {
+	"Cold as Ice": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -6894,7 +6894,7 @@
 			]
 		}
 	},
-	"Hard As Marble": {
+	"Hard as Marble": {
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
@@ -7251,7 +7251,7 @@
 						{
 							"filter_properties": {
 								"type_code": "minion",
-								"card_set_code": "the_raft_breakout_by_ffg"
+								"card_set_code": "the_raft_breakout"
 							}
 						}
 					]

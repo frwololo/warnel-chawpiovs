@@ -2937,12 +2937,12 @@
 		"code": "60134",
 		"name": "Protection Racket",
 		"modular_default": [
-			"tracksuit_mafia_by_ffg",
-			"disasters_by_ffg"
+			"tracksuit_mafia",
+			"disasters"
 		],
 		"encounter_sets": [
-			"hammerhead_by_ffg",
-			"protection_racket_by_ffg",
+			"hammerhead",
+			"protection_racket",
 			"Standard",
 			"Modular",
 			"Modular"
@@ -2953,8 +2953,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"hammerhead_by_ffg",
-				"protection_racket_by_ffg",
+				"hammerhead",
+				"protection_racket",
 				"Standard",
 				"Modular",
 				"Modular",
@@ -2977,12 +2977,12 @@
 		"code": "60142",
 		"name": "The Raft Breakout",
 		"modular_default": [
-			"the_owl_by_ffg",
-			"tombstone_by_ffg"
+			"the_owl",
+			"tombstone"
 		],
 		"encounter_sets": [
-			"the_raft_breakout_by_ffg",
-			"bullseye_by_ffg",
+			"the_raft_breakout",
+			"bullseye",
 			"Standard",
 			"Modular",
 			"Modular"
@@ -2993,8 +2993,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"the_raft_breakout_by_ffg",
-				"bullseye_by_ffg",
+				"the_raft_breakout",
+				"bullseye",
 				"Standard",
 				"modular",
 				"Modular",
@@ -3017,12 +3017,12 @@
 		"code": "60121",
 		"name": "Art Museum Heist",
 		"modular_default": [
-			"cops_by_ffg",
-			"the_owl_by_ffg"
+			"cops",
+			"the_owl"
 		],
 		"encounter_sets": [
-			"art_museum_heist_by_ffg",
-			"electro_by_ffg",
+			"art_museum_heist",
+			"electro",
 			"Standard",
 			"Modular",
 			"Modular"
@@ -3033,8 +3033,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"art_museum_heist_by_ffg",
-				"electro_by_ffg",
+				"art_museum_heist",
+				"electro",
 				"Standard",
 				"modular",
 				"Modular",
@@ -3056,12 +3056,12 @@
 		"code": "60128",
 		"name": "The Getaway",
 		"modular_default": [
-			"cops_by_ffg",
-			"drive_by_ffg"
+			"cops",
+			"drive"
 		],
 		"encounter_sets": [
-			"the_getaway_by_ffg",
-			"purple_man_by_ffg",
+			"the_getaway",
+			"purple_man",
 			"Standard",
 			"Modular",
 			"Modular"
@@ -3072,8 +3072,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"the_getaway_by_ffg",
-				"purple_man_by_ffg",
+				"the_getaway",
+				"purple_man",
 				"Standard",
 				"modular",
 				"Modular",
@@ -3094,12 +3094,12 @@
 		"code": "60151",
 		"name": "Stop The Presses!",
 		"modular_default": [
-			"tombstone_by_ffg",
-			"tracksuit_mafia_by_ffg"
+			"tombstone",
+			"tracksuit_mafia"
 		],
 		"encounter_sets": [
-			"stop_the_presses_by_ffg",
-			"typhoid_mary_by_ffg",
+			"stop_the_presses",
+			"typhoid_mary",
 			"Standard",
 			"Modular",
 			"modular"
@@ -3110,8 +3110,8 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"stop_the_presses_by_ffg",
-				"typhoid_mary_by_ffg",
+				"stop_the_presses",
+				"typhoid_mary",
 				"Standard",
 				"Modular",
 				"modular",
@@ -3133,11 +3133,11 @@
 		"code": "60161",
 		"name": "The King's Gambit",
 		"modular_default": [
-			"tombstone_by_ffg",
-			"tracksuit_mafia_by_ffg"
+			"tombstone",
+			"tracksuit_mafia"
 		],
 		"encounter_sets": [
-			"kingpin_by_ffg",
+			"kingpin",
 			"Modular",
 			"Modular"
 		],
@@ -3147,7 +3147,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"kingpin_by_ffg",
+				"kingpin",
 				"Modular",
 				"Modular",
 				"expert"

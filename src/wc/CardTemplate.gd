@@ -999,12 +999,12 @@ func _class_specific_process(delta):
 			$Debug.rect_scale = Vector2(2.0, 2.0)
 		else:
 			$Debug.visible = false	
-	if $Tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
+	if _tween.is_active() and not cfc.ut: # Debug code for catch potential Tween deadlocks
 		_tween_stuck_time += delta
 		if _tween_stuck_time > 5 and int(fmod(_tween_stuck_time,3)) == 2 :
 			print_debug("Tween Stuck for ",_tween_stuck_time,
-					"seconds. Reports leftover runtime: ",$Tween.get_runtime ( ))
-			$Tween.remove_all()
+					"seconds. Reports leftover runtime: ",_tween.get_runtime ( ))
+			_tween.remove_all()
 			_tween_stuck_time = 0
 	else:
 		_tween_stuck_time = 0
@@ -1012,7 +1012,9 @@ func _class_specific_process(delta):
 	_process_card_state()
 	#the state signature covers what the shadow depends on
 	if !_state_skipped_this_frame:
+		cfc.start_performance_tick("card: display_shadow")
 		display_shadow()
+		cfc.stop_performance_tick("card: display_shadow")
 	pass
 		
 
@@ -3187,11 +3189,11 @@ func _get_board_state_signature() -> Array:
 	var attachments_data = []
 	for card in attachments:
 		if is_instance_valid(card):
-			attachments_data.append([card, card.position, card.state, card.get_index(), card.get_node("Tween").is_active()])
+			attachments_data.append([card, card.position, card.state, card.get_index(), card._tween.is_active()])
 	return [state, parent, parent.get_child_count() if parent else 0, get_index(),
-			position, _target_position, scale, compute_expected_scale(), $Tween.is_active(),
+			position, _target_position, scale, compute_expected_scale(), _tween.is_active(),
 			z_index, is_faceup, _card_back_container.visible, _control.rect_rotation, _horizontal, _is_boost,
-			highlight.visible if highlight else null, $Control.mouse_filter, monitorable,
+			highlight.visible if highlight else null, _control.mouse_filter, monitorable,
 			host_data, attachments_data,
 			_control.rect_position, _card_front_container.rect_min_size, is_flying()]
 
@@ -3205,12 +3207,17 @@ func _process_card_state() -> void:
 				if _controller_hero_id: 
 					if _controller_hero_id != gameData.get_current_local_hero_id():
 						set_process_recursive(false)
+						_state_skipped_this_frame = true
 						return
 				else:
 					if get_parent().name.to_lower() in ["set_aside", "removed_from_game", "tmp_pile1", "tmp_pile2" , "tmp_pile3"  ]:
 						set_process_recursive(false)
+						_state_skipped_this_frame = true
 						return		
+		#low fps: the state (and the shadow, which depends on it) is
+		#processed one frame out of 10
 		if cfc.throttle_process_for_performance():
+			_state_skipped_this_frame = true
 			return
 	
 	var signature = _get_state_signature() if _cached_state == state else null

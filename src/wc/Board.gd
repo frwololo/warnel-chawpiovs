@@ -1619,6 +1619,10 @@ func loadstate_from_json(json:Dictionary):
 		return #TODO Error msg
 
 	reset_board()
+	#the alterant sources listed so far are the previous game's cards (now
+	#freed): until START_GAME lists the loaded ones, alterants scan every card,
+	#as they do when a game is first loaded (READY_TO_LOAD)
+	CFScriptUtils.reset_alterants_super_cache()
 	villain.init_scenario_villains()
 	
 	#Load all grids with matching data

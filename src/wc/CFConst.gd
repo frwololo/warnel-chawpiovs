@@ -1173,7 +1173,6 @@ const BETA_SETS:= [
 	"hood",
 	"mojo",
 	"deadpool",
-	"iceman",
 	"rogue",
 	"jubilee",
 	"bp",
@@ -1183,7 +1182,6 @@ const BETA_SETS:= [
 	"synthezoid",
 	"wonder_man",
 	"hercules",
-	"fne",
 	"jj",
 	"luke_cage"
 ]
@@ -1268,8 +1266,8 @@ const SCRIPT_BREAKPOINT_CARD_NAME := "Soaring Acrobatics"
 const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
-const GAME_VERSION := "1.9.0"
-const BUILD_NUMBER := "20261114-0834"
+const GAME_VERSION := "1.10.0"
+const BUILD_NUMBER := "20261116-1411"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

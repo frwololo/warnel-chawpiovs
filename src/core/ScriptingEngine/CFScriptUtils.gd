@@ -54,6 +54,9 @@ static func reset_alterants_super_cache():
 	_alteration_super_cache["container_names"] = []
 	_alteration_super_cache["script_alterants"] = {}
 	_alteration_super_cache["initialized"] = false
+	#values cached so far were computed against the previous list of
+	#alterant sources
+	cfc.flush_cache(true)
 	
 static func init_alterants_super_cache():
 	reset_alterants_super_cache()
@@ -79,6 +82,9 @@ static func init_alterants_super_cache():
 				_alteration_super_cache["container_names"].append(zone)
 
 	_alteration_super_cache["initialized"] = true
+	#values computed while the list was being rebuilt (or before, during a
+	#load) may have missed alterant cards: they are computed again
+	cfc.flush_cache(true)
 	return
 
 static func add_update_alterant_super_cache_object(obj):

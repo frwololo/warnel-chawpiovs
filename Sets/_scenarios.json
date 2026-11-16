@@ -119,7 +119,9 @@
 	"02017": {
 		"code": "02017",
 		"name": "Unleashing the Mutagen",
-		"modular_default": ["goblin_gimmicks"],
+		"modular_default": [
+			"goblin_gimmicks"
+		],
 		"encounter_sets": [
 			"mutagen_formula",
 			"Standard",
@@ -131,7 +133,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-			"mutagen_formula",
+				"mutagen_formula",
 				"Standard",
 				"modular",
 				"expert"
@@ -1000,7 +1002,7 @@
 		"modular_default": [],
 		"encounter_sets": [
 			"hood",
-			"Standard",
+			"Standard"
 		],
 		"villains": [
 			"The Hood - 1",
@@ -2933,16 +2935,16 @@
 			"Created by Ultron to be the ultimate artificial organism, Vision rebelled against his creator and joined the Avengers. Now free of Ultron's control, Vision is reluctant to submit to S.H.I.E.L.D.'s authority under the new registration law. Instead, he joins the growing superhero resistance in their fight for autonomy."
 		]
 	},
-	"60134": {
-		"code": "60134",
-		"name": "Protection Racket",
+	"60121": {
+		"code": "60121",
+		"name": "Art Museum Heist",
 		"modular_default": [
-			"tracksuit_mafia",
-			"disasters"
+			"cops",
+			"the_owl"
 		],
 		"encounter_sets": [
+			"art_museum_heist",
 			"hammerhead",
-			"protection_racket",
 			"Standard",
 			"Modular",
 			"Modular"
@@ -2953,7 +2955,84 @@
 		],
 		"expert": {
 			"encounter_sets": [
+				"art_museum_heist",
 				"hammerhead",
+				"Standard",
+				"modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Hammerhead - 2",
+				"Hammerhead - 3"
+			]
+		},
+		"description": [
+			"*Calling all units. Silent alarm tripped at the art museum. On-site security is unresponsive. Security feeds show at least three suspects dressed in black with ski masks. All available units respond!*",
+			"Minutes after receiving the call over your police scanner, you're on the scene. It's impossible to miss the museum's smashed entrance. Whoever is behind this heist isn't bothering to cover their tracks. It's as if they want to be noticed.",
+			"Your guard up, you make your way through the smashed glass of the front door. You dispatch one masked thief with ease before hearing a voice from behind you.",
+			"\"Sorry, this is a private showing, and you're not on the guest list.\" "
+		]
+	},
+	"60128": {
+		"code": "60128",
+		"name": "The Getaway",
+		"modular_default": [
+			"cops",
+			"drive"
+		],
+		"encounter_sets": [
+			"the_getaway",
+			"bullseye",
+			"Standard",
+			"Modular",
+			"Modular"
+		],
+		"villains": [
+			"Bullseye - 1",
+			"Bullseye - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"the_getaway",
+				"bullseye",
+				"Standard",
+				"modular",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Bullseye - 2",
+				"Bullseye - 3"
+			]
+		},
+		"description": [
+			"*This is 10 Adam in pursuit of bank robbery suspect. Yellow sports car. South on 9th Avenue through Hell's Kitchen. Request backup!*",
+			"They must be heading for the tunnel. If they can get out of the city, they'll be much harder to follow. Better to cut them off.",
+			"You turn a corner to see the fleeing sports coupe barreling toward you. It's about to run you down when a garbage truck trundles out from an alley. The racing car swerves around it—and you—as the garbage truck skids to a halt. A quick glance shows the truck driver upset but unharmed, so you take off in pursuit of the getaway car."
+		]
+	},
+	"60134": {
+		"code": "60134",
+		"name": "Protection Racket",
+		"modular_default": [
+			"tracksuit_mafia",
+			"disasters"
+		],
+		"encounter_sets": [
+			"electro",
+			"protection_racket",
+			"Standard",
+			"Modular",
+			"Modular"
+		],
+		"villains": [
+			"Electro - 1",
+			"Electro - 2"
+		],
+		"expert": {
+			"encounter_sets": [
+				"electro",
 				"protection_racket",
 				"Standard",
 				"Modular",
@@ -2961,8 +3040,8 @@
 				"expert"
 			],
 			"villains": [
-				"Hammerhead - 2",
-				"Hammerhead - 3"
+				"Electro - 2",
+				"Electro - 3"
 			]
 		},
 		"description": [
@@ -2982,85 +3061,6 @@
 		],
 		"encounter_sets": [
 			"the_raft_breakout",
-			"bullseye",
-			"Standard",
-			"Modular",
-			"Modular"
-		],
-		"villains": [
-			"Bullseye - 1",
-			"Bullseye - 2"
-		],
-		"expert": {
-			"encounter_sets": [
-				"the_raft_breakout",
-				"bullseye",
-				"Standard",
-				"modular",
-				"Modular",
-				"expert"
-			],
-			"villains": [
-				"Bullseye - 2",
-				"Bullseye - 3"
-			]
-		},
-		"description": [
-			"*This is the Raft Command Center calling all S.H.I.E.L.D. agents! An unidentified intruder breached security and appears to have the master key. Requesting backup immediately. They're releasing prisoners!*",
-			"You arrive at the supermax prison island known as the Raft to find it teeming with activity. Dozens of S.H.I.E.L.D. troopers fight a desperate battle against a handful of superpowered escapees, many of whom you put behind these bars. With a diving tackle, you shove a S.H.I.E.L.D. trooper clear of a charging Rhino.",
-			"\"Well, lookie who it is…\" Rhino snorts when he sees you. \"You put me in this place, so I'm gonna put you in the ground!\"",
-			"\"Now, now, Aleksei,\" says the ringleader, stepping out of the shadows. They've infiltrated the Raft and begun releasing prisoners. \"You should work together.\" With a nod, the prisoners turn against you.",
-			"\"You got it, boss,\" Rhino snarls."
-		]
-	},
-	"60121": {
-		"code": "60121",
-		"name": "Art Museum Heist",
-		"modular_default": [
-			"cops",
-			"the_owl"
-		],
-		"encounter_sets": [
-			"art_museum_heist",
-			"electro",
-			"Standard",
-			"Modular",
-			"Modular"
-		],
-		"villains": [
-			"Electro - 1",
-			"Electro - 2"
-		],
-		"expert": {
-			"encounter_sets": [
-				"art_museum_heist",
-				"electro",
-				"Standard",
-				"modular",
-				"Modular",
-				"expert"
-			],
-			"villains": [
-				"Electro - 2",
-				"Electro - 3"
-			]
-		},
-		"description": [
-			"*Calling all units. Silent alarm tripped at the art museum. On-site security is unresponsive. Security feeds show at least three suspects dressed in black with ski masks. All available units respond!*",
-			"Minutes after receiving the call over your police scanner, you're on the scene. It's impossible to miss the museum's smashed entrance. Whoever is behind this heist isn't bothering to cover their tracks. It's as if they want to be noticed.",
-			"Your guard up, you make your way through the smashed glass of the front door. You dispatch one masked thief with ease before hearing a voice from behind you.",
-			"\"Sorry, this is a private showing, and you're not on the guest list.\" "
-		]
-	},
-	"60128": {
-		"code": "60128",
-		"name": "The Getaway",
-		"modular_default": [
-			"cops",
-			"drive"
-		],
-		"encounter_sets": [
-			"the_getaway",
 			"purple_man",
 			"Standard",
 			"Modular",
@@ -3072,7 +3072,7 @@
 		],
 		"expert": {
 			"encounter_sets": [
-				"the_getaway",
+				"the_raft_breakout",
 				"purple_man",
 				"Standard",
 				"modular",
@@ -3085,9 +3085,11 @@
 			]
 		},
 		"description": [
-			"*This is 10 Adam in pursuit of bank robbery suspect. Yellow sports car. South on 9th Avenue through Hell's Kitchen. Request backup!*",
-			"They must be heading for the tunnel. If they can get out of the city, they'll be much harder to follow. Better to cut them off.",
-			"You turn a corner to see the fleeing sports coupe barreling toward you. It's about to run you down when a garbage truck trundles out from an alley. The racing car swerves around it—and you—as the garbage truck skids to a halt. A quick glance shows the truck driver upset but unharmed, so you take off in pursuit of the getaway car."
+			"*This is the Raft Command Center calling all S.H.I.E.L.D. agents! An unidentified intruder breached security and appears to have the master key. Requesting backup immediately. They're releasing prisoners!*",
+			"You arrive at the supermax prison island known as the Raft to find it teeming with activity. Dozens of S.H.I.E.L.D. troopers fight a desperate battle against a handful of superpowered escapees, many of whom you put behind these bars. With a diving tackle, you shove a S.H.I.E.L.D. trooper clear of a charging Rhino.",
+			"\"Well, lookie who it is…\" Rhino snorts when he sees you. \"You put me in this place, so I'm gonna put you in the ground!\"",
+			"\"Now, now, Aleksei,\" says the ringleader, stepping out of the shadows. They've infiltrated the Raft and begun releasing prisoners. \"You should work together.\" With a nod, the prisoners turn against you.",
+			"\"You got it, boss,\" Rhino snarls."
 		]
 	},
 	"60151": {
@@ -3105,8 +3107,8 @@
 			"modular"
 		],
 		"villains": [
-			"Typhoid Mary - 1",
-			"Typhoid Mary - 2"
+			"Typhoid Mary - A",
+			"Bloody Mary - A"
 		],
 		"expert": {
 			"encounter_sets": [
@@ -3118,8 +3120,8 @@
 				"expert"
 			],
 			"villains": [
-				"Typhoid Mary - 2",
-				"Typhoid Mary - 3"
+				"Typhoid Mary - B",
+				"Bloody Mary - B"
 			]
 		},
 		"description": [

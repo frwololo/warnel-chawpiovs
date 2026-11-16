@@ -3220,6 +3220,70 @@ func nested_script(script: ScriptTask) -> int:
 
 	return(retcode)
 
+#Runs "nested_tasks" once for each subject of this task, one after the other.
+#Inside the nested tasks, "trigger" is the current subject (e.g. "host":
+#"trigger" in host_card, or "subject": "trigger"), and
+#trigger_details["for_each_index"] its position (0, 1, ...).
+#The subjects are found once, before the first run: what the nested tasks
+#change on the board doesn't change the list.
+#No subject (e.g. no minion engaged) is not a failure: nothing happens.
+#Not usable as a cost.
+#Example (Ice Blast): attach a set-aside Frostbite to each minion engaged
+#with the chosen player
+#	{
+#		"name": "for_each",
+#		"subject": "boardseek",
+#		"subject_count": "all",
+#		"filter_state_seek": ["group_enemies_previous_subject", "minion"],
+#		"nested_tasks": [
+#			{
+#				"name": "host_card",
+#				"host": "trigger",
+#				"subject": "tutor",
+#				"src_container": "set_aside",
+#				"filter_state_tutor": ["Frostbite"]
+#			}
+#		]
+#	}
+func for_each(script: ScriptTask) -> int:
+	if costs_dry_run():
+		return CFConst.ReturnCode.CHANGED
+
+	var nested_task_list: Array = script.get_property(SP.KEY_NESTED_TASKS)
+	if !nested_task_list:
+		return CFConst.ReturnCode.FAILED
+	if !script.subjects:
+		return CFConst.ReturnCode.OK
+
+	cfc.add_ongoing_process(self, "for_each")
+	var exec_config = {
+		"trigger": "",
+		"checksum": "for_each",
+		"rules": {},
+		"action_name": "for_each",
+		"force_user_interaction_required": false
+	}
+	var trigger_details = script.trigger_details.duplicate()
+	trigger_details.erase("network_prepaid")
+	trigger_details.erase("action_name_id")
+
+	var index = 0
+	for subject in script.subjects.duplicate():
+		if !is_instance_valid(subject):
+			continue
+		var details = trigger_details.duplicate()
+		details["for_each_index"] = index
+		index += 1
+		#execute_chosen_script can modify the task definitions (tags):
+		#each run gets its own copy
+		var sceng = script.owner.execute_chosen_script(nested_task_list.duplicate(true),
+				subject, details, CFInt.RunType.NORMAL, exec_config)
+		while sceng is GDScriptFunctionState and sceng.is_valid():
+			sceng = yield(sceng, "completed")
+
+	cfc.remove_ongoing_process(self, "for_each")
+	return CFConst.ReturnCode.CHANGED
+
 
 func heal(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.FAILED

@@ -8,32 +8,50 @@
 				]
 			},
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"filter_state_tutor": "Frostbite"
+				}
+			},
 			"board": [
 				{
 					"name": "host_card",
 					"host": "trigger_details_target",
 					"subject": "tutor",
 					"src_container": "set_aside",
-					"filter_state_tutor": [
-						"Frostbite"
-					],
+					"filter_state_tutor": "Frostbite",
 					"_comments": "attach a set-aside copy of Frostbite"
+				},
+				{
+					"name": "send_signal",
+					"signal_name": "iceman_freeze"
 				}
 			]
 		},
 		"interrupt_defender_chosen": {
 			"trigger": "self",
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"filter_state_tutor": "Frostbite"
+				}
+			},
 			"board": [
 				{
 					"name": "host_card",
 					"host": "current_activation_enemy",
 					"subject": "tutor",
 					"src_container": "set_aside",
-					"filter_state_tutor": [
-						"Frostbite"
-					],
+					"filter_state_tutor": "Frostbite",
 					"_comments": "attach a set-aside copy of Frostbite"
+				},
+				{
+					"name": "send_signal",
+					"signal_name": "iceman_freeze"
 				}
 			]
 		}
@@ -139,10 +157,49 @@
 					"filter_property_name": "cannot_have_player_card_attachments",
 					"alteration": 1,
 					"trigger": "self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_cost",
+					"filter_same_controller": true,
+					"trigger": "self",
+					"alteration": "my_consequential_damage_alteration"
 				}
 			]
 		},
-		"TODO": "takes -1 consequential damage after it attacks an enemy with Frostbite attached"
+		"interrupt_attack": {
+			"_silent": true,
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_consequential_damage_alteration",
+					"var_type": "int",
+					"value": 0
+				}
+			]
+		},
+		"interrupt_attack_started": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_consequential_damage_alteration",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "trigger_details_target",
+								"filter_state_attachment": "Frostbite"
+							}
+						},
+						"then": -1,
+						"else": 0
+					}
+				}
+			]
+		}
 	},
 	"Power Belt": {
 		"alterants": {
@@ -161,25 +218,65 @@
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
-						"hero_form"
+						"hero_resource"
 					]
 				},
 				{
 					"name": "exhaust_card",
-					"subject": "self",
-					"is_cost": true
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"fail_cost_on_skip": true,
+					"is_cost": true,
+					"filter_state_trigger": "trait_ice"
 				},
 				{
 					"name": "add_resource",
 					"amount": 1,
 					"resource_name": "wild"
 				}
-			],
-			"_comments": "TODO only for an [[Ice]] card"
+			]
 		}
 	},
 	"Cryokinetic Perception": {
-		"TODO": "After you resolve your Freeze! ability, exhaust → draw 1; if it is an Ice card, ready Iceman"
+		"response_iceman_freeze": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "if",
+					"func_name": "has_trait",
+					"func_params": {
+						"subject": "index",
+						"subject_index": "top",
+						"src_container": "deck",
+						"trait": "ice"
+					},
+					"then": [
+						{
+							"name": "ready_card",
+							"subject": "Iceman"
+						}
+					]
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
 	},
 	"Ice Slide": {
 		"alterants": {
@@ -226,6 +323,17 @@
 		}
 	},
 	"Frozen Solid": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				}
+			]
+		},
 		"attach_upgrade_to_target": {
 			"__filter_state_subject__": [
 				{
@@ -266,8 +374,7 @@
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
 			]
-		},
-		"_comments": "Hero form only enforced by engine? TODO verify"
+		}
 	},
 	"Ice Wall": {
 		"on_load": {
@@ -410,11 +517,39 @@
 					"host": "villain",
 					"subject": "tutor",
 					"src_container": "set_aside",
-					"filter_state_tutor": [
-						"Frostbite"
-					],
+					"filter_state_tutor": "Frostbite",
 					"_comments": "attach a set-aside copy of Frostbite"
+				},				
+				{
+					"name": "for_each",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						"group_enemies_previous_subject",
+						"minion"
+					],
+					"nested_tasks": [
+						{
+							"name": "host_card",
+							"host": "trigger",
+							"subject": "tutor",
+							"src_container": "set_aside",
+							"filter_state_tutor": [
+								"Frostbite"
+							]
+						}
+					],
+					"_comments": "attach a set-aside copy of Frostbite to each minion engaged with the chosen player"
 				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage",
+					"delay_until_no_activity": true,
+				}				
+			]
+		},
+		"do_damage":{
+			"all": [
 				{
 					"name": "deal_damage",
 					"amount": 3,
@@ -436,8 +571,7 @@
 					]
 				}
 			]
-		},
-		"TODO": "attach Frostbite to each minion engaged with the chosen player"
+		}
 	},
 	"Chill Out!": {
 		"manual": {
@@ -583,6 +717,17 @@
 			"event_filters": {
 				"tags": [
 					"basic power"
+				],
+				"filter_state_event_target": [
+					{
+						"filter_func": {
+							"func_name": "count_attachments",
+							"func_params": {
+								"subject": "trigger",
+								"filter_state_attachment": "upgrade"
+							}
+						}
+					}
 				]
 			},
 			"is_optional_hand": true,
@@ -610,9 +755,23 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"enemy_died": {
+							"all": [
+								{
+									"name": "ready_card",
+									"subject": "my_hero"
+								}
+							]
+						}
+					}
 				}
-			],
-			"_comments": "TODO only vs enemy with an upgrade attached; ready hero if it defeats that enemy"
+			]
 		}
 	},
 	"Take That!": {
@@ -689,6 +848,23 @@
 			"trigger": "self",
 			"all": [
 				{
+					"name": "add_script",
+					"end_condition": "phase_ended",
+					"subject": "self",
+					"script": {
+						"interrupt_attack_started": {
+							"filter_state_trigger": "event",
+							"all": [
+								{
+									"name": "increase",
+									"subject": "interrupted_event",
+									"amount": 1
+								}
+							]
+						}
+					}
+				},
+				{
 					"name": "sequence",
 					"sequence_ability": "do_fetch"
 				}
@@ -724,11 +900,59 @@
 					}
 				]
 			}
-		},
-		"TODO": "Until the end of the phase, each Attack event deals 1 additional damage"
+		}
 	},
 	"Shadowcat - Kitty Pryde": {
-		"TODO": "chosen side scheme loses each icon until the end of the round"
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "nop",
+					"subject": "a_scheme"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_scheme",
+					"var_type": "subject",
+					"value": "previous",
+					"force_run_at_prime": true
+				},
+				{
+					"name": "add_script",
+					"end_condition": "phase_ended",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme_acceleration",
+									"alteration": -666,
+									"trigger": "my_scheme"
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme_amplify",
+									"alteration": -666,
+									"trigger": "my_scheme"
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme_crisis",
+									"alteration": -666,
+									"trigger": "my_scheme"
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme_hazard",
+									"alteration": -666,
+									"trigger": "my_scheme"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Beak - Barnell Bohusk": {
 		"card_played": {
@@ -888,11 +1112,16 @@
 		}
 	},
 	"Pyro": {
-		"attacks_gain": {
-			"__trigger__": "self",
-			"__tags__": "indirect"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_indirect_damage",
+					"trigger": "self",
+					"alteration": 1
+				}
+			]
 		},
-		"_comments": "TODO indirect attacks are not supported by the engine (there is no 'indirect' tag)"
 	},
 	"Playing with Fire": {
 		"card_defeated": {
@@ -1042,7 +1271,6 @@
 				}
 			]
 		},
-		"_comments": "boost pattern from Ozymandias; TODO verify ordering"
 	},
 	"Sauron": {
 		"reveal": {

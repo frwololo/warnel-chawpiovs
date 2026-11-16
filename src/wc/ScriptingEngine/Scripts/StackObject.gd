@@ -215,7 +215,7 @@ func get_subjects():
 
 
 func get_display_name():
-	if display_name and !display_name in ["nested_script"]: 
+	if display_name and !display_name in ["nested_script", "for_each"]: 
 		return display_name
 		
 	var task = get_first_task()

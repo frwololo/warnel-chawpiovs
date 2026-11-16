@@ -88,6 +88,9 @@ func setup(def:Dictionary, hero_id, _scale = 0):
 				"cards_to_display": 0,
 				"item" : new_child,
 				"type" : type,
+				#an empty grid with this flag takes no room at all (by default,
+				#an empty grid still takes a spacer)
+				"take_no_space_if_empty": child.get("take_no_space_if_empty", false),
 			}
 			my_children.append(child_data)
 
@@ -119,6 +122,8 @@ func compute_grid_size(child_data):
 	
 	var cards = child.get_all_cards()
 	if !cards:
+		if child_data.get("take_no_space_if_empty", false):
+			return Vector2(0, 0)
 		return  my_scale * spacer
 	
 	#grids have this square shape
@@ -235,8 +240,11 @@ func compute_allowed_scale():
 	return final_scale	
 
 #we assume min_size has been computed before this!!!
-func rescale():
-	var scale = compute_allowed_scale()
+#inherited_scale: the scale the parent box applies to this box (its own
+#max/min size), which applies to everything inside this box too.
+#Returns the scale applied to this box's content.
+func rescale(inherited_scale:float = 1) -> float:
+	var scale = compute_allowed_scale() * inherited_scale
 	for child_data in my_children:
 		var child = child_data["item"]
 		if !is_instance_valid(child):
@@ -252,7 +260,10 @@ func rescale():
 			#TODO
 			pass					
 		else: #this is a hbox/vbox entiry
-			child.rescale()	
+			#its size was computed unscaled: the parent box moves past it
+			#by its size times the scale it gets
+			child_data["rescale"] = child.rescale(scale)
+	return scale
 
 #assumes that sizes have been computed for children
 func reposition_children():		

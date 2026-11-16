@@ -587,6 +587,10 @@ const HERO_GRID_SETUP := {
 		"x" : 350,
 		"y" : 00,
 	},
+	"misc_encounter": {
+		"x" : 800,
+		"y" : 00,		
+	},	
 	"identity" : {
 		"x" : 000,
 		"y" : 220,
@@ -678,11 +682,21 @@ const HERO_GRID_LAYOUT := {
 		"max_width" : 1000,
 		"max_height": 600,
 		"children": [
-		
 			{
-				"name": "enemies",
-				"type": "grid"				
-			},
+				"name": "enemy_zone",
+				"type": "horizontal",
+				"children": [
+					{
+						"name": "misc_encounter",
+						"type": "grid",
+						"take_no_space_if_empty": true,				
+					},									
+					{
+						"name": "enemies",
+						"type": "grid"				
+					},					
+				]				
+			},			
 			{
 				"name": "allies",
 				"type": "grid"				

@@ -42,8 +42,20 @@
 						"group_allies_and_heroes"
 					]
 				}
-			],
-			"_comments": "TODO Forced Action"
+			]
+		},
+		"phase_ended": {
+			"_comments": "forced action executed at end of phase",
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "manual",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"\"Head First!\"": {
@@ -143,8 +155,20 @@
 					"modification": 1,
 					"subject": "villain"
 				}
-			],
-			"_comments": "TODO Forced Action"
+			]
+		},
+		"phase_ended": {
+			"_comments": "forced action executed at end of phase",
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "manual",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"\"Serve.\"": {
@@ -187,8 +211,20 @@
 					"amount": 2,
 					"subject": "main_scheme"
 				}
-			],
-			"_comments": "TODO Forced Action"
+			]
+		},
+		"phase_ended": {
+			"_comments": "forced action executed at end of phase",
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"board": [
+				{
+					"name": "execute_scripts",
+					"exec_trigger": "manual",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"A Slice of the Pizza Dough - 1B": {
@@ -479,7 +515,7 @@
 			"all": [
 				{
 					"name": "move_card_to_board",
-					"_comments": "move_card_to_board works here because all art pieces have attach to villain",
+					"_comments": "move_card_to_board works here because all art pieces have 'attach to villain'",
 					"subject": "tutor",
 					"sort_by": "random",
 					"src_container": "deck_villain",
@@ -492,8 +528,7 @@
 					"subject": "self"
 				}
 			]
-		},
-		"TODO": "Chosen Underling villain setup handled by scenario definition"
+		}
 	},
 	"Art Museum Heist - 1B": {
 		"alterants": {
@@ -1760,16 +1795,15 @@
 				]
 			}
 		},
-		"interrupt_card_leaves_play": {
+		"card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard_any"
+			},
 			"filter_state_trigger": [
 				"upgrade",
 				"trait_sense"
 			],
-			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				},
+			"all": [
 				{
 					"name": "move_card_to_container",
 					"subject": "trigger",
@@ -4004,6 +4038,10 @@
 		}
 	},
 	"Know Your Enemy": {
+		"discount": {
+			"__traits__": "martial_artist",
+			"__discount__": -1
+		},
 		"manual": {
 			"hand": [
 				{
@@ -4024,13 +4062,16 @@
 					"subject": "a_scheme"
 				}
 			]
-		},
-		"_comments": "TODO Discount 1 (Martial Artist)"
+		}
 	},
 	"Lady Bullseye": {
 		"TODO": "if her attack is undefended, give her 1 additional boost card"
 	},
 	"Legal Trouble": {
+		"discount": {
+			"__traits__": "attorney\",\"police",
+			"__discount__": -1
+		},
 		"attach_upgrade_to_target": {
 			"__filter_state_subject__": [
 				{
@@ -4050,8 +4091,7 @@
 					"trigger": "host"
 				}
 			]
-		},
-		"_comments": "TODO Discount 1 (Attorney or Police)"
+		}
 	},
 	"Living Lie Detector": {
 		"manual": {
@@ -4292,16 +4332,15 @@
 				}
 			]
 		},
-		"interrupt_card_leaves_play": {
+		"card_moved_to_pile": {
+			"event_filters": {
+				"destination": "discard_any"
+			},
 			"filter_state_trigger": [
 				"upgrade",
 				"trait_sense"
 			],
-			"board": [
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				},
+			"all": [
 				{
 					"name": "move_card_to_container",
 					"subject": "trigger",
@@ -4543,6 +4582,10 @@
 		"_comments": "pattern from Psionic Force Field (card health = discard threshold)"
 	},
 	"Move in Shadow": {
+		"discount": {
+			"__traits__": "martial_artist\",\"spy",
+			"__discount__": -1
+		},
 		"response_card_played": {
 			"filter_state_trigger": [
 				"filter_same_controller"
@@ -4555,8 +4598,7 @@
 					"subject": "a_scheme"
 				}
 			]
-		},
-		"_comments": "TODO Discount 1; including this one"
+		}
 	},
 	"Muscle Memory": {
 		"manual": {
@@ -4574,12 +4616,17 @@
 					"is_cost": true
 				},
 				{
-					"name": "return_card_to_owner_hand",
-					"subject": "attachments",
-					"attachments_host": "Echo",
-					"subject_count": 1,
-					"needs_selection": true,
-					"_comments": "TODO choose a card tucked under Echo"
+					"name": "move_card_to_container",
+					"dest_container": "hand",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_is_hosted_by": "Echo",
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					]
 				}
 			]
 		}
@@ -5203,7 +5250,8 @@
 					"name": "save_variable",
 					"var_name": "my_host",
 					"var_type": "subject",
-					"value": "host"
+					"value": "host",
+					"force_run_at_prime": true
 				},
 				{
 					"name": "discard",
@@ -6249,7 +6297,7 @@
 					"modification": 1,
 					"subject": "host"
 				}
-			],
+			]
 		}
 	},
 	"Superior Taste": {
@@ -7350,14 +7398,13 @@
 				},
 				{
 					"name": "deal_damage",
-					"subject": "trigger",
+					"subject": "trigger_details_attacker",
 					"amount": {
 						"func_name": "count_boost_icons",
 						"func_params": {
 							"subject": "previous"
 						}
-					},
-					"_comments": "TODO trigger = attacker?"
+					}
 				}
 			]
 		}

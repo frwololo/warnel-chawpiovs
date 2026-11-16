@@ -245,6 +245,26 @@
 			]
 		}
 	},
+	"discount": {
+		"alterants": {
+			"all": [
+				{
+					"trigger": "self",
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": {
+						"func_name": "identity_has_trait",
+						"func_params": {
+							"trait": [
+								"__traits__"
+							],
+							"multiplier": "__discount__",
+						}
+					}
+				}
+			]
+		}	
+	},
 	"give_obligation": {
 		"about_to_reveal": {
 			"trigger": "self",

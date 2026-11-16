@@ -936,25 +936,10 @@
 		}
 	},
 	"Colossus - Piotr Rasputin": {
-		"alterants": {
-			"all": [
-				{
-					"trigger": "self",
-					"filter_task": "get_property",
-					"filter_property_name": "cost",
-					"alteration": {
-						"func_name": "identity_has_trait",
-						"func_params": {
-							"trait": [
-								"x-men",
-								"mutant"
-							],
-							"multiplier": -1
-						}
-					}
-				}
-			]
-		}
+		"discount": {
+			"__traits__": "x-men\",\"mutant",
+			"__discount__": -1
+		},
 	},
 	"Compassion": {
 		"TODO": "campaign mode not supported"

@@ -2025,6 +2025,8 @@ func prevent(script: ScriptTask) -> int:
 		"current_attack":
 			gameData.theStack.add_context_details("attack", {"increases_receive_damage": [-amount]})
 			return retcode			
+		"boost_icons_and_ability":
+			gameData.terminate_current_boost()
 		"current_activation":
 			if amount != null : #this is a partial prevention effect		
 				if (costs_dry_run()):
@@ -2511,33 +2513,45 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	var script_definition = script.script_definition
 	if !script_definition.has("boost"):
 		script_definition["boost"] = []
-	
-	
+		
 	var boost_card
-	#boost reveal is done in two phases, with this function called
-	# twice at separate intervals by a GameData signal on the stack:
-	#boost ability (if the card has one),
-	#followed by boost icons
-	var current_step = "boost_ability"
-	
+	#boost reveal is done in three phases, with this function called
+	# 3 times at separate intervals by a GameData signal on the stack:
+	# 1) reveal
+	# 2) boost ability (if the card has one),
+	# 3) by boost icons
+	var current_step = "boost_reveal"
+	var previous_step = ""
 	if script_definition.get("current_boost_card", null):
 		boost_card = script_definition.get("current_boost_card")
-		current_step = "boost_icons"
+		previous_step = script_definition.get("current_boost_step")			
+
 	else:
 		boost_card = attacker.next_boost_card_to_reveal()
-		if !boost_card.retrieve_scripts("boost"):
-			current_step = "boost_icons"
 	
 	if !boost_card:
 		return CFConst.ReturnCode.OK
+
+	match previous_step:
+		"boost_reveal":
+			current_step = "boost_ability"
+		"boost_ability": 
+			current_step = "boost_icons"
+	
+	#skip boost ability if none
+	if current_step == "boost_ability" and !boost_card.retrieve_scripts("boost"):
+		current_step = "boost_icons"
+
+	#doign this step here to have the faceup values afterwards in the details dictionary
+	if current_step == "boost_reveal":
+		boost_card.set_is_faceup(true)
 		
 	boost_card.set_current_activation(script)	
-	boost_card.set_is_faceup(true)
 
 	var boost_icons = boost_card.get_property("boost",0, true)
 	var boost_amount = boost_icons
 	var tags = script.get_property(SP.KEY_TAGS, [])
-	var target_friendly = script.get_property("target")		
+	var target_friendly = boost_script.trigger_details.get("target", null)		
 	var defender = script.subjects[0] if script.subjects else null	
 	
 	var boost_trigger_details = {
@@ -2545,11 +2559,18 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 		"boost_icons": boost_icons, 
 		"tags": tags , 
 		"target": target_friendly, 
+		"target_identity": boost_script.trigger_details.get("target_identity", null),	
 		"attacker": attacker, 
 		"defender": defender
 	}
 
+	script_definition["current_boost_step"] = current_step
+	script_definition["current_boost_card"] = boost_card
+		
 	match current_step:
+		"boost_reveal":
+			scripting_bus.emit_signal_on_stack("boost_card_revealed", boost_card, boost_trigger_details)
+						
 		"boost_ability":
 			if script.has_tag("skip_boost_ability"):
 				pass
@@ -2558,7 +2579,7 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 				if func_return is GDScriptFunctionState && func_return.is_valid():
 					yield(func_return, "completed")	
 	
-			script_definition["current_boost_card"] = boost_card
+
 		"boost_icons":
 			if script.has_tag("skip_boost_icons"):
 				pass
@@ -2571,8 +2592,8 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 					boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 				script_definition["boost"].append(boost_amount)
 			
-			script_definition.erase("current_boost_card")
-
+			#this is the final step so we arease everything
+			gameData.terminate_current_boost(script)
 
 			scripting_bus.emit_signal_on_stack("boost_card_resolved", boost_card, boost_trigger_details)
 

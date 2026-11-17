@@ -1719,6 +1719,12 @@ func enemy_activates(delta) :
 		return		
 
 	target_identity = target_friendly.get_controller_hero_card()
+
+	var signal_details = {
+		"target" : target_friendly,
+		SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
+		"target_identity": target_identity
+	}
 	
 	match _current_enemy_attack_step:
 		EnemyAttackStatus.NONE:	
@@ -1749,30 +1755,17 @@ func enemy_activates(delta) :
 				}
 				theAnnouncer.simple_announce(announce_settings )
 							
-				#I had a race condition where if only the executing player would add a global script,
-				#it could arrive before network players where at this status.
-				#Making it a local script (everyone adds it) is an attempt at fixing this
-				var details = {
-					"target" : target_friendly,
-					SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
-					"target_identity": target_identity
-				}
+
 				 #some cleanup to prevent any misunderstanding
 				 #activity script will be set once the activity actually starts (which might be a mistake...?)
 				var tmp_script = ScriptTask.new(enemy, {"name": "uninitialized_activity_script"}, enemy, {})
 				enemy.set_activity_script(tmp_script)
-				scripting_bus.emit_signal_on_stack("enemy_would_" + action, enemy,  details)
+				scripting_bus.emit_signal_on_stack("enemy_would_" + action, enemy,  signal_details)
 				_current_enemy_attack_step = EnemyAttackStatus.ENEMY_WOULD_ACTIVATE
 				return
 
-		EnemyAttackStatus.ENEMY_WOULD_ACTIVATE:
-				var details = {
-					"target" : target_friendly,
-					SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
-					"target_identity": target_identity
-				}			
-			
-				scripting_bus.emit_signal_on_stack("enemy_initiates_" + action, enemy,  details)
+		EnemyAttackStatus.ENEMY_WOULD_ACTIVATE:					
+				scripting_bus.emit_signal_on_stack("enemy_initiates_" + action, enemy,  signal_details)
 				_current_enemy_attack_step = EnemyAttackStatus.PENDING_INTERRUPT
 				return
 				
@@ -1787,31 +1780,27 @@ func enemy_activates(delta) :
 				display_debug("can't draw boost cards yet, enemy doesn't have an activity script")
 				return
 			if enemy.activity_script.get_property("current_boost_card", null)  : #TODO better way?
-				display_debug("card boost stage 2")
-				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy)
+				display_debug("card boost stage 2 and 3")
+				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy, enemy, signal_details)
 				theStack.add_script(stackEvent)
 			else:
 				if enemy.next_boost_card_to_reveal():
 					display_debug("go for one card boost reveal")
-					var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy)
+					var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy, enemy, signal_details)
 					theStack.add_script(stackEvent)
 				else:
 					display_debug("no more card boosts, going to the next step")
 					_current_enemy_attack_step = EnemyAttackStatus.DAMAGE_OR_THREAT
 		
 		EnemyAttackStatus.DAMAGE_OR_THREAT:
-			var script_name
-			var details = {
-				"target" : target_friendly,
-				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name
-			}				
+			var script_name			
 			match action:
 				"scheme":
 					script_name = "enemy_scheme_threat"
 				"attack":
 					script_name = "enemy_attack_damage"
 					if enemy.activity_script.subjects:
-						details["defender"] = enemy.activity_script.subjects[0]
+						signal_details["defender"] = enemy.activity_script.subjects[0]
 				
 			var script_definition = {
 				"name": script_name, 
@@ -1820,9 +1809,9 @@ func enemy_activates(delta) :
 				"target_identity": target_identity
 			}
 			#most filters check on script definition instead of trigger_details (because _current_interrupted_event in globalstack script is based on script definition for some reason)
-			script_definition.merge(details)
+			script_definition.merge(signal_details)
 						
-			var stackEvent = SimplifiedStackScript.new(script_definition, enemy, enemy, details)
+			var stackEvent = SimplifiedStackScript.new(script_definition, enemy, enemy, signal_details)
 			theStack.add_script(stackEvent)
 			_current_enemy_attack_step = EnemyAttackStatus.ATTACK_COMPLETE
 			
@@ -1831,25 +1820,21 @@ func enemy_activates(delta) :
 			for boost_card in boost_cards:
 				var discard_event = WCScriptingEngine.simple_discard_task(boost_card)
 				gameData.theStack.add_script(discard_event)	
-			var details = {
-				"target" : target_friendly,
-				SP.TRIGGER_TARGET_HERO : target_friendly.canonical_name,
-				"target_identity": target_identity
-			}
+
 			if is_instance_valid(enemy.activity_script) and enemy.activity_script.subjects:
-				details["defender"] = enemy.activity_script.subjects[0]
+				signal_details["defender"] = enemy.activity_script.subjects[0]
 				
 				#total_attack, damage, etc...
 				var attack_details =  enemy.activity_script.get_property("attack_details", {})
 				for key in attack_details: 
-					details[key] = attack_details[key]
+					signal_details[key] = attack_details[key]
 			else:
-				details["defender"] = target_friendly	
+				signal_details["defender"] = target_friendly	
 
 			#We're done, cleanup attacker script
 			enemy.set_activity_script(null)					
 									
-			scripting_bus.emit_signal_on_stack("enemy_" + action + "_happened", enemy,  details)
+			scripting_bus.emit_signal_on_stack("enemy_" + action + "_happened", enemy,  signal_details)
 			#scripting_bus.emit_signal("enemy_" + action + "_happened", enemy, {})
 			return 
 		EnemyAttackStatus.ATTACK_POST_COMPLETE:	
@@ -2652,11 +2637,21 @@ func get_identity_card(owner_id) -> Card:
 func get_current_target_hero() -> Card:
 	return get_identity_card(_villain_current_hero_target)
 
+#finishes/cancel the current boost activation
+func terminate_current_boost(activity_script = null):
+	if !activity_script:
+		activity_script = self.get_latest_activity_script()
+	
+	var script_definition = activity_script.script_definition
+	script_definition.erase("current_boost_card")
+	script_definition.erase("current_boost_step")
+	
+
 #Adds a "group_defenders" tag to all cards that can block an attack
 func compute_potential_defenders(hero_id, attacker):		
 	var board:Board = cfc.NMAP.board
 	var defenders = []
-	var script = gameData.get_latest_activity_script()
+	var script = self.get_latest_activity_script()
 
 	#clear old stuff
 	for node in cfc.get_tree().get_nodes_in_group("group_defenders"):

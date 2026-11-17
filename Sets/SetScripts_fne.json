@@ -1219,7 +1219,31 @@
 			"__name__": "stamina",
 			"__amount__": 3
 		},
-		"TODO": "cancel a boost card's icons and Boost ability; give another boost card"
+		"interrupt_boost_card_revealed": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"subject": "self",
+					"token_name": "stamina",
+					"modification": -1
+				},
+				{
+					"name": "prevent",
+					"subject": "boost_icons_and_ability"
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "current_activation_enemy"
+				}
+			]
+		}
 	},
 	"Black Cat": {
 		"manual": {
@@ -1246,7 +1270,58 @@
 				}
 			]
 		},
-		"TODO": "at 4 threat, take control of Black Cat as an ally (2 consequential damage)"
+		"card_token_added": {
+			"trigger": "self",
+			"event_filters": {
+				"token_name": "threat"
+			},
+			"condition_board": {
+				"func_name": "count_tokens==4",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "ally",
+						"shortname": "Black Cat",
+						"trait_thief": 1,
+						"trait_underling": 1,
+						"attack_cost": 2,
+						"thwart_cost": 2,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "self"
+							}
+						},
+						"thwart": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "self"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "self"
+							}
+						}
+					},
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Blindspot - Sam Chung": {
 		"response": {
@@ -1298,7 +1373,6 @@
 					"modification": 0,
 					"set_to_mod": true,
 					"subject": "self",
-					"_comments": "TODO reset to 10[per_hero]"
 				}
 			]
 		}
@@ -1323,7 +1397,6 @@
 					"modification": 0,
 					"set_to_mod": true,
 					"subject": "self",
-					"_comments": "TODO reset to 13[per_hero]"
 				}
 			]
 		},
@@ -1478,7 +1551,32 @@
 				}
 			]
 		},
-		"_comments": "TODO each of his boost cards gains [boost]"
+		"interrupt": {
+			"event_name": [
+				"commit_scheme",
+				"enemy_attack"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "amplify",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Bullseye - 2": {
 		"reveal": {
@@ -1507,7 +1605,32 @@
 				}
 			]
 		},
-		"_comments": "TODO each of his boost cards gains [boost]"
+		"interrupt": {
+			"event_name": [
+				"commit_scheme",
+				"enemy_attack"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "amplify",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Bullseye - 3": {
 		"reveal": {
@@ -1535,7 +1658,32 @@
 				}
 			]
 		},
-		"_comments": "TODO each of his boost cards gains [boost]"
+		"interrupt": {
+			"event_name": [
+				"commit_scheme",
+				"enemy_attack"
+			],
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "amplify",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Burning Rubber": {
 		"TODO": "for each speed counter on the main scheme: spend 1 resource or place 1 threat on the main scheme"

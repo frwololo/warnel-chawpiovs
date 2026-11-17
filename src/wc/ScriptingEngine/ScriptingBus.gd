@@ -87,8 +87,12 @@ signal enemy_initiates_scheme(card,details)
 signal enemy_attack_happened (card,details)
 # warning-ignore:unused_signal
 signal enemy_scheme_happened (card,details)
+
+## Boost card related signals
 # warning-ignore:unused_signal
 signal boost_card_resolved (card,details)
+# warning-ignore:unused_signal
+signal boost_card_revealed (card,details)
 
 #emitted when an enemy activation is finished, whether it was succesful or not
 # warning-ignore:unused_signal

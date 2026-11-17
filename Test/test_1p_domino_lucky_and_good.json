@@ -1,0 +1,165 @@
+{
+	"_comments": "Lucky and Good cancells boost icons and boost ability",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Advance"
+				},
+				{
+					"card": "Shadow of the past"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino"
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Lucky and Good"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Team Investigation"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "undefended attack"
+		},
+		{
+			"type": "activate",
+			"value": "Lucky and Good"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Domino"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "Rhino - 1"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Shadow of the past"
+				},
+				{
+					"card": "Advance"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Domino",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Lucky and Good",
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Team Investigation"
+				},
+				{
+					"card": "Organizational Support"
+				},
+				{
+					"card": "Strength"
+				}
+			]
+		}
+	}
+}

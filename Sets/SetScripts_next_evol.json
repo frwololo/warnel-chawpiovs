@@ -4838,9 +4838,9 @@
 		}
 	},
 	"Lucky and Good": {
-		"interrupt_boost_card_resolved": {
+		"interrupt_boost_card_revealed": {
 			"event_filters": {
-				"target": "my_hero"
+				"target_identity": "my_hero",
 			},
 			"is_optional_board": true,
 			"board": [
@@ -4858,8 +4858,7 @@
 				},
 				{
 					"name": "prevent",
-					"subject": "current_activation",
-					"amount": "trigger_details_boost_icons"
+					"subject": "boost_icons_and_ability",
 				},
 				{
 					"name": "draw_boost_card",
@@ -4867,35 +4866,6 @@
 				}
 			]
 		},
-		"interrupt_boost": {
-			"is_optional_board": true,
-			"event_filters": {
-				"target": "my_hero"
-			},
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"hero_interrupt"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"is_cost": true,
-					"subject": "self"
-				},
-				{
-					"name": "prevent",
-					"subject": "current_activation",
-					"amount": "trigger_details_boost_icons"
-				},
-				{
-					"name": "prevent",
-					"subject": "interrupted_event"
-				}
-			]
-		}
 	},
 	"Making Green": {
 		"hinder": {

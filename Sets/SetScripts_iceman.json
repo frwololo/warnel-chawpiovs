@@ -12,6 +12,7 @@
 				"func_name": "count_cards",
 				"func_params": {
 					"subject": "tutor",
+					"src_container": "set_aside",
 					"filter_state_tutor": "Frostbite"
 				}
 			},
@@ -57,23 +58,12 @@
 		}
 	},
 	"Bobby Drake": {
-		"setup": {
-			"all": [
-				{
-					"name": "move_card_to_container",
-					"subject": "tutor",
-					"subject_count": "all",
-					"src_container": [
-						"deck",
-						"hand"
-					],
-					"dest_container": "set_aside",
-					"filter_state_tutor": [
-						"Frostbite"
-					]
-				}
-			]
-		},
+		"additional_cards_set_aside": [
+			{
+				"card": "Frostbite #46002",
+				"quantity": 6
+			}			
+		],	
 		"response": {
 			"event_name": "identity_changed_form",
 			"event_filters": {

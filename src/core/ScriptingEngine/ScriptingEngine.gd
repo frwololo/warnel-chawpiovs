@@ -1055,8 +1055,8 @@ func host_card(script: ScriptTask) -> int:
 	var tags: Array = ["Scripted"] + script.get_property(SP.KEY_TAGS)
 	
 	var host = script.owner
-	var host_str = script.get_property("host", "")
-	if host_str:
+	var host_str = script.get_property_raw("host", "")
+	if host_str and typeof(host_str) == TYPE_STRING:
 		host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host_str})
 		if host:
 			host = host[0]

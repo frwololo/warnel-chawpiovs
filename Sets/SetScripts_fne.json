@@ -2852,7 +2852,7 @@
 			"condition_board": {
 				"func_name": "count_tokens>=3",
 				"func_params": {
-					"subject": "self",
+					"subject": "self"
 				}
 			},
 			"board": [
@@ -3366,7 +3366,7 @@
 					}
 				}
 			]
-		},	
+		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -3381,7 +3381,7 @@
 					"subject": "self"
 				}
 			]
-		},
+		}
 	},
 	"Everything is a Weapon": {
 		"reveal_alter_ego": {
@@ -4610,12 +4610,17 @@
 		"interrupt_enemy_would_attack": {
 			"trigger": "self",
 			"event_filters": {
-				"filter_state_event_target": [{
-					"filter_properties": {"shortname": "Maya Lopez"}
-				},
-				{
-					"filter_properties": {"shortname": "Echo"}
-				},
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"shortname": "Maya Lopez"
+						}
+					},
+					{
+						"filter_properties": {
+							"shortname": "Echo"
+						}
+					}
 				]
 			},
 			"board": [
@@ -4627,7 +4632,7 @@
 					"name": "enemy_schemes",
 					"subject": "self"
 				}
-			],
+			]
 		}
 	},
 	"Kingpin - A1": {
@@ -4804,24 +4809,85 @@
 				}
 			]
 		},
-		"attack_happened": {
-			"trigger": "host",
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "__do_stun"
+				}
+			]
+		},
+		"card_damaged": {
+			"filter_state_trigger": "hero",
 			"event_filters": {
-				"damage": ">0"
+				"damage": ">0",
+				"tags": [
+					"attack"
+				],
+				"attacker": "self"
 			},
 			"board": [
+				{
+					"name": "if",
+					"func_name": "!is_stunned",
+					"func_params": {
+						"subject": "trigger"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"subject": "self",
+							"modification": 1,
+							"set_to_mod": true,
+							"token_name": "__do_stun"
+						}
+					]
+				},
 				{
 					"name": "mod_tokens",
 					"token_name": "stunned",
 					"modification": 1,
-					"subject": "trigger_details_target"
+					"subject": "trigger"
 				},
 				{
-					"name": "discard",
-					"subject": "self"
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "trigger"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard"
 				}
-			],
-			"_comments": "TODO only heroes; discard only if a hero is stunned this way"
+			]
+		},
+		"do_discard": {
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__do_stun"
+				}
+			},
+			"board": [
+				{
+					"name": "if",
+					"func_name": "is_stunned",
+					"func_params": {
+						"subject": "my_target"
+					},
+					"then": [
+						{
+							"name": "discard",
+							"subject": "self"
+						}
+					]
+				}
+			]
 		},
 		"boost": {
 			"all": [

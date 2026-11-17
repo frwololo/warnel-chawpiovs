@@ -213,7 +213,6 @@
 		}
 	},
 	"A.I.M. Commando": {
-		"quickstrike": {},
 		"preparation": {
 			"all": [
 				{
@@ -8044,7 +8043,6 @@
 		}
 	},
 	"S.H.I.E.L.D. Agent": {
-		"quickstrike": {},
 		"interrupt": {
 			"event_name": [
 				"enemy_attack",

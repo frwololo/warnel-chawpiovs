@@ -6119,7 +6119,6 @@
 		"TODO": "campaign mode not supported"
 	},
 	"Scarab": {
-		"quickstrike": {},
 		"interrupt_card_dies": {
 			"event_filters": {
 				"source": "self",
@@ -7957,7 +7956,6 @@
 		}
 	},
 	"Trevor Fitzroy": {
-		"quickstrike": {},
 		"card_defeated": {
 			"event_filters": {
 				"tags": [
@@ -8243,7 +8241,6 @@
 		}
 	},
 	"Velociraptor": {
-		"quickstrike": {},
 		"interrupt_enemy_attack": {
 			"trigger": "self",
 			"board": [
@@ -8542,7 +8539,6 @@
 		}
 	},
 	"Witchfire": {
-		"quickstrike": {},
 		"ally_died": {
 			"filter_event_source": "self",
 			"board": [

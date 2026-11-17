@@ -1580,7 +1580,6 @@
 			"__trigger__": "self",
 			"__tags__": "stun_if_damage"
 		},
-		"quickstrike": {},
 		"boost": {
 			"all": [
 				{

@@ -1353,7 +1353,6 @@
 		}
 	},
 	"Frenzy": {
-		"quickstrike": {},
 		"enemy_attack_happened": {
 			"trigger": "self",
 			"board": [
@@ -1754,7 +1753,6 @@
 				}
 			}
 		},
-		"quickstrike": {},
 		"boost": {
 			"all": [
 				{

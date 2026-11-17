@@ -6626,7 +6626,6 @@
 		}
 	},
 	"Supergiant": {
-		"quickstrike": {},
 		"interrupt": {
 			"event_name": "enemy_attack_damage",
 			"trigger": "self",
@@ -7097,7 +7096,6 @@
 		}
 	},
 	"The Magus": {
-		"quickstrike": {},
 		"response": {
 			"event_name": [
 				"enemy_attack_happened",

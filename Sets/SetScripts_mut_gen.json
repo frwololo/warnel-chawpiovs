@@ -5256,7 +5256,6 @@
 		}
 	},
 	"Sentinel Mark VI": {
-		"quickstrike": {},
 		"boost": {
 			"condition_all": {
 				"func_name": "card_is_in_play",

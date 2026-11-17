@@ -2192,7 +2192,6 @@
 		"TODO": "The first minion revealed each round gains surge"
 	},
 	"Speed": {
-		"quickstrike": {},
 		"reveal": {
 			"all": [
 				{

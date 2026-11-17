@@ -1093,7 +1093,6 @@
 		}
 	},
 	"Sidewinder": {
-		"quickstrike": {},
 		"interrupt_attack_started": {
 			"event_filters": {
 				"target": "self"

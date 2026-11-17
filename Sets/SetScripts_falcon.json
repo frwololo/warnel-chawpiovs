@@ -1064,7 +1064,6 @@
 		"_comments": "TODO Victory 0: should go to the victory display rather than discard"
 	},
 	"Viper": {
-		"quickstrike": {},
 		"response": {
 			"event_name": [
 				"enemy_attack_happened",
@@ -1098,7 +1097,6 @@
 		}
 	},
 	"Serpent Soldier": {
-		"quickstrike": {},
 		"boost": {
 			"all": [
 				{

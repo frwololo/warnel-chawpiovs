@@ -282,9 +282,11 @@ func refresh_display():
 #
 # * Key is the name of the token.
 # * Value is the token scene.
-func get_all_tokens() -> Dictionary:
+func get_all_tokens(include_silent = true) -> Dictionary:
 	var found_tokens := {}
 	for token in $Drawer/VBoxContainer.get_children():
+		if !include_silent and token.name.begins_with("_"):
+			continue
 		found_tokens[token.name] = token
 	return found_tokens
 

@@ -321,7 +321,6 @@
 		}
 	},
 	"Crossbones": {
-		"quickstrike": {},
 		"interrupt_card_dies": {
 			"event_filters": {
 				"source": "self",

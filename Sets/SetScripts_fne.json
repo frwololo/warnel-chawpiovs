@@ -2350,7 +2350,46 @@
 		}
 	},
 	"Dagger - Tandy Bowen": {
-		"TODO": "Cloak loses each acceleration icon; -1 consequential damage if Cloak is in play"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_acceleration",
+					"alteration": -666,
+					"trigger": "Cloak"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack_cost",
+					"alteration": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Cloak"
+							}
+						},
+						"then": -1,
+						"else": 0
+					},
+					"trigger": "Self"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart_cost",
+					"alteration": {
+						"if": {
+							"func_name": "card_is_in_play",
+							"func_params": {
+								"card_name": "Cloak"
+							}
+						},
+						"then": -1,
+						"else": 0
+					},
+					"trigger": "Self"
+				}
+			]
+		}
 	},
 	"Daily Bugle": {
 		"manual": {
@@ -2495,6 +2534,14 @@
 		}
 	},
 	"Daredevil - Matt Murdock": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_discount"
+				}
+			]
+		},
 		"response": {
 			"event_name": [
 				"basic_attack_happened",
@@ -2504,10 +2551,46 @@
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "nop"
+					"name": "save_variable",
+					"var_name": "my_discount",
+					"value": 1,
+					"mode": "add"
 				}
+			]
+		},
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"filter_state_trigger": [
+						"event",
+						"filter_same_controller"
+					],
+					"alteration": "my_discount",
+					"multiplier_alteration": -1
+				}
+			]
+		},
+		"card_played": {
+			"filter_state_trigger": [
+				"event",
+				"filter_same_controller"
 			],
-			"_comments": "TODO reduce the cost of the next event you play this round by 1"
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_discount"
+				}
+			]
+		},
+		"phase_ended": {
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_discount"
+				}
+			]
 		}
 	},
 	"Daredevil's Billy Club": {
@@ -2620,7 +2703,7 @@
 			"board": [
 				{
 					"name": "attach_to_card",
-					"subject": "villain"
+					"subject": "Bullseye"
 				}
 			]
 		},
@@ -2628,13 +2711,23 @@
 			"__trigger__": "host",
 			"__tags__": "piercing"
 		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_ranged",
+					"alteration": 1,
+					"trigger": "Bullseye"
+				}
+			]
+		},
 		"response": {
 			"event_name": "defense_happened",
 			"event_filters": {
-				"target": "my_hero"
+				"attacker": "host"
 			},
 			"filter_state_trigger": [
-				"Bullseye"
+				"hero"
 			],
 			"is_optional_board": true,
 			"board": [
@@ -2648,18 +2741,17 @@
 				{
 					"name": "pay_cost",
 					"cost": {
-						"unc": 2
+						"unc": 2,
+						"type_constraint": "different"
 					},
-					"is_cost": true,
-					"_comments": "TODO 2 different resources"
+					"is_cost": true
 				},
 				{
 					"name": "discard",
 					"subject": "self"
 				}
 			]
-		},
-		"TODO": "Bullseye's attacks lose ranged"
+		}
 	},
 	"Deposition": {
 		"manual": {
@@ -2672,14 +2764,14 @@
 					]
 				},
 				{
-					"name": "move_card_to_board",
+					"name": "nop",
 					"subject": "tutor_and_choose",
-					"src_container": "deck_sense_my_hero",
-					"filter_state_tutor": [
-						"upgrade",
-						"trait_sense"
-					],
-					"_comments": "TODO 'play it ignoring cost' (attach target)"
+					"src_container": "deck_sense_my_hero"
+				},
+				{
+					"name": "force_play_card",
+					"subject": "previous",
+					"ignore_resource_cost": true
 				},
 				{
 					"name": "thwart",
@@ -2764,14 +2856,6 @@
 				"func_name": "count_tokens>=3",
 				"func_params": {
 					"subject": "self",
-					"token_name": "damage",
-					"plus": {
-						"func_name": "count_tokens",
-						"func_params": {
-							"subject": "self",
-							"token_name": "threat"
-						}
-					}
 				}
 			},
 			"board": [

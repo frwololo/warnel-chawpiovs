@@ -663,7 +663,6 @@
 		}
 	},
 	"Living Laser": {
-		"quickstrike": {},
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "piercing"

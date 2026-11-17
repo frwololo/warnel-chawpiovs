@@ -1578,7 +1578,7 @@ func attack_finished( details)-> int:
 				#TODO "is_onboard() check not enough it seems ? Why ?
 				var retaliate = target.get_property("retaliate", 0, true)
 				if retaliate:
-					if script.has_tag("ranged"):
+					if script.has_tag("ranged") and !attacker.get_property("cannot_ranged", 0, true):
 						attacker.hint("Ranged!", Color8(50,50,255))
 					else:
 						target.hint("Retaliate!", Color8(255,50,50))

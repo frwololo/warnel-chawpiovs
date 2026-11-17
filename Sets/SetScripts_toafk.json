@@ -1004,7 +1004,6 @@
 		}
 	},
 	"Ancient Warrior": {
-		"quickstrike": {},
 		"boost": {
 			"all": [
 				{
@@ -1262,7 +1261,6 @@
 		}
 	},
 	"Terminatrix": {
-		"quickstrike": {},
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "piercing"

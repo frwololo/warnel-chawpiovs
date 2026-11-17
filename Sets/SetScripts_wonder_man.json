@@ -881,7 +881,6 @@
 		}
 	},
 	"Grim Reaper": {
-		"quickstrike": {},
 		"character_died": {
 			"filter_event_source": "self",
 			"filter_state_trigger": [

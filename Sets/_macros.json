@@ -623,9 +623,6 @@
 			]
 		}
 	},
-	"quickstrike": {
-		"_comments": "to-do remove quickstrike from scripts, it was moved to code"
-	},
 	"_surge": {
 		"reveal": {
 			"trigger": "self",

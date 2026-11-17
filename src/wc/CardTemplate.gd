@@ -4676,7 +4676,10 @@ func count_tokens(params, script:ScriptObject = null) -> int:
 		token_names = [token_names]
 	
 	var count = 0
-	for subject in subjects:
+	for subject in subjects:	
+		#when no token names are passed, we count all tokens, except engine internal ones
+		if !token_names:
+			token_names = subject.tokens.get_all_tokens(false).keys()
 		for token_name in token_names:
 			count+= subject.tokens.get_token_count(token_name)
 	

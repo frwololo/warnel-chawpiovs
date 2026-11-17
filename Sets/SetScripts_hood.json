@@ -715,7 +715,6 @@
 		}
 	},
 	"Griffin": {
-		"quickstrike": {},
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "stun_if_damage"
@@ -1166,7 +1165,6 @@
 		}
 	},
 	"Crossfire": {
-		"quickstrike": {},
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "overkill\",\"ranged"

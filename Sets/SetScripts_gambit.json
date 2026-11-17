@@ -115,7 +115,6 @@
 		}
 	},
 	"Belladonna": {
-		"quickstrike": {},
 		"character_died": {
 			"filter_event_source": "self",
 			"board": [
@@ -583,7 +582,6 @@
 		}
 	},
 	"Guild Assassin": {
-		"quickstrike": {},
 		"character_died": {
 			"filter_event_source": "self",
 			"board": [

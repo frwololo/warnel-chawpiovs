@@ -1168,7 +1168,6 @@
 		}
 	},
 	"Enthralled Lackey": {
-		"quickstrike": {},
 		"enemy_attack_happened": {
 			"trigger": "self",
 			"board": [
@@ -3218,7 +3217,6 @@
 		}
 	},
 	"Whirlwind": {
-		"quickstrike": {},
 		"enemy_attack_happened": {
 			"trigger": "self",
 			"board": [

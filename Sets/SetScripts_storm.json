@@ -193,7 +193,6 @@
 		}
 	},
 	"Callisto": {
-		"quickstrike": {},
 		"interrupt": {
 			"trigger": "Knife Fight",
 			"event_name": "about_to_reveal",

@@ -4128,7 +4128,6 @@
 		}
 	},
 	"Jigsaw": {
-		"quickstrike": {},
 		"response_receive_damage": {
 			"event_filters": {
 				"amount": ">0",

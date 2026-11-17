@@ -1,0 +1,1226 @@
+{
+	"Book of the Iron Fist": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "nop",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "discard"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_card",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "if",
+					"func_name": "check_validity",
+					"func_params": {
+						"subject": "my_card",
+						"filter_state_trigger": [
+							"trait_technique"
+						]
+					},
+					"then": [
+						{
+							"name": "move_card_to_board",
+							"subject": "my_card"
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_card"
+				}
+			],
+			"_comments": "if the top card of your discard pile is a Technique, put it into play"
+		}
+	},
+	"Channel the Iron Fist": {
+		"interrupt_attack_started": {
+			"trigger": "my_hero",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "chi counters are on Iron Fist (your identity)"
+				},
+				{
+					"name": "add_script",
+					"end_condition": "basic_attack_happened",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "my_hero",
+									"alteration": 2
+								}
+							]
+						}
+					}
+				}
+			],
+			"_comments": "basic attack: +2 damage (as Godslayer, gam)"
+		},
+		"TODO": "other attacks: remove 1 chi counter -> increase the damage that attack deals by 1"
+	},
+	"Colleen Wing": {
+		"TODO": "Colleen Wing takes -1 consequential damage after she attacks an enemy who has been attacked by another Martial Artist character this phase"
+	},
+	"Crane Daughter": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "tuck_under_card",
+									"subject": "Davos"
+								}
+							]
+						}
+					},
+					"_comments": "after this activation, tuck this card under Davos"
+				}
+			]
+		}
+	},
+	"Danny Rand": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "not_temporary",
+					"alteration": 1,
+					"filter_state_trigger": [
+						"trait_technique",
+						"filter_same_controller"
+					],
+					"_comments": "your Technique cards lose temporary"
+				}
+			]
+		},
+		"once_per_phase": {
+			"__name__": "__meditation"
+		},
+		"manual": {
+			"board": {
+				"Meditation": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -1,
+						"token_name": "__meditation",
+						"subject": "self"
+					},
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck",
+							"discard"
+						],
+						"filter_state_tutor": [
+							"trait_technique"
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck"
+					}
+				]
+			}
+		}
+	},
+	"Davos": {
+		"reveal": {
+			"all": [
+				{
+					"name": "tuck_card_under_me",
+					"subject": "tutor",
+					"subject_count": 3,
+					"src_container": [
+						"deck_villain",
+						"discard_villain",
+						"set_aside"
+					],
+					"filter_state_tutor": [
+						"Crane Daughter"
+					]
+				}
+			]
+		},
+		"interrupt": {
+			"event_name": "receive_damage",
+			"event_filters": {
+				"target": "self"
+			},
+			"condition_board": {
+				"func_name": "count_attachments",
+				"func_params": {
+					"subject": "self",
+					"filter_state_attachment": [
+						"Crane Daughter"
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "boardseek",
+					"subject_count": 1,
+					"filter_state_seek": [
+						{
+							"filter_is_hosted_by": "Davos",
+							"filter_properties": {
+								"shortname": "Crane Daughter"
+							}
+						}
+					],
+					"dest_container": "deck_villain"
+				}
+			],
+			"_comments": "TODO verify tucked cards are found by boardseek"
+		}
+	},
+	"Death by a Thousand Cuts": {
+		"discount": {
+			"__traits__": "martial_artist\",\"soldier",
+			"__discount__": -1
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				"filter_same_controller"
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy",
+					"tags": [
+						"attack"
+					]
+				}
+			]
+		}
+	},
+	"Deep Breathing": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "grab_until",
+					"src_container": "deck",
+					"dest_container": "discard",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"card_set_code": "iron_fist"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_count": 1,
+					"subject_index": "retrieve_integer",
+					"src_container": "deck",
+					"dest_container": "hand"
+				}
+			],
+			"_comments": "as Call for Aid (ant)"
+		}
+	},
+	"Demoralize": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "mod_tokens",
+									"token_name": "confused",
+									"modification": 1,
+									"subject": "trigger"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "target",
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			],
+			"_comments": "as Toe to Toe (mut_gen)"
+		}
+	},
+	"Dragon Punch": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"subject": "an_enemy",
+					"tags": [
+						"attack"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "ask_integer",
+					"is_cost": true,
+					"ask_int_min": 0,
+					"ask_int_max": 5,
+					"_comments": "chi counters to remove (up to 5)"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_chi",
+					"var_type": "int",
+					"value": "retrieve_integer"
+				},
+				{
+					"name": "mod_tokens",
+					"modification": "my_chi",
+					"is_inverted": true,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "TODO the number chosen should not exceed the chi counters on Iron Fist"
+				},
+				{
+					"name": "attack",
+					"subject": "my_enemy",
+					"amount": {
+						"func_name": "get_subject_int_variable",
+						"func_params": {
+							"subject": "self",
+							"variable": "my_chi",
+							"plus": 1,
+							"multiplier": 2
+						}
+					},
+					"_comments": "2 damage + 2 per chi counter removed"
+				},
+				{
+					"name": "if",
+					"func_name": "get_subject_int_variable>=3",
+					"func_params": {
+						"subject": "self",
+						"variable": "my_chi"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "my_enemy"
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_chi"
+				}
+			]
+		}
+	},
+	"Embody the Dragon": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"trigger": "my_hero",
+					"alteration": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "chi"
+						}
+					},
+					"_comments": "retaliate X, X = chi counters on this card"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "chi counters are on Iron Fist (your identity)"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "chi",
+					"modification": 1,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Feel the Flow": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "chi counters are on Iron Fist (your identity)"
+				},
+				{
+					"name": "thwart",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_schemes"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Fists of Fury": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Helpful Bystander": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"interrupt_enemy_initiates_attack": {
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"board": [
+				{
+					"name": "set_defender",
+					"subject": "self",
+					"_comments": "it attacks Helpful Bystander instead"
+				},
+				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "trigger",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					},
+					"_comments": "this attack gains overkill"
+				}
+			],
+			"_comments": "TODO verify the defender stays Helpful Bystander when defenders are chosen"
+		}
+	},
+	"Iron Fist": {
+		"response_card_played": {
+			"filter_state_trigger": [
+				"filter_same_controller"
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "if",
+					"func_name": "card_is_in_play",
+					"func_params": {
+						"card_name": "Lack of Chi"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "chi",
+							"modification": 1,
+							"subject": "Lack of Chi",
+							"_comments": "Lack of Chi: placed there instead"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "chi",
+							"modification": 1,
+							"subject": "self"
+						}
+					]
+				}
+			],
+			"_comments": "Martial Arts Master: after you play a card, place 1 chi counter here"
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"condition_board": {
+				"func_name": "count_tokens>4",
+				"func_params": {
+					"subject": "self",
+					"token_name": "chi"
+				}
+			},
+			"board": [
+				{
+					"name": "heal",
+					"subject": "self",
+					"amount": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "self",
+							"token_name": "chi",
+							"plus": -4
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "chi",
+					"modification": 4,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			],
+			"_comments": "remove all but 4 chi counters, heal 1 damage per counter removed"
+		}
+	},
+	"Iron Fist - Lin Lie": {
+		"TODO": "Response: after Iron Fist (this ally) attacks an enemy who has been attacked by a hero this phase, stun that enemy. If Iron Fist defeated that enemy, he takes -2 consequential damage from this attack"
+	},
+	"Keep 'Em Coming": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -2,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "chi counters are on Iron Fist (your identity)"
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Lack of Chi": {
+		"give_obligation": {
+			"__to__": "Danny Rand"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "chi",
+					"subject": "self",
+					"modification": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "my_identity",
+							"token_name": "chi"
+						}
+					}
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "chi",
+					"subject": "my_identity",
+					"modification": 0,
+					"set_to_mod": true
+				}
+			],
+			"_comments": "When Revealed: move all chi counters from your identity here. Placing chi on Iron Fist instead goes here (Iron Fist's script)"
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "chi",
+			"condition_board": {
+				"func_name": "count_tokens>=4",
+				"func_params": {
+					"subject": "self",
+					"token_name": "chi"
+				}
+			},
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Lei Kung": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "chi counters are on Iron Fist (your identity)"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1
+				}
+			]
+		}
+	},
+	"Luke Cage": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "my_hero",
+					"alteration": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": [
+									"defender",
+									"hero_for_hire"
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					},
+					"_comments": "your hero shares a trait with Luke Cage"
+				}
+			]
+		}
+	},
+	"No Time to Bleed": {
+		"discount": {
+			"__traits__": "martial_artist\",\"soldier",
+			"__discount__": -1
+		},
+		"response_card_played": {
+			"filter_state_trigger": [
+				"filter_same_controller"
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "my_identity"
+				}
+			]
+		}
+	},
+	"Punch, Reverse Punch": {
+		"discount": {
+			"__traits__": "martial_artist",
+			"__discount__": -1
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Redirect Chi": {
+		"resource": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_resource"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -2,
+					"token_name": "chi",
+					"subject": "my_identity",
+					"_comments": "chi counters are on Iron Fist (your identity)"
+				},
+				{
+					"name": "add_resource",
+					"amount": 2,
+					"resource_name": "wild"
+				}
+			]
+		}
+	},
+	"Redirection Mastery": {
+		"give_to_player_max1": {},
+		"response": {
+			"event_name": "defense_happened",
+			"event_filters": {
+				"target": "my_hero",
+				"tags": [
+					"attack"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "deal_damage",
+					"subject": "trigger_details_attacker",
+					"amount": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_hero",
+							"property": "defense"
+						}
+					}
+				}
+			],
+			"_comments": "TODO only after you exactly defend (the attack deals exactly your DEF)"
+		}
+	},
+	"Sensei": {
+		"discount": {
+			"__traits__": "martial_artist",
+			"__discount__": -2
+		},
+		"TODO": "Each Martial Artist ally you control takes -2 consequential damage after they exactly defeat an enemy or side scheme"
+	},
+	"Steel Serpent": {
+		"interrupt": {
+			"event_name": "enemy_initiates_attack",
+			"trigger": "Davos",
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard a tucked Crane Daughter": [
+					{
+						"name": "discard",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_is_hosted_by": "Davos",
+								"filter_properties": {
+									"shortname": "Crane Daughter"
+								}
+							}
+						]
+					},
+					{
+						"name": "temporary_effect",
+						"end_condition": "enemy_activation_finished",
+						"subject": "Davos",
+						"effect": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "Davos",
+										"alteration": 3
+									}
+								]
+							}
+						}
+					}
+				],
+				"Defeat a Crane Daughter in play": [
+					{
+						"name": "defeat",
+						"is_cost": true,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							"minion",
+							"Crane Daughter"
+						]
+					},
+					{
+						"name": "temporary_effect",
+						"end_condition": "enemy_activation_finished",
+						"subject": "Davos",
+						"effect": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "Davos",
+										"alteration": 3
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"_comments": "TODO verify tucked cards are found by boardseek"
+	},
+	"The Defenders": {
+		"TODO": "generates a [physical] resource for each Defender character you control (max 4); can be spent for another player whose identity has the Defender trait"
+	},
+	"The Way of Things": {
+		"manual": {
+			"hand": {
+				"Remove 2 threat": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"Remove 2 threat twice (2 chi counters)": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"is_cost": true,
+						"modification": -2,
+						"token_name": "chi",
+						"subject": "my_identity",
+						"_comments": "chi counters are on Iron Fist (your identity)"
+					},
+					{
+						"name": "thwart",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					},
+					{
+						"name": "thwart",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Thunder Dojo": {
+		"manual": {
+			"condition_hand": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": [
+						"defender",
+						"martial_artist"
+					]
+				}
+			},
+			"hand": [
+				{
+					"name": "nop"
+				}
+			],
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "tutor",
+					"src_container": "discard",
+					"dest_container": "deck",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 2,
+					"selection_type": "max",
+					"filter_state_tutor": [
+						"event",
+						"trait_attack"
+					]
+				}
+			],
+			"_comments": "Prerequisite (Defender or Martial Artist). TODO any player may trigger this ability"
+		}
+	},
+	"Tonfa": {
+		"interrupt": {
+			"event_name": "enemy_attack_damage",
+			"event_filters": {
+				"target": "my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			],
+			"_comments": "when calculating damage during an attack against you (as Vine Shield, gmw)"
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"+1 DEF": [
+					{
+						"name": "temporary_effect",
+						"end_condition": "enemy_activation_finished",
+						"subject": "my_hero",
+						"effect": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "defense",
+										"trigger": "my_hero",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				],
+				"Retaliate 1": [
+					{
+						"name": "temporary_effect",
+						"end_condition": "enemy_activation_finished",
+						"subject": "my_hero",
+						"effect": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "retaliate",
+										"trigger": "my_hero",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
+	},
+	"Zen-Like Calm": {
+		"manual": {
+			"hand": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"group_friendly",
+						"trait_martial_artist"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_target",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "if",
+					"func_name": "!count_tokens",
+					"func_params": {
+						"subject": "my_target",
+						"token_name": "damage"
+					},
+					"then": [
+						{
+							"name": "heal",
+							"amount": 1,
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": [
+								"group_friendly"
+							],
+							"_comments": "TODO another character"
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_target"
+				}
+			]
+		}
+	}
+}

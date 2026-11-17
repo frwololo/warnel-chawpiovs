@@ -1,0 +1,1379 @@
+{
+	"Acrobatic Prowess": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "ready_card",
+					"subject": "my_hero"
+				}
+			]
+		},
+		"TODO": "give Elektra 1 facedown boost card (boost cards given to a player character are not supported yet)"
+	},
+	"Aka": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"enemy_activation_finished": {
+							"all": [
+								{
+									"name": "deal_encounter",
+									"subject": "self",
+									"target_identity": "Elektra"
+								}
+							]
+						}
+					},
+					"_comments": "dealt after the activation, once the boost card is discarded (as Deranged Bloodlust, fne)"
+				}
+			],
+			"_comments": "Deal Aka to the Elektra Natchios player as a facedown encounter card. TODO verify target_identity in alter-ego form"
+		}
+	},
+	"Backstab": {
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "villain"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 2,
+					"subject": "current_activation_enemy"
+				}
+			],
+			"_comments": "an enemy is always activating when a boost card is revealed; TODO otherwise this card gains [boost][boost]"
+		}
+	},
+	"Black Cat - Felicia Hardy": {
+		"TODO": "Villainous: when Black Cat uses a basic power, give her a boost card (boost cards given to a player character are not supported yet)"
+	},
+	"Chain Reaction": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_chain"
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"chain_reaction"
+					]
+				}
+			]
+		},
+		"card_defeated": {
+			"event_filters": {
+				"secondary_source": "self",
+				"is_enemy": true,
+				"tags": [
+					"chain_reaction"
+				]
+			},
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_subject_int_variable",
+					"func_params": {
+						"subject": "self",
+						"variable": "my_chain"
+					},
+					"then": [
+						{
+							"name": "forget_variable",
+							"var_name": "my_chain"
+						},
+						{
+							"name": "attack",
+							"amount": 3,
+							"subject": "target",
+							"needs_subject": true,
+							"filter_state_subject": [
+								{
+									"filter_group": "group_enemies"
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "save_variable",
+							"var_name": "my_chain",
+							"var_type": "int",
+							"value": 1
+						},
+						{
+							"name": "attack",
+							"amount": 2,
+							"subject": "target",
+							"needs_subject": true,
+							"filter_state_subject": [
+								{
+									"filter_group": "group_enemies"
+								}
+							],
+							"tags": [
+								"chain_reaction"
+							]
+						}
+					]
+				}
+			],
+			"_comments": "1st enemy defeated: 2 damage to a second one; 2nd defeated: 3 damage to a third one"
+		}
+	},
+	"Combo Move": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_amount",
+					"var_type": "int",
+					"value": {
+						"if": {
+							"func_name": "identity_has_trait",
+							"func_params": {
+								"trait": "martial_artist"
+							}
+						},
+						"then": 3,
+						"else": 2
+					}
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_damage"
+				}
+			]
+		},
+		"do_damage": {
+			"all": [
+				{
+					"name": "attack",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"selection_count": "my_amount",
+					"selection_type": "as_much_as_possible",
+					"selection_what_to_count": "assign_any_damage",
+					"needs_selection": true,
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"_comments": "damage divided among enemies, as Team Strike (mut_gen)"
+				}
+			]
+		}
+	},
+	"Conditioned by the Hand": {
+		"give_obligation": {
+			"__to__": "Elektra Natchios"
+		},
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"phase_ended": {
+			"event_filters": {
+				"phase": "player_phase"
+			},
+			"condition_board": {
+				"func_name": "is_hero_form",
+				"func_params": {
+					"subject": "my_identity"
+				}
+			},
+			"board": [
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies"
+						}
+					],
+					"_comments": "TODO another identity or an ally: only allies for now"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "my_identity"
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Daredevil - Matt Murdock": {
+		"response": {
+			"event_name": [
+				"basic_attack_happened",
+				"basic_thwart_happened"
+			],
+			"trigger": "self",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor_and_choose",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain",
+					"_comments": "on top of the encounter deck"
+				}
+			]
+		}
+	},
+	"Double-Cross": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "if",
+					"func_name": "count_cards<=1",
+					"func_params": {
+						"subject": "tutor",
+						"src_container": "victory_display",
+						"subject_count": "all",
+						"filter_state_tutor": [
+							"Double-Cross"
+						]
+					},
+					"then": [
+						{
+							"name": "shuffle_card_into_container",
+							"subject": "tutor",
+							"src_container": "set_aside",
+							"dest_container": "deck_villain",
+							"filter_state_tutor": [
+								"Backstab"
+							]
+						},
+						{
+							"name": "shuffle_card_into_container",
+							"subject": "tutor",
+							"src_container": "set_aside",
+							"dest_container": "deck_villain",
+							"filter_state_tutor": [
+								"Misdirect"
+							]
+						},
+						{
+							"name": "shuffle_card_into_container",
+							"subject": "tutor",
+							"src_container": "set_aside",
+							"dest_container": "deck_villain",
+							"filter_state_tutor": [
+								"Sabotage"
+							]
+						}
+					]
+				}
+			],
+			"_comments": "<=1: this copy is already in the victory display (Victory 0). TODO into the top 10 cards of the encounter deck, not the whole deck"
+		}
+	},
+	"Elektra": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_ninja_my_hero",
+					"dest_container": "deck_villain",
+					"_comments": "shuffle the top card of the Ninja deck into the encounter deck"
+				}
+			],
+			"_comments": "Ninja Training (printed on Elektra Natchios): resolves on this side, which is the one in play after the change"
+		},
+		"TODO": "Villainous: when Elektra uses a basic power, give her a boost card. Killer Instinct - Interrupt: when a boost card given to Elektra is turned faceup, cancel its Boost ability, then that card gains [boost]. (Boost cards given to a player character are not supported yet.) Ninja Training is an interrupt, scripted as a response"
+	},
+	"Elektra Natchios": {
+		"extra_player_decks": [
+			{
+				"name": "deck_ninja",
+				"faceup": false,
+				"can_view": false
+			}
+		],
+		"additional_cards_set_aside": [
+			{
+				"card": "Ninja Stars"
+			},
+			{
+				"card": "Ninja Stars"
+			},
+			{
+				"card": "Ninja Strike"
+			},
+			{
+				"card": "Ninja Strike"
+			},
+			{
+				"card": "Ninja Vanish"
+			},
+			{
+				"card": "Ninja Vanish"
+			}
+		],
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck",
+						"set_aside"
+					],
+					"dest_container": "deck_ninja_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "elektra_ninja_deck"
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_ninja_my_hero"
+				}
+			]
+		}
+	},
+	"Elektra's Sai": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_discount"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_discount",
+					"value": 1,
+					"mode": "add"
+				}
+			]
+		},
+		"alterants": {
+			"all": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "event"
+							},
+							"filter_same_controller": true,
+							"filter_func": {
+								"func_name": "has_trait",
+								"func_params": {
+									"subject": "trigger",
+									"trait": [
+										"acrobatic",
+										"attack"
+									]
+								}
+							}
+						}
+					],
+					"alteration": "my_discount",
+					"multiplier_alteration": -1
+				}
+			]
+		},
+		"card_played": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event"
+					},
+					"filter_same_controller": true,
+					"filter_func": {
+						"func_name": "has_trait",
+						"func_params": {
+							"subject": "trigger",
+							"trait": [
+								"acrobatic",
+								"attack"
+							]
+						}
+					}
+				}
+			],
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_discount"
+				}
+			]
+		},
+		"phase_ended": {
+			"all": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_discount"
+				}
+			]
+		},
+		"_comments": "discount pattern of Daredevil - Matt Murdock (fne)"
+	},
+	"Flow of Battle": {
+		"manual": {
+			"condition_hand": {
+				"func_name": "identity_has_trait",
+				"func_params": {
+					"trait": [
+						"martial_artist"
+					]
+				}
+			},
+			"hand": [
+				{
+					"name": "nop"
+				}
+			],
+			"_comments": "Prerequisite (Martial Artist)"
+		},
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"excess_damage": 0,
+				"filter_state_actual_source": [
+					"filter_same_controller",
+					"hero"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_response"
+					]
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "self"
+				},
+				{
+					"name": "draw_cards",
+					"amount": 3
+				}
+			],
+			"_comments": "after you attack and exactly defeat an enemy (no excess damage). TODO verify the excess_damage 0 filter"
+		}
+	},
+	"Hand Archer": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "ranged"
+		}
+	},
+	"Hand Blademaster": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "self",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards>=2",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									"minion",
+									"trait_hand"
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards>=2",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									"minion",
+									"trait_hand"
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			],
+			"_comments": "+1 SCH and +1 ATK if there is another Hand minion in play"
+		}
+	},
+	"Hand Katana": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": 1,
+					"sort_by": "property",
+					"sort_name": "health",
+					"sort_descending": true,
+					"filter_state_seek": [
+						"minion",
+						"trait_hand"
+					],
+					"_comments": "Hand minion with the highest hit points"
+				},
+				{
+					"name": "attach_to_card",
+					"subject": "villain",
+					"is_else": true
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"unc": 2
+					},
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"History with the Hand": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hand_size",
+					"trigger": "my_identity",
+					"alteration": 1
+				}
+			]
+		},
+		"response": {
+			"event_name": "identity_changed_form",
+			"trigger": "my_identity",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hunting Shadows": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "set_aside",
+					"subject": "tutor",
+					"sort_descending": true,
+					"subject_count": 8,
+					"up_to": true,
+					"src_container": "deck_villain",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"_comments": "search the top 8 cards of the encounter deck for a card and set it aside"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_card",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "my_card",
+					"dest_container": "deck_villain",
+					"_comments": "on top of the encounter deck"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_card"
+				}
+			]
+		}
+	},
+	"Killer Blow": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 5,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					],
+					"tags": [
+						"killer_blow"
+					],
+					"_comments": "up to 5 damage: always 5"
+				}
+			]
+		},
+		"card_defeated": {
+			"event_filters": {
+				"secondary_source": "self",
+				"is_enemy": true,
+				"tags": [
+					"killer_blow"
+				]
+			},
+			"all": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_ninja_my_hero",
+					"dest_container": "deck_villain",
+					"_comments": "shuffle the top card of the Ninja deck into the encounter deck"
+				}
+			]
+		}
+	},
+	"Misdirect": {
+		"reveal": {
+			"all": [
+				{
+					"name": "heal",
+					"amount": 4,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"group_identities"
+					]
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Moon Knight - Marc Spector": {
+		"TODO": "Interrupt: when Moon Knight defends, spend up to 3 resources -> if you spent at least 1: [energy] prevent 2 damage from this attack; [mental] discard 1 boost card from the attacker; [physical] deal 2 damage to the attacker"
+	},
+	"Moondragon - Heather Douglas": {
+		"interrupt": {
+			"event_name": [
+				"attack_started",
+				"thwart_started"
+			],
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "ask_integer",
+					"is_cost": true,
+					"ask_int_min": 1,
+					"ask_int_max": 3
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_x",
+					"var_type": "int",
+					"value": "retrieve_integer"
+				}
+			],
+			"_comments": "choose a number from 1 to 3"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "get_subject_int_variable",
+						"func_params": {
+							"subject": "self",
+							"variable": "my_x"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "get_subject_int_variable",
+						"func_params": {
+							"subject": "self",
+							"variable": "my_x"
+						}
+					}
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"target": "self",
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"condition_board": {
+				"func_name": "get_subject_int_variable",
+				"func_params": {
+					"subject": "self",
+					"variable": "my_x"
+				}
+			},
+			"board": [
+				{
+					"name": "increase",
+					"amount": "my_x",
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"basic_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_x"
+				}
+			]
+		},
+		"basic_thwart_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "forget_variable",
+					"var_name": "my_x"
+				}
+			]
+		},
+		"_comments": "TODO verify: the variable must still be set when consequential damage is dealt"
+	},
+	"Move Unseen": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "thwart",
+					"amount": 4,
+					"subject": "a_scheme",
+					"_comments": "up to 4 threat: always 4"
+				},
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_ninja_my_hero",
+					"dest_container": "deck_villain",
+					"_comments": "shuffle the top card of the Ninja deck into the encounter deck"
+				}
+			]
+		}
+	},
+	"Nerve Strike": {
+		"discount": {
+			"__traits__": "martial_artist",
+			"__discount__": -1
+		},
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_enemy",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Stun that enemy": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "my_enemy"
+					}
+				],
+				"Confuse that enemy": [
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "my_enemy"
+					}
+				]
+			}
+		}
+	},
+	"Ninja Stars": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "give_as_boost_card",
+					"subject": "self",
+					"host": "Elektra"
+				}
+			]
+		},
+		"TODO": "Boost: if Elektra is using a basic power, draw 2 cards and shuffle this card into the Ninja deck. Otherwise, give this card to Elektra as a facedown boost card (boost cards given to a player character are not supported yet)"
+	},
+	"Ninja Strike": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "give_as_boost_card",
+					"subject": "self",
+					"host": "Elektra"
+				}
+			]
+		},
+		"TODO": "Boost: if Elektra is using a basic power, she gets +3 to that power for this use and shuffle this card into the Ninja deck. Otherwise, give this card to Elektra as a facedown boost card (boost cards given to a player character are not supported yet)"
+	},
+	"Ninja Vanish": {
+		"_surge": {},
+		"reveal": {
+			"all": [
+				{
+					"name": "give_as_boost_card",
+					"subject": "self",
+					"host": "Elektra"
+				}
+			]
+		},
+		"TODO": "Boost: if Elektra is using a basic power, give her a tough status card and shuffle this card into the Ninja deck. Otherwise, give this card to Elektra as a facedown boost card (boost cards given to a player character are not supported yet)"
+	},
+	"Resurrection Altar": {
+		"interrupt_card_dies": {
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "my_identity",
+					"token_name": "damage",
+					"set_to_mod": true,
+					"modification": {
+						"func_name": "get_subject_int_property",
+						"func_params": {
+							"subject": "my_identity",
+							"property": "health",
+							"plus": -9
+						}
+					},
+					"_comments": "hit point dial set to 9"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "find",
+					"filter_state_tutor": [
+						"Conditioned by the Hand"
+					],
+					"_comments": "find your obligation and reveal it"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Sabotage": {
+		"reveal": {
+			"all": [
+				{
+					"name": "remove_threat",
+					"amount": 3,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "surge"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Sai Strike": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 3,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						{
+							"filter_group": "group_enemies"
+						}
+					]
+				},
+				{
+					"name": "if",
+					"func_name": "count_cards",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							"Elektra's Sai",
+							"filter_same_controller"
+						]
+					},
+					"then": [
+						{
+							"name": "shuffle_card_into_container",
+							"subject": "index",
+							"subject_index": "top",
+							"subject_count": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"subject_count": "all",
+									"filter_state_seek": [
+										"Elektra's Sai",
+										"filter_same_controller"
+									]
+								}
+							},
+							"src_container": "deck_ninja_my_hero",
+							"dest_container": "deck_villain",
+							"_comments": "one Ninja card per Elektra's Sai you control"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Shang-Chi - Zheng Shang-Chi": {
+		"self_moved_to_board": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "ring",
+					"modification": 10,
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "__twice",
+					"modification": 2,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"round_ended": {
+			"_silent": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "__twice",
+					"modification": 2,
+					"set_to_mod": true,
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "__twice",
+					"subject": "self",
+					"_comments": "limit twice per round"
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "ring",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Shuriken": {
+		"discount": {
+			"__traits__": "martial_artist",
+			"__discount__": -1
+		},
+		"uses": {
+			"__name__": "shuriken",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "shuriken",
+					"subject": "self"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "an_enemy"
+				}
+			]
+		}
+	},
+	"Stealth Mastery": {
+		"TODO": "Forced Interrupt: when you attack or are attacked, choose to either increase or reduce the damage that attack deals by 3. Put Stealth Mastery on top of your deck"
+	},
+	"Stone": {
+		"interrupt_card_dies": {
+			"trigger": "another",
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"source": "self",
+				"excess_damage": 0
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "self"
+				}
+			],
+			"_comments": "after Stone exactly defeats an enemy. TODO verify the excess_damage 0 filter"
+		},
+		"TODO": "also after Stone exactly defeats a side scheme"
+	},
+	"The Fist Fits in the Hand": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": 1,
+					"filter_state_trigger": [
+						"minion",
+						"trait_hand"
+					]
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"alteration": 1,
+					"filter_state_trigger": [
+						"minion",
+						"trait_hand"
+					]
+				}
+			]
+		}
+	},
+	"White Tiger": {
+		"response": {
+			"event_name": "identity_changed_form",
+			"event_filters": {
+				"after": "hero"
+			},
+			"trigger": "my_identity",
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "shuffle_card_into_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_ninja_my_hero",
+					"dest_container": "deck_villain",
+					"_comments": "shuffle the top card of the Ninja deck into the encounter deck",
+					"is_cost": true
+				}
+			]
+		},
+		"TODO": "Otherwise (no card in the Ninja deck), give Elektra 1 facedown boost card (boost cards given to a player character are not supported yet)"
+	}
+}

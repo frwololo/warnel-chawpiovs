@@ -1158,8 +1158,8 @@ const DEFAULT_SETTINGS:= {
 		"fne": "https://marvelcdb.com/api/public/cards/fne.json", #Fear No Evil Expansion
 		"jj": "https://marvelcdb.com/api/public/cards/jj.json", #Jessica Jones Hero Pack
 		"luke_cage": "https://marvelcdb.com/api/public/cards/luke_cage.json", #Luke Cage Hero Pack
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
+		"elektra": "https://marvelcdb.com/api/public/cards/elektra.json", #Elektra Hero Pack
+		"iron_fist": "https://marvelcdb.com/api/public/cards/iron_fist.json", #Iron Fist Hero Pack
 #		"": "https://marvelcdb.com/api/public/cards/.json", #
 #Print and Play
 #		"ron": "https://marvelcdb.com/api/public/cards/.json", #
@@ -1202,7 +1202,9 @@ const BETA_SETS:= [
 	"wonder_man",
 	"hercules",
 	"jj",
-	"luke_cage"
+	"luke_cage",
+	"elektra",
+	"iron_fist"
 ]
 
 const SERVER_RESOURCES_URL = "/wc/resources/"
@@ -1286,7 +1288,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
 const GAME_VERSION := "1.10.0"
-const BUILD_NUMBER := "20261116-1411"
+const BUILD_NUMBER := "20261117-1711"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

@@ -6166,10 +6166,56 @@
 					"tags": [
 						"hero_action"
 					]
+				},
+				{
+					"name": "for_each",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_enemies",
+							"filter_func": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										"upgrade"
+									]
+								}
+							}
+						}
+					],
+					"nested_tasks": [
+						{
+							"name": "attack",
+							"subject": "trigger",
+							"amount": {
+								"func_name": "count_attachments",
+								"func_params": {
+									"subject": "trigger",
+									"filter_state_attachment": [
+										"upgrade"
+									],
+									"multiplier": {
+										"if": {
+											"func_name": "identity_has_trait",
+											"func_params": {
+												"trait": [
+													"aerial"
+												]
+											}
+										},
+										"then": 3,
+										"else": 2
+									}
+								}
+							}
+						}
+					],
+					"_comments": "2 damage (3 if Daredevil is Aerial) to each enemy for each upgrade attached to it; enemies without upgrades are not attacked (no 0 damage attack triggering retaliate)"
 				}
 			]
-		},
-		"TODO": "deal 2 (3 if Aerial) damage to each enemy per upgrade attached to it"
+		}
 	},
 	"Replica Shield": {
 		"_surge": {},
@@ -7643,7 +7689,6 @@
 		}
 	},
 	"The Owl": {
-		"quickstrike": {},
 		"attacks_gain": {
 			"__trigger__": "self",
 			"__tags__": "piercing"
@@ -7795,7 +7840,6 @@
 		}
 	},
 	"Tombstone": {
-		"quickstrike": {},
 		"boost": {
 			"all": [
 				{
@@ -8123,9 +8167,9 @@
 				},
 				"Give to the villain as a boost card": [
 					{
-						"name": "move_boost_cards",
+						"name": "give_as_boost_card",
 						"subject": "self",
-						"_comments": "TODO verify giving this card as facedown boost"
+						"host": "villain"
 					}
 				],
 				"Remove a Persona support from the game": [

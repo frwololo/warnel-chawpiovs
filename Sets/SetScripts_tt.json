@@ -3306,7 +3306,20 @@
 				}
 			]
 		},
-		"TODO": "Boost: if this activation is an attack, it gains overkill"
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			],
+			"_comments": "if this activation is an attack, it gains overkill"
+		}
 	},
 	"Puppet Master": {
 		"TODO": "Allies cannot thwart this scheme or defend against the villain's attacks; expert hinder 1[per_hero]"

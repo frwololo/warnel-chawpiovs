@@ -1370,6 +1370,19 @@
 		"__thunderbolt_fetch_and_activate": {
 			"__name__": "Fixer"
 		},
-		"TODO": "Boost: If this activation is an attack, it gains piercing"
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			],
+			"_comments": "if this activation is an attack, it gains piercing"
+		}
 	}
 }

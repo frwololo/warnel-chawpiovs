@@ -2172,10 +2172,35 @@
 		"boost": {
 			"all": [
 				{
-					"name": "nop"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "villain"
+					},
+					"then": [
+						{
+							"name": "if",
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							},
+							"then": [
+								{
+									"name": "replacement_effect",
+									"subject": "current_activation",
+									"replacements": {
+										"additional_tags": [
+											"overkill"
+										]
+									}
+								}
+							]
+						}
+					]
 				}
 			],
-			"_comments": "TODO If the villain is attacking, this attack gains overkill"
+			"_comments": "if the villain is attacking, this attack gains overkill"
 		}
 	},
 	"Feisty Heist": {

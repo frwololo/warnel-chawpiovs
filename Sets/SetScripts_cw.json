@@ -1726,7 +1726,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -2622,7 +2622,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -2660,7 +2660,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -3056,7 +3056,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -4760,7 +4760,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -5148,7 +5148,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -5190,7 +5190,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}
@@ -5534,7 +5534,7 @@
 								"if": {
 									"func_name": "get_team_size>1"
 								},
-								"then": "2p",
+								"then": "2",
 								"else": 0
 							}
 						}

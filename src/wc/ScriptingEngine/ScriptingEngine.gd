@@ -2376,6 +2376,32 @@ func draw_boost_card(script:ScriptTask) ->int:
 			retcode = CFConst.ReturnCode.CHANGED
 	return retcode
 
+func give_as_boost_card(script:ScriptTask) ->int:
+	var retcode = CFConst.ReturnCode.CHANGED
+	
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var host = null
+	var host_str = script.get_property("host", "")
+	if host_str:
+		host = script._local_find_subjects(0, CFInt.RunType.NORMAL, {"subject" : host_str})
+		if host:
+			host = host[0]
+	
+	if !host:
+		return CFConst.ReturnCode.FAILED
+
+
+	if (costs_dry_run()):
+		return retcode	
+	
+	for card in script.subjects:
+		var boost_card	= card
+		boost_card.attach_to_host(host, false, ["as_boost"])	
+
+	return retcode
+
 func move_boost_cards(script:ScriptTask) ->int:
 	var retcode = CFConst.ReturnCode.CHANGED
 	

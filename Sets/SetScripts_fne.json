@@ -232,7 +232,6 @@
 			"event_filters": {
 				"filter_state_actual_source": "filter_same_controller"
 			},
-			"is_optional_board": true,
 			"board": [
 				{
 					"name": "heal",
@@ -251,7 +250,6 @@
 			"event_filters": {
 				"filter_state_actual_source": "filter_same_controller"
 			},
-			"is_optional_board": true,
 			"board": [
 				{
 					"name": "heal",
@@ -1372,7 +1370,7 @@
 					"token_name": "damage",
 					"modification": 0,
 					"set_to_mod": true,
-					"subject": "self",
+					"subject": "self"
 				}
 			]
 		}
@@ -1396,7 +1394,7 @@
 					"token_name": "damage",
 					"modification": 0,
 					"set_to_mod": true,
-					"subject": "self",
+					"subject": "self"
 				}
 			]
 		},
@@ -1487,7 +1485,44 @@
 		}
 	},
 	"Bull in a China Shop - 1B": {
-		"TODO": "excess damage to an ally in this play area becomes threat here"
+		"interrupt_card_damaged": {
+			"filter_state_trigger": [
+				"ally",
+				"filter_same_controller"
+			],
+			"event_filters": {
+				"excess_damage": ">0"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": "trigger_details_excess_damage",
+					"subject": "self"
+				}
+			]
+		},
+		"card_damaged": {
+			"filter_state_trigger": [
+				"minion",
+				"filter_same_controller"
+			],
+			"event_filters": {
+				"excess_damage": ">0"
+			},
+			"condition_board": {
+				"func_name": "get_scenario_option_value",
+				"func_params": {
+					"option_name": "expert_mode"
+				}
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"amount": "trigger_details_excess_damage",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Bullseye": {
 		"reveal": {
@@ -1686,7 +1721,44 @@
 		}
 	},
 	"Burning Rubber": {
-		"TODO": "for each speed counter on the main scheme: spend 1 resource or place 1 threat on the main scheme"
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_rubber",
+					"count": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "main_scheme",
+							"token_name": "speed"
+						}
+					}
+				}
+			]
+		},
+		"do_rubber": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Add 1 Threat": [
+					{
+						"name": "add_threat",
+						"subject": "main_scheme",
+						"amount": 1
+					}
+				],
+				"Spend 1 Resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					}
+				]
+			}
+		}
 	},
 	"Bystanders in Peril": {
 		"reveal": {
@@ -1749,10 +1821,53 @@
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
-					"src_container": "deck_villain",
-					"_comments": "TODO may spend 3 same-type resources to attach it to your identity instead"
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_type": "subject",
+					"value": "previous",
+					"var_name": "my_vehicle"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_steal_vehicle"
 				}
 			]
+		},
+		"do_steal_vehicle": {
+			"condition_all": {
+				"func_name": "!count_attachments",
+				"func_params": {
+					"subject": "current_hero_target",
+					"filter_state_attachment": [
+						"trait_vehicle",
+						"attachment"
+					]
+				}
+			},
+			"all": {
+				"Grab Vehicle": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 3,
+							"type_constraint": "same"
+						},
+						"is_cost": true
+					},
+					{
+						"name": "host_card",
+						"host": "current_hero_target",
+						"subject": "my_vehicle"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			}
 		}
 	},
 	"Chain Lightning": {
@@ -1777,8 +1892,7 @@
 							"property": "thwart"
 						}
 					},
-					"trigger": "self",
-					"_comments": "TODO highest THW among characters"
+					"trigger": "self"
 				}
 			]
 		},
@@ -2026,21 +2140,27 @@
 		}
 	},
 	"Consolidate Power": {
-		"interrupt_card_dies": {
+		"card_defeated": {
 			"filter_state_trigger": [
 				"minion"
 			],
 			"board": [
 				{
-					"name": "move_boost_cards",
+					"name": "give_as_boost_card",
 					"subject": "trigger",
-					"_comments": "TODO give it to the villain as a facedown boost card"
+					"host": "villain"
 				}
 			]
 		}
 	},
 	"Contingency Planning": {
 		"manual": {
+			"condition_board": {
+				"func_name": "!count_attachments",
+				"func_params": {
+					"subject": "self"
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -2050,17 +2170,48 @@
 					]
 				},
 				{
-					"name": "tuck_card_under_me",
+					"name": "host_card",
 					"host": "self",
 					"subject": "tutor_and_choose",
 					"src_container": "hand",
 					"filter_state_tutor": [
-						"upgrade"
+						{
+							"filter_properties": {
+								"type_code": "upgrade"
+							},
+							"filter_func": {
+								"func_name": "property_contains",
+								"func_params": {
+									"subject": "trigger",
+									"property": "real_text",
+									"value": [
+										"attach to a minion",
+										"attach to the minion",
+										"attach to an enemy",
+										"attach to the enemy",
+										"attach to a side scheme",
+										"max 1 per minion",
+										"max 1 per side scheme",
+										"limit 1 per side scheme",
+										"attached minion",
+										"attach to a card",
+										"attach to a scheme"
+									]
+								}
+							}
+						}
 					]
+				},
+				{
+					"name": "add_script",
+					"subject": "previous",
+					"fetch_script": {
+						"script_path": "*/hand",
+						"replace_to_state": "board"
+					}
 				}
 			]
-		},
-		"TODO": "may play the tucked upgrade as if in hand; max 1 tucked"
+		}
 	},
 	"Converted": {
 		"card_moved_to_board": {
@@ -2125,22 +2276,6 @@
 		}
 	},
 	"Cop": {
-		"quickstrike": {},
-		"card_token_modified": {
-			"trigger": "self",
-			"filter_token_name": [
-				"stunned",
-				"confused"
-			],
-			"filter_count_difference": "increased",
-			"board": [
-				{
-					"name": "discard",
-					"subject": "self"
-				}
-			],
-			"_comments": "Vulnerable: discard if stunned or confused"
-		},
 		"interrupt_enemy_would_scheme": {
 			"trigger": "self",
 			"board": [
@@ -2149,16 +2284,9 @@
 					"subject": "interrupted_event"
 				},
 				{
-					"name": "deal_damage",
-					"subject": "villain",
-					"amount": {
-						"func_name": "get_subject_int_property",
-						"func_params": {
-							"subject": "self",
-							"property": "attack"
-						}
-					},
-					"_comments": "TODO 'attacks the villain'"
+					"name": "i_attack",
+					"action_owner": "self",
+					"subject": "villain"
 				}
 			]
 		},
@@ -2174,22 +2302,6 @@
 		}
 	},
 	"Crooked Cop": {
-		"quickstrike": {},
-		"card_token_modified": {
-			"trigger": "self",
-			"filter_token_name": [
-				"stunned",
-				"confused"
-			],
-			"filter_count_difference": "increased",
-			"board": [
-				{
-					"name": "discard",
-					"subject": "self"
-				}
-			],
-			"_comments": "Vulnerable: discard if stunned or confused"
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [

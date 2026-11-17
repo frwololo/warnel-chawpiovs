@@ -307,9 +307,6 @@
 			]
 		}
 	},
-	"hinder": {
-		"_comments": "to-do remove hinder from scripts, it was moved to code"
-	},
 	"incite": {
 		"reveal": {
 			"all": [

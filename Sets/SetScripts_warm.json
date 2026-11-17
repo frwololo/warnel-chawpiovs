@@ -184,10 +184,6 @@
 		}
 	},
 	"Deadly Light Show": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [

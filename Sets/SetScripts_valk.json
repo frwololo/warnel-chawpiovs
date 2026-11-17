@@ -791,11 +791,7 @@
 		}
 	},
 	"Powerful Enchantments": {
-		"TODO": "",
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		}
+		"TODO": ""
 	},
 	"Problem Solvers": {
 		"manual": {

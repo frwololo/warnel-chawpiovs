@@ -1190,9 +1190,6 @@
 		}
 	},
 	"Defend Our City": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -1343,9 +1340,6 @@
 		"_comments": "TODO SCH = highest SCH or THW; printed values are 0"
 	},
 	"Indomitable Will": {
-		"hinder": {
-			"__amount__": 3
-		},
 		"reveal": {
 			"all": [
 				{

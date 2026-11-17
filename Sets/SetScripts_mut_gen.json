@@ -58,10 +58,6 @@
 		}
 	},
 	"Abduction Protocols": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -1802,10 +1798,6 @@
 		}
 	},
 	"Insert Virus Program": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -3046,10 +3038,6 @@
 		}
 	},
 	"Medical Emergency": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -4276,10 +4264,6 @@
 		}
 	},
 	"Protect the Students": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -6358,10 +6342,6 @@
 		}
 	},
 	"The Brotherhood": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_moved_to_board": {
 			"filter_state_trigger": [
 				{

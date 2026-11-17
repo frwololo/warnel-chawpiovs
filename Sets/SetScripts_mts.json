@@ -1274,10 +1274,6 @@
 		}
 	},
 	"Casket of Ancient Winters": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -1356,10 +1352,6 @@
 		}
 	},
 	"City Under Attack": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"interrupt": {
 			"event_name": "card_dies",
 			"trigger": "self",
@@ -2718,10 +2710,6 @@
 		}
 	},
 	"Gjallerbru": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": {
@@ -2765,10 +2753,6 @@
 		}
 	},
 	"Gnipahellir": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": {
@@ -3943,10 +3927,6 @@
 		}
 	},
 	"Madness on Midgard": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -4826,10 +4806,6 @@
 		}
 	},
 	"Open the Bifrost": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -6190,10 +6166,6 @@
 		}
 	},
 	"Sanctuary": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"alterants": {
 			"board": [
 				{
@@ -7555,10 +7527,6 @@
 		"TODO": "campaign mode unsupported"
 	},
 	"War in Asgard": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [

@@ -204,11 +204,7 @@
 		}
 	},
 	"\"There is No Escape\"": {
-		"TODO": "campaign mode not supported",
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"\"We Are Groot\"": {
 		"manual": {
@@ -469,11 +465,7 @@
 		}
 	},
 	"Badoon Blitz": {
-		"TODO": "campaign mode not supported",
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Badoon Engineer": {
 		"self_moved_to_board": {
@@ -914,10 +906,6 @@
 		}
 	},
 	"Blockade": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"milano_remove_threat": {}
 	},
 	"Bombardment": {
@@ -1045,10 +1033,6 @@
 		}
 	},
 	"Cannonade": {
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		},
 		"milano_remove_threat": {}
 	},
 	"Cargo Hold": {
@@ -1623,10 +1607,6 @@
 		}
 	},
 	"Crystal Ball": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -2544,10 +2524,6 @@
 		}
 	},
 	"Fugitive Recovery": {
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		},
 		"_surge": {}
 	},
 	"Furnax": {
@@ -2585,11 +2561,7 @@
 		}
 	},
 	"Gallery of Splendor": {
-		"TODO": "campaign mode not supported",
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Grand Strategy": {
 		"TODO": "campaign mode not supported",
@@ -2737,11 +2709,7 @@
 		}
 	},
 	"Guerrilla Tactics": {
-		"TODO": "campaign mode not supported",
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Hand Cannon": {
 		"uses": {
@@ -2882,10 +2850,6 @@
 		}
 	},
 	"Hujahdarian Monarch Egg": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"is_optional_all": true,
@@ -3378,11 +3342,7 @@
 		}
 	},
 	"Kree Supremacy": {
-		"TODO": "campaign mode not supported",
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		}
+		"TODO": "campaign mode not supported"
 	},
 	"Lashing Vines": {
 		"response": {
@@ -3608,10 +3568,6 @@
 		}
 	},
 	"Magical Teapot": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"is_optional_all": true,
@@ -4113,10 +4069,6 @@
 		}
 	},
 	"Oppressive Armada": {
-		"hinder": {
-			"__amount__": 3,
-			"__each_player__": true
-		},
 		"milano_remove_threat": {}
 	},
 	"Particle Cannon": {
@@ -4171,10 +4123,6 @@
 		}
 	},
 	"Philosopher's Stone": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"is_optional_all": true,
@@ -4187,10 +4135,6 @@
 		}
 	},
 	"Pincer Maneuver": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"milano_remove_threat": {}
 	},
 	"Pirate Commander": {

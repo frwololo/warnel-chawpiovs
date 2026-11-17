@@ -559,9 +559,6 @@
 		}
 	},
 	"Unbridled Ambition": {
-		"hinder": {
-			"__amount__": 2
-		},
 		"interrupt_step_started": {
 			"event_filters": {
 				"step_name": "VILLAIN_THREAT"
@@ -2438,9 +2435,6 @@
 		}
 	},
 	"Top Talent": {
-		"hinder": {
-			"__amount__": 2
-		},
 		"alterants": {
 			"board": [
 				{

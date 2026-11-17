@@ -1455,9 +1455,6 @@
 		}
 	},
 	"All Versus All": {
-		"hinder": {
-			"__amount__": 2
-		},
 		"response_character_dies": {
 			"board": [
 				{

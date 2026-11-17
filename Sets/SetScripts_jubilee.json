@@ -1355,9 +1355,6 @@
 		}
 	},
 	"Welcome to Murderworld": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -1370,9 +1367,6 @@
 		}
 	},
 	"Arcade's Funhouse": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -1418,9 +1412,6 @@
 		}
 	},
 	"Hall of Mirrors": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [

@@ -628,9 +628,6 @@
 		}
 	},
 	"Homeland Security": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"TODO": "The first minion revealed each round gains surge"
 	},
 	"Atlas": {
@@ -817,9 +814,6 @@
 		}
 	},
 	"The Thunderbolts": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"interrupt_remove_threat": {
 			"event_filters": {
 				"subject": "self"
@@ -999,9 +993,6 @@
 		}
 	},
 	"Taskmaster's Academy": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -1167,9 +1158,6 @@
 		}
 	},
 	"Deadly Duo": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -2186,9 +2174,6 @@
 		}
 	},
 	"Young Avengers": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"TODO": "The first minion revealed each round gains surge"
 	},
 	"Speed": {
@@ -2297,9 +2282,6 @@
 		}
 	},
 	"Superpowered Siblings": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -2383,9 +2365,6 @@
 		}
 	},
 	"Khonshu's Avatar": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [
@@ -2581,9 +2560,6 @@
 		}
 	},
 	"The Royal Guard": {
-		"hinder": {
-			"__amount__": 1
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [

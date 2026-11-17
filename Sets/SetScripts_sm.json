@@ -3663,10 +3663,6 @@
 		}
 	},
 	"Joy Ride": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"reveal": {
 			"all": [
 				{

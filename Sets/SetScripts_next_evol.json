@@ -2322,10 +2322,6 @@
 		}
 	},
 	"Extreme Measures": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"card_moved_to_board": {
 			"filter_state_trigger": [
 				{
@@ -4867,10 +4863,6 @@
 		},
 	},
 	"Making Green": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		},
 		"script_alterants": {
 			"board": [
 				{
@@ -8373,10 +8365,6 @@
 		}
 	},
 	"Stryfe's Grasp": {
-		"hinder": {
-			"__amount__": 6,
-			"__each_player__": true
-		},
 		"script_alterants": {
 			"board": [
 				{
@@ -9171,10 +9159,6 @@
 		}
 	},
 	"Teleported Away": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"alterants": {
 			"board": [
 				{
@@ -9468,10 +9452,6 @@
 		}
 	},
 	"The Senator's Support": {
-		"hinder": {
-			"__amount__": 1,
-			"__each_player__": true
-		},
 		"card_defeated": {
 			"trigger": "self",
 			"all": [

@@ -488,10 +488,6 @@
 		}
 	},
 	"Budding Crime Syndicate": {
-		"hinder": {
-			"__amount__": 2,
-			"__each_player__": true
-		}
 	},
 	"C.I.T.T.": {
 		"manual": {

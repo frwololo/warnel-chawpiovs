@@ -503,6 +503,10 @@ func parse_keywords(text:String) -> Dictionary:
 
 	#replace newline with space
 	lc_text = lc_text.replace("\n", " ")
+
+	#remove the [star] icon (converted to "*" by cleanup_bb_code), which can
+	#precede a keyword: "[star] Hinder 3[per_hero]."
+	lc_text = lc_text.replace("[star]", "").replace("*", "")
 	
 	#replace [i] ...[/i] with blank
 	var regex := RegEx.new()

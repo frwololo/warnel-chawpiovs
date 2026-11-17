@@ -820,7 +820,7 @@
 					"func_name": "is_attached",
 					"func_params": {
 						"subject": "self",
-						"host": "Typhoid Mary"
+						"host": "Bloody Mary"
 					},
 					"then": [
 						{
@@ -2078,6 +2078,41 @@
 					]
 				},
 				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "minion",
+						"shortname": "Influenced",
+						"trait_influenced": 1,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "previous"
+							}
+						},
+						"scheme": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "previous"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "previous"
+							}
+						}
+					},
+					"subject": "previous",
+					"_comments": "the attached ally becomes an Influenced minion (blank text box, SCH = its base THW) engaged with you"
+				},
+				{
 					"name": "surge",
 					"is_else": true
 				},
@@ -2087,8 +2122,7 @@
 					"is_else": true
 				}
 			]
-		},
-		"TODO": "treat attached ally as an Influenced minion engaged with you"
+		}
 	},
 	"Cop": {
 		"quickstrike": {},
@@ -3176,7 +3210,43 @@
 				]
 			}
 		},
-		"TODO": "Boost: if Bullseye is attacking, extra boost card and piercing"
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Bullseye"
+					},
+					"then": [
+						{
+							"name": "if",
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							},
+							"then": [
+								{
+									"name": "draw_boost_card",
+									"subject": "current_activation_enemy"
+								},
+								{
+									"name": "replacement_effect",
+									"subject": "current_activation",
+									"replacements": {
+										"additional_tags": [
+											"piercing"
+										]
+									}
+								}
+							]
+						}
+					]
+				}
+			],
+			"_comments": "if Bullseye is attacking: an additional boost card and piercing"
+		}
 	},
 	"Exclusive Interview": {
 		"alterants": {
@@ -3439,18 +3509,21 @@
 			]
 		},
 		"boost": {
-			"condition_all": {
-				"func_name": "card_is_in_play",
-				"func_params": {
-					"card_name": "Bloody Mary"
-				},
-				"_comments": "TODO 'if Bloody Mary is activating'"
-			},
 			"all": [
 				{
-					"name": "deal_damage",
-					"amount": 2,
-					"subject": "current_hero_target"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Bloody Mary"
+					},
+					"then": [
+						{
+							"name": "deal_damage",
+							"amount": 2,
+							"subject": "current_hero_target"
+						}
+					]
 				}
 			]
 		}
@@ -4442,11 +4515,7 @@
 		}
 	},
 	"Kingpin - B2": {
-		"interrupt": {
-			"event_name": [
-				"enemy_initiates_attack",
-				"enemy_initiates_scheme"
-			],
+		"interrupt_enemy_initiates_scheme": {
 			"trigger": "self",
 			"condition_board": {
 				"func_name": "!count_cards",
@@ -4465,7 +4534,43 @@
 				}
 			]
 		},
-		"_comments": "TODO this activation gains overkill if it is an attack"
+		"interrupt_enemy_initiates_attack": {
+			"trigger": "self",
+			"condition_board": {
+				"func_name": "!count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						"group_enemies_current_hero_target",
+						"minion"
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "overkill",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"_comments": "this activation gains overkill (it is an attack)"
+				}
+			]
+		}
 	},
 	"Kingpin's Cane": {
 		"reveal": {
@@ -6098,19 +6203,22 @@
 			]
 		},
 		"boost": {
-			"condition_all": {
-				"func_name": "card_is_in_play",
-				"func_params": {
-					"card_name": "Bloody Mary"
-				},
-				"_comments": "TODO 'if Bloody Mary is activating'"
-			},
 			"all": [
 				{
-					"name": "mod_tokens",
-					"token_name": "tough",
-					"modification": 1,
-					"subject": "villain"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Bloody Mary"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "tough",
+							"modification": 1,
+							"subject": "villain"
+						}
+					]
 				}
 			]
 		}
@@ -6670,7 +6778,20 @@
 				]
 			}
 		},
-		"TODO": "Boost: if this activation is an attack, it gains piercing"
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			],
+			"_comments": "if this activation is an attack, it gains piercing"
+		}
 	},
 	"Stop the Presses! - 1A": {
 		"setup": {
@@ -7415,7 +7536,20 @@
 			"__trigger__": "self",
 			"__tags__": "piercing"
 		},
-		"TODO": "Boost: if this activation is an attack, it gains piercing"
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"piercing"
+						]
+					}
+				}
+			],
+			"_comments": "if this activation is an attack, it gains piercing"
+		}
 	},
 	"The Raft Breakout - 1A": {
 		"setup": {
@@ -7739,7 +7873,61 @@
 		"TODO": "threat added/removed by characters with a Vehicle attachment goes here instead"
 	},
 	"Tug of War": {
-		"TODO": "may spend [physical]x3 to move an Art attachment to your identity; otherwise move one to the villain and surge"
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend [physical][physical][physical]: move an Art attachment from the villain to your identity": [
+					{
+						"name": "pay_cost",
+						"is_cost": true,
+						"cost": {
+							"physical": 3
+						}
+					},
+					{
+						"name": "host_card",
+						"host": "my_identity",
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_is_hosted_by": "villain",
+								"filter_properties": {
+									"trait_art": 1
+								}
+							}
+						]
+					}
+				],
+				"Move an Art attachment from an identity to the villain (surge)": [
+					{
+						"name": "host_card",
+						"host": "villain",
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_is_hosted_by": "group_identities",
+								"filter_properties": {
+									"trait_art": 1
+								}
+							}
+						]
+					},
+					{
+						"name": "surge"
+					}
+				]
+			}
+		}
 	},
 	"Typhoid Mary - A": {
 		"interrupt_card_dies": {
@@ -7760,8 +7948,7 @@
 					"token_name": "damage",
 					"modification": 0,
 					"set_to_mod": true,
-					"subject": "self",
-					"_comments": "TODO reset to 10[per_hero]"
+					"subject": "self"
 				}
 			]
 		}
@@ -7785,8 +7972,7 @@
 					"token_name": "damage",
 					"modification": 0,
 					"set_to_mod": true,
-					"subject": "self",
-					"_comments": "TODO reset to 13[per_hero]"
+					"subject": "self"
 				}
 			]
 		}
@@ -7845,7 +8031,20 @@
 				]
 			}
 		},
-		"TODO": "Boost: if this activation is an attack, it gains overkill"
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			],
+			"_comments": "if this activation is an attack, it gains overkill"
+		}
 	},
 	"Unrelenting Hate": {
 		"reveal": {
@@ -7857,7 +8056,20 @@
 				}
 			]
 		},
-		"TODO": "Boost: if this activation is an attack, it gains overkill"
+		"boost": {
+			"all": [
+				{
+					"name": "replacement_effect",
+					"subject": "current_activation",
+					"replacements": {
+						"additional_tags": [
+							"overkill"
+						]
+					}
+				}
+			],
+			"_comments": "if this activation is an attack, it gains overkill"
+		}
 	},
 	"Utility Van": {
 		"card_moved_to_board": {

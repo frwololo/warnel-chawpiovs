@@ -136,6 +136,11 @@
 	"10011": {
 		"subname": "Amadeus Cho"
 	},
+	"11001": {
+		"text": "Toughness.\n[star] <b>Forced Interrupt</b>: When Kang attacks you, either place 1 threat on the main scheme, or he gets +2 ATK for this attack.\n<b>When Defeated</b>: Advance the main scheme to stage 2 at the end of the phase.",
+		"real_text": "Toughness.\n[star] <b>Forced Interrupt</b>: When Kang attacks you, either place 1 threat on the main scheme, or he gets +2 ATK for this attack.\n<b>When Defeated</b>: Advance the main scheme to stage 2 at the end of the phase.",
+		"_comments": "keyword sentence fixed so that parse_keywords reads it (Kang (The Conqueror))"
+	},
 	"12001c": {
 		"imagesrc": "https://mc4db.merlindumesnil.net/bundles/cards/EN/ant/12001c.webp",
 		"_side_icons_meta": {
@@ -203,6 +208,16 @@
 		"scheme": 1,
 		"thwart": 1
 	},
+	"19008": {
+		"text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nWhile in hero form, Drax gets +1 ATK.",
+		"real_text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nWhile in hero form, Drax gets +1 ATK.",
+		"_comments": "keyword sentence fixed so that parse_keywords reads it (Drax's Knife)"
+	},
+	"19009": {
+		"text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nWhile in hero form, Drax gains retaliate 1.",
+		"real_text": "Restricted. <i>(Max 2 restricted cards per player.)</i>\nWhile in hero form, Drax gains retaliate 1.",
+		"_comments": "keyword sentence fixed so that parse_keywords reads it (Drax's Other Knife)"
+	},
 	"21031a": {
 		"wc_meta": {
 			"portrait": {
@@ -258,6 +273,11 @@
 	"21167": {
 		"scheme_amplify": 0,
 		"_comments": "https://github.com/zzorba/marvelsdb/issues/347"
+	},
+	"23030": {
+		"text": "Hinder 1[per_hero].\n<b>When Defeated:</b> Deal 1 damage to each identity.",
+		"real_text": "Hinder 1[per_hero].\n<b>When Defeated:</b> Deal 1 damage to each identity.",
+		"_comments": "keyword sentence fixed so that parse_keywords reads it (Deadly Light Show)"
 	},
 	"26002": {
 		"linked_card": {
@@ -472,6 +492,11 @@
 		"printed_card_id": "38001a",
 		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
+	"38019": {
+		"text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
+		"real_text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
+		"_comments": "keyword sentence fixed so that parse_keywords reads it (X-Gene)"
+	},
 	"40001a": {
 		"wc_meta": {
 			"portrait": {
@@ -640,6 +665,11 @@
 			"backimagesrc": null
 		}
 	},
+	"47020": {
+		"text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
+		"real_text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
+		"_comments": "keyword sentence fixed so that parse_keywords reads it (X-Gene)"
+	},
 	"48019": {
 		"alternate_art": true
 	},
@@ -687,5 +717,5 @@
 	},
 	"56022": {
 		"alternate_art": true
-	}
+	},
 }

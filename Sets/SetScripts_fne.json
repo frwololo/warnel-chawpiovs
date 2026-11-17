@@ -362,6 +362,9 @@
 		},
 		"interrupt_card_dies": {
 			"trigger": "host",
+			"event_filters": {
+				"actual_source": "my_hero"
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -376,6 +379,9 @@
 		},
 		"last_threat_removed": {
 			"trigger": "host",
+			"event_filters": {
+				"actual_source": "my_hero"
+			},
 			"is_optional_board": true,
 			"board": [
 				{
@@ -387,8 +393,7 @@
 					"subject": "my_identity"
 				}
 			]
-		},
-		"_comments": "TODO only when YOU defeat it / remove the last threat"
+		}
 	},
 	"Adamantium-Laced Spine": {
 		"interrupt": {
@@ -400,15 +405,8 @@
 			"board": [
 				{
 					"name": "deal_damage",
-					"amount": {
-						"func_name": "get_subject_int_property",
-						"func_params": {
-							"subject": "trigger_details",
-							"property": "amount",
-							"plus": -3
-						},
-						"_comments": "TODO amount-3"
-					},
+					"amount": "trigger_details_amount",
+					"plus_amount": -3,
 					"subject": "self"
 				},
 				{
@@ -436,11 +434,37 @@
 					"subject": "self"
 				}
 			]
-		},
-		"_comments": "TODO verify computing prevented damage"
+		}
 	},
 	"Alongside": {
-		"TODO": "When Revealed (on flip): each player takes 1 indirect damage; villain takes 2[per_hero] damage"
+		"reveal": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": "2p",
+					"subject": "villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_indirect_damage"
+				}
+			]
+		},
+		"do_indirect_damage": {
+			"all": {
+				"_rules": {
+					"for_each_player": true,
+					"forced": true
+				},
+				"Indirect Damage": [
+					{
+						"name": "indirect_damage",
+						"amount": 1,
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
 	},
 	"American Sign Language": {
 		"resource": {
@@ -550,7 +574,29 @@
 				}
 			]
 		},
-		"TODO": "After an enemy makes an undefended attack against an identity, attach 1 Art attachment on that identity to the villain"
+		"response_enemy_attack_happened": {
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"board": [
+				{
+					"name": "host_card",
+					"host": "villain",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_is_hosted_by": "current_hero_target",
+							"filter_properties": {
+								"trait_art": 1
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Art Museum Heist #60205a": {
 		"setup": {
@@ -572,8 +618,35 @@
 		"setup": {
 			"all": [
 				{
-					"name": "sequence",
-					"sequence_ability": "do_choose"
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "expert_mode"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": "group_identities"
+						},
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": "group_identities"
+						}
+					],
+					"else": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_choose"
+						}
+					]
 				}
 			]
 		},
@@ -600,8 +673,7 @@
 					}
 				]
 			}
-		},
-		"TODO": "expert mode: both"
+		}
 	},
 	"Art Thief": {
 		"reveal": {
@@ -4065,7 +4137,15 @@
 		}
 	},
 	"Lady Bullseye": {
-		"TODO": "if her attack is undefended, give her 1 additional boost card"
+		"interrupt_undefended_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "draw_boost_card",
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Legal Trouble": {
 		"discount": {
@@ -4165,7 +4245,49 @@
 		}
 	},
 	"Man-Bull": {
-		"TODO": "after Man-Bull attacks, place threat equal to excess damage on the main scheme (also as Boost)"
+		"receive_damage": {
+			"trigger": "self",
+			"event_filters": {
+				"tags": [
+					"attack"
+				],
+				"excess_damage": ">0"
+			},
+			"board": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": "trigger_details_excess_damage"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"receive_damage": {
+							"trigger": "host",
+							"event_filters": {
+								"tags": [
+									"attack"
+								],
+								"excess_damage": ">0"
+							},
+							"board": [
+								{
+									"name": "add_threat",
+									"subject": "main_scheme",
+									"amount": "trigger_details_excess_damage"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
 	},
 	"Mary Walker": {
 		"card_moved_to_board": {

@@ -198,6 +198,8 @@ static func _get_subjects_simplified(string_value, owner_card):
 			var attacker = gameData.theStack.get_context_details("attack", "attacker")
 			if attacker:
 				return attacker
+		KEY_SUBJECT_CURRENT_HERO_TARGET:
+			return gameData.get_identity_card(gameData.get_current_activity_hero_target())											
 		KEY_SUBJECT_V_MAIN_SCHEME:
 			return gameData.get_main_schemes()
 		"self":
@@ -236,18 +238,16 @@ static func check_trigger_shares_trait_with_identity(trigger_card,owner_card,_tr
 			return true
 	return false
 				
-# Returns true if the trigger is the host of the owner, false otherwise
+# Returns true if owner_card is attached to a card matching host_description
 static func check_host_filter(trigger_card, owner_card, host_description : String) -> bool:
-	var card_matches := false
 	if !is_instance_valid(trigger_card): return false
 	if !is_instance_valid(owner_card): return false
 	
-	#TODO more advanced targeting
-	match host_description:
-		"self":
-			if owner_card.current_host_card == trigger_card: 
-				card_matches = true
-	return(card_matches)
+	var expected_host = _get_subjects_simplified(host_description, trigger_card)	
+	if owner_card.current_host_card == expected_host:
+		return true
+	
+	return false
 	
 static func check_hosted_by_filter(trigger_card, owner_card, host_description : String) -> bool:
 	return check_host_filter(owner_card, trigger_card, host_description) 	

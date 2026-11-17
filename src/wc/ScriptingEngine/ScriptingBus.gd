@@ -69,15 +69,18 @@ signal manapool_modified(details)
 # warning-ignore:unused_signal
 signal paid_as_resource(card, details)
 
+#enemy attack/scheme related signals
 # warning-ignore:unused_signal
 signal enemy_would_attack(card,details)
 # warning-ignore:unused_signal
 signal enemy_would_scheme(card,details)
-
 # warning-ignore:unused_signal
 signal enemy_initiates_attack(card,details)
 # warning-ignore:unused_signal
 signal defender_chosen(card,details)
+# warning-ignore:unused_signal
+signal undefended_enemy_attack(card,details)
+
 # warning-ignore:unused_signal
 signal enemy_initiates_scheme(card,details)
 # warning-ignore:unused_signal

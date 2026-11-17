@@ -2488,7 +2488,9 @@ func enemy_attack(script: ScriptTask) -> int:
 			"attacker": attacker
 		}	
 		scripting_bus.emit_signal_on_stack("defender_chosen", defender, signal_trigger_details)	
-
+	else:
+		scripting_bus.emit_signal_on_stack("undefended_enemy_attack", attacker, {})
+		
 	if !script.has_tag("attack"):
 		script.script_definition["tags"].append("attack")
 	attacker.set_activity_script(script)

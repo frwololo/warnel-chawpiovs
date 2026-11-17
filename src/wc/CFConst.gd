@@ -878,6 +878,10 @@ const AUTO_KEYWORDS := {
 	"not_temporary": "int",
 	
 	"printed_resource_is_energy": "int",
+	
+	"replace_thw_with_def": "int",
+	"replace_atk_with_def": "int",
+	
 	#fake traits used by some scripts
 	#TODO automate: add these to the list of cardconfig integers a runtime
 	"trait_sidekick": "int",		

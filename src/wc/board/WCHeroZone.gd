@@ -95,13 +95,11 @@ func load_starting_identity():
 	return load_identity (ckey)
 	
 func load_nemesis_aside(hero_card_data):
-	#return	
-	var hero_set = hero_card_data["card_set_code"]
-	var nemesis_set = hero_set + "_nemesis"
+	var nemesis_set = WCUtils.get_nemesis_set_name(hero_card_data)
 	
 	var nemesis_cards_data = cfc.cards_by_set.get(nemesis_set, [])
 	if !nemesis_cards_data:
-		cfc.LOG("nemesis data missing for "  + hero_set)
+		cfc.LOG("nemesis data missing for "  + hero_card_data["card_set_code"])
 	for card_data in nemesis_cards_data:
 		var quantity = card_data.get("quantity", 1)
 		for _i in range (quantity):

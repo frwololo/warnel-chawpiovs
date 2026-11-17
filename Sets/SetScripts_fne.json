@@ -228,7 +228,43 @@
 		}
 	},
 	"A Slice of the Pizza Dough - 1B": {
-		"TODO": "after a character here defeats a character or side scheme: heal 1, 1 threat here"
+		"interrupt_card_dies": {
+			"event_filters": {
+				"filter_state_actual_source": "filter_same_controller"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "trigger_details_actual_source"
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": 1
+				}
+			]
+		},
+		"last_threat_removed": {
+			"filter_state_trigger": "side_scheme",
+			"event_filters": {
+				"filter_state_actual_source": "filter_same_controller"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 1,
+					"subject": "trigger_details_actual_source"
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": 1
+				}
+			]
+		}
 	},
 	"Absorbing Man": {
 		"interrupt_enemy_attack": {
@@ -692,14 +728,38 @@
 					]
 				},
 				{
-					"name": "attach_to_card",
-					"subject": "villain",
-					"_comments": "TODO move an Art attachment from an identity to the villain",
+					"name": "host_card",
+					"host": "villain",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_is_hosted_by": "group_identities",
+							"filter_properties": {
+								"trait_art": 1
+							}
+						}
+					],
 					"is_else": true
 				}
 			]
 		},
-		"TODO": "Boost: move an Art attachment from an identity to the villain"
+		"boost": {
+			"all": [
+				{
+					"name": "host_card",
+					"host": "villain",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_is_hosted_by": "group_identities",
+							"filter_properties": {
+								"trait_art": 1
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Assembled Armor": {
 		"card_moved_to_board": {
@@ -720,7 +780,16 @@
 					],
 					"subject": "self",
 					"set_properties": {
-						"health": 5
+						"health": {
+							"if": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "expert_mode"
+								}
+							},
+							"then": 8,
+							"else": 5
+						}
 					}
 				}
 			]
@@ -745,32 +814,260 @@
 		},
 		"_comments": "pattern from Psionic Force Field (card health = discard threshold)",
 		"boost": {
-			"condition_all": {
-				"func_name": "card_is_in_play",
-				"func_params": {
-					"card_name": "Bloody Mary"
-				},
-				"_comments": "TODO 'if Bloody Mary is activating'"
-			},
 			"all": [
 				{
-					"name": "mod_tokens",
-					"token_name": "confused",
-					"modification": 1,
-					"subject": "current_hero_target"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Typhoid Mary"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "confused",
+							"modification": 1,
+							"subject": "current_hero_target"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Bag of Tricks": {
+		"reveal": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"sort_by": "random",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[nemesis_set_my_hero]"
+							}
+						}
+					]
+				},
+				{
+					"name": "surge",
+					"is_else": true
 				}
 			]
 		},
-		"TODO": "8 damage threshold in expert mode"
-	},
-	"Bag of Tricks": {
-		"TODO": "reveal a random card from your set-aside nemesis set (or surge); Boost variant"
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "set_aside",
+					"dest_container": "deck_villain",
+					"sort_by": "random",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"card_set_code": "[nemesis_set_my_hero]"
+							}
+						}
+					]
+				},
+				{
+					"name": "draw_boost_card",
+					"subject": "villain"
+				}
+			]
+		}
 	},
 	"Baron Zemo": {
-		"TODO": "allies with threat on them are Deceived minions; When Revealed: 1 threat on an ally without threat, it engages its controller"
+		"reveal": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 1,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_func": {
+								"func_name": "!count_tokens",
+								"func_params": {
+									"subject": "trigger",
+									"token_name": "threat"
+								}
+							},
+							"filter_properties": {
+								"type_code": "ally"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "minion",
+						"shortname": "Deceived",
+						"trait_deceived": 1,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "previous"
+							}
+						},
+						"scheme": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "previous"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "previous"
+							}
+						}
+					},
+					"subject": "previous"
+				}
+			]
+		},
+		"card_token_modified": {
+			"filter_state_trigger": "ally",
+			"condition_board": {
+				"func_name": "count_tokens>=1",
+				"func_params": {
+					"subject": "trigger",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "move_card_to_board",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "minion",
+						"shortname": "Deceived",
+						"trait_deceived": 1,
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "attack",
+								"subject": "trigger"
+							}
+						},
+						"scheme": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "thwart",
+								"subject": "trigger"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "health",
+								"subject": "trigger"
+							}
+						}
+					},
+					"subject": "trigger"
+				}
+			]
+		}
 	},
 	"Battle in the Bodega - 1B": {
-		"TODO": "after a character in this play area is attacked: 1 damage to attacker, 1 threat here"
+		"once_per_phase": {
+			"__name__": "__damage"
+		},
+		"attack_happened": {
+			"event_filters": {
+				"filter_state_event_target": "filter_same_controller"
+			},
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__damage"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 0,
+						"else": -1
+					},
+					"token_name": "__damage"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger"
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": 1
+				}
+			]
+		},
+		"enemy_attack_happened": {
+			"event_filters": {
+				"filter_state_event_target": "filter_same_controller"
+			},
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "__damage"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": 0,
+						"else": -1
+					},
+					"token_name": "__damage"
+				},
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "trigger"
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": 1
+				}
+			]
+		}
 	},
 	"Bear Hug": {
 		"uses": {
@@ -854,9 +1151,25 @@
 						"discard_villain"
 					],
 					"filter_state_tutor": [
-						"attachment"
-					],
-					"_comments": "TODO only attachments that can attach to a minion"
+						{
+							"filter_properties": {
+								"type_code": "attachment"
+							},
+							"filter_func": {
+								"func_name": "property_contains",
+								"func_params": {
+									"subject": "trigger",
+									"property": "real_text",
+									"value": [
+										"attach to a minion",
+										"attach to the minion",
+										"attach to an enemy",
+										"attach to the enemy"
+									]
+								}
+							}
+						}
+					]
 				}
 			]
 		}
@@ -888,16 +1201,18 @@
 					"is_cost": true
 				},
 				{
-					"name": "view_card",
+					"name": "discard",
 					"subject": "index",
 					"subject_index": "top",
-					"subject_count": 2,
 					"src_container": "deck_villain",
-					"_comments": "TODO may discard 1"
+					"subject_count": 2,
+					"needs_selection": true,
+					"display_title": "choose card to discard",
+					"selection_count": 1,
+					"selection_type": "max"
 				}
 			]
-		},
-		"_comments": "TODO with Uses, the support is discarded at 0 counters, which loses the scenario"
+		}
 	},
 	"Betty Brant": {
 		"uses": {
@@ -5147,19 +5462,22 @@
 			]
 		},
 		"boost": {
-			"condition_all": {
-				"func_name": "card_is_in_play",
-				"func_params": {
-					"card_name": "Typhoid Mary"
-				},
-				"_comments": "TODO 'if Typhoid Mary is activating'"
-			},
 			"all": [
 				{
-					"name": "mod_tokens",
-					"token_name": "stunned",
-					"modification": 1,
-					"subject": "current_hero_target"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Typhoid Mary"
+					},
+					"then": [
+						{
+							"name": "mod_tokens",
+							"token_name": "stunned",
+							"modification": 1,
+							"subject": "current_hero_target"
+						}
+					]
 				}
 			]
 		}
@@ -5200,20 +5518,23 @@
 			]
 		},
 		"boost": {
-			"condition_all": {
-				"func_name": "card_is_in_play",
-				"func_params": {
-					"card_name": "Typhoid Mary"
-				},
-				"_comments": "TODO 'if Typhoid Mary is activating'"
-			},
 			"all": [
 				{
-					"name": "deal_damage",
-					"amount": 3,
-					"subject": "boardseek_and_choose",
-					"filter_state_seek": [
-						"group_allies_current_hero_target"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Typhoid Mary"
+					},
+					"then": [
+						{
+							"name": "deal_damage",
+							"amount": 3,
+							"subject": "boardseek_and_choose",
+							"filter_state_seek": [
+								"group_allies_current_hero_target"
+							]
+						}
 					]
 				}
 			]
@@ -6218,6 +6539,18 @@
 					]
 				},
 				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain"
+					],
+					"filter_state_tutor": [
+						"support",
+						"trait_daily_bugle"
+					]
+				},
+				{
 					"name": "sequence",
 					"sequence_ability": "do_bugle"
 				},
@@ -6238,24 +6571,84 @@
 						"name": "move_card_to_board",
 						"subject": "tutor",
 						"sort_by": "random",
-						"src_container": [
-							"deck_villain",
-							"set_aside"
-						],
+						"src_container": "set_aside",
 						"grid_name": "upgrade_support_my_hero",
 						"filter_state_tutor": [
 							"support",
 							"trait_daily_bugle"
-						],
-						"_comments": "TODO under the player's control"
+						]
 					}
 				]
 			}
-		},
-		"TODO": "remove each remaining Daily Bugle support from the game"
+		}
 	},
 	"Stop the Presses! - 1B": {
-		"TODO": "after an undefended attack against you choose: 2 (3) threat here or remove 1 stamina from a Daily Bugle support; lose if a Daily Bugle support leaves play"
+		"card_leaves_play": {
+			"filter_state_trigger": [
+				"support",
+				"trait_daily_bugle"
+			],
+			"board": [
+				{
+					"name": "defeat"
+				}
+			]
+		},
+		"response_enemy_attack_happened": {
+			"condition_board": {
+				"func_name": "current_activation_status",
+				"func_params": {
+					"undefended": true
+				}
+			},
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Threat": [
+					{
+						"name": "add_threat",
+						"subject": "self",
+						"amount": {
+							"if": {
+								"func_name": "get_scenario_option_value",
+								"func_params": {
+									"option_name": "expert_mode"
+								}
+							},
+							"then": 3,
+							"else": 2
+						}
+					}
+				],
+				"Remove Stamina": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stamina",
+						"modification": -1,
+						"is_cost": true,
+						"subject": "boardseek_and_choose",
+						"filter_state_seek": [
+							{
+								"filter_func": {
+									"func_name": "count_tokens",
+									"func_params": {
+										"subject": "trigger",
+										"token_name": "stamina"
+									}
+								},
+								"filter_properties": {
+									"type_code": "support"
+								},
+								"filter_properties2": {
+									"trait_daily_bugle": 1
+								}
+							}
+						]
+					}
+				]
+			}
+		}
 	},
 	"Stop The Presses! #60209a": {
 		"TODO": "each player puts 1 Daily Bugle support into play"
@@ -6610,22 +7003,27 @@
 			]
 		},
 		"boost": {
-			"condition_all": {
-				"func_name": "card_is_in_play",
-				"func_params": {
-					"card_name": "Typhoid Mary"
-				},
-				"_comments": "TODO 'if Typhoid Mary is activating'"
-			},
 			"all": [
 				{
-					"name": "indirect_damage",
-					"amount": 3,
-					"subject": "current_hero_target"
+					"name": "if",
+					"func_name": "is_attached",
+					"func_params": {
+						"subject": "self",
+						"host": "Typhoid Mary"
+					},
+					"then": [
+						{
+							"name": "indirect_damage",
+							"amount": 3,
+							"subject": "current_hero_target",
+							"tags": [
+								"exhaust_if_damage"
+							]
+						}
+					]
 				}
 			]
-		},
-		"_comments": "TODO exhaust each character damaged this way"
+		}
 	},
 	"The Best Offense...": {
 		"alterants": {
@@ -6635,10 +7033,21 @@
 					"filter_property_name": "defense",
 					"alteration": 1,
 					"trigger": "my_hero"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "replace_atk_with_def",
+					"alteration": 1,
+					"trigger": "my_hero"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "replace_thw_with_def",
+					"alteration": 1,
+					"trigger": "my_hero"
 				}
 			]
-		},
-		"TODO": "Use your DEF in place of your THW and ATK (ignore THW/ATK modifiers)"
+		}
 	},
 	"The Clown": {
 		"enemy_scheme_happened": {

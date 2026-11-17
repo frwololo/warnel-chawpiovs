@@ -209,6 +209,8 @@ static func _get_subjects_simplified(string_value, owner_card):
 		"host":
 			return owner_card.current_host_card			
 		_:
+			if string_value.begins_with("group_"):
+				return cfc.get_tree().get_nodes_in_group(string_value)
 			#anything else we try to find a card by that name on the board
 			return cfc.NMAP.board.find_card_by_name(string_value)
 
@@ -243,8 +245,11 @@ static func check_host_filter(trigger_card, owner_card, host_description : Strin
 	if !is_instance_valid(trigger_card): return false
 	if !is_instance_valid(owner_card): return false
 	
-	var expected_host = _get_subjects_simplified(host_description, trigger_card)	
-	if owner_card.current_host_card == expected_host:
+	var expected_hosts = _get_subjects_simplified(host_description, trigger_card)
+	if typeof(expected_hosts) != TYPE_ARRAY:
+		expected_hosts = [expected_hosts]	
+		
+	if owner_card.current_host_card in expected_hosts:
 		return true
 	
 	return false

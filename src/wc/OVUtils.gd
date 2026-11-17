@@ -1101,3 +1101,10 @@ func parse_additional_script_replacements(script):
 								if villain:
 									var actual_str_pty = villain.get_property(actual_property, "")
 									property_filters[property] = actual_str_pty
+							elif str_pty.begins_with("[nemesis_set_"):
+								var hero_target = str_pty.replace("[nemesis_set_", "").replace("]","")
+								var heroes = cfc.ov_utils.get_subjects(script, hero_target)
+								if heroes:
+									var hero = heroes[0]
+									var nemesis_set = WCUtils.get_nemesis_set_name(hero.canonical_id)
+									property_filters[property] = nemesis_set

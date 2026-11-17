@@ -56,9 +56,6 @@
 					"card": "Backflip"
 				},
 				{
-					"card": "Black Cat"
-				},
-				{
 					"card": "Strength"
 				},
 				{
@@ -67,7 +64,7 @@
 			],
 			"allies1": [
 				{
-					"card": "Black Cat"
+					"card": "Black Cat #01002"
 				}
 			],
 			"identity1": [
@@ -124,7 +121,7 @@
 	"actions": [
 		{
 			"type": "select",
-			"value": "Black Cat",
+			"value": "Black Cat #01002",
 			"hero": 2,
 			"_comments": "Spider-Man defends with Black Cat on behalf of Captain Marvel"
 		},
@@ -181,9 +178,6 @@
 					"card": "Backflip"
 				},
 				{
-					"card": "Black Cat"
-				},
-				{
 					"card": "Strength"
 				},
 				{
@@ -197,7 +191,7 @@
 			],
 			"discard1": [
 				{
-					"card": "Black Cat"
+					"card": "Black Cat #01002"
 				}
 			],
 			"identity1": [

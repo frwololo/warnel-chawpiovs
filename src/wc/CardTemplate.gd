@@ -1618,7 +1618,13 @@ func get_property(property: String, default = null, force_alterant_check = false
 					return result
 				_:
 					return 0
-				
+	
+	#replace atk/thw with defense
+	if property == "attack" and get_property("replace_atk_with_def", 0, true):
+		return get_property("defense", default, force_alterant_check)
+	if property == "thwart" and get_property("replace_thw_with_def", 0, true):
+		return get_property("defense", default, force_alterant_check)	
+		
 	return(get_property_and_alterants(property, false, default).value)		
 			
 
@@ -4158,10 +4164,22 @@ func is_attached(params := {}, script:ScriptObject= null) -> bool:
 	var subject = get_param_subject(params, script)
 	if !subject:
 		return false
-			
-	if subject.current_host_card:
-		return true
-	return false
+
+	if !subject:
+		return false
+
+	var host_str = params.get("host", "")
+	var expected_host = null 
+	if host_str:
+		expected_host = get_param_subject({"subject": host_str}, script)
+
+	if !subject.current_host_card:
+		return false
+		
+	if host_str:
+		return subject.current_host_card == expected_host
+				
+	return true
 
 func is_character(params := {}, script:ScriptObject= null) -> bool:
 	var subject = get_param_subject(params, script)

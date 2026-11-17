@@ -58,7 +58,7 @@
 					"card": "Combat Training"
 				},
 				{
-					"card": "Shadowcat - Kitty Pryde"
+					"card": "Shadowcat - Kitty Pryde #32002"
 				}
 			]
 		}
@@ -143,7 +143,7 @@
 			],
 			"allies1": [
 							{
-					"card": "Shadowcat - Kitty Pryde",
+					"card": "Shadowcat - Kitty Pryde #32002",
 					"tokens": {"damage": 2},
 					"exhausted": true
 				}

@@ -1226,3 +1226,12 @@ static func find_team_up_cards_for_hero(card_id):
 		elif team_members[0] == alter_ego_name or team_members[1] == alter_ego_name:		
 			results.append(card_id)
 	return results
+
+static func get_nemesis_set_name(card_id_or_data):
+	var card_data = card_id_or_data
+	if typeof(card_id_or_data) == TYPE_STRING:
+		card_data = cfc.get_card_by_id(card_id_or_data)
+	
+	var hero_set = card_data["card_set_code"]
+	var nemesis_set = hero_set + "_nemesis"
+	return nemesis_set

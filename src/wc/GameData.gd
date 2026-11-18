@@ -1454,8 +1454,15 @@ func ready_all_player_cards():
 		var cards:Array = cfc.NMAP["board"].get_all_cards() #TODO hero cards only
 		for card in cards:
 			if card.get_controller_hero_id() > 0:
-				if not card._horizontal:
-					card.readyme()	
+				if not card._horizontal and not card.is_ready():
+					var definition = {
+						"name": "ready_card",
+						"_silent": true
+					}
+					var task = ScriptTask.new(card, definition, card, {})
+					task.set_subjects([card])
+					var stackEvent = SimplifiedStackScript.new(task)									
+					gameData.theStack.add_script(stackEvent)
 
 
 func end_round():

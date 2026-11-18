@@ -2423,7 +2423,17 @@ func move_boost_cards(script:ScriptTask) ->int:
 
 	var subject = script.subjects[0]
 
-	var boost_cards = source.get_boost_cards(CFConst.FLIP_STATUS.FACEDOWN)
+	var boost_cards = []
+	var filters = script.get_property("filter_state_boost", [])
+	if filters:
+		var all_boost_cards = source.get_boost_cards()
+		for card in all_boost_cards:
+			if SP.check_validity(card, script.script_definition, "boost", card):
+				boost_cards.append(card)
+	else:
+		#"historical" use case: move facedown boosts from villain to hero (venom goblin)
+		boost_cards = source.get_boost_cards(CFConst.FLIP_STATUS.FACEDOWN)
+	
 	for card in boost_cards:
 		card.attach_to_host(subject, false, ["as_boost"])
 

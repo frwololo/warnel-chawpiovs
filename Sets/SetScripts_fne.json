@@ -2109,34 +2109,36 @@
 	},
 	"Cloak - Tyrone Johnson": {
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "exhaust_card",
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "pay_cost",
-					"cost": {
-						"energy": 2
+			"board": {
+				"Fetch Dagger": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
 					},
-					"is_cost": true
-				},
-				{
-					"name": "move_card_to_board",
-					"subject": "find",
-					"filter_state_tutor": [
-						"Dagger"
-					]
-				}
-			]
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_board",
+						"subject": "find",
+						"filter_state_tutor": [
+							"Dagger"
+						]
+					}
+				]
+			}
 		}
 	},
 	"Cold as Ice": {
@@ -2590,7 +2592,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "trigger",
-					"subject_index": "bottom",
+					"dest_index": "bottom",
 					"dest_container": "deck_sense_my_hero"
 				}
 			]
@@ -3564,10 +3566,23 @@
 					"subject": "self"
 				},
 				{
-					"name": "save_variable",
-					"var_name": "my_discount",
-					"value": -2,
-					"mode": "add"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": {	
+						"event": "card_played",
+					},
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"filter_state_trigger": "filter_same_controller",
+									"alteration": -2
+								}
+							]
+						},
+					}
 				}
 			]
 		},
@@ -3583,48 +3598,26 @@
 					"subject": "self"
 				},
 				{
-					"name": "save_variable",
-					"var_name": "my_discount",
-					"value": -2,
-					"mode": "add"
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": {	
+						"event": "card_played",
+					},
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"filter_state_trigger": "filter_same_controller",
+									"alteration": -2
+								}
+							]
+						},
+					}
 				}
 			]
 		},
-		"self_moved_to_board": {
-			"board": [
-				{
-					"name": "forget_variable",
-					"var_name": "my_discount"
-				}
-			]
-		},
-		"alterants": {
-			"all": [
-				{
-					"filter_task": "get_property",
-					"filter_property_name": "cost",
-					"filter_state_trigger": "filter_same_controller",
-					"alteration": "my_discount"
-				}
-			]
-		},
-		"card_played": {
-			"filter_state_trigger": "filter_same_controller",
-			"all": [
-				{
-					"name": "forget_variable",
-					"var_name": "my_discount"
-				}
-			]
-		},
-		"phase_ended": {
-			"all": [
-				{
-					"name": "forget_variable",
-					"var_name": "my_discount"
-				}
-			]
-		}
 	},
 	"Escort Vehicle": {
 		"alterants": {
@@ -5849,7 +5842,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "trigger",
-					"subject_index": "bottom",
+					"dest_index": "bottom",
 					"dest_container": "deck_sense_my_hero"
 				}
 			]
@@ -9056,7 +9049,7 @@
 						"filter_state_tutor": [
 							"upgrade",
 							"trait_sense"
-						],
+						]
 					}
 				],
 				"Ready Daredevil": [
@@ -9243,7 +9236,7 @@
 							"sort_name": "get_subject_int_printed_property",
 							"func_params": {
 								"property": "cost"
-							}							
+							}
 						}
 					},
 					"subject": "Maya Lopez"
@@ -9478,21 +9471,30 @@
 	},
 	"Traffic Jam": {
 		"interrupt_add_threat": {
-			"filter_state_trigger": [{
-				"filter_func": {
-					"func_name": "count_attachments",
-					"func_params": {
-						"subject": "trigger",
-						"filter_state_attachment": ["trait_vehicle"]
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "trigger",
+							"filter_state_attachment": [
+								"trait_vehicle"
+							]
+						}
 					}
 				}
-			}],
+			],
 			"event_filters": {
-				"filter_state_event_target": [{
-					"_comments": "avoid self to not have infinite loop",
-					"filter_properties": {"shortname": "Traffic Jam", "comparison": "ne"}
-				}]
-			},			
+				"filter_state_event_target": [
+					{
+						"_comments": "avoid self to not have infinite loop",
+						"filter_properties": {
+							"shortname": "Traffic Jam",
+							"comparison": "ne"
+						}
+					}
+				]
+			},
 			"board": [
 				{
 					"name": "prevent",
@@ -9502,26 +9504,35 @@
 				{
 					"name": "add_threat",
 					"subject": "self",
-					"amount": "trigger_details_amount",
-				},
+					"amount": "trigger_details_amount"
+				}
 			]
 		},
 		"interrupt_remove_threat": {
-			"filter_state_trigger": [{
-				"filter_func": {
-					"func_name": "count_attachments",
-					"func_params": {
-						"subject": "trigger",
-						"filter_state_attachment": ["trait_vehicle"]
+			"filter_state_trigger": [
+				{
+					"filter_func": {
+						"func_name": "count_attachments",
+						"func_params": {
+							"subject": "trigger",
+							"filter_state_attachment": [
+								"trait_vehicle"
+							]
+						}
 					}
 				}
-			}],
+			],
 			"event_filters": {
-				"filter_state_event_target": [{
-					"_comments": "avoid self to not have infinite loop",
-					"filter_properties": {"shortname": "Traffic Jam", "comparison": "ne"}
-				}]
-			},				
+				"filter_state_event_target": [
+					{
+						"_comments": "avoid self to not have infinite loop",
+						"filter_properties": {
+							"shortname": "Traffic Jam",
+							"comparison": "ne"
+						}
+					}
+				]
+			},
 			"board": [
 				{
 					"name": "prevent",
@@ -9531,10 +9542,10 @@
 				{
 					"name": "remove_threat",
 					"subject": "self",
-					"amount": "trigger_details_amount",
-				},
+					"amount": "trigger_details_amount"
+				}
 			]
-		},		
+		}
 	},
 	"Tug of War": {
 		"reveal": {
@@ -9714,7 +9725,7 @@
 		"reveal": {
 			"all": [
 				{
-					"name" :"if",
+					"name": "if",
 					"func_name": "count_cards",
 					"func_params": {
 						"subject": "my_nemesis"
@@ -9730,14 +9741,21 @@
 						{
 							"name": "reveal_nemesis",
 							"subject": "my_identity",
-							"is_cost": true,
+							"is_cost": true
 						},
 						{
 							"is_else": true,
-							"name" :"reveal_encounter",
+							"name": "reveal_encounter",
 							"subject": "tutor_and_choose",
-							"src_container": ["set_aside", "deck_villain", "discard_villain"],
-							"filter_state_tutor": ["minion", "trait_underling"]
+							"src_container": [
+								"set_aside",
+								"deck_villain",
+								"discard_villain"
+							],
+							"filter_state_tutor": [
+								"minion",
+								"trait_underling"
+							]
 						}
 					]
 				}

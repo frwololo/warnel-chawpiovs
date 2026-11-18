@@ -877,13 +877,18 @@ func save_variable(script:ScriptTask) -> int:
 	if !var_name:
 		return CFConst.ReturnCode.FAILED
 
-	var var_type = script.script_definition.get("var_type", "")
-	if !var_type in ["subject", "int", "str"]:
-		return CFConst.ReturnCode.FAILED
-
 	var value = script.script_definition.get("value", null)
 	if value == null:
 		return CFConst.ReturnCode.FAILED
+
+	var var_type = script.script_definition.get("var_type", "")
+	if !var_type in ["subject", "int", "str"]:
+		if typeof(value) == TYPE_INT:
+			var_type = "int"
+		else:
+			return CFConst.ReturnCode.FAILED
+
+
 
 
 	if costs_dry_run():

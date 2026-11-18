@@ -143,17 +143,21 @@ func _log_and_reset_stats() -> void:
 #NOTE: no run_mode condition here, on purpose: the authorized client switches to
 #PENDING_USER_INTERACTION right away whatever its run_mode, so this client must too,
 #otherwise its stack keeps running past the decision point
-func set_pending_network_interaction(_interaction_authority, checksum, reason:=""):
+func set_pending_network_interaction(interaction_authority, checksum, reason:=""):
+	var hero_ids = []
+	if interaction_authority:
+		hero_ids = interaction_authority.expected_hero_ids()
 	if _decision_must_wait_for_flush():
 		the_stack.display_debug("set_pending_network_interaction deferred behind ongoing/deferred scripts - " + checksum)
 		the_stack.add_yielded_script({
 			"type": "pending_network_interaction",
 			"checksum": checksum,
 			"reason": reason,
+			"hero_ids": hero_ids,
 			"yield_reason": "set_pending_network_interaction",
 		})
 		return
-	enter_pending_network_interaction(checksum, reason)
+	enter_pending_network_interaction(checksum, reason, hero_ids)
 
 #The one condition under which a decision reached now waits for the drain
 #point, on the deciding client as well as on the waiting ones
@@ -167,12 +171,14 @@ func should_defer_decision(exec_config: Dictionary) -> bool:
 		return false
 	return _decision_must_wait_for_flush()
 
-func enter_pending_network_interaction(checksum, reason:=""):
+#hero_ids: the heroes expected to make that decision (see
+#UserInteractionAuthority.expected_hero_ids), kept for is_waiting_for_remote_player
+func enter_pending_network_interaction(checksum, reason:="", hero_ids:= []):
 	if reason:
 		the_stack.display_debug(reason)
 	if the_stack.pending_interaction_checksums:
 		the_stack.display_debug("error, assked to set to pending_interaction but pending queue not empty " + to_json(the_stack.pending_interaction_checksums))
-	the_stack.pending_interaction_checksums[checksum] = true	
+	the_stack.pending_interaction_checksums[checksum] = hero_ids
 	the_stack.set_run_mode(the_stack.RUN_MODE.PENDING_USER_INTERACTION, "set_pending_network_interaction - " + checksum)
 
 #A player who opens a choice on a manual play (e.g. "manual - Spider-Man") and cancels it

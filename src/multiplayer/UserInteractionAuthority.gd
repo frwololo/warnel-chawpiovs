@@ -35,6 +35,13 @@ func authorized_hero_id() -> int:
 	var authority_status = compute_authority()
 	return authority_status["authorized_hero_id"]
 
+#The heroes who can make this decision, mine or not. Unlike authorized_hero_id,
+#also valid on a client that isn't authorized itself (the one waiting for the
+#decision). Empty when any player can make the decision
+func expected_hero_ids() -> Array:
+	var authority_status = compute_authority()
+	return authority_status["expected_hero_ids"]
+
 func compute_authority() -> Dictionary:
 	if authority_cache:
 		return authority_cache
@@ -43,6 +50,7 @@ func compute_authority() -> Dictionary:
 		"authorized": false,
 		"authorized_hero_id": 0,
 		"authorized_network_id": 0,
+		"expected_hero_ids": [],
 		"error": ""
 	}	
 	
@@ -64,6 +72,35 @@ func compute_authority() -> Dictionary:
 	var for_hero_id = trigger_details.get("for_hero_id", 0)
 
 	var authorized_hero_id = override_controller_id if override_controller_id else for_hero_id
+
+	#enemy cards, multiple players can react except when they're the specific target
+	var is_enemy_card = owner_card.get_controller_hero_id() <= 0
+	var allowed_heroes = []
+	if is_enemy_card:
+		allowed_heroes = gameData.get_currently_playing_hero_ids()
+		if !allowed_heroes:
+#			cfc.LOG("error in compute_authority : no allowed heroes to play " + trigger + " for " + owner_card.canonical_name)
+			allowed_heroes = [gameData.first_player_hero_id()] 
+		#ran into a bug were an encounter ability triggered twice,
+		#executed once by each player. We want to avoid that
+		if trigger != "manual" and allowed_heroes.size() > 1:
+			if trigger_details.get("use_stack", true):
+				#might need to find a better approach
+				allowed_heroes = [allowed_heroes[0]]
+
+	#heroes who can make this decision, whether or not they're mine.
+	#Computed before the checks below, which return early on the clients
+	#that aren't authorized
+	var expected_hero_ids = []
+	if rules.get("any_player_can_use", false):
+		pass
+	elif authorized_hero_id:
+		expected_hero_ids = [authorized_hero_id]
+	elif is_enemy_card:
+		expected_hero_ids = allowed_heroes.duplicate()
+	else:
+		expected_hero_ids = [owner_card.get_controller_hero_id()]
+	authority_cache["expected_hero_ids"] = expected_hero_ids
 
 	#check for authorised hero id to use player cards
 	if rules.get("any_player_can_use", false):
@@ -89,20 +126,8 @@ func compute_authority() -> Dictionary:
 					return authority_cache
 	
 	#check for authorised hero id to use enemy cards	
-	#enemy cards, multiple players can react except when they're the specific target
-	if owner_card.get_controller_hero_id() <= 0:
+	if is_enemy_card:
 		var can_i_play_enemy_card = false
-		var allowed_heroes = gameData.get_currently_playing_hero_ids()
-		if !allowed_heroes:
-#			cfc.LOG("error in compute_authority : no allowed heroes to play " + trigger + " for " + owner_card.canonical_name)
-			allowed_heroes = [gameData.first_player_hero_id()] 
-		#ran into a bug were an encounter ability triggered twice,
-		#executed once by each player. We want to avoid that
-		if trigger != "manual" and allowed_heroes.size() > 1:
-			if trigger_details.get("use_stack", true):
-				#might need to find a better approach
-				allowed_heroes = [allowed_heroes[0]]
-			
 		if for_hero_id:
 			if for_hero_id in allowed_heroes:
 				can_i_play_enemy_card = true
@@ -120,6 +145,7 @@ func compute_authority() -> Dictionary:
 		"authorized": true,
 		"authorized_hero_id": authorized_hero_id,
 		"authorized_network_id": cfc.get_network_unique_id(),
+		"expected_hero_ids": expected_hero_ids,
 		"error": ""
 	}
 	return authority_cache	

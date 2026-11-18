@@ -18,6 +18,7 @@ const face_size := Vector2(100, 100)
 
 onready var heroNode : TextureRect = get_node("%hero")
 onready var label := get_node("%Label")
+onready var network_activity := get_node("%NetworkActivity")
 onready var selected :=  get_node("%ColorRect")
 onready var ping :=  get_node("%Ping")
 onready var first_player :=  get_node("%FirstPlayer")
@@ -31,6 +32,8 @@ var _ping_color = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	selected.visible = false
+	network_activity.visible = false
+	
 	update_picture()
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 	gameData.connect("game_state_changed", self, "_game_state_changed")
@@ -100,6 +103,13 @@ func _process(_delta):
 	#automated gui activity overrides previous decision
 	if gameData.auto_gui_activity_ongoing():
 		heroNode.texture = grayscale_tex
+
+	if gameData.is_multiplayer_game:
+		var remote_activity = gameData.theStack.is_waiting_for_remote_player()
+		if hero_index in remote_activity:
+			network_activity.visible = true
+		else:
+			network_activity.visible = false
 
 func init_hero(_hero_index):
 	hero_index = _hero_index

@@ -133,6 +133,9 @@ const DEFAULT_HERO_STATUS: = {
 var current_step = CFConst.PHASE_STEP.GAME_NOT_STARTED
 var current_step_complete:bool = false
 var clients_ready_for_next_phase:Dictionary = {}
+#network_id -> the step (see _step_key) the other clients last asked to move on
+#from, i.e. finished. Unlike clients_ready_for_next_phase, known by all clients
+var clients_step_done:Dictionary = {}
 
 func step_string_to_step_id(stepString:String) -> int:
 	for i in CFConst.PHASE_STEP.values():
@@ -171,6 +174,7 @@ func _on_target_cancel():
 	owner_card.cancel_targeting()		
 
 func reset(reset_phase:= true):
+	clients_step_done = {}
 	for child in container.get_children():
 		container.remove_child(child)
 		child.queue_free()
@@ -638,11 +642,38 @@ func request_next_phase(caller = "", mode = 0):
 	display_debug("I'm asking the master to move to next phase (" + caller +  "). I'm currently at " + StepStrings[current_step])	
 	#set_current_step_complete(false, caller + ", request_next_phase")
 	cfc._rpc_id(self,1, "client_ready_for_next_phase", current_step, mode)
+	if gameData.is_multiplayer_game:
+		cfc._rpc(self, "client_step_done", _step_key())
 	return true
 	
 func unrequest_next_phase():
 	_pending_next_phase_reply = false
 	cfc._rpc_id(self,1, "client_unready_for_next_phase")	
+	if gameData.is_multiplayer_game:
+		cfc._rpc(self, "client_step_done", "")
+
+#the round is part of the key: the same steps come back every round
+func _step_key() -> String:
+	return str(gameData.current_round) + ":" + str(current_step)
+
+remote func client_step_done(step_key):
+	clients_step_done[cfc.get_rpc_sender_id()] = step_key
+
+#heroes of the other clients that haven't finished the current step yet,
+#once this client has finished it (asked to move to the next one)
+func get_heroes_not_done_with_step() -> Array:
+	if !gameData.is_multiplayer_game or !_pending_next_phase_reply:
+		return []
+	var step_key = _step_key()
+	var my_network_id = cfc.get_network_unique_id()
+	var result = []
+	for network_id in gameData.network_players:
+		if network_id == my_network_id:
+			continue
+		if clients_step_done.get(network_id, "") == step_key:
+			continue
+		result += gameData.get_heroes_of_network_id(network_id)
+	return result
 
 func set_current_step_complete(value:bool, caller = ""):
 	if value:

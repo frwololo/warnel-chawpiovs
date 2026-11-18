@@ -79,6 +79,7 @@ var throttle_after_no_brakes:int = 0
 var pending_stack_yield = {}
 const yield_max_wait_time : float= 5.0
 var history := {}
+#checksum -> Array of the hero ids expected to make that decision (can be empty)
 var pending_interaction_checksums := {}
 var sync_enabled = true
 
@@ -427,7 +428,7 @@ func attempt_yielded_script():
 	log_flow("inbox", str(script_data.get("type", "script")) + " '" + str(script_data.get("checksum", "")) + "'")
 
 	if script_data.get("type", "") == "pending_network_interaction":
-		get_sync().enter_pending_network_interaction(script_data["checksum"], script_data["reason"])
+		get_sync().enter_pending_network_interaction(script_data["checksum"], script_data["reason"], script_data.get("hero_ids", []))
 		return
 
 	if script_data.get("type", "") == "deferred_decision":
@@ -1196,6 +1197,7 @@ func add_script(stackEvent, context:= {}):
 
 var _sent_about_to_execute_signal = {}
 func _process(delta: float):
+	_update_local_user_busy()
 	
 	if get_sync().on_process(delta):
 		return
@@ -1694,8 +1696,24 @@ func update_local_client_status():
 	all_clients_status[my_network_id] ={
 		"tick": _local_status_counter,
 		"run_mode": run_mode,
-		"current_stack_uid": self.current_stack_uid
+		"current_stack_uid": self.current_stack_uid,
+		"user_busy": _local_user_busy,
 	}
+
+#true while this client shows something its player has to look at or answer
+#(a modal menu or a blocking announce). Sent to the other clients with the
+#run mode, see is_waiting_for_remote_player
+var _local_user_busy := false
+
+func _update_local_user_busy():
+	if !gameData.is_multiplayer_game:
+		return
+	var busy = cfc.is_modal_event_ongoing()
+	if busy == _local_user_busy:
+		return
+	_local_user_busy = busy
+	update_local_client_status()
+	cfc._rpc(self,"client_run_mode_changed", all_clients_status[cfc.get_network_unique_id()])
 
 func set_run_mode(new_value, caller = ""):
 	if run_mode == new_value:
@@ -1768,6 +1786,67 @@ func is_interrupt_mode()  -> bool:
 #		GlobalScriptStack.InterruptMode.OPTIONAL_INTERRUPT_CHECK,
 #		GlobalScriptStack.InterruptMode.FORCED_INTERRUPT_CHECK
 #	]
+
+#The remote heroes this client is waiting on. Empty if we're not waiting on
+#another player, or if a window is open here (then we're the ones deciding).
+#A remote hero is listed when:
+#1) it has to make a decision on the stack (a selection window, a choice menu,
+#   an optional confirmation, an interrupt...). When we can't tell who decides
+#   (e.g. "any player can use"), all the remote heroes are listed
+#2) its client shows something its player has to look at or answer: a modal
+#   menu or a blocking announce, e.g. a StackEventDisplay ("user_busy" status)
+#3) we're done with the current phase step and its client isn't yet (e.g.
+#   mulligan, discard phase, end of the player turn)
+func is_waiting_for_remote_player() -> Array:
+	if !gameData.is_multiplayer_game:
+		return []
+	if cfc.get_modal_menu():
+		return [] # we have a window open, we're not waiting
+
+	if gameData.is_ongoing_blocking_announce():
+		#approximation: there is an ongoing "announce" and we most likely can act on it,
+		#we're not waiting (other players most likely have the same window open)
+		return [] 
+
+	var candidates = []
+	#1) decision on the stack
+	if run_mode == RUN_MODE.PENDING_USER_INTERACTION:
+		if is_interrupt_mode():
+			if interrupting_hero_id:
+				candidates.append(interrupting_hero_id)
+		else:
+			for checksum in pending_interaction_checksums:
+				var hero_ids = pending_interaction_checksums[checksum]
+				if typeof(hero_ids) != TYPE_ARRAY or !hero_ids:
+					hero_ids = _all_hero_ids()
+				_append_unique(candidates, hero_ids)
+
+	#2) a remote client shows a window or a blocking announce
+	var my_network_id = cfc.get_network_unique_id()
+	for network_id in all_clients_status:
+		if network_id == my_network_id:
+			continue
+		if get_client_status(network_id, "user_busy"):
+			_append_unique(candidates, gameData.get_heroes_of_network_id(network_id))
+
+	#3) a remote client hasn't finished the current phase step
+	if gameData.phaseContainer:
+		_append_unique(candidates, gameData.phaseContainer.get_heroes_not_done_with_step())
+
+	var my_heroes = gameData.get_my_heroes()
+	var result = []
+	for hero_id in candidates:
+		if !(hero_id in my_heroes):
+			result.append(hero_id)
+	return result
+
+func _append_unique(array:Array, values:Array):
+	for value in values:
+		if !(value in array):
+			array.append(value)
+
+func _all_hero_ids() -> Array:
+	return gameData.team.keys()
 
 func is_optional_interrupt_mode() -> bool:
 	return is_interrupt_mode() and interrupt_mode == InterruptMode.OPTIONAL_INTERRUPT_CHECK
@@ -2106,6 +2185,7 @@ func reset():
 	_current_interrupted_event = {}
 	history = {}
 	pending_interaction_checksums = {}
+	_local_user_busy = false
 	_pending_flush = {}
 	_stash_pending_flush = {}
 	_sent_about_to_execute_signal = {}

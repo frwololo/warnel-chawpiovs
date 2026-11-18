@@ -3177,9 +3177,11 @@ func can_i_play_this_hero(hero_index)-> bool:
 	return false
 
 func get_my_heroes() -> Array:
+	return get_heroes_of_network_id(cfc.get_network_unique_id())
+
+#heroes controlled by the client with that network id
+func get_heroes_of_network_id(network_id) -> Array:
 	var result = []
-	var network_id = cfc.get_network_unique_id()	
-	
 	for hero_index in team.keys():
 		var hero_data = team[hero_index]
 		var hero_deck_data:HeroDeckData = hero_data["hero_data"]

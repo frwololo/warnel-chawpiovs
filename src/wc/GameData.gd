@@ -336,6 +336,11 @@ func is_targeting_ongoing():
 
 
 func end_game(result:String):
+	#hide hands to not disrupt the game over display
+	var the_hand = cfc.NMAP.get("hand1", null)
+	if the_hand: 
+		the_hand.visible = false
+		
 	var game_over_screen = _GAME_OVER_SCENE.instance()
 	match _game_over:
 		"victory":

@@ -31,7 +31,7 @@ func interaction_authorized() -> bool:
 	var authority_status = compute_authority()
 	return authority_status["authorized"]
 
-func authorized_hero_id() -> bool:
+func authorized_hero_id() -> int:
 	var authority_status = compute_authority()
 	return authority_status["authorized_hero_id"]
 

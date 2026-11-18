@@ -3568,8 +3568,8 @@
 				{
 					"name": "add_script",
 					"subject": "self",
-					"end_condition": {	
-						"event": "card_played",
+					"end_condition": {
+						"event": "card_played"
 					},
 					"script": {
 						"alterants": {
@@ -3581,7 +3581,7 @@
 									"alteration": -2
 								}
 							]
-						},
+						}
 					}
 				}
 			]
@@ -3600,8 +3600,8 @@
 				{
 					"name": "add_script",
 					"subject": "self",
-					"end_condition": {	
-						"event": "card_played",
+					"end_condition": {
+						"event": "card_played"
 					},
 					"script": {
 						"alterants": {
@@ -3613,11 +3613,11 @@
 									"alteration": -2
 								}
 							]
-						},
+						}
 					}
 				}
 			]
-		},
+		}
 	},
 	"Escort Vehicle": {
 		"alterants": {
@@ -7494,7 +7494,87 @@
 		}
 	},
 	"Shocking Revelation": {
-		"TODO": "discard top card per card you control; per [energy] discarded: 1 indirect or 1 charge counter"
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard",
+					"count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_same_controller": true,
+									"filter_func": {
+										"_comments": "avoid counting enemy cards in there",
+										"func_name": "is_player_card",
+										"func_params": {
+											"subject": "trigger"
+										}
+									}
+								}
+							]
+						}
+					},
+					"max_count": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "index",
+							"subject_count": "all",
+							"src_container": "deck_my_hero"
+						}
+					}
+				}
+			]
+		},
+		"do_discard": {
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_current_my_hero"
+				},
+				{
+					"name": "if",
+					"func_name": "count_printed_resources",
+					"func_params": {
+						"subject": "previous",
+						"resource_type": "energy"
+					},
+					"then": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_choose"
+						}
+					]
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Indirect Damage": [
+					{
+						"name": "indirect_damage",
+						"subject": "my_identity"
+					}
+				],
+				"Add Charge": [
+					{
+						"name": "mod_tokens",
+						"subject": "Electric Charge",
+						"is_cost": true,
+						"modification": 1,
+						"token_name": "charge"
+					}
+				]
+			}
+		}
 	},
 	"Shop Proprietor": {
 		"reveal": {

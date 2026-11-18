@@ -3028,6 +3028,11 @@
 	},
 	"Echo": {
 		"response_card_played": {
+			"event_filters": {
+				"tags": [
+					"!disable_watch_and_learn"
+				]
+			},
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
@@ -6332,7 +6337,7 @@
 		}
 	},
 	"Pawn Shop Showdown - 1B": {
-		"_comments": "TODO cost dicsount should only be for upgrades played in this zone",
+		"_comments": "TODO cost discount should only be for upgrades played in this zone",
 		"once_per_round": {
 			"__name__": "__upgrade_cost_reduction"
 		},
@@ -6429,14 +6434,51 @@
 			}
 		}
 	},
-	"Photographic Reflexes #60040a": {
-		"TODO": "discard from hand to play an event tucked under Echo (cost -2)"
-	},
-	"Photographic Reflexes #60040b": {
-		"TODO": "discard from hand to play an event tucked under Echo (cost -2)"
-	},
-	"Photographic Reflexes #60040c": {
-		"TODO": "discard from hand to play an event tucked under Echo (cost -2)"
+	"Photographic Reflexes": {
+		"manual": {
+			"hand": [
+				{
+					"name": "add_script",
+					"end_condition": {
+						"event": "card_played",
+						"event_filters": {
+							"trigger": "self"
+						}
+					},
+					"subject": "attachments",
+					"subject_count": "all",
+					"attachments_host": "self",
+					"needs_subject": true,
+					"subject_count": "all",
+					"selection_count": 1,
+					"selection_type": "max",
+					"needs_selection": true,
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cost",
+									"alteration": -2,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "hand",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"tags": [
+						"disable_watch_and_learn"
+					],
+					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
+				}
+			]
+		}
 	},
 	"Police Cordon": {
 		"alterants": {
@@ -6545,23 +6587,11 @@
 			]
 		}
 	},
-	"Protection Racket - 1A #60134a": {
-		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
-	},
-	"Protection Racket - 1A #60135a": {
-		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
-	},
-	"Protection Racket - 1A #60136a": {
-		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
-	},
-	"Protection Racket - 1A #60137a": {
-		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
-	},
-	"Protection Racket - 1A #60138a": {
+	"Protection Racket - 1A": {
 		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
 	},
 	"Protection Racket #60207a": {
-		"TODO": "After mulligans, each player may search deck and discard for a support and add it to hand (expert: then discard 1)"
+		"TODO": "campaign mode not supported"
 	},
 	"Protection Racket #60207b": {
 		"setup": {
@@ -6775,8 +6805,7 @@
 					"name": "flip_doublesided_card",
 					"subject": "self"
 				}
-			],
-			"_comments": "TODO threshold is 2[per_hero]+2 (verify 'plus' with Np comparator)"
+			]
 		}
 	},
 	"Public Support #60163b": {
@@ -6793,7 +6822,22 @@
 				}
 			]
 		},
-		"TODO": "When an enemy would be given a facedown boost card, remove 1[per_hero] support counters instead"
+		"interrupt_draw_boost_card": {
+			"filter_state_trigger": "group_enemies",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "support",
+					"modification": "1p",
+					"is_inverted": true,
+					"subject": "self"
+				}
+			]
+		}
 	},
 	"Purple Man - 1": {
 		"alterants": {
@@ -6809,7 +6853,41 @@
 				}
 			]
 		},
-		"TODO": "Purple Man boost cards: deal to yourself after this activation"
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"boost": {
+							"all": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"enemy_activation_finished": {
+											"all": [
+												{
+													"name": "give_as_boost_card",
+													"host": "current_hero_target",
+													"subject": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"card_set_code": "purple_man"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Purple Man - 2": {
 		"alterants": {
@@ -6834,7 +6912,41 @@
 				}
 			]
 		},
-		"TODO": "Purple Man boost cards"
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"boost": {
+							"all": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"enemy_activation_finished": {
+											"all": [
+												{
+													"name": "give_as_boost_card",
+													"host": "current_hero_target",
+													"subject": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"card_set_code": "purple_man"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Purple Man - 3": {
 		"alterants": {
@@ -6868,7 +6980,41 @@
 				}
 			]
 		},
-		"TODO": "Purple Man boost cards"
+		"script_alterants": {
+			"board": [
+				{
+					"script": {
+						"boost": {
+							"all": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"enemy_activation_finished": {
+											"all": [
+												{
+													"name": "give_as_boost_card",
+													"host": "current_hero_target",
+													"subject": "self"
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"card_set_code": "purple_man"
+							}
+						}
+					]
+				}
+			]
+		}
 	},
 	"Radar Sense": {
 		"attach_upgrade_to_target": {
@@ -6920,6 +7066,26 @@
 				{
 					"name": "draw_boost_card",
 					"subject": "host"
+				},
+				{
+					"name": "add_script",
+					"subject": "self",
+					"end_condition": "enemy_activation_finished",
+					"script": {
+						"card_defeated": {
+							"filter_state_trigger": "group_friendly",
+							"all": [
+								{
+									"name": "remove_from_game",
+									"subject": "trigger"
+								},
+								{
+									"name": "remove_from_game",
+									"subject": "self"
+								}
+							]
+						}
+					}
 				}
 			]
 		},
@@ -6932,8 +7098,7 @@
 					"dest_container": "deck_villain"
 				}
 			]
-		},
-		"TODO": "If this attack defeats a friendly character, remove them and this card from the game"
+		}
 	},
 	"Raised by the Kingpin": {
 		"give_obligation": {
@@ -6949,7 +7114,7 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "find",
-					"grid_name": "enemies_active_player",
+					"grid_name": "enemies_my_hero",
 					"filter_state_tutor": [
 						"Kingpin",
 						"minion"
@@ -6986,7 +7151,19 @@
 				}
 			]
 		},
-		"TODO": "You cannot deal damage to Kingpin"
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"actual_source": "my_identity",
+				"filter_state_event_target": "Kingpin"
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			]
+		}
 	},
 	"Raising Hell": {
 		"manual": {
@@ -7332,8 +7509,7 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "self",
-					"grid_name": "allies_my_hero",
-					"_comments": "TODO put into play under your control"
+					"grid_name": "allies_my_hero"
 				},
 				{
 					"name": "surge"
@@ -7430,8 +7606,7 @@
 					}
 				]
 			}
-		},
-		"_comments": "TODO with Uses, discard happens at 0 counters (here that means the disaster is averted)"
+		}
 	},
 	"Sister Maggie": {
 		"alterants": {
@@ -7447,15 +7622,35 @@
 		"recovery_happened": {
 			"trigger": "my_identity",
 			"is_optional_board": true,
-			"board": [
-				{
-					"name": "mod_tokens",
-					"token_name": "stunned",
-					"modification": -1,
-					"subject": "my_identity",
-					"_comments": "TODO choose which status card"
-				}
-			]
+			"board": {
+				"Remove Stunned": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": -1,
+						"is_cost": 1,
+						"subject": "my_identity"
+					}
+				],
+				"Remove Confused": [
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": -1,
+						"is_cost": 1,
+						"subject": "my_identity"
+					}
+				],
+				"Remove Tough": [
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": -1,
+						"is_cost": 1,
+						"subject": "my_identity"
+					}
+				]
+			}
 		}
 	},
 	"Skater Punk": {
@@ -7599,9 +7794,8 @@
 									"name": "replacement_effect",
 									"subject": "interrupted_event",
 									"replacements": {
-										"subject": "trigger"
-									},
-									"_comments": "TODO trigger=attacker?"
+										"subject": "trigger_details_attacker"
+									}
 								}
 							]
 						}
@@ -7655,10 +7849,276 @@
 	},
 	"Stealth Training": {
 		"give_to_player_max1": {},
-		"TODO": "After you thwart and exactly defeat a side scheme, exhaust → stun an enemy"
+		"last_threat_removed": {
+			"filter_state_trigger": "side_scheme",
+			"event_filters": {
+				"excess": 0
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"subject": "an_enemy",
+					"token_name": "stunned",
+					"modification": 1
+				}
+			]
+		}
 	},
 	"Stick": {
-		"TODO": "Martial Artist basic power +1 (exhaust Stick) or -1 (ready Stick)"
+		"interrupt_attack_started": {
+			"filter_state_trigger": [
+				"group_friendly",
+				"trait_martial_artist"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": {
+				"+1 ATK": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "attack_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				],
+				"-1 ATK": [
+					{
+						"name": "ready_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "attack_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": -1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"interrupt_thwart_started": {
+			"filter_state_trigger": [
+				"group_friendly",
+				"trait_martial_artist"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": {
+				"+1 THW": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "thwart_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				],
+				"-1 THW": [
+					{
+						"name": "ready_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "thwart_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "thwart",
+										"trigger": "self",
+										"alteration": -1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"interrupt_recovery": {
+			"filter_state_trigger": [
+				"group_friendly",
+				"trait_martial_artist"
+			],
+			"event_filters": {
+				"tags": [
+					"basic power"
+				]
+			},
+			"is_optional_board": true,
+			"board": {
+				"+1 REC": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "recovery_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "recover",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				],
+				"-1 REC": [
+					{
+						"name": "ready_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "recovery_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "recover",
+										"trigger": "self",
+										"alteration": -1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		},
+		"interrupt_defender_chosen": {
+			"filter_state_trigger": [
+				"group_identities",
+				"trait_martial_artist"
+			],
+			"event_filters": {
+				"tags": [
+					"basic_defense"
+				]
+			},
+			"is_optional_board": true,
+			"board": {
+				"+1 DEF": [
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "defense_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "defe,se",
+										"trigger": "self",
+										"alteration": 1
+									}
+								]
+							}
+						}
+					}
+				],
+				"-1 DEF": [
+					{
+						"name": "ready_card",
+						"is_cost": true,
+						"subject": "self"
+					},
+					{
+						"name": "add_script",
+						"subject": "trigger",
+						"end_condition": "defense_happened",
+						"script": {
+							"alterants": {
+								"board": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "defense",
+										"trigger": "self",
+										"alteration": -1
+									}
+								]
+							}
+						}
+					}
+				]
+			}
+		}
 	},
 	"Stilt-Man": {
 		"self_moved_to_board": {
@@ -7933,7 +8393,7 @@
 		}
 	},
 	"Stop The Presses! #60209a": {
-		"TODO": "each player puts 1 Daily Bugle support into play"
+		"TODO": "campaign mode not supported"
 	},
 	"Stop The Presses! #60209b": {
 		"setup": {
@@ -7983,7 +8443,7 @@
 					"name": "move_card_to_container",
 					"subject": "tutor_and_choose",
 					"dest_container": "hand",
-					"src_container": "discard",
+					"src_container": "any_discard",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -8026,8 +8486,7 @@
 								"shortname": "Photographic Reflexes"
 							}
 						}
-					],
-					"_comments": "TODO any player's discard pile"
+					]
 				}
 			]
 		}
@@ -8227,8 +8686,26 @@
 			"all": [
 				{
 					"name": "add_script",
-					"end_condition": "phase_ended",
-					"subject": "self",
+					"end_condition": {
+						"event": "enemy_activation_finished",
+						"trigger": "self"
+					},
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "villain"
+							}
+						},
+						{
+							"filter_group": "group_enemies_my_hero",
+							"filter_properties": {
+								"trait_aerial": 1,
+								"comparison": "ge"
+							}
+						}
+					],
 					"script": {
 						"alterants": {
 							"board": [
@@ -8236,10 +8713,7 @@
 									"filter_task": "get_property",
 									"filter_property_name": "attack",
 									"alteration": 2,
-									"filter_state_trigger": [
-										"group_enemies",
-										"trait_aerial"
-									]
+									"trigger": "self"
 								}
 							]
 						}
@@ -8249,8 +8723,7 @@
 					"name": "villain_and_enemies_attack_you"
 				}
 			]
-		},
-		"_comments": "TODO add_script end condition: should end after these activations"
+		}
 	},
 	"Telekinesis": {
 		"card_moved_to_board": {
@@ -8358,8 +8831,7 @@
 						"then": 2,
 						"else": 1
 					},
-					"subject": "main_scheme",
-					"_comments": "TODO tokens go on stage 1B after flip"
+					"subject": "self"
 				},
 				{
 					"name": "host_card",
@@ -8381,13 +8853,50 @@
 		}
 	},
 	"The Getaway - 1B": {
-		"TODO": "end of round: speed counter; flip Alongside to Out Front or extra speed counter"
+		"round_ended": {
+			"condition_board": {
+				"func_name": "count_tokens",
+				"func_params": {
+					"subject": "self",
+					"token_name": "threat"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "speed",
+					"modification": 1,
+					"subject": "self"
+				},
+				{
+					"name": "if",
+					"func_name": "card_is_in_play",
+					"func_params": {
+						"card_name": "Alongside"
+					},
+					"then": [
+						{
+							"name": "flip_doublesided_card",
+							"subject": "Alongside"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "speed",
+							"modification": 1,
+							"subject": "self"
+						}
+					]
+				}
+			]
+		}
 	},
 	"The Getaway #60206a": {
-		"TODO": "After mulligans, each player may search deck and discard for a upgrade and add it to hand (expert: then discard 1)"
+		"TODO": "campaign mode not supported"
 	},
 	"The Getaway #60206b": {
-		"TODO": "each player searches the encounter deck for an attachment and reveals it, otherwise deal a facedown encounter card"
+		"TODO": "campaign mode not supported"
 	},
 	"The King's Gambit - 1A": {
 		"setup": {
@@ -8395,10 +8904,6 @@
 				{
 					"name": "sequence",
 					"sequence_ability": "do_nemesis"
-				},
-				{
-					"name": "flip_doublesided_card",
-					"subject": "self"
 				}
 			]
 		},
@@ -8411,11 +8916,50 @@
 				"Nemesis": [
 					{
 						"name": "reveal_nemesis",
-						"subject": "my_identity",
-						"_comments": "TODO if the nemesis shares a title with a character in play, remove it and reveal an Underling minion instead"
+						"subject": "my_identity"
 					}
 				]
 			}
+		},
+		"interrupt_villain_unique_card_conflict": {
+			"_comments": "TODO. Poor man's version of 'if the nemesis shares a title with a character in play, remove it and reveal an Underling minion instead'",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "trigger"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor_and_choose",
+					"src_container": [
+						"deck_villain",
+						"set_aside",
+						"discard_villain"
+					],
+					"filter_state_tutor": [
+						"minion",
+						"trait_underling"
+					],
+					"target_identity": "event_source_hero"
+				}
+			]
+		},
+		"post_setup": {
+			"board": [
+				{
+					"name": "sequence",
+					"delay_until_no_activity": true,
+					"sequence_ability": "do_flip"
+				}
+			]
+		},
+		"do_flip": {
+			"board": [
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
 		}
 	},
 	"The King's Gambit - 1B": {
@@ -8513,7 +9057,6 @@
 							"upgrade",
 							"trait_sense"
 						],
-						"_comments": "TODO attach target"
 					}
 				],
 				"Ready Daredevil": [
@@ -8640,7 +9183,7 @@
 		}
 	},
 	"The Raft Breakout #60208a": {
-		"TODO": "After mulligans, each player may search deck and discard for a ally and add it to hand (expert: then discard 1)"
+		"TODO": "campaign mode not supported"
 	},
 	"The Raft Breakout #60208b": {
 		"setup": {
@@ -8684,9 +9227,23 @@
 					"amount": {
 						"func_name": "get_subject_int_printed_property",
 						"func_params": {
-							"subject": "attachments",
 							"property": "cost",
-							"_comments": "TODO highest cost among tucked"
+							"subject": "boardseek",
+							"subject_count": 1,
+							"filter_state_seek": [
+								{
+									"filter_is_hosted_by": "Echo",
+									"filter_properties": {
+										"type_code": "event"
+									}
+								}
+							],
+							"sort_by": "function",
+							"sort_descending": true,
+							"sort_name": "get_subject_int_printed_property",
+							"func_params": {
+								"property": "cost"
+							}							
 						}
 					},
 					"subject": "Maya Lopez"
@@ -8920,7 +9477,64 @@
 		}
 	},
 	"Traffic Jam": {
-		"TODO": "threat added/removed by characters with a Vehicle attachment goes here instead"
+		"interrupt_add_threat": {
+			"filter_state_trigger": [{
+				"filter_func": {
+					"func_name": "count_attachments",
+					"func_params": {
+						"subject": "trigger",
+						"filter_state_attachment": ["trait_vehicle"]
+					}
+				}
+			}],
+			"event_filters": {
+				"filter_state_event_target": [{
+					"_comments": "avoid self to not have infinite loop",
+					"filter_properties": {"shortname": "Traffic Jam", "comparison": "ne"}
+				}]
+			},			
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "add_threat",
+					"subject": "self",
+					"amount": "trigger_details_amount",
+				},
+			]
+		},
+		"interrupt_remove_threat": {
+			"filter_state_trigger": [{
+				"filter_func": {
+					"func_name": "count_attachments",
+					"func_params": {
+						"subject": "trigger",
+						"filter_state_attachment": ["trait_vehicle"]
+					}
+				}
+			}],
+			"event_filters": {
+				"filter_state_event_target": [{
+					"_comments": "avoid self to not have infinite loop",
+					"filter_properties": {"shortname": "Traffic Jam", "comparison": "ne"}
+				}]
+			},				
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": "trigger_details_amount",
+				},
+			]
+		},		
 	},
 	"Tug of War": {
 		"reveal": {
@@ -9100,9 +9714,32 @@
 		"reveal": {
 			"all": [
 				{
-					"name": "reveal_nemesis",
-					"subject": "my_identity",
-					"_comments": "TODO activate if in play; find; else Underling minion"
+					"name" :"if",
+					"func_name": "count_cards",
+					"func_params": {
+						"subject": "my_nemesis"
+					},
+					"then": [
+						{
+							"name": "enemy_activates_against_you",
+							"subject": "my_nemesis",
+							"is_cost": true
+						}
+					],
+					"else": [
+						{
+							"name": "reveal_nemesis",
+							"subject": "my_identity",
+							"is_cost": true,
+						},
+						{
+							"is_else": true,
+							"name" :"reveal_encounter",
+							"subject": "tutor_and_choose",
+							"src_container": ["set_aside", "deck_villain", "discard_villain"],
+							"filter_state_tutor": ["minion", "trait_underling"]
+						}
+					]
 				}
 			]
 		},

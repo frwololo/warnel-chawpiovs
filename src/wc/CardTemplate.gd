@@ -3026,9 +3026,14 @@ func remove_threat(modification: int, script = null) -> int:
 		return CFConst.ReturnCode.FAILED
 					
 	var token_name = "threat"
+	
 	var current_tokens = tokens.get_token_count(token_name)
-	if current_tokens - modification <= 0:
+	var excess = modification - current_tokens
+	
+	if excess > 0:
 		modification = current_tokens
+	else:
+		excess = 0
 	var _result = tokens.mod_token(token_name,-modification)
 	
 	var new_amount = tokens.get_token_count(token_name)
@@ -3038,7 +3043,8 @@ func remove_threat(modification: int, script = null) -> int:
 			signal_details = {
 				"source":  script.owner,
 				"actual_source": action_owner,
-				"tags": script.get_property(SP.KEY_TAGS)	
+				"tags": script.get_property(SP.KEY_TAGS),
+				"excess": excess	
 			}
 		scripting_bus.emit_signal_on_stack("last_threat_removed", self, signal_details)		
 
@@ -4028,7 +4034,15 @@ func draw_boost_card(src_container = ""):
 func draw_boost_cards(action_type):
 	var amount = self.get_property("boost_cards_per_" + action_type, 1, true)
 	for i in amount:
-		draw_boost_card()
+		var definition = {
+			"name": "draw_boost_card",
+			"_silent": true
+		}
+		var task = ScriptTask.new(self, definition, self, {})
+		task.set_subjects([self])
+		var stackEvent = SimplifiedStackScript.new(task)									
+		gameData.theStack.add_script(stackEvent)
+		#draw_boost_card()
 	#TODO if pile empty...need to reshuffle ?
 
 #returns an array of allowed triggers,

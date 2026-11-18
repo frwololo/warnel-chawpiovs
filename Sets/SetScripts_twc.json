@@ -3956,7 +3956,34 @@
 				}
 			]
 		},
-		"TODO": "Players cannot attack other villains"
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"filter_state_actual_source": [
+					{
+						"filter_group": "group_allies_and_heroes"
+					}
+				],
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"type_code": "villain"
+						},
+						"filter_properties2": {
+							"shortname": "Piledriver",
+							"comparison": "ne"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "Players cannot attack other villains. Approximated as preventing damage, like Raised by the Kingpin"
+		}
 	},
 	"Held Hostage #07036": {
 		"card_moved_to_board": {

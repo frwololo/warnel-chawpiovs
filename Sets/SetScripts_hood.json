@@ -1181,7 +1181,34 @@
 				}
 			]
 		},
-		"TODO": "As an additional cost for the engaged player to ready a hero or ally, spend a [mental] resource"
+		"interrupt_ready_card": {
+			"_comments": "same limitation as Drained of Power when a ready has multiple subjects. The engaged player is this minion's controller",
+			"event_filters": {
+				"filter_state_event_target": [
+					"group_allies_and_heroes_my_hero"
+				]
+			},
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Pay 1 Mental": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Skip": [
+					{
+						"name": "prevent",
+						"subject": "interrupted_event"
+					}
+				]
+			}
+		}
 	},
 	"Caught in the Crossfire": {
 		"reveal": {

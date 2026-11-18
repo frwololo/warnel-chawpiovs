@@ -498,7 +498,6 @@
 		}
 	},
 	"Legal Practice": {
-		"TODO": "Threat cannot be removed by heroes or allies",
 		"response": {
 			"event_name": "identity_changed_form",
 			"trigger": "my_identity",
@@ -522,6 +521,24 @@
 					"subject": "self"
 				}
 			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "self",
+				"filter_state_actual_source": [
+					{
+						"filter_group": "group_allies_and_heroes"
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "Threat cannot be removed from this scheme by heroes or allies"
 		}
 	},
 	"S.H.I.E.L.D. Operator": {

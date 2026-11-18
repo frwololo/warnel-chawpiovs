@@ -110,7 +110,24 @@
 				}
 			]
 		},
-		"TODO": "Threat cannot be removed from this scheme by heroes or allies"
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "self",
+				"filter_state_actual_source": [
+					{
+						"filter_group": "group_allies_and_heroes"
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "Threat cannot be removed from this scheme by heroes or allies"
+		}
 	},
 	"Jubilee's Coat": {
 		"alterants": {

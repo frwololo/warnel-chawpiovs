@@ -1884,7 +1884,27 @@
 				}
 			]
 		},
-		"TODO": "Threat cannot be removed from other schemes"
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_group": "group_schemes",
+						"filter_properties": {
+							"shortname": "Crime Scene Investigation",
+							"comparison": "ne"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "Threat cannot be removed from other schemes"
+		}
 	},
 	"Law & Order": {
 		"manual": {
@@ -3528,7 +3548,7 @@
 				{
 					"name": "move_card_to_board",
 					"subject": "self",
-					"_comments": "TODO put into play under your control"
+					"grid_name": "allies_my_hero"
 				},
 				{
 					"name": "surge"

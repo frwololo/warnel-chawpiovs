@@ -760,10 +760,18 @@
 			"all": [
 				{
 					"name": "reveal_encounter",
-					"subject": "tutor_and_choose",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 5,
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
 					"src_container": "deck_villain",
-					"is_cost": true,
-					"_comments": "TODO only the top 5 cards"
+					"display_title": "choose a card to reveal"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
 				}
 			]
 		},
@@ -2162,7 +2170,44 @@
 				}
 			]
 		},
-		"_comments": "TODO When Revealed in standard mode"
+		"reveal": {
+			"condition_all": {
+				"func_name": "!get_scenario_option_value",
+				"func_params": {
+					"option_name": "expert_mode"
+				}
+			},
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": "2p",
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_mill"
+				}
+			]
+		},
+		"do_mill": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard 5": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 5,
+						"src_container": "deck_my_hero"
+					}
+				]
+			}
+		}
 	},
 	"Total Focus": {
 		"alterants": {
@@ -2906,9 +2951,32 @@
 				},
 				{
 					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"subject": "main_scheme",
+					"_comments": "expert mode: incite 1"
+				},
+				{
+					"name": "add_threat",
 					"amount": 3,
 					"subject": "main_scheme",
 					"is_else": true
+				},
+				{
+					"name": "add_threat",
+					"amount": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"subject": "main_scheme",
+					"is_else": true,
+					"_comments": "expert mode: incite 1"
 				}
 			]
 		},
@@ -2929,8 +2997,7 @@
 					"subject": "main_scheme"
 				}
 			]
-		},
-		"_comments": "TODO expert mode incite 1"
+		}
 	},
 	"Dirty Trick": {
 		"reveal": {
@@ -3003,6 +3070,40 @@
 		"do_act": {
 			"all": [
 				{
+					"name": "temporary_effect",
+					"end_condition": "enemy_activation_finished",
+					"subject": "villain",
+					"effect": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "scheme",
+									"alteration": {
+										"func_name": "get_scenario_option_value",
+										"func_params": {
+											"option_name": "expert_mode"
+										}
+									},
+									"trigger": "self"
+								},
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"alteration": {
+										"func_name": "get_scenario_option_value",
+										"func_params": {
+											"option_name": "expert_mode"
+										}
+									},
+									"trigger": "self"
+								}
+							]
+						}
+					},
+					"_comments": "+1 SCH/ATK in expert mode"
+				},
+				{
 					"name": "conditional_script",
 					"options": [
 						{
@@ -3042,7 +3143,7 @@
 				}
 			]
 		},
-		"_comments": "TODO +1 SCH/ATK in expert mode; verify swap_villain with tutor"
+		"_comments": "TODO verify swap_villain with tutor"
 	},
 	"Domineering Force": {
 		"_comments": "TODO Max 1[per_hero] synergy counters here",
@@ -3320,7 +3421,39 @@
 		}
 	},
 	"Puppet Master": {
-		"TODO": "Allies cannot thwart this scheme or defend against the villain's attacks; expert hinder 1[per_hero]"
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "hinder",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"trigger": "self",
+					"_comments": "expert mode: hinder 1[per_hero] (hinder is multiplied by the team size)"
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "self",
+				"filter_state_actual_source": [
+					"ally"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "Allies cannot thwart this scheme"
+		},
+		"TODO": "Allies cannot defend against the villain's attacks"
 	},
 	"Love Triangle": {
 		"card_moved_to_board": {
@@ -3431,18 +3564,28 @@
 			"board": [
 				{
 					"name": "move_card_to_container",
-					"subject": "tutor_and_choose",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 5,
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"selection_what_to_count": {
+						"func_name": "check_validity",
+						"func_params": {
+							"filter_state_trigger": [
+								{
+									"filter_properties": {
+										"resource_energy": 1,
+										"comparison": "ge"
+									}
+								}
+							]
+						}
+					},
 					"src_container": "deck",
 					"dest_container": "hand",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"resource_energy": 1,
-								"comparison": "ge"
-							}
-						}
-					],
-					"_comments": "TODO only the top 5 cards"
+					"display_title": "choose a card with a printed [energy] resource"
 				},
 				{
 					"name": "shuffle_container",

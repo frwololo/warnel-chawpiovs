@@ -1441,7 +1441,22 @@
 				}
 			]
 		},
-		"TODO": "You cannot attack Kang"
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"actual_source": "my_identity",
+				"filter_state_event_target": [
+					"villain"
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "You cannot attack Kang (all villains in this scenario are Kang). Approximated as preventing damage, like Raised by the Kingpin"
+		}
 	},
 	"Light of Centuries Sphere": {
 		"card_defeated": {

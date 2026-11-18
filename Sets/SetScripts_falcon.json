@@ -844,14 +844,24 @@
 			"board": [
 				{
 					"name": "move_card_to_board",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 10,
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"selection_what_to_count": {
+						"func_name": "check_validity",
+						"func_params": {
+							"filter_state_trigger": [
+								"minion"
+							]
+						}
+					},
 					"is_cost": true,
-					"subject": "tutor_and_choose",
 					"src_container": "deck_villain",
 					"grid_name": "enemies_active_player",
-					"filter_state_tutor": [
-						"minion"
-					],
-					"_comments": "TODO only the top 10 cards"
+					"display_title": "choose a minion"
 				},
 				{
 					"name": "save_variable",
@@ -875,6 +885,11 @@
 					"filter_state_seek": [
 						"group_friendly_my_hero"
 					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain",
+					"_comments": "the rules ask for a shuffle after searching a deck"
 				}
 			]
 		}

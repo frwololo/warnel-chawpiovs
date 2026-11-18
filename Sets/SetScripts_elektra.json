@@ -1327,7 +1327,22 @@
 			],
 			"_comments": "after Stone exactly defeats an enemy. TODO verify the excess_damage 0 filter"
 		},
-		"TODO": "also after Stone exactly defeats a side scheme"
+		"last_threat_removed": {
+			"filter_state_trigger": "side_scheme",
+			"event_filters": {
+				"excess": 0,
+				"actual_source": "self"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "heal",
+					"amount": 2,
+					"subject": "self"
+				}
+			],
+			"_comments": "after Stone exactly defeats a side scheme"
+		}
 	},
 	"The Fist Fits in the Hand": {
 		"alterants": {

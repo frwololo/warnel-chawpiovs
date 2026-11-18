@@ -830,9 +830,9 @@
 			"board": [
 				{
 					"filter_task": "get_property",
-					"filter_property_name": "can_attack",
-					"alteration": -1,
-					"trigger": "Wonder Man"
+					"filter_property_name": "cannot_attack",
+					"alteration": 1,
+					"trigger": "host"
 				}
 			]
 		},

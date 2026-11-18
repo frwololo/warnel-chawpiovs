@@ -250,7 +250,28 @@
 				}
 			]
 		},
-		"TODO": "per_hero counted as 1; threat removable only by Hercules's thwarts"
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "host",
+				"filter_state_actual_source": [
+					{
+						"filter_properties": {
+							"shortname": "Hercules",
+							"comparison": "ne"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "Threat cannot be removed from attached scheme except by Hercules"
+		},
+		"TODO": "per_hero counted as 1 on the revealed side scheme"
 	},
 	"Protect Humanity": {
 		"uses": {

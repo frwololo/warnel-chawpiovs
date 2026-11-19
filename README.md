@@ -63,11 +63,11 @@ As of November 2026, this simulator supports *all* official cards from the game,
     * Silk
     * Falcon
     * Trickster Takeover
-   * Cycle 10:
+  * Cycle 10:
     * Synthezoid Smackdown
     * Wonder Man
     * Hercules
-   * Cycle 11:
+  * Cycle 11:
     * Fear No Evil
     * Jessica Jones
     * Luke Cage

@@ -2232,10 +2232,47 @@
 					"is_cost": true,
 					"tags": [
 						"action_ability"
+					],
+					"constraints": [
+						{
+							"func_name": "count_cards",
+							"func_params": {
+								"subject": "tutor",
+								"src_container": "hand",
+								"filter_state_tutor": [
+									{
+										"filter_properties": {
+											"type_code": "upgrade"
+										},
+										"filter_func": {
+											"func_name": "property_contains",
+											"func_params": {
+												"subject": "trigger",
+												"property": "real_text",
+												"value": [
+													"attach to a minion",
+													"attach to the minion",
+													"attach to an enemy",
+													"attach to the enemy",
+													"attach to a side scheme",
+													"max 1 per minion",
+													"max 1 per side scheme",
+													"limit 1 per side scheme",
+													"attached minion",
+													"attach to a card",
+													"attach to a scheme"
+												]
+											}
+										}
+									}
+								]
+							}
+						}
 					]
 				},
 				{
 					"name": "host_card",
+					"tags": ["disable_attach_trigger"],
 					"host": "self",
 					"subject": "tutor_and_choose",
 					"src_container": "hand",
@@ -2519,16 +2556,24 @@
 			]
 		},
 		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"team_up": [
+						"Daredevil",
+						"Elektra"
+					]
+				}
+			]
+		},
+		"manual": {
 			"board": [
 				{
 					"name": "constraints",
 					"is_cost": true,
 					"tags": [
 						"hero_action"
-					],
-					"team_up": [
-						"Daredevil",
-						"Elektra"
 					]
 				},
 				{
@@ -4419,10 +4464,10 @@
 					"subject": "self"
 				},
 				{
-					"name": "temporary_effect",
+					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
 					"subject": "trigger",
-					"effect": {
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -4498,6 +4543,13 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "!is_attached",
+				"func_params": {
+					"subject": "self",
+					"host": "my_identity"
+				}
+			},
 			"board": {
 				"Spend a resource": [
 					{
@@ -4860,6 +4912,13 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "!is_attached",
+				"func_params": {
+					"subject": "self",
+					"host": "my_identity"
+				}
+			},
 			"board": {
 				"Spend a resource": [
 					{
@@ -5785,7 +5844,7 @@
 			{
 				"name": "deck_sense",
 				"faceup": true,
-				"can_view": false
+				"can_view": true
 			}
 		],
 		"additional_cards_set_aside": [
@@ -7231,6 +7290,13 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "!is_attached",
+				"func_params": {
+					"subject": "self",
+					"host": "my_identity"
+				}
+			},
 			"board": {
 				"Spend a resource": [
 					{
@@ -8158,7 +8224,7 @@
 								"board": [
 									{
 										"filter_task": "get_property",
-										"filter_property_name": "defe,se",
+										"filter_property_name": "defense",
 										"trigger": "self",
 										"alteration": 1
 									}
@@ -8577,6 +8643,13 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "!is_attached",
+				"func_params": {
+					"subject": "self",
+					"host": "my_identity"
+				}
+			},
 			"board": {
 				"Spend a resource": [
 					{

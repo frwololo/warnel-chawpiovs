@@ -82,10 +82,14 @@ func _ready():
 	
 	# We use the below while to wait until all the nodes we need have been mapped
 	# "hand" should be one of them.
-	add_child(board_scene.instance())
+	var board = board_scene.instance()
+	add_child(board)
 	if not cfc.are_all_nodes_mapped:
 		yield(cfc, "all_nodes_mapped")
 	# warning-ignore:return_value_discarded
+	
+	move_child($VBC, board.get_index() + 1)
+	
 	scripting_bus.connect("card_reloaded", self, "_on_card_reloaded")
 	get_viewport().connect("size_changed",self,"_on_Viewport_size_changed")
 	_on_Viewport_size_changed()

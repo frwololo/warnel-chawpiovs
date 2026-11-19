@@ -934,7 +934,9 @@ const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
 	"script_name": {
 		#there are multiple boost related events, we only display the initial one (enemy_boost)
 		"enemy_boost_activity": true,		
-		"move_to_player_zone": true		
+		"move_to_player_zone": true,
+		"pre_receive_damage": true,		
+		"restore_scripts": true,			
 	}
 }
 const SKIP_ANNOUNCE_STACK_EVENTS:= {
@@ -948,7 +950,7 @@ const SKIP_ANNOUNCE_STACK_EVENTS:= {
 		#we already have reveal_encounter which is redundant with those
 		"reveal": true,
 		"reveal_hero": true,
-		"reveal_alter_ego": true	,	
+		"reveal_alter_ego": true,	
 		
 		#we already show the damage with an arrow
 		"enemy_attack_damage": true,	
@@ -963,7 +965,8 @@ const SKIP_ANNOUNCE_STACK_EVENTS:= {
 		#there are multiple boost related events, we only display the initial one (enemy_boost)
 		"enemy_boost_activity": true,			
 		"move_to_player_zone": true,
-		"pre_receive_damage": true,		
+		"pre_receive_damage": true,
+		"restore_scripts": true,				
 	}	
 }
 

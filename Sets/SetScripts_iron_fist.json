@@ -300,6 +300,41 @@
 			"_comments": "as Call for Aid (ant)"
 		}
 	},
+	"Defiance": {
+		"interrupt_enemy_boost": {
+			"is_optional_hand": true,
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_interrupt"
+					]
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "discard",
+					"subject": "attachments",
+					"attachments_host": "trigger",
+					"subject_count": 1,
+					"force_valid_boost_target": true,
+					"filter_state_attachment": [
+						{
+							"filter_func": {
+								"func_name": "is_boost",
+								"func_params": {
+									"subject": "trigger"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},	
 	"Demoralize": {
 		"manual": {
 			"hand": [
@@ -804,6 +839,37 @@
 			]
 		}
 	},
+	"Power Man and Iron Fist": {
+		"manual": {
+			"hand": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					],
+					"team_up": [
+						"Iron Fist",
+						"Luke Cage"
+					]
+				},
+				{
+					"name": "attack",
+					"amount": 2,
+					"subject": "an_enemy"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"group_characters"
+					]
+				}
+			]
+		}
+	},	
 	"Punch, Reverse Punch": {
 		"discount": {
 			"__traits__": "martial_artist",
@@ -994,6 +1060,222 @@
 	"The Defenders": {
 		"TODO": "generates a [physical] resource for each Defender character you control (max 4); can be spent for another player whose identity has the Defender trait"
 	},
+	"The Night Nurse": {
+		"uses": {
+			"__name__": "medical",
+			"__amount__": 3
+		},
+		"manual": {
+			"board": {
+				"Remove Tough": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "tough",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens": [
+									{
+										"filter_token_name": "tough",
+										"filter_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "previous"
+					}
+				],
+				"Remove Stunned": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "stunned",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens": [
+									{
+										"filter_token_name": "stunned",
+										"filter_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "previous"
+					}
+				],
+				"Remove Confused": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"modification": -1,
+						"token_name": "confused",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens": [
+									{
+										"filter_token_name": "confused",
+										"filter_count": 1
+									}
+								]
+							}
+						]
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"subject": "previous"
+					}
+				],
+				"Heal": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"subject": "self",
+						"modification": -1,
+						"token_name": "medical",
+						"is_cost": true
+					},
+					{
+						"name": "heal",
+						"amount": 1,
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "hero"
+								},
+								"filter_tokens1": [
+									{
+										"filter_token_name": "confused",
+										"filter_count": 0
+									}
+								],
+								"filter_tokens2": [
+									{
+										"filter_token_name": "stunned",
+										"filter_count": 0
+									}
+								],
+								"filter_tokens3": [
+									{
+										"filter_token_name": "tough",
+										"filter_count": 0
+									}
+								]
+							}
+						]
+					}
+				]
+			}
+		}
+	},	
 	"The Way of Things": {
 		"manual": {
 			"hand": {

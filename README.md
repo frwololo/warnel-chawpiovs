@@ -244,7 +244,7 @@ On Nintendo Switch, for performance reasons, in project settings, change Display
   * The Card Framework I used was designed for Godot 3.5x. Additionally, Godot 3.5x has been ported to multiple homebrew consoles such as the Nintendo Switch, and I really like the idea of my game running on homebrew consoles. 
 
 ## Stance on AI
-TLDR: *If you want to help this project but plan on using Generative AI, please contact me beforehand. I am not entirely opposed to the idea, provided that you have the skills to actually understand/maintain/fix what the tools are doing.*
+TLDR: *If you want to help this project but plan on using Generative AI, please contact me beforehand. I am not entirely opposed to the idea, provided that you have the skills to actually understand/maintain/fix the generated content.*
 
 It would be an understatement to say that I don't like generative AI.
 

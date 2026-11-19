@@ -1618,7 +1618,7 @@
 							"board": [
 								{
 									"filter_task": "get_property",
-									"filter_property_name": "amplify",
+									"filter_property_name": "scheme_amplify",
 									"alteration": 1,
 									"trigger": "self"
 								}
@@ -1672,7 +1672,7 @@
 							"board": [
 								{
 									"filter_task": "get_property",
-									"filter_property_name": "amplify",
+									"filter_property_name": "scheme_amplify",
 									"alteration": 1,
 									"trigger": "self"
 								}
@@ -1725,7 +1725,7 @@
 							"board": [
 								{
 									"filter_task": "get_property",
-									"filter_property_name": "amplify",
+									"filter_property_name": "scheme_amplify",
 									"alteration": 1,
 									"trigger": "self"
 								}

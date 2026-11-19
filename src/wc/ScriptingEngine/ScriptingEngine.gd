@@ -603,23 +603,26 @@ func draw_to_hand_size (script: ScriptTask) -> int:
 func play_card(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 
-	if script.owner.get_property("cannot_play", 0, true):
-		return CFConst.ReturnCode.FAILED
 
 	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+
+	var card_to_play = script.subjects[0]
+	
+
+	if card_to_play.get_property("cannot_play", 0, true):
 		return CFConst.ReturnCode.FAILED
 
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode	
 
-	var type_code:String = script.owner.get_property("type_code", "")
+	var type_code:String = card_to_play.get_property("type_code", "")
 	var grid_name = CFConst.TYPECODE_TO_GRID.get(type_code, "")
 	var dest_container = CFConst.TYPECODE_TO_PILE.get(type_code, "")
 	
 	var from = ""
 	var from_controller = 0
-	var subject = script.subjects[0]
-	var parentHost = subject.get_parent()
+	var parentHost = card_to_play.get_parent()
 	if parentHost:
 		from = parentHost.name.to_lower()
 		from_controller = cfc.NMAP.board.get_controller_from_pile_name(from)
@@ -641,8 +644,8 @@ func play_card(script: ScriptTask) -> int:
 		retcode =  move_card_to_board(script)
 	
 			
-	scripting_bus.emit_signal_on_stack("card_played", script.owner, {"from": from, "from_controller": from_controller })		
-	scripting_bus.emit_signal_on_stack(type_code + "_played", script.owner, {"from": from, "from_controller": from_controller })
+	scripting_bus.emit_signal_on_stack("card_played", card_to_play, {"from": from, "from_controller": from_controller })		
+	scripting_bus.emit_signal_on_stack(type_code + "_played", card_to_play, {"from": from, "from_controller": from_controller })
 	return retcode	
 
 func force_play_card(script: ScriptTask) -> int:

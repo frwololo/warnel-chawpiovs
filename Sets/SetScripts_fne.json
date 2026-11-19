@@ -609,12 +609,28 @@
 			]
 		},
 		"response_enemy_attack_happened": {
-			"condition_board": {
-				"func_name": "current_activation_status",
-				"func_params": {
-					"undefended": true
+			"condition_board": [
+				{
+					"func_name": "current_activation_status",
+					"func_params": {
+						"undefended": true
+					}
+				},
+				{
+					"func_name": "count_cards",
+					"func_params": {
+						"subject": "boardseek",
+						"filter_state_seek": [
+							{
+								"filter_is_hosted_by": "current_hero_target",
+								"filter_properties": {
+									"trait_art": 1
+								}
+							}
+						]
+					}
 				}
-			},
+			],
 			"board": [
 				{
 					"name": "host_card",
@@ -2272,7 +2288,9 @@
 				},
 				{
 					"name": "host_card",
-					"tags": ["disable_attach_trigger"],
+					"tags": [
+						"disable_attach_trigger"
+					],
 					"host": "self",
 					"subject": "tutor_and_choose",
 					"src_container": "hand",

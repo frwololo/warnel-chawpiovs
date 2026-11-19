@@ -538,12 +538,12 @@ func init_receive_damage(script:ScriptTask, announce:Dictionary) -> bool:
 		
 
 	var owner = script.owner
-	var hero_id = owner.get_controller_hero_id()
+	var is_player_card = owner.is_player_card()
 
 	#if the owner of the damage is a player,
 	#we want to skip this thing to avoid
 	#making a long announce of an event the players initiated themselves
-	if hero_id:
+	if is_player_card:
 		return false	
 	
 	var amount = WCScriptingEngine.calculate_damage(script) #script.retrieve_integer_property("amount")

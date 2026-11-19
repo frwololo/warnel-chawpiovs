@@ -2398,7 +2398,14 @@
 					"fetch_script": {
 						"script_path": "*/hand",
 						"replace_to_state": "board"
+					},
+					"end_condition": {
+						"event": "card_played",
+						"filters": {
+							"trigger": "self"
+						}
 					}
+					
 				}
 			]
 		}

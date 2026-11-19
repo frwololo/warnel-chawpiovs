@@ -964,14 +964,6 @@ func get_all_cards_controlled_by(hero_id):
 				cardsArray.append(obj)
 	return cardsArray	
 
-func get_all_cards_by_property(property:String, value):
-	var cardsArray := []
-	for obj in get_children():
-		if obj as Card: 
-			if (obj.get_property(property) == value):
-				cardsArray.append(obj)
-	return cardsArray	
-
 func reset_board():
 	
 	for group in ["cards", "scriptables"]:

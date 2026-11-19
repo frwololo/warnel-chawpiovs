@@ -134,17 +134,6 @@ func can_pay_total_cost(cost:ManaCost) :
 	if (temp_pool.is_negative()):
 		return null
 	return temp_pool
-				
-	
-func pay_total_cost(cost:ManaCost) :
-	var temp_pool = can_pay_total_cost(cost)
-	if not (temp_pool) :
-		return CFConst.ReturnCode.FAILED
-	
-	#Apply change
-	self.pool = temp_pool.pool	
-	return CFConst.ReturnCode.CHANGED		
-
 
 func _on_manapool_modified(_trigger_card: Card, _trigger: String, _details: Dictionary):
 	for v in ManaCost.ResourceMana.values() :

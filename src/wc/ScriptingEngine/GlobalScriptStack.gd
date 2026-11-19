@@ -466,37 +466,6 @@ func get_client_status(client_id, key):
 				result = RUN_MODE.NOTHING_TO_RUN
 	return result
 
-func client_status_is_ahead(client_id, key):
-	if !all_clients_status.has(client_id):
-		all_clients_status[client_id] = {}
-			
-	var min_value = -1
-	for network_id in all_clients_status:
-		var value = all_clients_status[network_id].get(key, -1)
-		if min_value == -1 or min_value > value:
-			min_value = value
-	
-	var my_value = all_clients_status[client_id].get(key, -1)
-	if my_value > min_value:
-		return true
-	return false
-	
-func client_status_is_behind(client_id, key):	
-	if !all_clients_status.has(client_id):
-		all_clients_status[client_id] = {}
-			
-	var max_value = -1
-	for network_id in all_clients_status:
-		var value = all_clients_status[network_id].get(key, -1)
-		if max_value < value:
-			max_value = value
-	
-	var my_value = all_clients_status[client_id].get(key, max_value)
-	if my_value < max_value:
-		return true
-	return false
-
-
 mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng,  run_type, trigger, action_name, checksum):
 	var client_id = cfc.get_rpc_sender_id() 
 	set_client_status(client_id, "run_mode", RUN_MODE.PENDING_REQUEST_ACK)	
@@ -2042,27 +2011,6 @@ func delete_event(event, requester):
 		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")
 	return overall_event
 		
-func delete_last_event(requester:ScriptTask):
-	#the requester usually doesn't want to delete themselves
-	var pay_costs_anyway = requester.get_property("pay_costs_anyway", false)
-	var event = null
-	var max_id = find_last_event_id_before_me(requester)
-	if max_id >=0:
-		event = stack[max_id]
-		if pay_costs_anyway:
-			var sceng = event.get_sceng()
-			if sceng and sceng.has_cost_scripts() and sceng.has_non_cost_scripts():
-				event.remove_non_cost_tasks()
-			else:
-				#fallback: asked to prevent an event that is all costs or no costs
-				pay_costs_anyway = false
-		if !pay_costs_anyway:	
-			stack_remove(max_id)
-		#this can be sent whether the event was deleted or just modifid (with remove_non_cost) but this might bite me back later	
-		scripting_bus.emit_signal("stack_event_deleted", event)
-	else:
-		display_debug("Error: script " + requester.script_name + " asked me to delete event but I couldn't find it")
-	return event	
 
 func is_script_in_stack_object(script, stack_item):
 	if script == stack_item: 

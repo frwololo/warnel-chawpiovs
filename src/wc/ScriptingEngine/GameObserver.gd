@@ -21,7 +21,7 @@ var function_overrides:= {}
 func reset():
 	_objects = []
 	_remove_all_children()
-	function_overrides= {}
+	function_overrides = {}
 
 func setup(scenario:ScenarioDeckData):
 	var extra_rules = scenario.scenario_data.get("extra_rules", [])
@@ -49,16 +49,6 @@ func add_function_overrides(owner, dict):
 		if !function_overrides.has(key):
 			function_overrides[key] = []
 		function_overrides[key].append({"owner": owner, "override": override_rule.duplicate()})
-
-func remove_function_overrides(owner):
-	var to_remove = []
-		
-	for override in function_overrides:
-		if override["owner"] == owner:
-			to_remove.append(override)
-
-	for removal in to_remove:
-		function_overrides.erase(removal)
 
 func get_function_override(func_name, trigger_object):
 	if !function_overrides.has(func_name):

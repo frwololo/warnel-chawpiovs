@@ -4981,7 +4981,7 @@
 							"trigger": "self",
 							"all": [
 								{
-									"name": "remove_from_game",
+									"name": "remove_card_from_game",
 									"subject": "self"
 								}
 							]
@@ -7313,11 +7313,11 @@
 							"filter_state_trigger": "group_friendly",
 							"all": [
 								{
-									"name": "remove_from_game",
+									"name": "remove_card_from_game",
 									"subject": "trigger"
 								},
 								{
-									"name": "remove_from_game",
+									"name": "remove_card_from_game",
 									"subject": "self"
 								}
 							]

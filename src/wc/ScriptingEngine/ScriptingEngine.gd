@@ -4000,12 +4000,9 @@ func remove_card_from_game (script:ScriptTask) -> int:
 	if (costs_dry_run()): #Shouldn't be allowed as a cost?
 		return retcode
 		
-	var set_aside = script.get_property("set_aside", true)
 	for card in script.subjects:
-		if set_aside:
-			gameData.set_aside(card)
-		else:
-			card.get_parent().remove_child(card)
+		gameData.remove_from_game(card)
+	
 	return retcode
 
 func engage_nemesis (script:ScriptTask) -> int:

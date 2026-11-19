@@ -6010,8 +6010,7 @@
 		}
 	},
 	"Maya Lopez": {
-		"interrupt": {
-			"event_name": "identity_changed_form",
+		"interrupt_change_form": {
 			"trigger": "self",
 			"is_optional_board": true,
 			"board": [

@@ -1045,10 +1045,15 @@ static func can_add_card_to_deck(card_id, currently_in_deck):
 	if currently_in_deck>0 and card_data.get("is_unique", 0):	
 		return false	
 
+	#"starting" cards: only one per deck
+	if currently_in_deck>0 and card_data.get("starting", 0):	
+		return false	
+
 	var text = card_data.get("real_text", "").to_lower()
 	
 	if ("max 1 per deck" in text) and currently_in_deck > 0:
 		return false
+		
 	if ("max 2 per deck" in text) and currently_in_deck > 1:
 		return false			
 		

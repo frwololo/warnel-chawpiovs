@@ -677,6 +677,8 @@ func post_cards_moved_load():
 		while pile.is_shuffling:
 			yield(get_tree().create_timer(0.05), "timeout")		
 	
+	starting_cards()
+	
 	villain.load_scenario()
 	while villain._post_load_move or cfc.NMAP["deck_villain"].is_shuffling:
 		yield(get_tree().create_timer(0.05), "timeout")	
@@ -1430,6 +1432,29 @@ func export_grid_to_json(grid_name, seen_cards:= {}) -> Dictionary:
 	for card in cards:
 		seen_cards[card] = true
 	return export_cards_to_json(grid_name, cards)	
+
+#starting keyword:
+#A card with starting may be added to its owner’s starting
+#hand during setup. Each deck cannot include more than
+#one card with starting. Before drawing their starting hand
+#during player setup, each player with a starting card in their
+#deck may search their deck for that card and add it as the first
+#card of their starting hand. That card does count against their
+#hand size and can be discarded for the mulligan.
+
+#TODO hack: for now we force put it at the top of the drawing pile if it exists
+#expected long term: thep layer should have a choice
+func starting_cards():
+	for i in range(gameData.get_team_size()):
+		var to_move = []
+		var pile_name = "deck" + str(i+1)
+		var pile:Pile = cfc.NMAP[pile_name]
+		for card in pile.get_all_cards():
+			if card.get_property("starting", 0, true):
+				to_move.append(card)
+		for card in to_move:
+			pile.move_card_to_top(card)
+	
 		
 func shuffle_decks() -> void:
 	for i in range(gameData.get_team_size()):

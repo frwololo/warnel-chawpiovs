@@ -3133,6 +3133,9 @@
 		"code": "60134",
 		"name": "Protection Racket",
 		"scenario_display_name": "Protection Racket",
+		"settings": {
+			"main_scheme_per_player": true
+		},
 		"modular_default": [
 			"tracksuit_mafia",
 			"disasters"

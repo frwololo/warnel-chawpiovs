@@ -812,7 +812,10 @@ static func script_definitions_pre_processing(script_definition):
 							elif filter.begins_with("group_"):
 								values["filter_group"] = filter
 							elif (filter in CFConst.PLAYER_CARD_TYPES) or (filter in CFConst.ENCOUNTER_CARD_TYPES):
-								values["filter_properties" + str(properties_count)] = {"type_code": filter}
+								var comparison = {"type_code": filter}
+								if inverted:
+									comparison["comparison"] =  "ne"
+								values["filter_properties" + str(properties_count)] = comparison
 								properties_count += 1
 							elif filter.begins_with("filter_"):
 								values[filter] = !inverted

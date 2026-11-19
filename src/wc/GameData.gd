@@ -628,6 +628,10 @@ func check_empty_decks(pile_to_check):
 			villain_deck.shuffle_cards(true, false)
 			#add acceleration to main scheme
 			var scheme = find_main_scheme()
+			#one main scheme per player: the token goes near the villain,
+			#and counts for each main scheme (see villain_threat)
+			if is_main_scheme_per_player() and get_villain():
+				scheme = get_villain()
 			if (scheme):
 				scheme.tokens.mod_token("acceleration", 1)
 			else:
@@ -2591,6 +2595,15 @@ func find_main_scheme() :
 	if schemes.size() == 1:
 		return schemes[0]
 	
+	#one main scheme per player (Protection Racket): the scheme of the player
+	#currently targeted by the villain. Callers that know which card asks
+	#should use get_main_schemes_for(card) instead
+	if is_main_scheme_per_player():
+		var target_scheme = get_hero_main_scheme(get_current_activity_hero_target())
+		if target_scheme:
+			return target_scheme
+		return schemes[0]
+
 	#multiple schemes. We return the scheme associated to the current villain if possible
 	var active_villain = get_active_villain()
 	for card in schemes:
@@ -2623,7 +2636,55 @@ func find_main_schemes() :
 			continue
 		if "main_scheme" == card.properties.get("type_code", "false"):
 			result.append(card)
+
+	#one main scheme per player (Protection Racket): in each player's area
+	if is_main_scheme_per_player():
+		for hero_id in team.keys():
+			var scheme = get_hero_main_scheme(hero_id)
+			if scheme and !(scheme in result):
+				result.append(scheme)
 	return result	
+
+#Scenarios where each player has their own main scheme, in their play area
+#(Protection Racket, scenario setting "main_scheme_per_player")
+func is_main_scheme_per_player() -> bool:
+	if !scenario:
+		return false
+	return scenario.get_setting("main_scheme_per_player", false)
+
+#the main scheme in a player's play area (misc_encounter grid)
+func get_hero_main_scheme(hero_id):
+	if !hero_id:
+		return null
+	if !cfc.NMAP.has("board") or !is_instance_valid(cfc.NMAP.board):
+		return null
+	var grid = cfc.NMAP.board.get_grid("misc_encounter" + str(hero_id))
+	if !grid:
+		return null
+	for card in grid.get_all_cards():
+		if "main_scheme" == card.properties.get("type_code", "false"):
+			return card
+	return null
+
+#"the main scheme", from the point of view of a card.
+#Usually one scheme. With one main scheme per player:
+# - a card in a player's play area (identity, allies, upgrades, engaged
+#   minions, attachments, a treachery that player reveals, events that
+#   player plays) refers to the main scheme in that play area
+# - a card in no play area (villain, side schemes, environments) refers
+#   to all main schemes
+func get_main_schemes_for(card) -> Array:
+	if !is_main_scheme_per_player():
+		var main_scheme = find_main_scheme()
+		return [main_scheme] if main_scheme else []
+	var hero_id = 0
+	if card and is_instance_valid(card):
+		hero_id = card.get_controller_hero_id()
+	if hero_id > 0:
+		var scheme = get_hero_main_scheme(hero_id)
+		if scheme:
+			return [scheme]
+	return find_main_schemes()
 	
 func get_minions_engaged_with_hero(hero_id:int):
 	var results = []

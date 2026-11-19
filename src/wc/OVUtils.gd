@@ -61,7 +61,8 @@ func preprocess_subject_definition(script: ScriptObject):
 		#more than 1 main scheme, need to modify some cards rules in real time
 		SP.KEY_SUBJECT_V_MAIN_SCHEME:
 			var schemes = gameData.get_main_schemes()
-			if schemes.size() > 1:
+			#one main scheme per player: no choice, see get_main_schemes_for
+			if schemes.size() > 1 and !gameData.is_main_scheme_per_player():
 				if !script.owner.is_encounter():
 					script_definition[SP.KEY_SUBJECT] = SP.KEY_SUBJECT_V_BOARDSEEK
 					script_definition[SP.KEY_SELECTION_TYPE] = "equal" 
@@ -223,7 +224,7 @@ func get_subjects(script: ScriptObject, _subject_request, _stored_integer : int 
 			if villain:
 				results.append(villain)
 		SP.KEY_SUBJECT_V_MAIN_SCHEME:
-			results.append(gameData.get_main_scheme())					
+			results += gameData.get_main_schemes_for(script.owner)
 		SP.KEY_SUBJECT_V_GRAB_UNTIL:
 			results = _grab_until_find(script, run_type)
 		SP.KEY_SUBJECT_CURRENT_ACTIVATION_ENEMY:
@@ -721,8 +722,9 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 	
 	if gameData.get_villain():
 		replacements["villain"] = gameData.get_villain()	
-	if gameData.get_main_scheme():
-		replacements["main_scheme"] = gameData.get_main_scheme()
+	var my_main_schemes = gameData.get_main_schemes_for(owner_card)
+	if my_main_schemes:
+		replacements["main_scheme"] = my_main_schemes[0]
 					
 	if (controller_hero_id > 0):
 		#TODO historically my_hero here represents my_identity

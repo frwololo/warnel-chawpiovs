@@ -1433,21 +1433,21 @@ func attach_to_host(
 	
 	if "facedown" in tags and is_faceup:
 		set_is_faceup(false)
+
+	#TODO Hack
+	#one thing we want to ensure is that encounter cards that move away from
+	#player zones are now considered to be controlled by the villain
+	#this is because a lot of logic of the game for example
+	#assumes that an enemy engaged with a player is "controlled" by that player,
+	#while an enemy in any non player zone is controlled by the villain
 	
-	if !result.get("moved_to_board", false):
-		#TODO Hack
-		#one thing we want to ensure is that encounter cards that move away from
-		#player zones are now considered to be controlled by the villain
-		#this is because a lot of logic of the game for example
-		#assumes that an enemy engaged with a player is "controlled" by that player,
-		#while an enemy in any non player zone is controlled by the villain
-		
-		#current logic is that an encounter card is controlled by the same controller
-		#as the host card. Not sure if this holds well
-		if self.is_encounter():
-			var new_controller = host.get_controller_hero_id()
-			self.set_controller_hero_id(new_controller)
-			
+	#current logic is that an encounter card is controlled by the same controller
+	#as the host card. Not sure if this holds well
+	if self.is_encounter():
+		var new_controller = host.get_controller_hero_id()
+		self.set_controller_hero_id(new_controller)
+	
+	if !result.get("moved_to_board", false):		
 		if ("force_emit_card_moved_signal" in tags) and !("disable_move_signals" in tags):
 
 			self.execute_scripts(self, "self_moved_to_board")
@@ -2446,7 +2446,7 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 
 	var interaction_authority:UserInteractionAuthority = UserInteractionAuthority.new(self, trigger_card, trigger, trigger_details, run_type)
 	var interaction_authorized = interaction_authority.interaction_authorized()	
-	var interacting_hero = interaction_authority.authorized_hero_id()
+	var authorized_heroes = interaction_authority.expected_hero_ids()
 	#decision slot reserved by this script, if it needs a decision (see GlobalScriptStack).
 	#Already set when this is a decision that was deferred and now resumes
 	var decision_slot = exec_config.get("resumed_decision_slot", -1)
@@ -2485,6 +2485,21 @@ func choose_and_execute_scripts(state_scripts_dict, trigger_card, trigger, trigg
 		cfc.remove_ongoing_process(self, "core_execute_scripts")
 		return null
 	
+
+	#choose interacting hero based on authorized information and current player
+	#todo this might need to move somewhere else?	
+	var interacting_hero
+	if gameData.get_current_local_hero_id() in authorized_heroes:
+		interacting_hero = gameData.get_current_local_hero_id()
+	else:
+		var found = false
+		for id in authorized_heroes:
+			if id in gameData.get_my_heroes():
+				found = true
+				interacting_hero = id
+				break
+		if !found:
+			interacting_hero = authorized_heroes[0]
 
 	# Here we check for confirmation of optional trigger effects
 	# There should be an SP.KEY_IS_OPTIONAL definition per state
@@ -4158,6 +4173,8 @@ func remove_current_activation(script):
 # Also see Venom Goblin Scenario in Sinister Motives which has multiple main schemes
 func get_active_main_schemes():
 	var scenario = gameData.scenario
+	if gameData.is_main_scheme_per_player():
+		return gameData.get_main_schemes_for(self)
 	if !self.is_encounter():
 		return [gameData.get_main_scheme()]
 	var setting = scenario.get_setting("encounter_requests_main_scheme", "")

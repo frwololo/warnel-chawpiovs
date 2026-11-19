@@ -1366,9 +1366,8 @@ func receive_damage(script: ScriptTask) -> int:
 				var count_str = str(i+1)
 				var tag = count_str + "_threat_on_main_scheme_if_damage"		
 				if (tag in tags):
-					var main_scheme = gameData.get_main_scheme()
 					var task = ScriptTask.new(script.owner, {"name": "add_threat", "amount": count_str}, card, {})
-					task.set_subjects([main_scheme])
+					task.set_subjects(gameData.get_main_schemes_for(script.owner))
 					var stackEvent = SimplifiedStackScript.new(task)
 					gameData.theStack.add_script(stackEvent)
 			
@@ -3017,6 +3016,13 @@ func commit_scheme(script: ScriptTask):
 	var owner = script.owner
 	
 	var main_scheme = gameData.find_main_scheme()
+	#one main scheme per player: an engaged minion schemes against the main
+	#scheme in its play area. The villain (no play area) schemes against
+	#the main scheme of the player it activates against (find_main_scheme)
+	if gameData.is_main_scheme_per_player() and owner.get_controller_hero_id() > 0:
+		var my_schemes = gameData.get_main_schemes_for(owner)
+		if my_schemes:
+			main_scheme = my_schemes[0]
 	if (!main_scheme):
 		return CFConst.ReturnCode.FAILED
 
@@ -4289,6 +4295,25 @@ static func script_constraints(subject, params, script = null) -> int:
 			return CFConst.ReturnCode.FAILED
 
 	return retcode
+
+#one main scheme per player (Protection Racket): an acceleration token that
+#would be placed on a main scheme is placed near the villain instead
+#(it counts for each main scheme, see GameData.villain_threat)
+func mod_tokens(script: ScriptTask) -> int:
+	if gameData.is_main_scheme_per_player() \
+			and script.get_property(SP.KEY_TOKEN_NAME, "") == "acceleration" \
+			and gameData.get_villain():
+		var new_subjects = []
+		var redirected = false
+		for subject in script.subjects:
+			if subject.get_property("type_code", "") == "main_scheme":
+				subject = gameData.get_villain()
+				redirected = true
+			if !(subject in new_subjects):
+				new_subjects.append(subject)
+		if redirected:
+			script.set_subjects(new_subjects)
+	return .mod_tokens(script)
 
 func temporary_effect(script:ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED

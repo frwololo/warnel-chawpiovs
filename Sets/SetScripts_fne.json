@@ -2027,7 +2027,73 @@
 		}
 	},
 	"Change of Venue": {
-		"TODO": "swap your main scheme with a random set-aside one, keeping threat"
+		"reveal": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "old_scheme",
+					"var_type": "subject",
+					"value": "main_scheme",
+					"_comments": "the main scheme in your play area"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "old_threat",
+					"var_type": "int",
+					"value": {
+						"func_name": "count_tokens",
+						"func_params": {
+							"subject": "old_scheme",
+							"token_name": "threat"
+						}
+					}
+				},
+				{
+					"name": "move_card_to_board",
+					"src_container": "set_aside",
+					"grid_name": "misc_encounter_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "main_scheme",
+								"stage": "1B",
+								"card_set_code": "protection_racket"
+							}
+						}
+					],
+					"subject": "tutor",
+					"sort_by": "random",
+					"subject_count": 1,
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": {
+						"func_name": "get_subject_int_variable",
+						"func_params": {
+							"subject": "self",
+							"variable": "old_threat"
+						}
+					},
+					"subject": "previous"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject": "old_scheme",
+					"dest_container": "set_aside"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "old_scheme"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "old_threat"
+				}
+			]
+		},
+		"TODO": "Boost: resolve the When Revealed for the player being activated against"
 	},
 	"Charging Up": {
 		"card_defeated": {
@@ -2279,7 +2345,11 @@
 													"attach to a scheme"
 												]
 											}
-										}
+										},
+										"filter_properties2": {
+											"shortname": "Contingency Planning",
+											"comparison": "ne"
+										},
 									}
 								]
 							}
@@ -3259,7 +3329,8 @@
 						"name": "mod_tokens",
 						"token_name": "charge",
 						"modification": -1,
-						"subject": "self"
+						"subject": "self",
+						"is_cost": true
 					}
 				],
 				"Spend 2 resources": [
@@ -3281,7 +3352,8 @@
 						"name": "mod_tokens",
 						"token_name": "charge",
 						"modification": -1,
-						"subject": "self"
+						"subject": "self",
+						"is_cost": true
 					}
 				]
 			}
@@ -3297,7 +3369,15 @@
 					"filter_state_tutor": [
 						"Electric Charge"
 					]
-				},
+				}
+			]
+		},
+		"card_attached": {
+			"trigger": "Electric Charge",
+			"event_filters": {
+				"host_card": "self"
+			},
+			"board": [
 				{
 					"name": "mod_tokens",
 					"token_name": "charge",
@@ -4532,7 +4612,12 @@
 	},
 	"Hung Out to Dry - 1B": {
 		"card_moved_to_board": {
-			"filter_state_trigger": "group_characters_my_hero",
+			"_comments": "excluding heroes and alter ego as they trigger a card_moved_to_board when changing identity",
+			"filter_state_trigger": [
+				"group_characters_my_hero",
+				"!hero",
+				"!alter_ego"
+			],
 			"board": [
 				{
 					"name": "deal_damage",
@@ -6656,7 +6741,85 @@
 		}
 	},
 	"Protection Racket - 1A": {
-		"TODO": "Each player chooses a Protection Racket main scheme for their own play area (multiple main schemes)"
+		"setup": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose_scheme"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_set_aside_1a"
+				}
+			]
+		},
+		"do_choose_scheme": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Choose your main scheme": [
+					{
+						"name": "if",
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						},
+						"then": [
+							{
+								"name": "move_card_to_board",
+								"src_container": "set_aside",
+								"grid_name": "misc_encounter_my_hero",
+								"filter_state_tutor": [
+									{
+										"filter_properties": {
+											"type_code": "main_scheme",
+											"stage": "1B",
+											"card_set_code": "protection_racket"
+										}
+									}
+								],
+								"subject": "tutor",
+								"sort_by": "random",
+								"subject_count": 1,
+								"_comments": "expert mode: at random"
+							}
+						],
+						"else": [
+							{
+								"name": "move_card_to_board",
+								"src_container": "set_aside",
+								"grid_name": "misc_encounter_my_hero",
+								"filter_state_tutor": [
+									{
+										"filter_properties": {
+											"type_code": "main_scheme",
+											"stage": "1B",
+											"card_set_code": "protection_racket"
+										}
+									}
+								],
+								"subject": "tutor_and_choose",
+								"display_title": "choose your main scheme",
+								"_comments": "the players see the 1B sides"
+							}
+						]
+					}
+				]
+			}
+		},
+		"do_set_aside_1a": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "set_aside",
+					"_comments": "once every player has a main scheme, 1A leaves play. The unused main schemes stay set aside"
+				}
+			]
+		},
+		"_comments": "one main scheme per player: scenario setting main_scheme_per_player (_scenarios.json)"
 	},
 	"Protection Racket #60207a": {
 		"TODO": "campaign mode not supported"

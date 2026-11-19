@@ -1405,8 +1405,23 @@
 						"is_cost": true
 					},
 					{
-						"name": "nop",
-						"_comments": "TODO play a card with a printed energy resource (paying its costs)"
+						"name": "force_play_card",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"is_cost": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"resource_energy": 1,
+									"comparison": "ge"
+								}
+							}
+						],
+						"display_title": "play a card with a printed [energy] resource"
 					}
 				],
 				"Add 2 threat to the main scheme": [
@@ -1476,8 +1491,23 @@
 						"is_cost": true
 					},
 					{
-						"name": "nop",
-						"_comments": "TODO play a card with a printed mental resource (paying its costs)"
+						"name": "force_play_card",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"is_cost": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"resource_mental": 1,
+									"comparison": "ge"
+								}
+							}
+						],
+						"display_title": "play a card with a printed [mental] resource"
 					}
 				],
 				"Add 2 threat to the main scheme": [
@@ -1547,8 +1577,23 @@
 						"is_cost": true
 					},
 					{
-						"name": "nop",
-						"_comments": "TODO play a card with a printed physical resource (paying its costs)"
+						"name": "force_play_card",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"is_cost": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"resource_physical": 1,
+									"comparison": "ge"
+								}
+							}
+						],
+						"display_title": "play a card with a printed [physical] resource"
 					}
 				],
 				"Add 2 threat to the main scheme": [
@@ -1598,7 +1643,11 @@
 		"give_to_player_max1": {},
 		"response_card_dies": {
 			"event_filters": {
-				"source": "my_hero"
+				"source": "my_hero",
+				"tags": [
+					"attack"
+				],
+				"excess_damage": 0
 			},
 			"filter_state_trigger": [
 				"minion"
@@ -1621,8 +1670,7 @@
 						}
 					}
 				}
-			],
-			"_comments": "TODO 'exactly defeat'"
+			]
 		}
 	},
 	"Innate Perception": {

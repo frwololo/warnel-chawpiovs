@@ -479,12 +479,21 @@
 					"is_cost": true
 				},
 				{
-					"name": "draw_cards",
-					"amount": 1
+					"name": "move_card_to_container",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck",
+					"dest_container": "hand",
+					"_comments": "draw 1 card, keeping it as the subject. TODO a real draw (draw triggers don't fire this way)"
 				},
 				{
-					"name": "nop",
-					"_comments": "TODO then play that card (paying its cost). If you cannot, take 1 damage"
+					"name": "execute_scripts",
+					"subject": "previous",
+					"require_exec_state": "hand",
+					"exec_trigger": "manual",
+					"delayed": true,
+					"_comments": "TODO if you cannot play it, take 1 damage"
 				}
 			],
 			"_comments": "TODO 'Forced Action': must be used each round"
@@ -849,8 +858,41 @@
 						]
 					},
 					{
-						"name": "nop",
-						"_comments": "TODO play a card from your hand reducing its cost by 1"
+						"name": "add_script",
+						"end_condition": {
+							"event": "card_played",
+							"event_filters": {
+								"trigger": "self"
+							}
+						},
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_subject": true,
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "max",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "cost",
+										"alteration": -1,
+										"trigger": "self"
+									}
+								]
+							}
+						},
+						"display_title": "play a card, its resource cost is reduced by 1"
+					},
+					{
+						"name": "execute_scripts",
+						"subject": "previous",
+						"require_exec_state": "hand",
+						"exec_trigger": "manual",
+						"delayed": true,
+						"_comments": "Photographic Reflexes pattern"
 					}
 				],
 				"Alter-Ego Action: discard": [
@@ -3070,10 +3112,11 @@
 		"do_act": {
 			"all": [
 				{
-					"name": "temporary_effect",
+					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
 					"subject": "villain",
-					"effect": {
+					"_comments": "+1 SCH/ATK in expert mode",
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -3100,8 +3143,7 @@
 								}
 							]
 						}
-					},
-					"_comments": "+1 SCH/ATK in expert mode"
+					}
 				},
 				{
 					"name": "conditional_script",

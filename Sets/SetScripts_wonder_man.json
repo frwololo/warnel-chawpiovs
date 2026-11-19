@@ -1092,9 +1092,14 @@
 						"is_cost": true
 					},
 					{
-						"name": "play_card",
+						"name": "force_play_card",
 						"subject": "attachments",
-						"_comments": "TODO play the tucked ally as if it were in hand"
+						"attachments_host": "self",
+						"is_cost": true,
+						"filter_state_attachment": [
+							"ally"
+						],
+						"_comments": "as if it were in hand: pays its cost. TODO verify force_play_card from under a card"
 					}
 				]
 			}

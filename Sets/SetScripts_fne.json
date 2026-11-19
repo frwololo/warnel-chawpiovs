@@ -2566,13 +2566,6 @@
 		}
 	},
 	"Dance with the Devil": {
-		"attach_upgrade_to_target": {
-			"__filter_state_subject__": [
-				{
-					"filter_group": "group_enemies"
-				}
-			]
-		},
 		"manual": {
 			"hand": [
 				{
@@ -2583,9 +2576,7 @@
 						"Elektra"
 					]
 				}
-			]
-		},
-		"manual": {
+			],
 			"board": [
 				{
 					"name": "constraints",
@@ -2609,6 +2600,13 @@
 					"name": "attack",
 					"amount": 3,
 					"subject": "my_host"
+				}
+			]
+		},
+		"attach_upgrade_to_target": {
+			"__filter_state_subject__": [
+				{
+					"filter_group": "group_enemies"
 				}
 			]
 		}
@@ -6520,7 +6518,6 @@
 					"subject_count": "all",
 					"attachments_host": "self",
 					"needs_subject": true,
-					"subject_count": "all",
 					"selection_count": 1,
 					"selection_type": "max",
 					"needs_selection": true,

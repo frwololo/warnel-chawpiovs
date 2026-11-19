@@ -2519,7 +2519,9 @@ func enemy_attack(script: ScriptTask) -> int:
 			
 	if defender:
 		if activity_script:
-			if activity_script.script_definition.get("exhaust_defenders", true):
+			#e.g. Draw Their Fire: the defender does not exhaust to defend
+			if activity_script.script_definition.get("exhaust_defenders", true) \
+					and !defender.get_property("no_exhaust_on_defense", 0, true):
 				defender.exhaustme()
 			if is_basic_defense:	
 				if !script.has_tag("basic_defense"):

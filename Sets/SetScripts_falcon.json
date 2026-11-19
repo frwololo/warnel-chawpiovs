@@ -581,8 +581,7 @@
 									"filter_task": "get_property",
 									"filter_property_name": "no_exhaust_on_defense",
 									"alteration": 1,
-									"trigger": "self",
-									"_comments": "TODO not supported: a basic defense always exhausts the defender, no property turns that off"
+									"trigger": "self"
 								}
 							]
 						}

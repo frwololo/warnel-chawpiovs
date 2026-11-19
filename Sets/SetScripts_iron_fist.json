@@ -600,10 +600,11 @@
 					"_comments": "it attacks Helpful Bystander instead"
 				},
 				{
-					"name": "temporary_effect",
+					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
 					"subject": "trigger",
-					"effect": {
+					"_comments": "this attack gains overkill",
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -614,8 +615,7 @@
 								}
 							]
 						}
-					},
-					"_comments": "this attack gains overkill"
+					}
 				}
 			],
 			"_comments": "TODO verify the defender stays Helpful Bystander when defenders are chosen"

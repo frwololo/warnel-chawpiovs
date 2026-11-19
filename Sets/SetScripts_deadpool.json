@@ -1475,6 +1475,13 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "!is_attached",
+				"func_params": {
+					"subject": "self",
+					"host": "my_identity"
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",

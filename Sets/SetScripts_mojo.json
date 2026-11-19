@@ -2210,7 +2210,46 @@
 				}
 			]
 		},
-		"TODO": "When Defeated: each player may search their deck for a card and play it ignoring its resource cost"
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_fetch"
+				}
+			]
+		},
+		"do_fetch": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Search your deck and play a card": [
+					{
+						"name": "force_play_card",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "deck_my_hero",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"ignore_resource_cost": true,
+						"is_cost": true
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_my_hero"
+					}
+				],
+				"Skip": [
+					{
+						"name": "nop"
+					}
+				]
+			},
+			"_comments": "each player in turn, may play a card from their deck ignoring its resource cost"
+		}
 	},
 	"Mana Drain": {
 		"reveal": {

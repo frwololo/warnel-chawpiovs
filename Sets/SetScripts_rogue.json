@@ -510,10 +510,11 @@
 					"is_cost": true
 				},
 				{
-					"name": "temporary_effect",
+					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
-					"subject": "current_activation",
-					"effect": {
+					"subject": "current_activation_enemy",
+					"_comments": "TODO verify current_activation_enemy is the attacking enemy here",
+					"script": {
 						"alterants": {
 							"all": [
 								{
@@ -524,8 +525,7 @@
 								}
 							]
 						}
-					},
-					"_comments": "TODO verify subject for attacking enemy"
+					}
 				}
 			]
 		}

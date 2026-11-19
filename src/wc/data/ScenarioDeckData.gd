@@ -22,6 +22,7 @@ var set_aside_index := {}
 
 
 const all_scenarios:= []
+const RANDOM_VILLAIN_KEY:= "__random__"
 const primitives:= {}
 const globals:= {}
 
@@ -159,6 +160,16 @@ static func get_scenario_options(scheme_id):
 	var villain_choice = get_villain_choice(scheme_id)
 	if villain_choice:
 		var options = []
+		#"villain_random_choice": the villain is picked at random when the game is launched
+		#(e.g. Shadowland's Dark Protege)
+		if primitives.get(scheme_id, {}).get("villain_random_choice", false):
+			options.append(
+				{
+					"display_name": "Random",
+					"value": RANDOM_VILLAIN_KEY,
+					"default": true
+				}
+			)
 		for key in villain_choice:
 			options.append(
 				{
@@ -241,7 +252,8 @@ static func get_villain_array_data(scenario_id, villain_key = "", expert = false
 		TYPE_ARRAY:
 			return villain_data	
 		TYPE_DICTIONARY:
-			if !villain_key:
+			if !villain_key or !villain_data.has(villain_key):
+				villain_key = ""
 				for key in villain_data:
 					villain_key = key
 					break
@@ -253,6 +265,18 @@ static func get_villain_array_data(scenario_id, villain_key = "", expert = false
 		_:
 			#unsupported
 			return []
+
+#resolves a "Random" villain choice into an actual villain key
+#to be called once (by the game master) before the scenario options are shared
+static func resolve_random_villain_key(scenario_id, villain_key):
+	if villain_key != RANDOM_VILLAIN_KEY:
+		return villain_key
+	var villain_choice = get_villain_choice(scenario_id)
+	if !villain_choice:
+		return ""
+	var keys = villain_choice.keys()
+	randomize()
+	return keys[randi() % keys.size()]
 
 static func get_villain_info(scenario_id, villain_key, key):
 	if !primitives:
@@ -664,6 +688,21 @@ func villain_is_in_scenario(villain_data):
 				return true
 	return false
 
+#"Linked" encounter cards (e.g. Shadowland's Dark Protege set) are only
+#added to the scenario if one of the villains they are linked to is part of it
+func linked_card_is_in_scenario(card_data):
+	if card_data.get("faction_code", "") != "encounter":
+		return true
+	var linked_names = card_data.get("linked_to_names", [])
+	if !linked_names:
+		return true
+	for villain_group in _villains:
+		for villain in villain_group:
+			var shortname = villain.get("shortname", villain.get("Name", "")).to_lower()
+			if shortname in linked_names:
+				return true
+	return false
+
 func get_simple_encounter_deck(encounter_sets):
 	#integrity checks
 	if !scheme_card_id:
@@ -715,7 +754,9 @@ func get_simple_encounter_deck(encounter_sets):
 				if villain_is_in_scenario(card_data) and ! set_aside_index.has(code):
 					add_to_set_aside(card_data)	
 				else:
-					added_to_scenario = false			
+					added_to_scenario = false
+			elif !linked_card_is_in_scenario(card_data):
+				added_to_scenario = false
 			else:
 				var add_to_encounter_deck = true
 				var card_set_position = card_data.get("set_position", 0)

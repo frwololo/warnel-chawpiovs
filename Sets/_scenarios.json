@@ -3458,5 +3458,243 @@
 			"Something about this crime wave feels manufactured, even calculated. It was too well orchestrated to be random. What's worse, people on the street have been blaming you for all the chaos and destruction. Someone is turning them against you. This kind of influence campaign points to one suspect: the Kingpin!",
 			"Just then, you hear an explosion from the street below, followed by the screams of fleeing bystanders. Not Kingpin, but someone else shouts your name, followed by \"Come out and plaaaaayyyyyy!\" You jump up and race to the ledge, but you know who it is before you even see them. It's the one person most obsessed with seeing you destroyed. The bane of your existence. Your nemesis."
 		]
+	},
+	"65001": {
+		"code": "65001",
+		"name": "Shadows in the Night",
+		"scenario_display_name": "Shadows in the Night",
+		"villain_random_choice": true,
+		"modular_default": [
+			"ninja_swarm"
+		],
+		"villains": {
+			"Archpriestess": {
+				"villains": [
+					"Archpriestess - A"
+				],
+				"villains_expert": [
+					"Archpriestess - A"
+				]
+			},
+			"Daredevil": {
+				"villains": [
+					"Daredevil - A"
+				],
+				"villains_expert": [
+					"Daredevil - A"
+				]
+			},
+			"Elektra": {
+				"villains": [
+					"Elektra - A"
+				],
+				"villains_expert": [
+					"Elektra - A"
+				]
+			},
+			"Gorgon": {
+				"villains": [
+					"Gorgon - A"
+				],
+				"villains_expert": [
+					"Gorgon - A"
+				]
+			},
+			"Lady Bullseye": {
+				"villains": [
+					"Lady Bullseye - A"
+				],
+				"villains_expert": [
+					"Lady Bullseye - A"
+				]
+			},
+			"White Tiger": {
+				"villains": [
+					"White Tiger - A"
+				],
+				"villains_expert": [
+					"White Tiger - A"
+				]
+			}
+		},
+		"encounter_sets": [
+			"shadows_in_the_night",
+			"dark_protege",
+			"Standard",
+			"Modular"
+		],
+		"expert": {
+			"encounter_sets": [
+				"shadows_in_the_night",
+				"dark_protege",
+				"Standard",
+				"Modular",
+				"expert"
+			]
+		},
+		"description": [
+			"<b>Dark Protégé</b>\nThe villain is one of the six Dark Protégés (Archpriestess, Daredevil, Elektra, Gorgon, Lady Bullseye, White Tiger), chosen at random unless you pick one in the Team Selection screen. Only the encounter cards linked to that villain are shuffled into the encounter deck.",
+			"<b>Positions</b>\nThe villain and the heroes are each either on The Streets Below or Atop the Tenshu, tracked by two double-sided environments. Characters get +1 ATK while both positions are the same. While they differ, damage from attacks is reduced by 1 and threat cannot be removed from the main scheme.",
+			"<b>Two sides</b>\nWhen the villain would be defeated on side A, it flips to side B instead. Defeat it on side B to win."
+		]
+	},
+	"65038": {
+		"code": "65038",
+		"name": "Shadow Labyrinth",
+		"scenario_display_name": "Shadow Labyrinth",
+		"villain_random_choice": true,
+		"modular_default": [
+			"ninja_swarm"
+		],
+		"villains": {
+			"Archpriestess": {
+				"villains": [
+					"Shifting Corridors - A",
+					"Archpriestess - A"
+				],
+				"villains_expert": [
+					"Shifting Corridors - A",
+					"Archpriestess - A"
+				]
+			},
+			"Daredevil": {
+				"villains": [
+					"Shifting Corridors - A",
+					"Daredevil - A"
+				],
+				"villains_expert": [
+					"Shifting Corridors - A",
+					"Daredevil - A"
+				]
+			},
+			"Elektra": {
+				"villains": [
+					"Shifting Corridors - A",
+					"Elektra - A"
+				],
+				"villains_expert": [
+					"Shifting Corridors - A",
+					"Elektra - A"
+				]
+			},
+			"Gorgon": {
+				"villains": [
+					"Shifting Corridors - A",
+					"Gorgon - A"
+				],
+				"villains_expert": [
+					"Shifting Corridors - A",
+					"Gorgon - A"
+				]
+			},
+			"Lady Bullseye": {
+				"villains": [
+					"Shifting Corridors - A",
+					"Lady Bullseye - A"
+				],
+				"villains_expert": [
+					"Shifting Corridors - A",
+					"Lady Bullseye - A"
+				]
+			},
+			"White Tiger": {
+				"villains": [
+					"Shifting Corridors - A",
+					"White Tiger - A"
+				],
+				"villains_expert": [
+					"Shifting Corridors - A",
+					"White Tiger - A"
+				]
+			}
+		},
+		"encounter_sets": [
+			"shadow_labyrinth",
+			"dark_protege",
+			"deadly_contraptions",
+			"Standard",
+			"Modular"
+		],
+		"expert": {
+			"encounter_sets": [
+				"shadow_labyrinth",
+				"dark_protege",
+				"deadly_contraptions",
+				"Standard",
+				"Modular",
+				"expert"
+			]
+		},
+		"extra_decks": [
+			{
+				"name": "discard_trap",
+				"faceup": true
+			},
+			{
+				"name": "deck_trap"
+			}
+		],
+		"extra_rules": [
+			{
+				"card_moved_to_pile": {
+					"event_filters": {
+						"destination": "discard_villain"
+					},
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_trap": 1
+							}
+						}
+					],
+					"all": [
+						{
+							"name": "move_card_to_container",
+							"dest_container": "discard_trap",
+							"subject": "trigger"
+						}
+					]
+				}
+			}
+		],
+		"description": [
+			"<b>Shifting Corridors</b>\nThe first villain is a location. Instead of activating, it loses a passage counter and reveals the top card of the trap deck. If the last passage counter is removed, the players lose. Remove all threat from Into the Labyrinth to reach the Chamber of Vile Secrets, where a Dark Protégé waits.",
+			"<b>Trap deck</b>\nTrap! cards form their own deck with its own discard pile. Most traps let you choose to Avoid, Disarm or Trip.",
+			"<b>Dark Protégé</b>\nThe second villain is one of the six Dark Protégés, chosen at random unless you pick one in the Team Selection screen. Only the encounter cards linked to that villain are shuffled into the encounter deck."
+		]
+	},
+	"65060": {
+		"code": "65060",
+		"name": "Heart of Shadow",
+		"scenario_display_name": "Heart of Shadow",
+		"modular_default": [
+			"ninja_swarm"
+		],
+		"villains": [
+			"Krahllak - 1",
+			"Krahllak - 2"
+		],
+		"encounter_sets": [
+			"heart_of_shadow",
+			"black_flower",
+			"Standard",
+			"Modular"
+		],
+		"expert": {
+			"encounter_sets": [
+				"heart_of_shadow",
+				"black_flower",
+				"Standard",
+				"Modular",
+				"expert"
+			],
+			"villains": [
+				"Krahllak - 2",
+				"Krahllak - 3"
+			]
+		},
+		"description": [
+			"<b>Creeping Corruption</b>\nEach player starts with a Creeping Corruption upgrade. Many encounter cards let you place corruption counters on it to avoid worse effects. At 5 counters it flips to its Overpowering side, and if that side reaches 5 counters, its player is defeated."
+		]
 	}
 }

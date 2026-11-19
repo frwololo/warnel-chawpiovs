@@ -1252,6 +1252,8 @@ func _launch_server_game():
 	for key in _scenario_options:
 		var option_button:OptionButton =  _scenario_options[key]
 		scenario_options[key] = option_button.get_selected_metadata()
+	if scenario_options.has("villain_key"):
+		scenario_options["villain_key"] = ScenarioDeckData.resolve_random_villain_key(_scenario, scenario_options["villain_key"])
 	launch_data = {
 		"team": serialized_team,
 		"scheme_id" : _scenario, 

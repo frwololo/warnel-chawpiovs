@@ -1169,7 +1169,7 @@ const DEFAULT_SETTINGS:= {
 		"luke_cage": "https://marvelcdb.com/api/public/cards/luke_cage.json", #Luke Cage Hero Pack
 		"elektra": "https://marvelcdb.com/api/public/cards/elektra.json", #Elektra Hero Pack
 		"iron_fist": "https://marvelcdb.com/api/public/cards/iron_fist.json", #Iron Fist Hero Pack
-#		"": "https://marvelcdb.com/api/public/cards/.json", #
+		"shadowland": "https://marvelcdb.com/api/public/cards/shadowland.json", #Shadowland Scenario Pack
 #Print and Play
 #		"ron": "https://marvelcdb.com/api/public/cards/.json", #
 
@@ -1213,7 +1213,8 @@ const BETA_SETS:= [
 	"jj",
 	"luke_cage",
 	"elektra",
-	"iron_fist"
+	"iron_fist",
+	"shadowland"
 ]
 
 const SERVER_RESOURCES_URL = "/wc/resources/"

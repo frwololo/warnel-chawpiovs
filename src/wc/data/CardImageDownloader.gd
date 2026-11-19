@@ -31,7 +31,12 @@ const default_servers := {
 				"credits":{
 					"Cerebro":"https://github.com/UnicornSnuggler/Cerebro"
 				} 					
-			},	
+			},
+		"mcdg": {
+				"url": "https://marvel.champions-digital-game.com",
+				"health_check_url": "/card-art/bundles/cards/65001b.png",
+				"path": "/card-art/bundles/cards/[card_id].png",				
+		},	
 		"mc4db":	
 			{
 				"url": "https://mc4db.merlindumesnil.net",

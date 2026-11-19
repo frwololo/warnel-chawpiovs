@@ -779,6 +779,14 @@ func _load_one_card_definition(card_data, box_name:= "core", fanmade = false):
 		var startpos = linked_pos + needle.length()
 		var linked_str = text_lc.substr(startpos, card_pos - startpos )
 		card_data["linked_to"] = linked_str.to_lower()
+		#encounter cards can be linked to several villains,
+		#e.g. "Linked (Elektra, Lady Bullseye, or White Tiger)"
+		var linked_names = []
+		for linked_name in linked_str.to_lower().replace(", or ", ",").replace(" or ", ",").split(","):
+			linked_name = remove_bbcode(linked_name).strip_edges()
+			if linked_name:
+				linked_names.append(linked_name)
+		card_data["linked_to_names"] = linked_names
 
 	needle = "teamwork ("
 	var teamwork_pos = text_lc.find(needle)

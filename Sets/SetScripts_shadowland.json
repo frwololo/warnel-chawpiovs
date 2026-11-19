@@ -1,0 +1,4909 @@
+{
+	"A Barricade of Blades - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": [
+						"set_aside",
+						"deck_villain"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"Name": "The Streets Below",
+								"type_code": "environment"
+							}
+						}
+					],
+					"_comments": "put each The Streets Below environment (villain position and hero position) into play"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "the Dark Protégé villain is the villain_key scenario option, its linked cards are filtered when building the encounter deck"
+	},
+	"A Barricade of Blades - 1B": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"filter_state_trigger": [
+						"villain"
+					],
+					"_comments": "expert mode: the villain gets +1 SCH"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
+				"villain"
+			],
+			"board": [
+				{
+					"name": "if",
+					"func_name": "check_validity",
+					"func_params": {
+						"subject": "trigger",
+						"filter_state_trigger": [
+							{
+								"filter_properties": {
+									"stage": "A"
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "prevent",
+							"subject": "interrupted_event"
+						},
+						{
+							"name": "flip_doublesided_card",
+							"subject": "trigger"
+						},
+						{
+							"name": "mod_tokens",
+							"token_name": "damage",
+							"modification": 0,
+							"set_to_mod": true,
+							"subject": "villain",
+							"_comments": "reset its hit points"
+						},
+						{
+							"name": "execute_scripts",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_villain_position": 1
+									}
+								}
+							],
+							"exec_trigger": "force_change_position",
+							"_comments": "change the villain's position"
+						},
+						{
+							"name": "sequence",
+							"sequence_ability": "do_deal"
+						}
+					],
+					"else": [
+						{
+							"name": "victory"
+						}
+					]
+				}
+			],
+			"_comments": "villain defeated on side A: flip it to side B instead. Defeated on side B: the players win"
+		},
+		"do_deal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal 1 facedown encounter card": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"TODO": "expert mode: the villain gets +3[per_hero] hit points"
+	},
+	"Fortress Lockdown - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "force_change_position",
+					"_comments": "change the villain's position"
+				},
+				{
+					"name": "sequence",
+					"sequence_ability": "do_reveal_minion"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"do_reveal_minion": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Reveal a minion": [
+					{
+						"name": "reveal_encounter",
+						"subject": "tutor_and_choose",
+						"src_container": [
+							"deck_villain",
+							"discard_villain"
+						],
+						"filter_state_tutor": [
+							"minion"
+						]
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck_villain"
+					}
+				]
+			}
+		},
+		"TODO": "expert mode: the villain gets +3[per_hero] hit points"
+	},
+	"Fortress Lockdown - 2B": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme",
+					"alteration": {
+						"func_name": "get_scenario_option_value",
+						"func_params": {
+							"option_name": "expert_mode"
+						}
+					},
+					"filter_state_trigger": [
+						"villain"
+					],
+					"_comments": "expert mode: the villain gets +1 SCH"
+				}
+			]
+		},
+		"interrupt_card_dies": {
+			"filter_state_trigger": [
+				"villain"
+			],
+			"board": [
+				{
+					"name": "if",
+					"func_name": "check_validity",
+					"func_params": {
+						"subject": "trigger",
+						"filter_state_trigger": [
+							{
+								"filter_properties": {
+									"stage": "A"
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "prevent",
+							"subject": "interrupted_event"
+						},
+						{
+							"name": "flip_doublesided_card",
+							"subject": "trigger"
+						},
+						{
+							"name": "mod_tokens",
+							"token_name": "damage",
+							"modification": 0,
+							"set_to_mod": true,
+							"subject": "villain",
+							"_comments": "reset its hit points"
+						},
+						{
+							"name": "execute_scripts",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"trait_villain_position": 1
+									}
+								}
+							],
+							"exec_trigger": "force_change_position",
+							"_comments": "change the villain's position"
+						},
+						{
+							"name": "sequence",
+							"sequence_ability": "do_deal"
+						}
+					],
+					"else": [
+						{
+							"name": "victory"
+						}
+					]
+				}
+			],
+			"_comments": "villain defeated on side A: flip it to side B instead. Defeated on side B: the players win"
+		},
+		"do_deal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal 1 facedown encounter card": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"TODO": "expert mode: the villain gets +3[per_hero] hit points"
+	},
+	"The Streets Below #65003a": {
+		"once_per_phase": {
+			"__name__": "__position"
+		},
+		"change_position": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "__position",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"force_change_position": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "__position",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_characters"
+						}
+					],
+					"alteration": {
+						"if": {
+							"func_name": "count_cards==1",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"Name": "Atop the Tenshu"
+										}
+									}
+								]
+							}
+						},
+						"then": 0,
+						"else": 1
+					},
+					"_comments": "same positions: each character gets +1 ATK. TODO verify if/then/else alterations"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "count_cards==1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Atop the Tenshu"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "different positions: reduce the damage each character takes from each attack by 1"
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "main_scheme"
+			},
+			"condition_board": {
+				"func_name": "count_cards==1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Atop the Tenshu"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "different positions: threat cannot be removed from the main scheme"
+		}
+	},
+	"Atop the Tenshu #65003b": {
+		"once_per_phase": {
+			"__name__": "__position"
+		},
+		"change_position": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"is_cost": true,
+					"modification": -1,
+					"token_name": "__position",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"force_change_position": {
+			"board": [
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"set_to_mod": true,
+					"token_name": "__position",
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"filter_state_trigger": [
+						{
+							"filter_group": "group_characters"
+						}
+					],
+					"alteration": {
+						"if": {
+							"func_name": "count_cards==1",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"Name": "Atop the Tenshu"
+										}
+									}
+								]
+							}
+						},
+						"then": 0,
+						"else": 1
+					},
+					"_comments": "same positions: each character gets +1 ATK. TODO verify if/then/else alterations"
+				}
+			]
+		},
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"condition_board": {
+				"func_name": "count_cards==1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Atop the Tenshu"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 1,
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "different positions: reduce the damage each character takes from each attack by 1"
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "main_scheme"
+			},
+			"condition_board": {
+				"func_name": "count_cards==1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Atop the Tenshu"
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			],
+			"_comments": "different positions: threat cannot be removed from the main scheme"
+		}
+	},
+	"The Streets Below #65004a": {
+		"manual": {
+			"board": {
+				"Place 3 threat on the main scheme and stun your identity": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"_comments": "TODO First Player Action: only the first player"
+					},
+					{
+						"name": "add_threat",
+						"amount": 3,
+						"subject": "main_scheme"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "my_identity"
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				],
+				"Spend [physical][physical] resources": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"_comments": "TODO First Player Action: only the first player"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				],
+				"Spend 1 resource and exhaust an Aerial character you control": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"_comments": "TODO First Player Action: only the first player"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"trait_aerial": 1
+								},
+								"filter_group": "group_friendly_my_hero"
+							}
+						]
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				]
+			},
+			"_comments": "First Player Action: resolve one of the effects, then flip this card"
+		}
+	},
+	"Atop the Tenshu #65004b": {
+		"manual": {
+			"board": {
+				"Deal 3 damage to your identity": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"_comments": "TODO First Player Action: only the first player"
+					},
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				],
+				"Spend [energy][energy] resources": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"_comments": "TODO First Player Action: only the first player"
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				],
+				"Discard an ally or upgrade you control": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "nop",
+						"is_cost": true,
+						"_comments": "TODO First Player Action: only the first player"
+					},
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								},
+								"filter_group": "group_friendly_my_hero"
+							},
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								},
+								"filter_same_controller": true
+							}
+						],
+						"_comments": "TODO verify the two filters are OR'ed"
+					},
+					{
+						"name": "flip_doublesided_card",
+						"subject": "self"
+					}
+				]
+			},
+			"_comments": "First Player Action: resolve one of the effects, then flip this card"
+		}
+	},
+	"Black Tarantula": {
+		"reveal": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "change_position",
+					"_comments": "change the villain's position if it has not changed this phase"
+				},
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Atop the Tenshu",
+									"trait_villain_position": 1
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "enemy_attacks_you",
+							"subject": "self"
+						}
+					],
+					"else": [
+						{
+							"name": "mod_tokens",
+							"token_name": "tough",
+							"modification": 1,
+							"subject": "villain"
+						},
+						{
+							"name": "mod_tokens",
+							"token_name": "tough",
+							"modification": 1,
+							"subject": "self"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Ghost Maker": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "change_position",
+					"_comments": "change the villain's position if it has not changed this phase"
+				},
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Atop the Tenshu",
+									"trait_villain_position": 1
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "discard",
+							"subject": "boardseek",
+							"subject_count": "all",
+							"needs_selection": true,
+							"selection_count": 1,
+							"selection_type": "equal",
+							"is_cost": true,
+							"filter_state_seek": [
+								{
+									"filter_group": "group_upgrade_support_event_source_hero"
+								},
+								{
+									"filter_group": "group_allies_event_source_hero"
+								}
+							],
+							"_comments": "discard 1 card you control. TODO verify the filters"
+						}
+					],
+					"else": [
+						{
+							"name": "indirect_damage",
+							"amount": 2,
+							"subject": "event_source_hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"undefended": false
+					},
+					"then": [
+						{
+							"name": "if",
+							"func_name": "!is_defending",
+							"func_params": {
+								"subject": "current_hero_target"
+							},
+							"then": [
+								{
+									"name": "reveal_encounter",
+									"subject": "self"
+								}
+							]
+						}
+					],
+					"_comments": "TODO 'an ally is defending': this checks that the attack is defended, see the current_activation_status fix"
+				}
+			]
+		}
+	},
+	"Sealed Entrances": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "change_position",
+					"_comments": "change the villain's position if it has not changed this phase"
+				}
+			]
+		}
+	},
+	"Strategic Positioning": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_acceleration",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards>=1",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"Name": "Atop the Tenshu",
+											"trait_villain_position": 1
+										}
+									}
+								]
+							}
+						},
+						"then": 0,
+						"else": 1
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "scheme_hazard",
+					"trigger": "self",
+					"alteration": {
+						"if": {
+							"func_name": "count_cards>=1",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_properties": {
+											"Name": "Atop the Tenshu",
+											"trait_villain_position": 1
+										}
+									}
+								]
+							}
+						},
+						"then": 1,
+						"else": 0
+					}
+				}
+			],
+			"_comments": "TODO verify if/then/else alterations"
+		}
+	},
+	"Surround the Fortress": {
+		"reveal": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "change_position",
+					"_comments": "change the villain's position if it has not changed this phase"
+				},
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Atop the Tenshu",
+									"trait_villain_position": 1
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"amount": "1p",
+							"subject": "main_scheme"
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"amount": "1p",
+							"subject": "self"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Chaos in Hell's Kitchen": {
+		"reveal": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "change_position",
+					"_comments": "change the villain's position if it has not changed this phase"
+				},
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Atop the Tenshu",
+									"trait_villain_position": 1
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"amount": 2,
+							"subject": "main_scheme"
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": 2,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "self",
+					"exec_trigger": "reveal",
+					"_comments": "resolve this card's When Revealed ability"
+				}
+			]
+		}
+	},
+	"Moonlit Silhouette": {
+		"reveal_alter_ego": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"trait_villain_position": 1
+							}
+						}
+					],
+					"exec_trigger": "change_position",
+					"_comments": "change the villain's position if it has not changed this phase"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "confused",
+					"modification": 1,
+					"subject": "my_identity"
+				}
+			]
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Atop the Tenshu",
+									"trait_villain_position": 1
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "enemy_schemes",
+							"subject": "villain"
+						}
+					],
+					"else": [
+						{
+							"name": "villain_attacks_you"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Archpriestess - A": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"is_cost": true,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						"minion"
+					],
+					"_comments": "give a minion a tough status card"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"is_else": true
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						"minion"
+					],
+					"target_identity": "current_hero_target",
+					"is_else": true,
+					"_comments": "TODO only among the 3 cards discarded this way, and let the player choose"
+				}
+			]
+		}
+	},
+	"Daredevil - A": {
+		"once_per_round_per_player": {},
+		"attack_happened": {
+			"event_filters": {
+				"target": "self"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard 1 random card from your hand": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"subject_count": 1,
+						"src_container": "hand_event_source_hero"
+					}
+				],
+				"Daredevil attacks you": [
+					{
+						"name": "i_attack",
+						"subject": "event_source_hero",
+						"action_owner": "host",
+						"_comments": "TODO verify i_attack against the attacking player"
+					}
+				]
+			},
+			"_comments": "after you or an ally you control attacks Daredevil. Limit once per round per player"
+		}
+	},
+	"Elektra - A": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_current_activation_target"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==1",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==3",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==5",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==7",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "if",
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							},
+							"then": [
+								{
+									"name": "replacement_effect",
+									"subject": "current_activation",
+									"replacements": {
+										"additional_tags": [
+											"overkill",
+											"piercing"
+										]
+									}
+								}
+							]
+						}
+					],
+					"_comments": "odd printed cost: +1 ATK for this attack; otherwise overkill and piercing"
+				}
+			]
+		}
+	},
+	"Gorgon - A": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend a [physical] resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Stun your identity": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "current_hero_target"
+					}
+				],
+				"Take 2 indirect damage": [
+					{
+						"name": "indirect_damage",
+						"amount": 2,
+						"subject": "current_hero_target"
+					}
+				]
+			}
+		}
+	},
+	"Lady Bullseye - A": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"undefended": true
+					},
+					"then": [
+						{
+							"name": "indirect_damage",
+							"amount": 1,
+							"subject": "current_hero_target"
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"amount": 1,
+							"subject": "main_scheme"
+						}
+					]
+				}
+			]
+		}
+	},
+	"White Tiger - A": {
+		"once_per_round_per_player": {},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "self",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				}
+			],
+			"_comments": "she attacks you again with +1 ATK. Limit once per round per player. TODO verify the +1 ATK lasts for the second attack only"
+		}
+	},
+	"Archpriestess - B": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "tough",
+					"modification": 1,
+					"is_cost": true,
+					"subject": "target",
+					"needs_subject": true,
+					"filter_state_subject": [
+						"minion"
+					],
+					"_comments": "give a minion a tough status card"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"is_else": true
+				},
+				{
+					"name": "deal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						"minion"
+					],
+					"target_identity": "current_hero_target",
+					"is_else": true,
+					"_comments": "TODO only among the 3 cards discarded this way, and let the player choose"
+				}
+			]
+		}
+	},
+	"Daredevil - B": {
+		"once_per_round_per_player": {},
+		"attack_happened": {
+			"event_filters": {
+				"target": "self"
+			},
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_friendly"
+				}
+			],
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Discard 1 random card from your hand": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"subject_count": 1,
+						"src_container": "hand_event_source_hero"
+					}
+				],
+				"Daredevil attacks you": [
+					{
+						"name": "i_attack",
+						"subject": "event_source_hero",
+						"action_owner": "host",
+						"_comments": "TODO verify i_attack against the attacking player"
+					}
+				]
+			},
+			"_comments": "after you or an ally you control attacks Daredevil. Limit once per round per player"
+		}
+	},
+	"Elektra - B": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 1,
+					"src_container": "deck_current_activation_target"
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==1",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==3",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==5",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "get_subject_int_printed_property==7",
+								"func_params": {
+									"subject": "previous",
+									"property": "cost"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "add_script",
+									"end_condition": "enemy_activation_finished",
+									"subject": "self",
+									"script": {
+										"alterants": {
+											"all": [
+												{
+													"filter_task": "get_property",
+													"filter_property_name": "attack",
+													"trigger": "self",
+													"alteration": 1
+												}
+											]
+										}
+									}
+								}
+							]
+						}
+					],
+					"else": [
+						{
+							"name": "if",
+							"func_name": "current_activation_status",
+							"func_params": {
+								"type": "attack"
+							},
+							"then": [
+								{
+									"name": "replacement_effect",
+									"subject": "current_activation",
+									"replacements": {
+										"additional_tags": [
+											"overkill",
+											"piercing"
+										]
+									}
+								}
+							]
+						}
+					],
+					"_comments": "odd printed cost: +1 ATK for this attack; otherwise overkill and piercing"
+				}
+			]
+		}
+	},
+	"Gorgon - B": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend a [physical] resource": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"physical": 1
+						},
+						"is_cost": true
+					}
+				],
+				"Stun your identity": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "current_hero_target"
+					}
+				],
+				"Take 2 indirect damage": [
+					{
+						"name": "indirect_damage",
+						"amount": 2,
+						"subject": "current_hero_target"
+					}
+				]
+			}
+		}
+	},
+	"Lady Bullseye - B": {
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"undefended": true
+					},
+					"then": [
+						{
+							"name": "indirect_damage",
+							"amount": 1,
+							"subject": "current_hero_target"
+						}
+					],
+					"else": [
+						{
+							"name": "add_threat",
+							"amount": 1,
+							"subject": "main_scheme"
+						}
+					]
+				}
+			]
+		}
+	},
+	"White Tiger - B": {
+		"once_per_round_per_player": {},
+		"enemy_attack_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "enemy_attacks_you",
+					"subject": "self"
+				}
+			],
+			"_comments": "she attacks you again. Limit once per round per player. TODO verify the +1 ATK lasts for the second attack only"
+		}
+	},
+	"Art of the Kill": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"interrupt_enemy_attack": {
+			"filter_state_trigger": [
+				{
+					"filter_group": "group_enemies"
+				}
+			],
+			"event_filters": {
+				"target": "host"
+			},
+			"board": [
+				{
+					"name": "add_script",
+					"end_condition": "enemy_activation_finished",
+					"subject": "trigger",
+					"script": {
+						"alterants": {
+							"all": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "attack",
+									"trigger": "self",
+									"alteration": 1
+								}
+							]
+						}
+					}
+				}
+			],
+			"_comments": "when an enemy attacks you, it gets +1 ATK for that attack"
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"alter_ego_action"
+					]
+				},
+				{
+					"name": "pay_cost",
+					"cost": {
+						"energy": 1,
+						"mental": 1,
+						"physical": 1
+					},
+					"is_cost": true
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "If that attack defeats a character, place 1 threat on the main scheme. Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Krahllak's Blessing": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"amount": ">0",
+				"filter_state_actual_source": [
+					{
+						"filter_group": "group_characters"
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": 3,
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "i_attack",
+					"subject": "trigger_details_actual_source",
+					"action_owner": "host",
+					"_comments": "TODO verify: attached villain attacks that character"
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Archpriestess": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_attacks_you",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"Name": "Archpriestess",
+								"comparison": "ne"
+							},
+							"filter_group": "group_enemies_my_hero"
+						}
+					],
+					"_comments": "each other minion engaged with you attacks you"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"is_else": true
+				}
+			]
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Gorgon": {
+		"attack_happened": {
+			"event_filters": {
+				"target": "self",
+				"damage": ">0"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "stunned",
+					"modification": 1,
+					"subject": "trigger"
+				}
+			],
+			"_comments": "after a character attacks and damages Gorgon, stun that character"
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Lady Bullseye": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "ranged"
+		},
+		"TODO": "she attacks the ally with the highest printed cost you control, if able. Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"White Tiger": {
+		"reveal": {
+			"all": [
+				{
+					"name": "indirect_damage",
+					"amount": 2,
+					"subject": "my_identity"
+				}
+			]
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Rite of Offering": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"dest_container": "removed_from_game",
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_event_source_hero"
+						}
+					]
+				},
+				{
+					"name": "deal_damage",
+					"amount": 3,
+					"subject": "event_source_hero",
+					"is_else": true
+				}
+			]
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Shadowy Plot": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal",
+					"display_title": "choose a card to reveal"
+				},
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_villain"
+				}
+			]
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Darkness Within": {
+		"reveal": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "is_alter_ego_form",
+					"func_params": {
+						"subject": "my_identity"
+					},
+					"then": [
+						{
+							"name": "change_form",
+							"subject": "my_hero"
+						}
+					]
+				},
+				{
+					"name": "villain_attacks_you"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"type": "attack"
+					},
+					"then": [
+						{
+							"name": "replacement_effect",
+							"subject": "current_activation",
+							"replacements": {
+								"additional_tags": [
+									"overkill"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Embraced by Darkness": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_schemes",
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"type": "attack"
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"amount": 2,
+							"subject": "main_scheme"
+						}
+					]
+				}
+			]
+		},
+		"TODO": "If 2 or less threat was placed on the main scheme this way, discard the top 3 cards of the encounter deck. Linked: only shuffled into the encounter deck if the chosen villain is one of the listed ones (see notes)"
+	},
+	"Black Mountain": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_be_attacked",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"trait_ninja": 1,
+								"Name": "Black Mountain",
+								"comparison": "ne"
+							},
+							"filter_same_controller": true
+						}
+					],
+					"_comments": "each other Ninja minion engaged with you cannot be attacked"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"undefended": false
+					},
+					"then": [
+						{
+							"name": "if",
+							"func_name": "!is_defending",
+							"func_params": {
+								"subject": "current_hero_target"
+							},
+							"then": [
+								{
+									"name": "reveal_encounter",
+									"subject": "self"
+								}
+							]
+						}
+					],
+					"_comments": "TODO 'an ally is defending': this checks that the attack is defended, see the current_activation_status fix"
+				}
+			]
+		}
+	},
+	"Kirigi": {
+		"card_defeated": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Spend 2 resources": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"unc": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Shuffle Kirigi into the encounter deck": [
+					{
+						"name": "shuffle_card_into_container",
+						"subject": "self",
+						"dest_container": "deck_villain"
+					}
+				]
+			},
+			"_comments": "the defeating player chooses. TODO verify who pays"
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"undefended": false
+					},
+					"then": [
+						{
+							"name": "if",
+							"func_name": "!is_defending",
+							"func_params": {
+								"subject": "current_hero_target"
+							},
+							"then": [
+								{
+									"name": "if",
+									"func_name": "current_activation_status",
+									"func_params": {
+										"type": "attack"
+									},
+									"then": [
+										{
+											"name": "replacement_effect",
+											"subject": "current_activation",
+											"replacements": {
+												"additional_tags": [
+													"overkill"
+												]
+											}
+										}
+									]
+								}
+							]
+						}
+					],
+					"_comments": "TODO 'an ally is defending': this checks that the attack is defended, see the current_activation_status fix"
+				}
+			]
+		},
+		"TODO": "boost: this card gains [boost][boost]"
+	},
+	"Bo Staff Ninja": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"teamwork_ninja": 1
+							}
+						}
+					],
+					"_comments": "TODO only among the 2 cards discarded this way (first one), any teamwork keyword"
+				}
+			]
+		}
+	},
+	"Fukiya Ninja": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "ranged"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"teamwork_ninja": 1
+							}
+						}
+					],
+					"_comments": "TODO only among the 2 cards discarded this way (first one), any teamwork keyword"
+				}
+			]
+		}
+	},
+	"Katana Ninja": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"teamwork_ninja": 1
+							}
+						}
+					],
+					"_comments": "TODO only among the 2 cards discarded this way (first one), any teamwork keyword"
+				}
+			]
+		}
+	},
+	"Kusarigama Ninja": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"teamwork_ninja": 1
+							}
+						}
+					],
+					"_comments": "TODO only among the 2 cards discarded this way (first one), any teamwork keyword"
+				}
+			]
+		}
+	},
+	"Shuriken Ninja": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "piercing"
+		},
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "discard",
+					"subject": "index",
+					"subject_index": "top",
+					"subject_count": 2,
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "tutor",
+					"subject_count": 1,
+					"src_container": "discard_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"teamwork_ninja": 1
+							}
+						}
+					],
+					"_comments": "TODO only among the 2 cards discarded this way (first one), any teamwork keyword"
+				}
+			]
+		}
+	},
+	"Dancing Shadows": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "health",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_ninja": 1
+							}
+						}
+					]
+				}
+			]
+		},
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "self"
+			},
+			"condition_board": {
+				"func_name": "count_cards>=1",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_ninja": 1
+							}
+						}
+					]
+				}
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "reveal_encounter",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Countless Numbers": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "discard_villain",
+					"dest_container": "deck_villain",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "minion",
+								"trait_ninja": 1
+							}
+						}
+					]
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "execute_scripts",
+					"subject": "self",
+					"exec_trigger": "reveal",
+					"_comments": "resolve this card's When Revealed ability"
+				}
+			]
+		}
+	},
+	"Shifting Corridors - A": {
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "passage",
+			"filter_count": 0,
+			"filter_count_difference": "decreased",
+			"board": [
+				{
+					"name": "defeat"
+				}
+			],
+			"_comments": "if the last passage counter is removed from here, the players lose"
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cannot_leave_play",
+					"trigger": "self",
+					"alteration": 1,
+					"_comments": "Shifting Corridors has no hit points (health 0 in the definition) and must not die"
+				}
+			]
+		},
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "passage",
+					"modification": -1,
+					"subject": "self"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_trap",
+					"_comments": "reveal the top card of the trap deck"
+				}
+			],
+			"_comments": "instead of activating, remove 1 passage counter and reveal the top card of the trap deck"
+		},
+		"interrupt_enemy_would_scheme": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "passage",
+					"modification": -1,
+					"subject": "self"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_trap",
+					"_comments": "reveal the top card of the trap deck"
+				}
+			],
+			"_comments": "instead of activating, remove 1 passage counter and reveal the top card of the trap deck"
+		}
+	},
+	"Into the Labyrinth - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject_count": "all",
+					"src_container": [
+						"deck_villain",
+						"set_aside"
+					],
+					"dest_container": "deck_trap",
+					"subject": "tutor",
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"trait_trap": 1,
+								"type_code": "treachery"
+							}
+						},
+						{
+							"filter_properties": {
+								"Name": "Whisper in the Dark"
+							}
+						}
+					],
+					"_comments": "create the trap deck: every Trap! card. TODO check the composition against the rulebook (p. 12)"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_trap"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "the Dark Protégé villain is the villain_key scenario option (kept set aside), its linked cards are filtered when building the encounter deck"
+	},
+	"Into the Labyrinth - 1B": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "passage",
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Shifting Corridors - A"
+							}
+						}
+					],
+					"modification": {
+						"if": {
+							"func_name": "get_scenario_option_value",
+							"func_params": {
+								"option_name": "expert_mode"
+							}
+						},
+						"then": "7p",
+						"else": "10p"
+					},
+					"_comments": "TODO verify 'p' values inside if/then/else"
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"filter_state_event_target": [
+					{
+						"filter_properties": {
+							"Name": "Shifting Corridors - A"
+						}
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "remove_threat",
+					"subject": "self",
+					"amount": {
+						"func_name": "get_interrupted_event_property",
+						"func_params": {
+							"property": "amount"
+						}
+					},
+					"_comments": "TODO verify the amount of the prevented damage"
+				}
+			],
+			"_comments": "when Shifting Corridors would take damage, remove that much threat from here instead"
+		},
+		"last_threat_removed": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "move_to_next_scheme",
+					"subject": "self"
+				}
+			],
+			"_comments": "the players win by advancing"
+		}
+	},
+	"Chamber of Vile Secrets - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "swap_villain",
+					"subject": "tutor",
+					"src_container": [
+						"set_aside",
+						"board"
+					],
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"type_code": "villain",
+								"trait_hand": 1
+							}
+						}
+					],
+					"_comments": "set Shifting Corridors aside and reveal the chosen villain. TODO find it on the board if Whisper in the Dark put it into play as a minion, and discard its status cards, tokens and attachments"
+				},
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "expert_mode"
+					},
+					"then": [
+						{
+							"name": "flip_doublesided_card",
+							"subject": "villain",
+							"_comments": "side B in expert mode"
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Chamber of Vile Secrets - 2B": {
+		"reveal": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "expert_mode"
+					},
+					"then": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_activate"
+						}
+					]
+				}
+			]
+		},
+		"do_activate": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"The villain activates against you": [
+					{
+						"name": "enemy_activates_against_you",
+						"subject": "villain"
+					}
+				]
+			}
+		},
+		"once_per_round_per_player": {},
+		"thwart_happened": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_trap",
+					"_comments": "reveal the top card of the trap deck"
+				}
+			],
+			"_comments": "TODO verify trigger name for 'after you or an ally you control thwarts this scheme'. Limit once per round per player"
+		}
+	},
+	"Whisper in the Dark": {
+		"TODO": "Trap!: attached villain is an Elite minion with 6 printed hit points, gains guard, villainous and 'When Defeated: set this minion aside'. When Revealed: put the chosen villain into play engaged with you with this card attached, or set this card aside and the villain schemes"
+	},
+	"Lord Deathstrike": {
+		"reveal": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Shifting Corridors - A"
+								}
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "move_card_to_container",
+							"subject_count": 2,
+							"src_container": "deck_villain",
+							"dest_container": "deck_trap",
+							"subject": "index",
+							"subject_index": "top"
+						},
+						{
+							"name": "shuffle_container",
+							"dest_container": "deck_trap"
+						}
+					],
+					"else": [
+						{
+							"name": "reveal_encounter",
+							"subject": "index",
+							"subject_index": "top",
+							"src_container": "deck_trap",
+							"_comments": "reveal the top card of the trap deck"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_board",
+					"subject": "self",
+					"grid_name": "enemies_current_hero_target",
+					"_comments": "put this minion into play engaged with you"
+				}
+			]
+		}
+	},
+	"Dead End": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "passage",
+					"modification": -1,
+					"is_cost": true,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Shifting Corridors - A"
+							}
+						}
+					]
+				},
+				{
+					"name": "add_threat",
+					"amount": "1p",
+					"subject": "self",
+					"is_else": true
+				}
+			]
+		}
+	},
+	"Hall of Hidden Doors": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "remove_threat",
+					"amount": 5,
+					"subject": "main_scheme"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "grab_until",
+					"src_container": "deck_villain",
+					"filter_state_grab_until": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							}
+						},
+						{
+							"filter_properties": {
+								"type_code": "side_scheme"
+							}
+						}
+					],
+					"_comments": "discard until a minion or side scheme is discarded, then reveal it. TODO verify that grab_until discards the other cards"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "add_threat",
+					"amount": 3,
+					"subject": "main_scheme"
+				}
+			]
+		}
+	},
+	"No Time to Think!": {
+		"reveal": {
+			"all": [
+				{
+					"name": "enemy_activates_against_you",
+					"subject": "villain"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "current_activation_status",
+					"func_params": {
+						"type": "attack"
+					},
+					"then": [
+						{
+							"name": "replacement_effect",
+							"subject": "current_activation",
+							"replacements": {
+								"additional_tags": [
+									"overkill"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		"TODO": "boost: this card gains [boost][boost]"
+	},
+	"Sudden Shift": {
+		"reveal": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject_count": "all",
+					"src_container": "discard_trap",
+					"dest_container": "deck_trap",
+					"subject": "tutor"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject_count": 3,
+					"src_container": "deck_villain",
+					"dest_container": "deck_trap",
+					"subject": "index",
+					"subject_index": "top"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_trap"
+				},
+				{
+					"name": "reveal_encounter",
+					"subject": "index",
+					"subject_index": "top",
+					"src_container": "deck_trap",
+					"_comments": "reveal the top card of the trap deck"
+				}
+			]
+		},
+		"boost": {
+			"all": [
+				{
+					"name": "move_card_to_container",
+					"subject_count": "all",
+					"src_container": "discard_trap",
+					"dest_container": "deck_trap",
+					"subject": "tutor"
+				},
+				{
+					"name": "move_card_to_container",
+					"subject_count": 2,
+					"src_container": "deck_villain",
+					"dest_container": "deck_trap",
+					"subject": "index",
+					"subject_index": "top"
+				},
+				{
+					"name": "shuffle_container",
+					"dest_container": "deck_trap"
+				}
+			]
+		}
+	},
+	"Blinding Powder": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event",
+									"trait_thwart": 1
+								}
+							}
+						]
+					}
+				],
+				"Disarm": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"subject_count": 2,
+						"src_container": "hand",
+						"is_cost": true
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "tough",
+						"modification": 1,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_friendly_my_hero"
+							}
+						]
+					}
+				],
+				"Trip": [
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Caltrops": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event",
+									"trait_defense": 1
+								}
+							}
+						]
+					}
+				],
+				"Disarm": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"faction_code": "hero"
+								}
+							}
+						]
+					},
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_enemies"
+							}
+						]
+					}
+				],
+				"Trip": [
+					{
+						"name": "deal_damage",
+						"amount": 2,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Flame Spout": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "ally"
+								}
+							}
+						]
+					}
+				],
+				"Disarm": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_group": "group_allies_my_hero"
+							}
+						]
+					},
+					{
+						"name": "draw_cards",
+						"amount": 2,
+						"subject": "my_hero"
+					}
+				],
+				"Trip": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 3,
+						"src_container": "deck"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Oil Slick": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								}
+							}
+						]
+					}
+				],
+				"Disarm": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade"
+								},
+								"filter_same_controller": true
+							}
+						]
+					},
+					{
+						"name": "remove_threat",
+						"amount": 4,
+						"subject": "main_scheme"
+					}
+				],
+				"Trip": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal"
+					},
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 8,
+						"src_container": "deck"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Poison Darts": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Disarm": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 2,
+							"physical": 1
+						},
+						"is_cost": true
+					},
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "villain"
+					}
+				],
+				"Trip": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Pressure Plate": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 2
+						},
+						"is_cost": true
+					}
+				],
+				"Disarm": [
+					{
+						"name": "pay_cost",
+						"cost": {
+							"energy": 1,
+							"physical": 2
+						},
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 4,
+						"src_container": "deck",
+						"dest_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal"
+					},
+					{
+						"name": "shuffle_container",
+						"dest_container": "deck"
+					}
+				],
+				"Trip": [
+					{
+						"name": "reveal_encounter",
+						"subject": "grab_until",
+						"src_container": "deck_villain",
+						"filter_state_grab_until": [
+							{
+								"filter_properties": {
+									"type_code": "minion"
+								}
+							}
+						],
+						"_comments": "discard until a minion is discarded, then reveal it. TODO verify that grab_until discards the other cards"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Tripwire": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Avoid": [
+					{
+						"name": "discard",
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "event",
+									"trait_attack": 1
+								}
+							}
+						]
+					}
+				],
+				"Disarm": [
+					{
+						"name": "discard",
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_count": 1,
+						"selection_type": "equal",
+						"is_cost": true,
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"type_code": "support"
+								},
+								"filter_same_controller": true
+							}
+						]
+					},
+					{
+						"name": "remove_threat",
+						"amount": 3,
+						"subject": "target",
+						"needs_subject": true,
+						"filter_state_subject": [
+							{
+								"filter_group": "group_schemes"
+							}
+						]
+					}
+				],
+				"Trip": [
+					{
+						"name": "reveal_encounter",
+						"subject": "grab_until",
+						"src_container": "deck_villain",
+						"filter_state_grab_until": [
+							{
+								"filter_properties": {
+									"type_code": "side_scheme"
+								}
+							}
+						],
+						"_comments": "discard until a side scheme is discarded, then reveal it. TODO verify that grab_until discards the other cards"
+					}
+				]
+			}
+		},
+		"_comments": "Trap!: the option names are used by Iron Monk, Nervous Jitters, Hall of Punishment and Path of a Thousand Cuts"
+	},
+	"Nervous Jitters": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "my_identity"
+				}
+			]
+		},
+		"TODO": "Forced Interrupt: when you choose Avoid or Disarm on a Trap! card, name an encounter card type, discard the top encounter card; if not of the named type, take 4 indirect damage and discard this attachment"
+	},
+	"Iron Monk": {
+		"TODO": "While Iron Monk is engaged with you, you cannot choose the Avoid effect on Trap! cards"
+	},
+	"Hall of Punishment": {
+		"boost": {
+			"all": [
+				{
+					"name": "add_threat",
+					"subject": "main_scheme",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_group": "group_characters",
+									"filter_same_controller": true
+								}
+							]
+						}
+					},
+					"_comments": "TODO 'you' = the player being activated against"
+				}
+			]
+		},
+		"TODO": "Forced Interrupt: when you choose Trip on a Trap! card, discard the top 3 cards of your deck"
+	},
+	"Path of a Thousand Cuts": {
+		"boost": {
+			"all": [
+				{
+					"name": "deal_damage",
+					"amount": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_characters",
+							"filter_same_controller": true
+						}
+					],
+					"_comments": "TODO 'you' = the player being activated against"
+				}
+			]
+		},
+		"TODO": "Forced Interrupt: when you choose Avoid or Trip on a Trap! card, take 2 indirect damage"
+	},
+	"Krahllak - 1": {
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption (-3 ATK)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": -3
+									}
+								]
+							}
+						}
+					}
+				],
+				"Decline": [
+					{
+						"name": "nop"
+					}
+				]
+			},
+			"_comments": "you may place 1 corruption counter on your Creeping Corruption. If you do, this attack gets -3 ATK"
+		}
+	},
+	"Krahllak - 2": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill"
+		},
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption (-3 ATK)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": -3
+									}
+								]
+							}
+						}
+					}
+				],
+				"Decline": [
+					{
+						"name": "nop"
+					}
+				]
+			},
+			"_comments": "you may place 1 corruption counter on your Creeping Corruption. If you do, this attack gets -3 ATK"
+		}
+	},
+	"Krahllak - 3": {
+		"interrupt_pre_receive_damage": {
+			"event_filters": {
+				"tags": [
+					"attack"
+				]
+			},
+			"trigger": "self",
+			"board": [
+				{
+					"name": "replacement_effect",
+					"subject": "interrupted_event",
+					"replacements": {
+						"additional_tags": [
+							"overkill",
+							"piercing"
+						]
+					}
+				}
+			],
+			"_comments": "Krahllak's attacks gain overkill and piercing"
+		},
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption (-3 ATK)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": -3
+									}
+								]
+							}
+						}
+					}
+				],
+				"Decline": [
+					{
+						"name": "nop"
+					}
+				]
+			},
+			"_comments": "you may place 1 corruption counter on your Creeping Corruption. If you do, this attack gets -3 ATK"
+		}
+	},
+	"Dark Invitation - 1A": {
+		"setup": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_corruption"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"do_corruption": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Put a Creeping Corruption into play": [
+					{
+						"name": "move_card_to_board",
+						"subject": "tutor",
+						"subject_count": 1,
+						"src_container": [
+							"set_aside",
+							"deck_villain"
+						],
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								}
+							}
+						],
+						"grid_name": "upgrade_support_my_hero"
+					}
+				]
+			}
+		},
+		"_comments": "the rest of the Creeping Corruption cards stay set aside"
+	},
+	"Dark Invitation - 1B": {
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Place 2 corruption counters on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 2,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				],
+				"Take 3 damage and deal yourself 1 facedown encounter card": [
+					{
+						"name": "deal_damage",
+						"amount": 3,
+						"subject": "my_identity"
+					},
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		},
+		"TODO": "Forced Interrupt: when this stage would be completed, instead remove all threat from here and each player resolves do_choose. Forced Response: after Krahllak is defeated, advance to stage 2A"
+	},
+	"Beast Be Praised - 2A": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_discard"
+				},
+				{
+					"name": "if",
+					"func_name": "get_scenario_option_value",
+					"func_params": {
+						"option_name": "expert_mode"
+					},
+					"then": [
+						{
+							"name": "sequence",
+							"sequence_ability": "do_deal"
+						}
+					]
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"do_discard": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Discard": [
+					{
+						"name": "if",
+						"func_name": "count_cards>=1",
+						"func_params": {
+							"subject": "boardseek",
+							"subject_count": "all",
+							"filter_state_seek": [
+								{
+									"filter_properties": {
+										"Name": "Creeping Corruption",
+										"trait_overpowering": 1
+									},
+									"filter_group": "group_upgrade_support_my_hero"
+								}
+							]
+						},
+						"then": [
+							{
+								"name": "discard",
+								"subject": "index",
+								"subject_index": "random",
+								"subject_count": 1,
+								"src_container": "hand_my_hero"
+							}
+						],
+						"else": [
+							{
+								"name": "discard",
+								"subject": "boardseek",
+								"subject_count": "all",
+								"needs_selection": true,
+								"selection_count": 1,
+								"selection_type": "equal",
+								"is_cost": false,
+								"filter_state_seek": [
+									{
+										"filter_group": "group_upgrade_support_my_hero"
+									},
+									{
+										"filter_group": "group_allies_my_hero"
+									}
+								],
+								"_comments": "discard a card you control from play. TODO verify the filters"
+							}
+						]
+					}
+				]
+			}
+		},
+		"do_deal": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Deal 1 facedown encounter card": [
+					{
+						"name": "deal_encounter",
+						"subject": "my_identity"
+					}
+				]
+			}
+		}
+	},
+	"Beast Be Praised - 2B": {
+		"step_ended": {
+			"event_filters": {
+				"step_name": "VILLAIN_THREAT"
+			},
+			"board": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				],
+				"Place 3 threat here": [
+					{
+						"name": "add_threat",
+						"amount": 3,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Dark Shroud": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"target": "host",
+				"tags": [
+					"attack"
+				],
+				"amount": ">=4",
+				"filter_state_actual_source": [
+					{
+						"filter_group": "group_friendly"
+					}
+				]
+			},
+			"board": [
+				{
+					"name": "prevent",
+					"amount": "all",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_event_source_hero"
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "discard_villain",
+					"subject": "self"
+				}
+			]
+		},
+		"_comments": "TODO verify the attachment's printed ATK bonus is applied to Krahllak"
+	},
+	"Fear Projection": {
+		"card_moved_to_board": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "attach_to_card",
+					"subject": "villain"
+				}
+			]
+		},
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "retaliate",
+					"alteration": 1,
+					"trigger": "host"
+				}
+			]
+		},
+		"manual": {
+			"board": {
+				"Place 2 corruption counters on your Creeping Corruption": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"hero_action"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 2,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				],
+				"Spend [mental][mental][mental] resources": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"alter_ego_action"
+						]
+					},
+					{
+						"name": "pay_cost",
+						"cost": {
+							"mental": 3
+						},
+						"is_cost": true
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				]
+			}
+		}
+	},
+	"Mark of the Wicked": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Attach this card to your identity": [
+					{
+						"name": "attach_to_card",
+						"subject": "my_identity"
+					}
+				],
+				"Take 4 damage": [
+					{
+						"name": "deal_damage",
+						"amount": 4,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"basic_attack_happened": {
+			"event_filters": {
+				"source": "host"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify the attachment's printed stat bonus is applied to the hero"
+	},
+	"Pull of Power": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Attach this card to your identity": [
+					{
+						"name": "attach_to_card",
+						"subject": "my_identity"
+					}
+				],
+				"Take 4 damage": [
+					{
+						"name": "deal_damage",
+						"amount": 4,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "confused",
+						"modification": 1,
+						"subject": "my_identity"
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					},
+					{
+						"name": "move_card_to_container",
+						"dest_container": "discard_villain",
+						"subject": "self"
+					}
+				]
+			}
+		},
+		"basic_thwart_happened": {
+			"event_filters": {
+				"source": "host"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					]
+				}
+			]
+		},
+		"_comments": "TODO verify the attachment's printed stat bonus is applied to the hero"
+	},
+	"Fist": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "deal_damage",
+					"amount": 4,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Hellbride": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_event_source_hero"
+						}
+					]
+				},
+				{
+					"name": "heal",
+					"amount": 6,
+					"subject": "event_source_hero"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "nop",
+					"is_cost": true,
+					"condition": {
+						"func_name": "get_remaining_damage<=2",
+						"func_params": {
+							"subject": "self"
+						}
+					},
+					"_comments": "TODO only if Hellbride has 2 or fewer remaining hit points"
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "my_hero",
+					"is_cost": true
+				},
+				{
+					"name": "discard",
+					"subject": "self"
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": -1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Retainer": {
+		"attacks_gain": {
+			"__trigger__": "self",
+			"__tags__": "overkill"
+		},
+		"interrupt_enemy_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption (-3 ATK)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "self",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "attack",
+										"trigger": "self",
+										"alteration": -3
+									}
+								]
+							}
+						}
+					}
+				],
+				"Decline": [
+					{
+						"name": "nop"
+					}
+				]
+			},
+			"_comments": "you may place 1 corruption counter on your Creeping Corruption. If you do, this attack gets -3 ATK"
+		}
+	},
+	"Snakeroot Elders": {
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "guard",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_tokens>=1",
+						"func_params": {
+							"subject": "self",
+							"token_name": "corruption"
+						}
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "patrol",
+					"trigger": "self",
+					"alteration": {
+						"func_name": "count_tokens>=1",
+						"func_params": {
+							"subject": "self",
+							"token_name": "corruption"
+						}
+					}
+				}
+			]
+		},
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				],
+				"Place 1 corruption counter here": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Veil of Nightmares": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_action"
+					]
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					],
+					"is_cost": true
+				},
+				{
+					"name": "remove_threat",
+					"amount": 5,
+					"subject": "self"
+				}
+			]
+		}
+	},
+	"Submit or Suffer": {
+		"reveal": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				],
+				"Remove 1 corruption counter, Krahllak attacks you": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": -1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					},
+					{
+						"name": "villain_attacks_you"
+					}
+				]
+			}
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						]
+					}
+				],
+				"Stun your identity": [
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "current_hero_target"
+					}
+				]
+			}
+		}
+	},
+	"Creeping Corruption #65072a": {
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_token_name": "corruption",
+			"filter_count_difference": "increased",
+			"condition_board": {
+				"func_name": "count_tokens>=5",
+				"func_params": {
+					"subject": "self",
+					"token_name": "corruption"
+				}
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 0,
+					"set_to_mod": true,
+					"subject": "self"
+				},
+				{
+					"name": "flip_doublesided_card",
+					"subject": "self"
+				}
+			]
+		},
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 1,
+					"subject": "my_hero"
+				}
+			]
+		}
+	},
+	"Creeping Corruption #65072b": {
+		"manual": {
+			"board": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"action_ability"
+					]
+				},
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "draw_cards",
+					"amount": 2,
+					"subject": "my_hero"
+				},
+				{
+					"name": "discard",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "equal"
+				}
+			]
+		},
+		"TODO": "If there are at least 5 corruption counters here, you are defeated (only this player is eliminated)"
+	},
+	"Aka": {
+		"interrupt_enemy_would_attack": {
+			"trigger": "self",
+			"board": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption (cancel the attack)": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						],
+						"is_cost": true
+					},
+					{
+						"name": "prevent",
+						"subject": "interrupted_event",
+						"_comments": "TODO verify that prevent cancels the attack"
+					}
+				],
+				"Decline": [
+					{
+						"name": "nop"
+					}
+				]
+			}
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						]
+					}
+				],
+				"Discard 1 random card from your hand": [
+					{
+						"name": "discard",
+						"subject": "index",
+						"subject_index": "random",
+						"subject_count": 1,
+						"src_container": "hand_current_hero_target"
+					}
+				]
+			}
+		}
+	},
+	"Tongue of the Beast": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_event_source_hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						]
+					}
+				],
+				"This card gains [boost][boost][boost]": [
+					{
+						"name": "nop",
+						"_comments": "TODO boost icons"
+					}
+				]
+			}
+		}
+	},
+	"Binding Ritual": {
+		"reveal": {
+			"all": [
+				{
+					"name": "sequence",
+					"sequence_ability": "do_choose"
+				}
+			]
+		},
+		"do_choose": {
+			"all": {
+				"_rules": {
+					"forced": true,
+					"for_each_player": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				],
+				"Place 3 threat here": [
+					{
+						"name": "add_threat",
+						"amount": 3,
+						"subject": "self"
+					}
+				]
+			}
+		}
+	},
+	"Roots of a Black Flower": {
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 2,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_event_source_hero"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						]
+					}
+				],
+				"Place 4 threat on the main scheme": [
+					{
+						"name": "add_threat",
+						"amount": 4,
+						"subject": "main_scheme"
+					}
+				]
+			}
+		}
+	},
+	"Malediction": {
+		"reveal_alter_ego": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 2 corruption counters on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 2,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					}
+				],
+				"The villain schemes with +2 SCH": [
+					{
+						"name": "add_script",
+						"end_condition": "enemy_activation_finished",
+						"subject": "villain",
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "scheme",
+										"trigger": "self",
+										"alteration": 2
+									}
+								]
+							}
+						}
+					},
+					{
+						"name": "enemy_schemes",
+						"subject": "villain"
+					}
+				]
+			}
+		},
+		"reveal_hero": {
+			"all": [
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption",
+									"trait_overpowering": 1
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "add_script",
+							"end_condition": "enemy_activation_finished",
+							"subject": "villain",
+							"script": {
+								"alterants": {
+									"all": [
+										{
+											"filter_task": "get_property",
+											"filter_property_name": "scheme",
+											"trigger": "self",
+											"alteration": 1
+										}
+									]
+								}
+							}
+						},
+						{
+							"name": "enemy_schemes",
+							"subject": "villain"
+						}
+					],
+					"else": [
+						{
+							"name": "villain_attacks_you"
+						}
+					]
+				}
+			]
+		}
+	},
+	"Invasive Thoughts": {
+		"reveal": {
+			"all": [
+				{
+					"name": "mod_tokens",
+					"token_name": "corruption",
+					"modification": 1,
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"Name": "Creeping Corruption"
+							},
+							"filter_group": "group_upgrade_support_my_hero"
+						}
+					]
+				},
+				{
+					"name": "if",
+					"func_name": "count_cards>=1",
+					"func_params": {
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption",
+									"trait_overpowering": 1
+								},
+								"filter_group": "group_upgrade_support_my_hero"
+							}
+						]
+					},
+					"then": [
+						{
+							"name": "add_threat",
+							"amount": 1,
+							"subject": "main_scheme"
+						}
+					],
+					"else": [
+						{
+							"name": "deal_damage",
+							"amount": 1,
+							"subject": "my_identity"
+						}
+					]
+				}
+			]
+		},
+		"boost": {
+			"all": {
+				"_rules": {
+					"forced": true
+				},
+				"Place 1 corruption counter on your Creeping Corruption": [
+					{
+						"name": "mod_tokens",
+						"token_name": "corruption",
+						"modification": 1,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"filter_state_seek": [
+							{
+								"filter_properties": {
+									"Name": "Creeping Corruption"
+								},
+								"filter_group": "group_upgrade_support_current_hero_target"
+							}
+						]
+					}
+				],
+				"Take 4 indirect damage": [
+					{
+						"name": "indirect_damage",
+						"amount": 4,
+						"subject": "current_hero_target"
+					}
+				]
+			}
+		}
+	}
+}

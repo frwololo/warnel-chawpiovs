@@ -7,6 +7,7 @@ var _villains:= []
 var _villains_by_level:= {}
 
 
+
 var scheme_card_id:= ""
 var schemes:Array
 var modular_sets:=[]
@@ -153,7 +154,29 @@ func get_scenario_data( key):
 	return the_data.get(key, null)
 		
 static func get_scenario_options(scheme_id):
-	var the_options = get_array_data(scheme_id,"options")
+	var the_options = []
+	
+	var villain_choice = get_villain_choice(scheme_id)
+	if villain_choice:
+		var options = []
+		for key in villain_choice:
+			options.append(
+				{
+					"display_name": key,
+					"value": key
+				}
+			)
+		globals["villain_key_option"] = [
+			{
+				"name": "villain_key",
+				"display_name": "Villain",
+				"type": "option_button",
+				"options": options
+			}
+		]			
+		the_options += globals["villain_key_option"]
+	
+	the_options += get_array_data(scheme_id,"options")
 	var encounter_sets : Array = get_array_data(scheme_id,"encounter_sets")
 	
 
@@ -189,16 +212,72 @@ static func get_scenario_options(scheme_id):
 			else:
 				globals["standard_modular_option"] = []
 	return the_options
-		
 
-static func get_first_villain_from_scheme(scheme_id, expert_mode:= false):
-	var villains = get_villains_from_scheme(scheme_id, expert_mode)
+static func get_villain_choice(scenario_id):
+	if !primitives:
+		_load_card_scenarios()	
+	
+	var scheme_primitive = primitives.get(scenario_id, {})	
+	if !scheme_primitive:
+		return false
+	
+	var villain_data = scheme_primitive["villains"]	
+	if typeof(villain_data) == TYPE_DICTIONARY:
+		return villain_data
+	return {}
+
+#gets the villain data as an array
+#backward compatibility function to not break previous functionality
+static func get_villain_array_data(scenario_id, villain_key = "", expert = false):
+	if !primitives:
+		_load_card_scenarios()	
+	
+	var scheme_primitive = primitives.get(scenario_id, {})	
+	if !scheme_primitive:
+		return []
+		
+	var villain_data = scheme_primitive.get("villains", [])	
+	match typeof(villain_data):
+		TYPE_ARRAY:
+			return villain_data	
+		TYPE_DICTIONARY:
+			if !villain_key:
+				for key in villain_data:
+					villain_key = key
+					break
+					
+			if expert:
+				return villain_data[villain_key]["villains_expert"]
+			else:
+				return villain_data[villain_key]["villains"]
+		_:
+			#unsupported
+			return []
+
+static func get_villain_info(scenario_id, villain_key, key):
+	if !primitives:
+		_load_card_scenarios()	
+	
+	var scheme_primitive = primitives.get(scenario_id, {})	
+	if !scheme_primitive:
+		return []
+		
+	var villain_data = scheme_primitive.get("villains", [])	
+	match typeof(villain_data):
+		TYPE_DICTIONARY:
+			return villain_data.get(villain_key, {}).get(key, "")
+		_:
+			#unsupported
+			return ""			
+		
+static func get_first_villain_from_scheme(scheme_id, expert_mode:= false, villain_key = ""):
+	var villains = get_villains_from_scheme(scheme_id, expert_mode, villain_key)
 	if !villains or !villains[0]:
 		return null
 	return villains[0][0]
 	
-static func get_villains_from_scheme(scheme_id, expert_mode:= false):
-	var villain_groups = get_villain_id_groups_from_scheme (scheme_id, expert_mode)
+static func get_villains_from_scheme(scheme_id, expert_mode:= false, villain_key = ""):
+	var villain_groups = get_villain_id_groups_from_scheme (scheme_id, expert_mode, villain_key)
 
 	var results = []
 	#get villains in order, split strings to get name and stage.
@@ -214,14 +293,13 @@ static func get_villains_from_scheme(scheme_id, expert_mode:= false):
 #[["1234", "2345"], ["a234", "b234"]]	
 #the typical use case is just one villain though, with multiple stages
 #[["1234", "2345"]]
-static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false):
+static func get_villain_id_groups_from_scheme(scheme_id, expert_mode:= false, villain_key = ""):
 	var scheme_primitive = primitives.get(scheme_id, {})
 	if !scheme_primitive:
 		return []
 		
-	var villain_data : Array = scheme_primitive["villains"]
-	if expert_mode and scheme_primitive.has("expert"):		
-		villain_data = scheme_primitive["expert"].get("villains", villain_data)
+	var villain_data:Array = get_villain_array_data(scheme_id,villain_key, expert_mode)
+
 		
 	if (not villain_data or villain_data.empty()):
 		print_debug("villains missing in ScenarioDeckData")
@@ -571,7 +649,9 @@ func load_villains(scheme_id = ""):
 	if !scheme_id:	
 		var first_scheme = schemes[0]
 		scheme_id = first_scheme["_code"]
-	_villains = get_villains_from_scheme(scheme_id, is_expert_mode)
+	
+	var villain_key = get_scenario_option("villain_key")
+	_villains = get_villains_from_scheme(scheme_id, is_expert_mode, villain_key)
 	return _villains
 
 func villain_is_in_scenario(villain_data):
@@ -585,6 +665,11 @@ func villain_is_in_scenario(villain_data):
 	return false
 
 func get_simple_encounter_deck(encounter_sets):
+	#integrity checks
+	if !scheme_card_id:
+		var _error = 1
+		return []
+	
 	var result_deck = []
 	# Add sets (from scenario, standard + modular sets)
 	var modular_set_count = 0
@@ -595,7 +680,20 @@ func get_simple_encounter_deck(encounter_sets):
 			modular_set_count += 1
 		elif (encounter_set_code.to_lower() == "standard"): #special case for standard sets
 			if get_scenario_option("standard_override"):
-				encounter_set_code = get_scenario_option("standard_override")		
+				encounter_set_code = get_scenario_option("standard_override")	
+		elif (encounter_set_code.to_lower() == "villain_modular"): #special case for villain choice set
+			var villain_key = get_scenario_option("villain_key")
+			if villain_key:
+				encounter_set_code = get_villain_info(scheme_card_id,villain_key, "modular")
+				var _tmp = 1
+			else:
+				#missing encounter deck data at this stage is acceptable for test Suite only,
+				#because test suite loads its own card anyway
+				#any other use case considered as an error for now
+				if !gameData.testSuite:
+					var _error = 1
+			
+											
 		var encounter_set : Array = cfc.get_encounter_cards(encounter_set_code)
 		
 		#in some cases (e.g. Civil War) the Main scheme doesn't come from

@@ -2938,34 +2938,93 @@
 	"60121": {
 		"code": "60121",
 		"name": "Art Museum Heist",
+		"scenario_display_name": "Art Museum Heist",
 		"modular_default": [
 			"cops",
 			"the_owl"
 		],
+		"villains": {
+			"Hammerhead": {
+				"villains": 
+					[
+						"Hammerhead - 1",
+						"Hammerhead - 2"
+					],
+				"villains_expert": 
+					[
+						"Hammerhead - 2",
+						"Hammerhead - 3"
+					],					
+				"modular": "hammerhead"
+			},
+			"Bullseye": {
+				"villains": 
+					[
+						"Bullseye - 1",
+						"Bullseye - 2"
+					],
+					"villains_expert": 
+					[
+						"Bullseye - 2",
+						"Bullseye - 3"
+					],				
+				"modular": "bullseye"
+			},
+			"Electro": {
+				"villains": 
+					[
+						"Electro - 1",
+						"Electro - 2"
+					],
+				"villains_expert": 
+					[
+						"Electro - 2",
+						"Electro - 3"
+					],					
+				"modular": "electro"
+			},	
+			"Purple Man": {
+				"villains": 
+					[
+						"Purple Man - 1",
+						"Purple Man - 2"
+					],
+				"villains_expert": 
+					[
+						"Purple Man - 2",
+						"Purple Man - 3"
+					],					
+				"modular": "purple_man"
+			},
+			"Typhoid Mary": {
+				"villains": [
+					"Typhoid Mary - A",
+					"Bloody Mary - A"
+				],
+				"villains_expert": [
+					"Typhoid Mary - B",
+					"Bloody Mary - B"
+				],				
+				"modular": "typhoid_mary"
+			}
+		},
 		"encounter_sets": [
 			"art_museum_heist",
-			"hammerhead",
+			"villain_modular",
 			"Standard",
 			"Modular",
 			"Modular"
 		],
-		"villains": [
-			"Hammerhead - 1",
-			"Hammerhead - 2"
-		],
+
 		"expert": {
 			"encounter_sets": [
 				"art_museum_heist",
-				"hammerhead",
+				"villain_modular",
 				"Standard",
 				"modular",
 				"Modular",
 				"expert"
 			],
-			"villains": [
-				"Hammerhead - 2",
-				"Hammerhead - 3"
-			]
 		},
 		"description": [
 			"*Calling all units. Silent alarm tripped at the art museum. On-site security is unresponsive. Security feeds show at least three suspects dressed in black with ski masks. All available units respond!*",
@@ -2977,34 +3036,92 @@
 	"60128": {
 		"code": "60128",
 		"name": "The Getaway",
+		"scenario_display_name": "The Getaway",
 		"modular_default": [
 			"cops",
 			"drive"
 		],
+		"villains": {
+			"Bullseye": {
+				"villains": 
+					[
+						"Bullseye - 1",
+						"Bullseye - 2"
+					],
+					"villains_expert": 
+					[
+						"Bullseye - 2",
+						"Bullseye - 3"
+					],				
+				"modular": "bullseye"
+			},		
+			"Hammerhead": {
+				"villains": 
+					[
+						"Hammerhead - 1",
+						"Hammerhead - 2"
+					],
+				"villains_expert": 
+					[
+						"Hammerhead - 2",
+						"Hammerhead - 3"
+					],					
+				"modular": "hammerhead"
+			},
+			"Electro": {
+				"villains": 
+					[
+						"Electro - 1",
+						"Electro - 2"
+					],
+				"villains_expert": 
+					[
+						"Electro - 2",
+						"Electro - 3"
+					],					
+				"modular": "electro"
+			},	
+			"Purple Man": {
+				"villains": 
+					[
+						"Purple Man - 1",
+						"Purple Man - 2"
+					],
+				"villains_expert": 
+					[
+						"Purple Man - 2",
+						"Purple Man - 3"
+					],					
+				"modular": "purple_man"
+			},
+			"Typhoid Mary": {
+				"villains": [
+					"Typhoid Mary - A",
+					"Bloody Mary - A"
+				],
+				"villains_expert": [
+					"Typhoid Mary - B",
+					"Bloody Mary - B"
+				],				
+				"modular": "typhoid_mary"
+			}
+		},		
 		"encounter_sets": [
 			"the_getaway",
-			"bullseye",
+			"villain_modular",
 			"Standard",
 			"Modular",
 			"Modular"
 		],
-		"villains": [
-			"Bullseye - 1",
-			"Bullseye - 2"
-		],
 		"expert": {
 			"encounter_sets": [
 				"the_getaway",
-				"bullseye",
+				"villain_modular",
 				"Standard",
 				"modular",
 				"Modular",
 				"expert"
 			],
-			"villains": [
-				"Bullseye - 2",
-				"Bullseye - 3"
-			]
 		},
 		"description": [
 			"*This is 10 Adam in pursuit of bank robbery suspect. Yellow sports car. South on 9th Avenue through Hell's Kitchen. Request backup!*",
@@ -3015,34 +3132,92 @@
 	"60134": {
 		"code": "60134",
 		"name": "Protection Racket",
+		"scenario_display_name": "Protection Racket",
 		"modular_default": [
 			"tracksuit_mafia",
 			"disasters"
 		],
+		"villains": {
+			"Electro": {
+				"villains": 
+					[
+						"Electro - 1",
+						"Electro - 2"
+					],
+				"villains_expert": 
+					[
+						"Electro - 2",
+						"Electro - 3"
+					],					
+				"modular": "electro"
+			},		
+			"Bullseye": {
+				"villains": 
+					[
+						"Bullseye - 1",
+						"Bullseye - 2"
+					],
+					"villains_expert": 
+					[
+						"Bullseye - 2",
+						"Bullseye - 3"
+					],				
+				"modular": "bullseye"
+			},		
+			"Hammerhead": {
+				"villains": 
+					[
+						"Hammerhead - 1",
+						"Hammerhead - 2"
+					],
+				"villains_expert": 
+					[
+						"Hammerhead - 2",
+						"Hammerhead - 3"
+					],					
+				"modular": "hammerhead"
+			},	
+			"Purple Man": {
+				"villains": 
+					[
+						"Purple Man - 1",
+						"Purple Man - 2"
+					],
+				"villains_expert": 
+					[
+						"Purple Man - 2",
+						"Purple Man - 3"
+					],					
+				"modular": "purple_man"
+			},
+			"Typhoid Mary": {
+				"villains": [
+					"Typhoid Mary - A",
+					"Bloody Mary - A"
+				],
+				"villains_expert": [
+					"Typhoid Mary - B",
+					"Bloody Mary - B"
+				],				
+				"modular": "typhoid_mary"
+			}
+		},		
 		"encounter_sets": [
-			"electro",
+			"villain_modular",
 			"protection_racket",
 			"Standard",
 			"Modular",
 			"Modular"
 		],
-		"villains": [
-			"Electro - 1",
-			"Electro - 2"
-		],
 		"expert": {
 			"encounter_sets": [
-				"electro",
+				"villain_modular",
 				"protection_racket",
 				"Standard",
 				"Modular",
 				"Modular",
 				"expert"
 			],
-			"villains": [
-				"Electro - 2",
-				"Electro - 3"
-			]
 		},
 		"description": [
 			"*9-1-1. What is your emergency?*",
@@ -3055,34 +3230,92 @@
 	"60142": {
 		"code": "60142",
 		"name": "The Raft Breakout",
+		"scenario_display_name": "The Raft Breakout",		
 		"modular_default": [
 			"the_owl",
 			"tombstone"
 		],
+		"villains": {
+			"Purple Man": {
+				"villains": 
+					[
+						"Purple Man - 1",
+						"Purple Man - 2"
+					],
+				"villains_expert": 
+					[
+						"Purple Man - 2",
+						"Purple Man - 3"
+					],					
+				"modular": "purple_man"
+			},		
+			"Bullseye": {
+				"villains": 
+					[
+						"Bullseye - 1",
+						"Bullseye - 2"
+					],
+					"villains_expert": 
+					[
+						"Bullseye - 2",
+						"Bullseye - 3"
+					],				
+				"modular": "bullseye"
+			},		
+			"Hammerhead": {
+				"villains": 
+					[
+						"Hammerhead - 1",
+						"Hammerhead - 2"
+					],
+				"villains_expert": 
+					[
+						"Hammerhead - 2",
+						"Hammerhead - 3"
+					],					
+				"modular": "hammerhead"
+			},
+			"Electro": {
+				"villains": 
+					[
+						"Electro - 1",
+						"Electro - 2"
+					],
+				"villains_expert": 
+					[
+						"Electro - 2",
+						"Electro - 3"
+					],					
+				"modular": "electro"
+			},	
+			"Typhoid Mary": {
+				"villains": [
+					"Typhoid Mary - A",
+					"Bloody Mary - A"
+				],
+				"villains_expert": [
+					"Typhoid Mary - B",
+					"Bloody Mary - B"
+				],				
+				"modular": "typhoid_mary"
+			}
+		},		
 		"encounter_sets": [
 			"the_raft_breakout",
-			"purple_man",
+			"villain_modular",
 			"Standard",
 			"Modular",
 			"Modular"
 		],
-		"villains": [
-			"Purple Man - 1",
-			"Purple Man - 2"
-		],
 		"expert": {
 			"encounter_sets": [
 				"the_raft_breakout",
-				"purple_man",
+				"villain_modular",
 				"Standard",
 				"modular",
 				"Modular",
 				"expert"
 			],
-			"villains": [
-				"Purple Man - 2",
-				"Purple Man - 3"
-			]
 		},
 		"description": [
 			"*This is the Raft Command Center calling all S.H.I.E.L.D. agents! An unidentified intruder breached security and appears to have the master key. Requesting backup immediately. They're releasing prisoners!*",
@@ -3095,34 +3328,92 @@
 	"60151": {
 		"code": "60151",
 		"name": "Stop The Presses!",
+		"scenario_display_name": "Stop The Presses!",			
 		"modular_default": [
 			"tombstone",
 			"tracksuit_mafia"
 		],
+		"villains": {
+			"Typhoid Mary": {
+				"villains": [
+					"Typhoid Mary - A",
+					"Bloody Mary - A"
+				],
+				"villains_expert": [
+					"Typhoid Mary - B",
+					"Bloody Mary - B"
+				],				
+				"modular": "typhoid_mary"
+			},		
+			"Bullseye": {
+				"villains": 
+					[
+						"Bullseye - 1",
+						"Bullseye - 2"
+					],
+					"villains_expert": 
+					[
+						"Bullseye - 2",
+						"Bullseye - 3"
+					],				
+				"modular": "bullseye"
+			},		
+			"Hammerhead": {
+				"villains": 
+					[
+						"Hammerhead - 1",
+						"Hammerhead - 2"
+					],
+				"villains_expert": 
+					[
+						"Hammerhead - 2",
+						"Hammerhead - 3"
+					],					
+				"modular": "hammerhead"
+			},
+			"Electro": {
+				"villains": 
+					[
+						"Electro - 1",
+						"Electro - 2"
+					],
+				"villains_expert": 
+					[
+						"Electro - 2",
+						"Electro - 3"
+					],					
+				"modular": "electro"
+			},	
+			"Purple Man": {
+				"villains": 
+					[
+						"Purple Man - 1",
+						"Purple Man - 2"
+					],
+				"villains_expert": 
+					[
+						"Purple Man - 2",
+						"Purple Man - 3"
+					],					
+				"modular": "purple_man"
+			},
+		},		
 		"encounter_sets": [
 			"stop_the_presses",
-			"typhoid_mary",
+			"villain_modular",
 			"Standard",
 			"Modular",
 			"modular"
 		],
-		"villains": [
-			"Typhoid Mary - A",
-			"Bloody Mary - A"
-		],
 		"expert": {
 			"encounter_sets": [
 				"stop_the_presses",
-				"typhoid_mary",
+				"villain_modular",
 				"Standard",
 				"Modular",
 				"modular",
 				"expert"
 			],
-			"villains": [
-				"Typhoid Mary - B",
-				"Bloody Mary - B"
-			]
 		},
 		"description": [
 			"*Breaking news! The offices of the Daily Bugle are under attack by unknown forces. The respected news organization's vaunted publisher, J. Jonah Jameson, is believed to be inside with many of his staff, potentially being held hostage by the attackers. We will update you as this situation unfolds. We now return you to Arkon IV: The Goblin Pit featuring Arnold Schwarzburger and Simon Williams, already in progress.*",

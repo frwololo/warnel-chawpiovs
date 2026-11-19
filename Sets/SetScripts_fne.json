@@ -5806,6 +5806,7 @@
 			}
 		],
 		"setup": {
+			"_silent": true,
 			"all": [
 				{
 					"name": "move_card_to_container",

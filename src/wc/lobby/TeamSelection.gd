@@ -828,21 +828,7 @@ remotesync func client_scenario_select(scenario_id):
 	
 	var scenario_scene = all_scenarios_container.get_node("scenario_" + scenario_id)
 	if (scenario_scene):
-		var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario)
-		var villain_id = villain["code"]
-		var filename = cfc.get_img_filename(villain_id)	
-		var new_img = WCUtils.load_img(filename)
-		if new_img:
-			var imgtex = ImageTexture.new()
-			imgtex.create_from_image(new_img)	
-			var scenario_picture: TextureRect = get_node("%ScenarioTexture")
-			if (imgtex):
-				scenario_picture.texture = imgtex
-	#			scenario_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	#			scenario_picture.rect_size = Vector2(150, 150)
-	#			_rotation = scenario_scene._rotation
-	#			scenario_picture.rect_rotation = _rotation
-				resize()
+		display_scenario_picture()
 		var scenario_title = get_node("%ScenarioTitle")
 		scenario_title.text = scenario_scene.get_text()
 	
@@ -850,7 +836,22 @@ remotesync func client_scenario_select(scenario_id):
 		
 	ack()	
 
-
+func display_scenario_picture(villain_key = "", expert_mode = false):
+	var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario, expert_mode, villain_key)
+	if !villain:
+		var _error = 1
+		return
+	var villain_id = villain["code"]
+	var filename = cfc.get_img_filename(villain_id)	
+	var new_img = WCUtils.load_img(filename)
+	if new_img:
+		var imgtex = ImageTexture.new()
+		imgtex.create_from_image(new_img)	
+		var scenario_picture: TextureRect = get_node("%ScenarioTexture")
+		if (imgtex):
+			scenario_picture.texture = imgtex
+			resize()
+			
 #		"options": [
 #			{
 #				"name": "tower_initial_damage",
@@ -912,7 +913,14 @@ func load_scenario_options(_scenario_id):
 		h_container.add_child(option_menu)
 		_scenario_options[option_data["name"]] = option_menu
 		container.add_child(h_container)
+		
+		if option_data.get("name") == "villain_key":
+			option_menu.connect("item_selected", self, "_scenario_villain_changed", [option_menu])
 	
+
+func _scenario_villain_changed(index, option_button):
+	var villain_key = option_button.get_selected_metadata()
+	display_scenario_picture(villain_key)
 
 puppet func expert_mode_toggle (button_pressed):
 	ack()

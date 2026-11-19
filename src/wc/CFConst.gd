@@ -927,10 +927,13 @@ const NOOB_SKIP_ANNOUNCE_STACK_EVENTS:= {
 		"manual": true,
 		"mulligan": true,
 		#we already show the damage with an arrow
-		"enemy_attack_damage": true,	
+		"enemy_attack_damage": true,
+	
 		
 	},
 	"script_name": {
+		#there are multiple boost related events, we only display the initial one (enemy_boost)
+		"enemy_boost_activity": true,		
 		"move_to_player_zone": true		
 	}
 }
@@ -957,6 +960,8 @@ const SKIP_ANNOUNCE_STACK_EVENTS:= {
 		"discard": true,
 	},
 	"script_name": {
+		#there are multiple boost related events, we only display the initial one (enemy_boost)
+		"enemy_boost_activity": true,			
 		"move_to_player_zone": true,
 		"pre_receive_damage": true,		
 	}	

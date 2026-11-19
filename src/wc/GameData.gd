@@ -1793,7 +1793,7 @@ func enemy_activates(delta) :
 				return
 			if enemy.activity_script.get_property("current_boost_card", null)  : #TODO better way?
 				display_debug("card boost stage 2 and 3")
-				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy, enemy, signal_details)
+				var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost_activity"}, enemy, enemy, signal_details)
 				theStack.add_script(stackEvent)
 			else:
 				if enemy.next_boost_card_to_reveal():

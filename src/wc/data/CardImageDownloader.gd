@@ -33,9 +33,10 @@ const default_servers := {
 				} 					
 			},
 		"mcdg": {
-				"url": "https://marvel.champions-digital-game.com",
-				"health_check_url": "/card-art/bundles/cards/65001b.png",
-				"path": "/card-art/bundles/cards/[card_id].png",				
+				"url": "https://marvel.champions-digital-game.com/card-art",
+				"health_check_url": "/bundles/cards/65001b.png",
+				"path": "/bundles/cards/[card_id].png",
+				"prioritize_relative_image_src": true,				
 		},	
 		"mc4db":	
 			{
@@ -127,6 +128,14 @@ const default_servers := {
 				"url": "https://wololo.net",
 				"path": "/wc/images/FR/[box_name]/[card_id].jpg",	
 			},							
+	},
+	"es": {
+		"mcdg_es": {
+				"url": "https://marvel.champions-digital-game.com/card-art-es",
+				"health_check_url": "/bundles/cards/01083.png",
+				"path": "/bundles/cards/[card_id].png",	
+				"prioritize_relative_image_src": true,			
+		},	
 	}
 }
 
@@ -273,7 +282,7 @@ func _process(_delta:float):
 		return
 	
 	#used for debug only!
-	#_preprocess_all_downloads()	
+#	_preprocess_all_downloads()	
 		
 	#progressively download images in background, one per process cycle
 	if _load_pending_images:
@@ -302,7 +311,7 @@ func process_local_converter():
 		_local_files_to_process["processed_error"] = 0
 		_local_files_to_process["current_path"] = ""		
 		
-		for lang in ["", "en", "fr"]:
+		for lang in ["", "en", "fr", "es"]:
 			var suffix = "_" + lang if lang else ""
 			var folder = "user://Sets/convert" + suffix + "/"
 			if dir.dir_exists(folder):
@@ -868,9 +877,13 @@ func load_pending_images():
 	_pending_image_keys = cfc.card_definitions.keys()	
 
 
-##Stores all download links for debug purposes
+#Stores all download links for debug purposes
 #var _preprocessed = false
 #func _preprocess_all_downloads():
+#	#game isn't loaded yet
+#	if !cfc.card_definitions:
+#		return
+#
 #	if _preprocessed:
 #		return
 #	for card_key in cfc.card_definitions.keys():	

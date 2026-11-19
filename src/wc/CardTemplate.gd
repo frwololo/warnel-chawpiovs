@@ -5907,7 +5907,7 @@ const section_name_tr := {
 		"hero interrupt": "interruption de héros",
 		"interrupt": "interruption",
 		"when defeated": "une fois déjouée",
-		"when revealed": "Une fois révélée",
+		"when revealed": "une fois révélée",
 		"alter-ego action": "action d'alter ego",
 		"alter-ego response": "réponse d'alter ego",
 		"forced response": "réponse forcée",
@@ -5915,7 +5915,24 @@ const section_name_tr := {
 		"special": "spécial",
 		"when revealed (alter-ego)": "une fois révélée (alter ego)",
 		"when revealed (hero)": "une fois révélée (héros)",
-	}
+	},
+	"es": {
+		"action": "acción",
+		"response":"respuesta",
+		"hero response": "respuesta de héroe",
+		"hero action" : "acción de héroe",
+		"hero interrupt": "interrupción de héroe",
+		"interrupt": "interrupción",
+		"when defeated": "cuando se derrote esta carta",
+		"when revealed": "cuando se muestre esta carta",
+		"alter-ego action": "acción de alter ego",
+		"alter-ego response": "respuesta alter ego",
+		"forced response": "respuesta obligada",
+		"forced interrupt": "interrupción obligada",
+		"special": "especial",
+		"when revealed (alter-ego)": "cuando se muestre esta carta (alter ego)",
+		"when revealed (hero)": "cuando se muestre esta carta (héroe)",
+	}	
 }
 func get_printed_text(section = "", locale = ""):
 	if !locale:

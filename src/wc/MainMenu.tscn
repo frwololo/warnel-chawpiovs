@@ -77,7 +77,7 @@ unique_name_in_owner = true
 margin_right = 44.0
 margin_bottom = 40.0
 text = "EN"
-items = [ "EN", null, false, 0, null, "FR", null, false, 1, null ]
+items = [ "EN", null, false, 0, null, "FR", null, false, 1, null, "ES", null, false, 2, null ]
 selected = 0
 
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]

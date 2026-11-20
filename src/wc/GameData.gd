@@ -218,8 +218,10 @@ func _ready():
 	get_tree().connect("network_peer_connected", self, "_player_connected")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
-	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")		
+	# deferred: these are emitted while the network peer is being polled, and
+	# the handlers close it (a client crashed when the host left a game)
+	get_tree().connect("connection_failed", self, "_connected_fail", [], CONNECT_DEFERRED)
+	get_tree().connect("server_disconnected", self, "_server_disconnected", [], CONNECT_DEFERRED)		
 	
 	#TODO: the attempt to lock should happen BEFORE we actually open the windows
 	#scripting_bus.connect("selection_window_opened", self, "attempt_user_input_lock")

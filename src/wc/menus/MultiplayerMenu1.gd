@@ -10,6 +10,8 @@ onready var v_buttons := $CenterContainer/VBox/VButtons
 onready var main_menu := $CenterContainer
 onready var v_folder_label := $CenterContainer/VBox/HBoxContainer/FolderLabel
 
+onready var host_room:Button = get_node("%HostRoom")
+onready var host_direct:Button = get_node("%HostDirect")
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -25,6 +27,12 @@ func _ready() -> void:
 	else:
 		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 
+	if !networkManager.is_webrtc_available():
+		host_room.enabled = false
+		host_room.hint_tooltip = "WebRTC plugin missing"
+
+	if !networkManager.is_enet_available():
+		host_direct.visible = false
 
 	if !OS.has_feature("editor") and !OS.is_debug_build():
 		get_node("%JoinTests").visible = false
@@ -34,7 +42,12 @@ func _ready() -> void:
 
 func on_button_pressed(_button_name : String) -> void:
 	match _button_name:
-		"Host":
+		"HostRoom":
+			cfc.set_next_scene_params({"online": true, "public": true})
+			# warning-ignore:return_value_discarded
+			get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
+		"HostDirect":
+			cfc.set_next_scene_params({"online": false})
 			# warning-ignore:return_value_discarded
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
 		"Join":

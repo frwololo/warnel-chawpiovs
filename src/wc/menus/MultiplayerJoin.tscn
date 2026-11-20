@@ -53,27 +53,27 @@ margin_bottom = 775.0
 size_flags_vertical = 3
 
 [node name="VButtons" type="VBoxContainer" parent="MainMenu/VBox/Center"]
-margin_left = 708.0
-margin_right = 1212.0
+margin_left = 630.0
+margin_right = 1290.0
 margin_bottom = 468.0
 rect_min_size = Vector2( 192, 0 )
 custom_constants/separation = 10
 alignment = 1
 
 [node name="RoomsBox" type="VBoxContainer" parent="MainMenu/VBox/Center/VButtons"]
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 33.0
 
 [node name="RoomsListHeader" type="Label" parent="MainMenu/VBox/Center/VButtons/RoomsBox"]
 unique_name_in_owner = true
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 30.0
-text = "Fetching Rooms - Please wait..."
+text = "Fetching Direct IP connections - Please wait..."
 
 [node name="Rooms" type="VBoxContainer" parent="MainMenu/VBox/Center/VButtons/RoomsBox"]
 unique_name_in_owner = true
 margin_top = 33.0
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 33.0
 
 [node name="RefreshButton" type="Button" parent="MainMenu/VBox/Center/VButtons/RoomsBox"]
@@ -86,42 +86,40 @@ text = "Refresh"
 
 [node name="HSeparator2" type="HSeparator" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 43.0
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 165.0
 custom_constants/separation = 122
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 175.0
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 205.0
-text = "Direct IP Join:"
+text = "Direct IP Join or Room Code:"
 
 [node name="JoinBox" type="HBoxContainer" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 215.0
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 274.0
 grow_horizontal = 2
 
 [node name="Label" type="Label" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
 margin_top = 14.0
-margin_right = 98.0
+margin_right = 254.0
 margin_bottom = 44.0
-text = "Host IP: "
+text = "Host IP or Room Code: "
 
 [node name="HostIp" type="LineEdit" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_left = 101.0
-margin_right = 301.0
+margin_left = 257.0
+margin_right = 457.0
 margin_bottom = 59.0
 rect_min_size = Vector2( 200, 27 )
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 2.0
-text = "192.168.1.3"
 expand_to_text_length = true
-placeholder_text = "192.168.100.100"
 
 [node name="Join" type="Button" parent="MainMenu/VBox/Center/VButtons/JoinBox"]
-margin_left = 304.0
-margin_right = 504.0
+margin_left = 460.0
+margin_right = 660.0
 margin_bottom = 59.0
 rect_min_size = Vector2( 200, 0 )
 custom_fonts/font = SubResource( 3 )
@@ -129,13 +127,13 @@ text = "Join"
 
 [node name="HSeparator" type="HSeparator" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 284.0
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 399.0
 custom_constants/separation = 115
 
 [node name="Cancel" type="Button" parent="MainMenu/VBox/Center/VButtons"]
 margin_top = 409.0
-margin_right = 504.0
+margin_right = 660.0
 margin_bottom = 468.0
 text = "Cancel"
 

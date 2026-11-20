@@ -20,9 +20,9 @@ anchor_bottom = 1.0
 
 [node name="VBox" type="VBoxContainer" parent="CenterContainer"]
 margin_left = 733.0
-margin_top = 190.0
+margin_top = 135.0
 margin_right = 1187.0
-margin_bottom = 889.0
+margin_bottom = 944.0
 custom_constants/separation = 10
 alignment = 1
 
@@ -44,24 +44,38 @@ align = 1
 [node name="VButtons" type="VBoxContainer" parent="CenterContainer/VBox"]
 margin_top = 229.0
 margin_right = 454.0
-margin_bottom = 659.0
+margin_bottom = 769.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
-[node name="Host" type="Button" parent="CenterContainer/VBox/VButtons"]
+[node name="HostRoom" type="Button" parent="CenterContainer/VBox/VButtons"]
+unique_name_in_owner = true
 margin_right = 454.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
-text = "Host"
+text = "Host Room"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HostDirect" type="Button" parent="CenterContainer/VBox/VButtons"]
+unique_name_in_owner = true
+margin_top = 110.0
+margin_right = 454.0
+margin_bottom = 210.0
+rect_min_size = Vector2( 0, 100 )
+hint_tooltip = "Use only if the \"Host Room\" option isn't working for you"
+size_flags_horizontal = 3
+text = "Host (Direct IP)"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Join" type="Button" parent="CenterContainer/VBox/VButtons"]
-margin_top = 110.0
+margin_top = 220.0
 margin_right = 454.0
-margin_bottom = 210.0
+margin_bottom = 320.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 text = "Join"
@@ -71,9 +85,9 @@ __meta__ = {
 
 [node name="JoinTests" type="Button" parent="CenterContainer/VBox/VButtons"]
 unique_name_in_owner = true
-margin_top = 220.0
+margin_top = 330.0
 margin_right = 454.0
-margin_bottom = 320.0
+margin_bottom = 430.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 text = "Tests (Join)"
@@ -82,9 +96,9 @@ __meta__ = {
 }
 
 [node name="Cancel" type="Button" parent="CenterContainer/VBox/VButtons"]
-margin_top = 330.0
+margin_top = 440.0
 margin_right = 454.0
-margin_bottom = 430.0
+margin_bottom = 540.0
 rect_min_size = Vector2( 0, 100 )
 size_flags_horizontal = 3
 text = "Cancel"
@@ -93,9 +107,9 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/VBox"]
-margin_top = 669.0
+margin_top = 779.0
 margin_right = 128.0
-margin_bottom = 699.0
+margin_bottom = 809.0
 size_flags_horizontal = 0
 size_flags_vertical = 4
 

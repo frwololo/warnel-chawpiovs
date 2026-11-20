@@ -64,8 +64,10 @@ func _ready() -> void:
 	networkManager.connect("network_error", self, "_network_error")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
-	get_tree().connect("connection_failed", self, "_connected_fail")
-	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	# deferred: these are emitted while the network peer is being polled,
+	# and _end_game closes it
+	get_tree().connect("connection_failed", self, "_connected_fail", [], CONNECT_DEFERRED)
+	get_tree().connect("server_disconnected", self, "_server_disconnected", [], CONNECT_DEFERRED)
 	$HolePunch.connect("hole_punched", self, "_hole_punched")
 	$HolePunch.connect("session_registered", self, "_nat_session_registered")	
 	$HolePunch.connect("error", self, "_nat_error")	
@@ -84,15 +86,13 @@ func _ready() -> void:
 		add_log("joining as client. Server is:" + str(master_ip))
 	else:
 		is_master = true
-		online_room = params.get("online", false) \
-			or cfc.game_settings.get("network_transport", "enet") == "webrtc" \
-			or not networkManager.is_enet_available()
+		online_room = params.get("online", false) or not networkManager.is_enet_available()
 		add_log("joining as server")		
 
 	if online_room:
 		if is_master:
 			_set_status("Creating an online room...", true)
-			networkManager.host_webrtc()
+			networkManager.host_webrtc("", params.get("public", false), params.get("room_name", ""))
 		else:
 			_set_status("Joining room " + room_code + "...", true)
 			networkManager.join_webrtc(room_code)
@@ -334,6 +334,8 @@ func _player_connected(id):
 	cfc._rpc_id(self, id, "register_player", my_info)
 
 func _launch_server_game():
+	# online room: hidden from the public list, closed to new players
+	networkManager.set_room_joinable(false)
 	# Finalize Network players data
 	var i = 1
 	for player in players:
@@ -375,7 +377,7 @@ func _connected_ok():
 # Callback from SceneTree, only for clients (not server).
 func _connected_fail():
 	_set_status("Couldn't connect", false)
-	get_tree().set_network_peer(null) # Remove peer.
+	networkManager.close()
 	#Go back to lobby
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'MultiplayerLobby.tscn')
 	

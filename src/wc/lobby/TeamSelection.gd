@@ -836,8 +836,8 @@ remotesync func client_scenario_select(scenario_id):
 		
 	ack()	
 
-func display_scenario_picture(villain_key = "", expert_mode = false):
-	var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario, expert_mode, villain_key)
+func display_scenario_picture(villain_key = "", is_expert_mode = false):
+	var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario, is_expert_mode, villain_key)
 	if !villain:
 		var _error = 1
 		return

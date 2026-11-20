@@ -23,6 +23,8 @@ signal room_hosted(code)        # WebRTC host: the room code to give other playe
 signal room_joined(code)        # WebRTC client: joined, connections are being made
 signal peer_ready(network_id)   # it is now safe to send RPCs to this peer
 signal network_error(message)   # could not host or join
+signal public_rooms_received(rooms)  # fetch_public_rooms(): Array of {room, name, players, max_players}
+signal public_rooms_failed(message)  # fetch_public_rooms() could not reach the server
 
 enum Transport { NONE, ENET, WEBRTC }
 
@@ -46,6 +48,17 @@ var _server_reachable := false
 var _next_transfer_id := 1
 var _incoming_transfers := {}
 
+# Peers released by close(), kept alive until the next frame: close() can be
+# called while one of them is being polled (from one of its own signals), and
+# freeing or closing it there crashes the engine
+var _closed_peers := []
+
+# fetch_public_rooms(): a short-lived connection to the signaling server,
+# separate from the one used to host or join
+const ROOM_LIST_TIMEOUT := 10.0
+var _room_list_client: WebSocketClient = null
+var _room_list_timer := 0.0
+
 # WebRTC: how often the connections to the other players are checked
 const PEER_CHECK_INTERVAL := 0.5
 var _peer_check_timer := 0.0
@@ -60,8 +73,16 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _closed_peers:
+		_release_closed_peers()
 	if _signaling and _signaling.get_connection_status() != NetworkedMultiplayerPeer.CONNECTION_DISCONNECTED:
 		_signaling.poll()
+	if _room_list_client:
+		_room_list_timer += delta
+		if _room_list_timer > ROOM_LIST_TIMEOUT:
+			call_deferred("_room_list_done", null, "The online server did not answer")
+		else:
+			_room_list_client.poll()
 	if _rtc:
 		_peer_check_timer += delta
 		if _peer_check_timer >= PEER_CHECK_INTERVAL:
@@ -75,8 +96,11 @@ func _process(delta: float) -> void:
 # fails ("_put_packet: DataChannel is closed") and the game still waits for it.
 # Removing the peer emits network_peer_disconnected, as with ENet.
 func _remove_dead_rtc_peers() -> void:
-	for id in _rtc.get_peers().keys():
-		var peer: Dictionary = _rtc.get_peer(id)
+	var rtc = _rtc
+	for id in rtc.get_peers().keys():
+		if _rtc != rtc:
+			return # closed by a peer_disconnected / server_disconnected handler
+		var peer: Dictionary = rtc.get_peer(id)
 		if not peer.get("connected", false):
 			continue # still connecting
 		var reason := ""
@@ -90,12 +114,21 @@ func _remove_dead_rtc_peers() -> void:
 					break
 		if reason:
 			cfc.LOG("{network} lost peer %d (%s)" % [int(id), reason], true)
-			_rtc.remove_peer(int(id))
+			rtc.remove_peer(int(id))
 
 
 # ---------------------------------------------------------------- status
 
-static func is_webrtc_available() -> bool:
+# null until the first check: the plugin is loaded (or not) when the engine starts
+var _webrtc_available = null
+
+func is_webrtc_available() -> bool:
+	if _webrtc_available == null:
+		_webrtc_available = _check_webrtc_available()
+	return _webrtc_available
+
+
+static func _check_webrtc_available() -> bool:
 	if OS.has_feature("JavaScript"):
 		return true
 	# desktop: needs the webrtc-native GDNative plugin, without it new() returns null
@@ -173,8 +206,72 @@ func set_peer_timeout(network_id: int, limit_ms: int, min_ms: int, max_ms: int) 
 
 # ---------------------------------------------------------------- WebRTC
 
-func host_webrtc(url: String = "") -> void:
-	_open_signaling(url, {"type": "host"})
+# public: listed by fetch_public_rooms() until the game starts (see set_room_joinable)
+# room_name: shown in that list
+func host_webrtc(url: String = "", public: bool = false, room_name: String = "") -> void:
+	_open_signaling(url, {"type": "host", "public": public, "name": room_name})
+
+
+# host: false once the game starts. The room disappears from the public list
+# and the server refuses new players
+func set_room_joinable(joinable: bool) -> void:
+	if transport == Transport.WEBRTC and get_tree().is_network_server():
+		_send_signal({"type": "room_state", "joinable": joinable})
+
+
+# Public rooms that can be joined, from the signaling server.
+# Answers with public_rooms_received(rooms) or public_rooms_failed(message)
+func fetch_public_rooms(url: String = "") -> void:
+	if _room_list_client:
+		return # already fetching
+	if not url:
+		url = signaling_url()
+	_room_list_client = WebSocketClient.new()
+	_room_list_timer = 0.0
+	_room_list_client.connect("connection_established", self, "_on_room_list_open")
+	_room_list_client.connect("connection_error", self, "_on_room_list_error")
+	_room_list_client.connect("connection_closed", self, "_on_room_list_error")
+	_room_list_client.connect("data_received", self, "_on_room_list_data")
+	var err = _room_list_client.connect_to_url(url)
+	if err != OK:
+		_room_list_done(null, "Could not reach the online server (error %d)" % err)
+
+
+func _on_room_list_open(_protocol: String) -> void:
+	var peer = _room_list_client.get_peer(1)
+	peer.set_write_mode(WebSocketPeer.WRITE_MODE_TEXT)
+	peer.put_packet(JSON.print({"type": "list"}).to_utf8())
+
+
+func _on_room_list_error(_was_clean := false) -> void:
+	call_deferred("_room_list_done", null, "Could not reach the online server")
+
+
+func _on_room_list_data() -> void:
+	var parsed = JSON.parse(_room_list_client.get_peer(1).get_packet().get_string_from_utf8())
+	if parsed.error == OK and typeof(parsed.result) == TYPE_DICTIONARY and parsed.result.get("type", "") == "rooms":
+		call_deferred("_room_list_done", parsed.result.get("rooms", []), "")
+
+
+# deferred: called from the client's own signals, while it is being polled
+func _room_list_done(rooms, error_message: String) -> void:
+	if not _room_list_client:
+		return # already answered
+	_closed_peers.append(_room_list_client)
+	_room_list_client = null
+	if rooms == null:
+		emit_signal("public_rooms_failed", error_message)
+		return
+	var result := []
+	for room in rooms:
+		if typeof(room) == TYPE_DICTIONARY and looks_like_room_code(str(room.get("room", ""))):
+			result.append({
+				"room": str(room.room),
+				"name": str(room.get("name", "")),
+				"players": int(room.get("players", 0)),
+				"max_players": int(room.get("max_players", 4)),
+			})
+	emit_signal("public_rooms_received", result)
 
 
 func join_webrtc(code: String, url: String = "") -> void:
@@ -287,6 +384,8 @@ func _signaling_error_text(message: String) -> String:
 			return "No room with this code"
 		"room is full":
 			return "This room is full"
+		"game already started":
+			return "The game in this room has already started"
 	return "Online server error: " + message
 
 
@@ -364,12 +463,14 @@ func _on_server_disconnected() -> void:
 
 func close() -> void:
 	if _signaling:
-		_signaling.disconnect_from_host()
+		_closed_peers.append(_signaling)
 		_signaling = null
 	if _rtc:
-		_rtc.close()
+		_closed_peers.append(_rtc)
 		_rtc = null
 	if get_tree().network_peer:
+		if not get_tree().network_peer in _closed_peers:
+			_closed_peers.append(get_tree().network_peer)
 		get_tree().set_network_peer(null)
 	transport = Transport.NONE
 	room_code = ""
@@ -378,6 +479,17 @@ func close() -> void:
 	_incoming_transfers = {}
 	# the network id changes with every connection
 	cfc._network_id = 0
+
+
+func _release_closed_peers() -> void:
+	var peers = _closed_peers
+	_closed_peers = []
+	for peer in peers:
+		if peer is WebSocketClient:
+			peer.disconnect_from_host()
+		elif peer is WebRTCMultiplayer:
+			peer.close()
+		# ENet: releasing the last reference closes the connection, as before
 
 
 # ---------------------------------------------------------------- RPCs

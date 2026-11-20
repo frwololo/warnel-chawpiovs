@@ -14,19 +14,24 @@ var roomSelect = preload("res://src/wc/menus/JoinRoom.tscn")
 
 var http_request: HTTPRequest = null
 
+# fetch_list_rooms() asks two servers at once: the direct IP rooms (lobby
+# server, desktop only) and the public online rooms (signaling server)
+var _pending_room_lists := 0
+var _rooms_found := 0
+var _room_list_errors := []
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	v_host_ip_box.text = ""
 	v_join_button.disabled = true
-
-	if networkManager.is_enet_available():
-		fetch_list_rooms()
-	else:
-		# web builds only join online rooms, by room code
-		get_node("%RoomsListHeader").text = "Enter the room code given by the host"
+	if !networkManager.is_enet_available():
+		# web builds only join online rooms: from the list, or by room code
 		v_host_ip_box.placeholder_text = "Room code"
-		v_join_button.disabled = false
+
+	networkManager.connect("public_rooms_received", self, "_on_public_rooms_received")
+	networkManager.connect("public_rooms_failed", self, "_on_public_rooms_failed")
+	fetch_list_rooms()
 		
 	v_join_button.connect('pressed', self, 'on_button_pressed', ["Join"])
 	v_join_button.connect('mouse_entered', v_join_button, 'grab_focus')
@@ -49,17 +54,74 @@ func fetch_list_rooms():
 		child.queue_free()
 	get_node("%RoomsListHeader").text = "Fetching Rooms - Please wait..."	
 	refresh_button.visible = false
-	var list_rooms_url = cfc.game_settings.get('lobby_server', {}).get('list_rooms_url', '')
-	var server = cfc.game_settings.get('lobby_server', {}).get('server', '')
+	_pending_room_lists = 0
+	_rooms_found = 0
+	_room_list_errors = []
 
-	if server and list_rooms_url:
-		http_request = HTTPRequest.new()
-		http_request.set_timeout(10.0)
-		add_child(http_request)	
-		http_request.connect("request_completed", self, "_check_rooms_list")
-		http_request.request(server + list_rooms_url)
-	else:
+	#online rooms (WebRTC)
+	if networkManager.is_webrtc_available():
+		_pending_room_lists += 1
+		networkManager.fetch_public_rooms()
+
+	#direct IP rooms (ENet), desktop only
+	if networkManager.is_enet_available():
+		var list_rooms_url = cfc.game_settings.get('lobby_server', {}).get('list_rooms_url', '')
+		var server = cfc.game_settings.get('lobby_server', {}).get('server', '')
+		if server and list_rooms_url:
+			_pending_room_lists += 1
+			http_request = HTTPRequest.new()
+			http_request.set_timeout(10.0)
+			add_child(http_request)	
+			http_request.connect("request_completed", self, "_check_rooms_list")
+			http_request.request(server + list_rooms_url)
+		else:
+			_room_list_errors.append("direct IP")
+
+	if !_pending_room_lists:
+		_room_lists_done()
+
+#called once per list (direct IP, online) when it is received or failed
+func _room_list_received(rooms_added: int, error_name: String = "") -> void:
+	_rooms_found += rooms_added
+	if error_name:
+		_room_list_errors.append(error_name)
+	_pending_room_lists -= 1
+	if _pending_room_lists <= 0:
+		_room_lists_done()
+
+func _room_lists_done() -> void:
+	refresh_button.visible = true
+	var header = get_node("%RoomsListHeader")
+	if _rooms_found:
+		header.text = "MULTIPLAYER ROOMS"
+		var rooms_list = get_node("%Rooms")
+		cfc.default_button_focus(rooms_list)
+	elif _room_list_errors:
 		signal_server_error()
+		return
+	else:
+		header.text = "No rooms right now - enter a room code or an IP address" if networkManager.is_enet_available() \
+				else "No rooms right now - enter the room code given by the host"
+	show_buttons()
+
+func _on_public_rooms_received(rooms: Array) -> void:
+	var rooms_list = get_node("%Rooms")
+	for room in rooms:
+		var label = room.name if room.name else "Room " + room.room
+		label += " (%d/%d)" % [room.players, room.max_players]
+		var new_room = roomSelect.instance()
+		new_room.setup(label, self, room.room)
+		rooms_list.add_child(new_room)
+		
+		if CFConst.DEBUG_AUTO_START_MULTIPLAYER or gameData.run_auto_tests:
+			join_game(room.room)
+			break
+		
+	_room_list_received(rooms.size())
+
+func _on_public_rooms_failed(message: String) -> void:
+	cfc.LOG("{network} could not list online rooms: " + message)
+	_room_list_received(0, "online")
 
 func retrieve_server_rooms_list(result, _response_code, _headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
@@ -81,22 +143,20 @@ func retrieve_server_rooms_list(result, _response_code, _headers, body):
 func _check_rooms_list(result, response_code, headers, body):
 	var results = retrieve_server_rooms_list(result, response_code, headers, body)
 	http_request.queue_free()
-	refresh_button.visible = true	
-	if results and typeof(results) == TYPE_ARRAY:
+	if typeof(results) == TYPE_ARRAY:
 		var rooms_list = get_node("%Rooms")
-		get_node("%RoomsListHeader").text = "MULTIPLAYER ROOMS"		
+		var first_room = null
 		for result in results:
 			var new_room = roomSelect.instance()
 			new_room.setup(result["room_name"], self)
 			rooms_list.add_child(new_room)
-		cfc.default_button_focus(rooms_list)
-		show_buttons()
-		if CFConst.DEBUG_AUTO_START_MULTIPLAYER or gameData.run_auto_tests:
-			var room_name = rooms_list.get_child(0).room_name
-			request_join_room(room_name)
-
+			if !first_room:
+				first_room = new_room
+		_room_list_received(results.size())
+		if first_room and (CFConst.DEBUG_AUTO_START_MULTIPLAYER or gameData.run_auto_tests):
+			request_join_room(first_room.room_name)
 	else:
-		signal_server_error()
+		_room_list_received(0, "direct IP")
 
 
 func request_join_room(room_name):
@@ -138,13 +198,18 @@ func disable_rooms(disabled=false):
 		child.set_disabled(disabled)
 
 func show_buttons():
-	var my_ip = "192.168.1.3"
-	v_host_ip_box.text = my_ip
+#	if networkManager.is_enet_available() and !v_host_ip_box.text:
+#		v_host_ip_box.text = "192.168.1.3"
 	v_join_button.disabled = false
 	refresh_button.visible = true
 
 func signal_server_error(error = ""):
-	var text = error if error else "Failed to get rooms list, please use Direct IP"
+	var text = error
+	if !text:
+		if networkManager.is_enet_available():
+			text = "Failed to get rooms list, please use Direct IP or a room code"
+		else:
+			text = "Failed to get rooms list, please enter the room code given by the host"
 	get_node("%RoomsListHeader").text = text		
 	show_buttons()
 	disable_rooms(false)

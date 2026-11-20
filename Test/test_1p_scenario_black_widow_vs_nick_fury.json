@@ -1,0 +1,465 @@
+{
+	"_comments": "Scenario Start Test : Black Widow vs Nick Fury",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nick Fury #50034a",
+					"deck_id": 47083
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Widow's Web"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "A.I.M. Scientist",
+			"_comments": "pick minion to put into play"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Nick Fury #50034a",
+					"deck_id": 47083
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "A.I.M. Abductor #50080",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Abductor #50080",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Commando #50072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Commando #50072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Grunt #50073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Grunt #50073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Soldier #50084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Soldier #50084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Soldier #50084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Abduct Superhumans #50081",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Attacrobatics #50076",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Attacrobatics #50076",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Automated Defenses #50074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Black Widow's Gauntlet #50068",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Black Widow's Gauntlet #50068",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Covert Ops #50077",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Covert Ops #50077",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Dance of Death #50078",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Dance of Death #50078",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Destroy Evidence #50075",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Discovered #50059",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Grappling Hook #50069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mad Science #50085",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nabbed! #50082",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nabbed! #50082",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Night Vision Goggles #50070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stun Net #50071",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Widow's Bite #50079",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Widow's Bite #50079",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Black Widow - 1 #50064",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Widow's Web - 1B #50067b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Stealth #50035b",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "threat"
+					}
+				},
+				{
+					"card": "Nick Fury #50034a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Orion #50060",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Acquire Infinity Formula #50061",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leviathan Soldier #50062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leviathan Soldier #50062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cold Storage #50063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Black Widow - 2 #50065",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Widow's Web - 1A #50067a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Concentrated Fire #50037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Fury's Flying Car #50040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Agent Coulson #50047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Informant #50050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Covert Surveillance #50038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Under Surveillance #50053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Safe House #221 #50041",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Global Logistics #50049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Practiced Plan #50058",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "EM Shield #50042",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Quake - Daisy Johnson #50048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Practiced Plan #50058",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spray Fire #50039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Under Surveillance #50053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Covert Surveillance #50038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Prism Dust #50052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Fury's Watch #50044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Informant #50050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Prism Dust #50052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Dum Dum Dugan #50021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sky-Destroyer #50057",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Covert Surveillance #50038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Under Surveillance #50053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Informant #50050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Leo Fitz #50056",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Jemma Simmons #50055",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Intelligence #50051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Prism Dust #50052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spray Fire #50039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Intelligence #50051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Super Spies #50024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Practiced Plan #50058",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Intelligence #50051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Intelligence Analysis #50045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Maria Hill #50036",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "A.I.M. Scientist #50083",
+					"owner_hero_id": 0
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Nick Fury #50034b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Assault #50035a",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "threat"
+					}
+				}
+			],
+			"hand1": [
+				{
+					"card": "Nick Fury, Sr. #50054",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Eyepatch Camera #50043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Global Logistics #50049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Concentrated Fire #50037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Global Logistics #50049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Secret Agent #50046",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

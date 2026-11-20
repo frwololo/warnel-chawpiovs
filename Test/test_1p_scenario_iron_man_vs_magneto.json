@@ -1,0 +1,494 @@
+{
+	"_comments": "Scenario Start Test :Iron Man (villain) vs Magneto (hero)",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magneto #49001a",
+					"deck_id": 44013
+				}
+			}
+		],
+		"scenario": {
+			"code": "56063"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magneto #49001a",
+					"deck_id": 44013
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Arc Reactor #56068",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bullseye #56088",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Dangerous Recruits #56091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Doc Samson #56078",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Drafted #56080",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Earth's Mightiest Heroes #56077",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Excessive Force #56090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Executive Order #56085",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hellcat #56079",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice Like Lightning #56089",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Life Model Decoy #56084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Life Model Decoy #56084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Maria Hill #56083",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mark V Helmet #56067",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mighty Avengers #56076",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mighty Avengers #56081",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Old Grievances #49027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Powered Gauntlets #56065",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Repulsor Blast #56070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Repulsor Blast #56070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rocket Boots #56066",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "S.H.I.E.L.D. Helicarrier #56086",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Supersonic Punch #56071",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Supersonic Punch #56071",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Fifty State Initiative #56082",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "U.S. Agent #56075",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Venom #56087",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wasp #56074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Yellow Jacket #56073",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Iron Man - 1 #56059",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Cut Off Support - 1B #56063b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"__player_token1": 1,
+						"__player_token2": 1,
+						"__player_token3": 1,
+						"__player_token4": 1
+					}
+				},
+				{
+					"card": "Stark Tower #56072",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Magneto #49001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Surge - Noriko Ashida #49033",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Anole - Victor Borkowski #49034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bling! - Roxanne Washington #49035",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Indra - Paras Gavaskar #49036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exodus #49028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Martyr for Mutants #49029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fabian Cortez #49030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Frenzy #49031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Angry Acolyte #49032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Iron Man - 2 #56060",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pro-Registration Tactics - 2A #56064a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Negative Zone Prison - 2B #56064b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "High-Tech Suit #56131",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Target Lock #56130",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Suit Up #56132",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Futurist #56129",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Registration Act - 1A #56063a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Deft Focus #49023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Face the Past #49022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Noble Sacrifice #49018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Phoenix - Jean Grey #49014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Noble Sacrifice #49018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"You Got This!\" #49019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "M - Monet St. Croix #49012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #49025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Shards #49009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Won't Stay Down #49016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wrapped in Metal #49007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magnetic Bubble #49006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Master of Magnetism #49011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magnetic Missile #49010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Master of Magnetism #49011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #49026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"You Got This!\" #49019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magnetic Missile #49010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Metal Shards #49009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deft Focus #49023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Won't Stay Down #49016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"You Got This!\" #49019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Deft Focus #49023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Noble Sacrifice #49018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Squared Off #49017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Wrapped in Metal #49007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Electromagnetic Blast #49008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "New Recruits #49020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Squared Off #49017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Won't Stay Down #49016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Kid Omega - Quentin Quire #49013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magneto's Armor #49004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magneto's Helmet #49003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Squared Off #49017",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Erik Lehnsherr #49001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Asteroid M #49002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "White Queen - Emma Frost #49021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magneto's Cape #49005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cyclops - Scott Summers #49015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #49024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Electromagnetic Blast #49008",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Mark V Armor #56069",
+					"owner_hero_id": 0,
+					"host": "56059",
+					"host_guid": "guid_94"
+				}
+			]
+		}
+	}
+}

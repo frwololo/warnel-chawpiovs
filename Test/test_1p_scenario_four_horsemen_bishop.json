@@ -1,0 +1,447 @@
+{
+	"_comments": "Scenario Start Test : 4 Horsemen vs Bishop",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop #45001a",
+					"deck_id": 37262
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Horsemen of Apocalypse"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Bishop #45001a",
+					"deck_id": 37262
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Ahab's Energy Spear #45099",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Golden Horse #45090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fear the Future #45025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of Famine #45093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of Pestilence #45094",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rough Riders #45096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Release the Hounds #45100",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Plague and Pestilence #45088",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rough Riders #45096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of Death #45095",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Specter of Death #45089",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Golden Horse #45090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A Time of Famine #45087",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of War #45092",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rough Riders #45096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Metal Wings #45091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ahab #45097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Golden Horse #45090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Death - A #45084a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"active_counter": 1
+					}
+				},
+				{
+					"card": "Famine - A #45082a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pestilence - A #45083a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War - A #45081a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Horsemen of Apocalypse - 1B #45085b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Ravages of War #45086",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Bishop #45001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Trevor Fitzroy #45026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Portal Through Time #45027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bantam #45028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Temporal Trickery #45029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Temporal Trickery #45029",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Horsemen of Apocalypse - 1A #45085a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Marrow - Sarah #45021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Leadership #45019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Side-by-Side #45016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Training #45013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Side-by-Side #45016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Suit Up #45017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cable - Nathan Summers #45011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #45023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy Conversion #45009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Advanced Suit #45014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Concussive Blast #45007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Super-Charged #45006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stored Energy #45010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy Conversion #45009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stored Energy #45010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #45024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lead from the Front #45018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stored Energy #45010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Command Authority #45008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Leadership #45019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Training #45013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Suit Up #45017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Legion - David Haller #45020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Suit Up #45017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sidekick #45015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Super-Charged #45006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Command Authority #45008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lead from the Front #45018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Side-by-Side #45016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Advanced Suit #45014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "X-23 - Laura Kinney #45012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bishop's Rifle #45004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Randall #45003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Advanced Suit #45014",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Lucas Bishop #45001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Malcolm #45002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lead from the Front #45018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bishop's Uniform #45005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Team Training #45013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #45022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Concussive Blast #45007",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

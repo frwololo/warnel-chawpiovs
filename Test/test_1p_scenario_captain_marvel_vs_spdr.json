@@ -1,0 +1,500 @@
+{
+	"_comments": "Scenario Start Test :Captain Marvel (villain) vs SP//dr",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr #31001a",
+					"deck_id": 21004
+				}
+			}
+		],
+		"scenario": {
+			"code": "56096"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr #31001a",
+					"deck_id": 21004
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Arrest Order #56108",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bounty Hunting #56115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bounty Hunting #56119",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bring Them In #56107",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cape-Killer #56105",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cape-Killer #56105",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Captain Marvel's Helmet #56099",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Colleen Wing #56112",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cosmic Flight #56100",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cosmic Flight #56100",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Crisis Interdiction #56102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Crisis Interdiction #56102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Absorption #56103",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Government Contractor #56120",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Heroes for Hire #56116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Inherited Burden #31025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Paladin #56117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Paladin's Pistol #56118",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Paladin's Pistol #56118",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Photonic Blast #56101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Photonic Blast #56101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rapid Response #56110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "S.H.I.E.L.D. Patrol #56111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "S.H.I.E.L.D. Soldier #56109",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "S.H.I.E.L.D. Soldier #56109",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shang-Chi #56113",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unregistered Super #56106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unregistered Super #56114",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Captain Marvel - 1 #56092",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "S.H.I.E.L.D. Recruits - 1B #56096b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Alpha Flight Station #56104",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Captain Marvel - 2 #56093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pro-Registration Tactics - 2A #56097a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunting Rebel Heroes - 2B #56097b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Raw Power #56136",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Alpha Flight Recruit #56135",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "You Started This #56134",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Provoked Response #56133",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Superhero Registration Act - 1A #56096a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [
+				{
+					"card": "S.H.I.E.L.D. Soldier #56109",
+					"owner_hero_id": 0
+				}
+			],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Limitless Stamina #31023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man - Otto Octavius #31022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy Barrier #31018",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "reflection"
+					}
+				},
+				{
+					"card": "Repurpose #31016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forcefield Generator #31019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "energy"
+					}
+				},
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Daredevil #31014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Unshakable #31024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "SP//dr Command #31009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Thwip Thwip! #31017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Web-Trap #31006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Rapid Deployment #31005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Speed-Metal Alloy #31012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Host Spider #31010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Web-Fluid Compressor #31013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Unshakable #31024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psychic Link #31011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ejection Protocol #31008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Limitless Stamina #31023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Repurpose #31016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forcefield Generator #31019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "energy"
+					}
+				},
+				{
+					"card": "Limitless Stamina #31023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forcefield Generator #31019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "energy"
+					}
+				},
+				{
+					"card": "Energy Barrier #31018",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "reflection"
+					}
+				},
+				{
+					"card": "Rapid Deployment #31005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aunt May & Uncle Ben #31007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy Barrier #31018",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "reflection"
+					}
+				},
+				{
+					"card": "Thwip Thwip! #31017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Man Noir #31015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "All Systems Go! #31004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "All Systems Go! #31004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Thwip Thwip! #31017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Web-Trap #31006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Unshakable #31024",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Peni Parker #31002a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "VEN#m - Addy Brock #31003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Ham - Peter Porker #31021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "All Systems Go! #31004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Repurpose #31016",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Energy Channel #56098",
+					"owner_hero_id": 0,
+					"host": "56092",
+					"host_guid": "guid_91"
+				}
+			]
+		}
+	}
+}

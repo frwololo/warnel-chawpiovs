@@ -1664,9 +1664,12 @@ func load_scenario(init_state):
 
 	var scenario_load_data = init_state["scenario"]
 	var scenario_name = scenario_load_data.get("name", "")
+	var scenario_code = scenario_load_data.get("code", "")
 	var scenario_data
 	if scenario_name:
 		scenario_data = ScenarioDeckData.get_primitive_by_attribute("name", scenario_name)
+	elif scenario_code:
+		scenario_data = ScenarioDeckData.get_primitive_by_attribute("code", scenario_code)
 	else:
 		return
 		

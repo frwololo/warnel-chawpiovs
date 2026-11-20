@@ -1,0 +1,546 @@
+{
+	"_comments": "Scenario Start Test : Citizen V vs X-23",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "X-23 #43001a",
+					"deck_id": 35684
+				}
+			}
+		],
+		"scenario": {
+			"name": "Apprehending Rogue Agents"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "Songbird",
+			"_comments": "choose thunderbolt opponent"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "X-23 #43001a",
+					"deck_id": 35684
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Aerial Dogfight #50159",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Blasters #50157",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Citizen V's Sword #50132",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Down but Not Out #50137",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Down but Not Out #50137",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gravitational Pull #50141",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gravitational Pull #50141",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Handspring #50149",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Handspring #50149",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard Sound #50147",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard Sound #50147",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard Sound Bindings #50145",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Heat-Seeking Missiles #50158",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "missile"
+					}
+				},
+				{
+					"card": "Innocent Bystanders #50134",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "bystander"
+					}
+				},
+				{
+					"card": "Innocent Bystanders #50134",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "bystander"
+					}
+				},
+				{
+					"card": "Innocent Bystanders #50134",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "bystander"
+					}
+				},
+				{
+					"card": "Jolt #50133",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pale Little Spider #50151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pale Little Spider #50151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Power of the Atom #50155",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Power of the Atom #50155",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pride of the Red Room #50150",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psychological Manipulation #50142",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psychological Manipulation #50142",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Radiation Exposure #50153",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Radiation Exposure #50153",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rule the Skies #50140",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rumbling Thunder #50136",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Runaway Nuclear Reaction #50154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Self-Isolation #43028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Solid Sound Constructs #50144",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sonic Bubble #50146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Supersonic #50160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Supersonic #50160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tap In #50138",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tap In #50138",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Coming Storm #50135",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Citizen V - A #50129a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Apprehending Rogue Agents - 1B #50130b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Thunderbolt Backup #50131b",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_minion": [
+							"guid_73"
+						]
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Black Widow #50148",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Combat Specialist #43034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Critical Wound #43032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cybermods #43031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Defense Specialist #43035",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Front Line Specialist #43036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hack 'n' Slash #43033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In the Name of Vengeance #43030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Justice, Like Lightning #50131a",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_minion": [
+							"guid_73"
+						]
+					}
+				},
+				{
+					"card": "Lady Deathstrike #43029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "MACH-IV #50156",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Moonstone #50139",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Surveillance Specialist #43037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "X-23 #43001a",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Apprehending Rogue Agents - 1A #50130a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "X-Bunker #43026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #43023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Now I'm Mad\" #43019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shatterstar - Gaveedra Seven #43015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Now I'm Mad\" #43019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Direct Approach #43020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Boom Boom - Tabitha Smith #43013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Endurance #43027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Adamantium Lacing #43009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Moment of Triumph #43017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Regenerative Longevity #43006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Claw Mastery #43005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Puncture Wound #43012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Grim Resolve #43010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Puncture Wound #43012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Endurance #43027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Direct Approach #43020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pain Tolerance #43011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sisterhood #43008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #43024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Critical Hit #43016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Direct Approach #43020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "IPAC #43025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Now I'm Mad\" #43019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Moment of Triumph #43017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Claw Mastery #43005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sisterly Bond #43007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Specialized Training #43021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Keep Them Busy #43018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Critical Hit #43016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Rictor - Julio Richter #43014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Animal Instinct #43004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Animal Instinct #43004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Moment of Triumph #43017",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Songbird #50143",
+					"owner_hero_id": 0
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Laura Kinney #43001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__draw": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "X-23's Claws #43002",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Honey Badger - Gabby Kinney #43003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #43022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Claw Mastery #43005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Critical Hit #43016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Endurance #43027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Regenerative Longevity #43006",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Radioactive Man #50152",
+					"owner_hero_id": 0,
+					"host": "50131b"
+				}
+			]
+		}
+	}
+}

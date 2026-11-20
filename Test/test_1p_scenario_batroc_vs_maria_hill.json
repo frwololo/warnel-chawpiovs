@@ -1,0 +1,479 @@
+{
+	"_comments": "Scenario Start Test : Batroc vs Maria Hill",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill #50001a",
+					"deck_id": 47082
+				}
+			}
+		],
+		"scenario": {
+			"name": "Infiltrate A.I.M. Island Embassy"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Maria Hill #50001a",
+					"deck_id": 47082
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "A.I.M. Scientist #50083",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Soldier #50084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Soldier #50084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Soldier #50084",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Batroc's Brigade #50101",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Commandeer Security Office #50095",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Embassy Guard #50093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Embassy Guard #50093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Embassy Patrol #50094",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Embassy Patrol #50094",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Heightened Reflexes #50092",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "leap"
+					}
+				},
+				{
+					"card": "Leaping Kick #50096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leaping Kick #50096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Machete #50098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mad Science #50085",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Press Conference #50029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rapido #50099",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Security Cameras #50097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Security Cameras #50097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Security Cameras #50097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Security Cameras #50097",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Soldiers of Fortune #50102",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Zaran #50100",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Batroc - A #50086a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Infiltrate A.I.M. Island Embassy - 1B #50087b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 6
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Alert Level #50090a",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Maria Hill #50001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Controller #50030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Army of the Controlled #50031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Controlled Innocents #50032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Diabolical Discs #50033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Diabolical Discs #50033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Locate Missing Person - 2A #50088a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Locate Missing Person - 2B #50088b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extract Captives - 3A #50089a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Extract Captives - 3B #50089b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Alert Level #50090b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rescued Captive #50091",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Infiltrate A.I.M. Island Embassy - 1A #50087a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Strength #50027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Super Spies #50024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Command Team #50016",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "command"
+					}
+				},
+				{
+					"card": "Organizational Support #50014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Circe #50017",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "deploy"
+					}
+				},
+				{
+					"card": "The Pericles #50020",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "supply"
+					}
+				},
+				{
+					"card": "Victoria Hand #50012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Front Organization #50028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Special Funding #50007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Agents of S.H.I.E.L.D. #50015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Reinforcements #50005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "On the Double #50004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Life Model Decoy #50010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Support Staff #50008",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "staff"
+					}
+				},
+				{
+					"card": "S.H.I.E.L.D. Director #50011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Front Organization #50028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Dum Dum Dugan #50021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Iliad #50009",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "mission"
+					}
+				},
+				{
+					"card": "Special Funding #50007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #50025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Organizational Support #50014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Douglass #50019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "operation"
+					}
+				},
+				{
+					"card": "Genius #50026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Bellerophon #50018",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "missile"
+					}
+				},
+				{
+					"card": "Command Team #50016",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "command"
+					}
+				},
+				{
+					"card": "Reinforcements #50005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Hard Call #50006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Grant Ward #50022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Command Team #50016",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "command"
+					}
+				},
+				{
+					"card": "Agents of S.H.I.E.L.D. #50015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Slingshot - Yo-Yo Rodriguez #50013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "All-Points Bulletin #50003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "All-Points Bulletin #50003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Agents of S.H.I.E.L.D. #50015",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Maria Hill #50001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Nick Fury #50002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Melinda May #50023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "On the Double #50004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Organizational Support #50014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Front Organization #50028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Reinforcements #50005",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

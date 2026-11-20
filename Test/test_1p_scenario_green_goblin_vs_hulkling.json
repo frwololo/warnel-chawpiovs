@@ -1,0 +1,476 @@
+{
+	"_comments": "Scenario Start Test : Green Goblin vs Hulkling",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hulkling #56029a",
+					"deck_id": 55370
+				}
+			}
+		],
+		"scenario": {
+			"name": "Unleashing the Mutagen"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Hulkling #56029a",
+					"deck_id": 55370
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Complicated Lineage #56054",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Death from Above #02029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Death from Above #02029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Glider #02019",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Glider #02033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Glider #02033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Knight #02022",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Nation #02027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Reinforcements #02026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Reinforcements #02026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Soldier #02023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Soldier #02023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Soldier #02023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Soldier #02023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hysteria #02020",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "I See You #02030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Intimidation #02035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Intimidation #02035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Monster #02025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Overconfidence #02031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Overrun #02028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Overrun #02028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02021",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Regenerative Healing #02036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Regenerative Healing #02036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wicked Ambitions #02032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wicked Ambitions #02032",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Hulkling #56029a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Super Skrull #56055",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Skrull Business #56056",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fantastic Powers #56057",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "You're Coming With Me! #56058",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "You're Coming With Me! #56058",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Iron Lad - Nathaniel Richards #56052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cuts Both Ways #56050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"I Can Do This All Day\" #56047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hidden Base #56043",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "stronghold"
+					}
+				},
+				{
+					"card": "Taunt #56048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tackle #56049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Patriot - Elijah Bradley #56041",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Assess the Situation #56053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Armored Defense #56038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Defensive Conditioning #56046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Alien Physiology #56036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Armored Shape #56034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Impersonation #56039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Armored Defense #56038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shapeshifter #56040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Assess the Situation #56053",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tackle #56049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Impersonation #56039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shapeshifter Strike #56037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cuts Both Ways #56050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Excelsior #56045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Taunt #56048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Preservation #56051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Taunt #56048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"I Can Do This All Day\" #56047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Imitation Shape #56035",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shapeshifter Strike #56037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tackle #56049",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"I Can Do This All Day\" #56047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Defensive Conditioning #56046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Brother Voodoo - Jericho Drumm #56042",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Winged Shape #56032",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Altman Residence #56031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Defensive Conditioning #56046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Shapeshifter Strike #56037",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Teddy Altman #56029b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__shape_changer": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Wiccan - William Kaplan #56030",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cuts Both Ways #56050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hulk Shape #56033",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Night Nurse #56044",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "medical"
+					}
+				},
+				{
+					"card": "Assess the Situation #56053",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

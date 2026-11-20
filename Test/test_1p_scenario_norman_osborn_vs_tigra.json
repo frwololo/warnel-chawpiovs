@@ -1,0 +1,466 @@
+{
+	"_comments": "Scenario Start Test : Norman Osborn vs Tigra",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Tigra #56001a",
+					"deck_id": 55371
+				}
+			}
+		],
+		"scenario": {
+			"name": "Hostile Takeover"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Tigra #56001a",
+					"deck_id": 55371
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "All in a Day's Work #02012",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "All in a Day's Work #02012",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "All in a Day's Work #02012",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "All in a Day's Work #02012",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Collapsing Bridge #02009",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Glider #02033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Glider #02033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hired Gun #02007",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hired Gun #02007",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hired Gun #02007",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "In Too Deep #56023",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Intimidation #02035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Intimidation #02035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mad Genius #02013",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mad Genius #02013",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Oscorp Manufacturing #02010",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Oscorp Manufacturing #02010",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Payoff #02011",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Payoff #02011",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Private Security Specialist #02008",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Private Security Specialist #02008",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Private Security Specialist #02008",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Private Security Specialist #02008",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pumpkin Bombs #02034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Regenerative Healing #02036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Regenerative Healing #02036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Norman Osborn - 1 #02001a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hostile Takeover - 1B #02004b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Criminal Enterprise #02006a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"infamy": 2
+					}
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Tigra #56001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Hood #56024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Criminal Underworld #56025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Hood's Mantle #56026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Madame Masque #56027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Jigsaw #56028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 1 #02001b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Norman Osborn - 2 #02002a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02002b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corporate Acquisition - 2A #02005a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Corporate Acquisition - 2B #02005b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "State of Madness #02006b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Hostile Takeover - 1A #02004a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Yellow Jacket - Hank Pym #56019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Savage Strike #56017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Suppressing Fire #56014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Air Cover #56012",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "fuel"
+					}
+				},
+				{
+					"card": "\"Bring It!\" #56015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Coup de Grâce #56016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Two-Gun Kid - Matthew Hawk #56010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #56021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tooth and Claw #56008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Conditioning #56013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cat-Like Reflexes #56006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sharp Claws #56005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Feline Senses #56009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tooth and Claw #56008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Feline Senses #56009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #56022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Coup de Grâce #56016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tooth and Claw #56008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hunted #56007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Savage Strike #56017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Air Cover #56012",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "fuel"
+					}
+				},
+				{
+					"card": "\"Bring It!\" #56015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Audacity #56018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"Bring It!\" #56015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Suppressing Fire #56014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cat-Like Reflexes #56006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hunted #56007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Coup de Grâce #56016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Suppressing Fire #56014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Conditioning #56013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spider-Girl - Anya Corazon #56011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cat's Head Amulet #56004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Precinct HQ #56003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Aggressive Conditioning #56013",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Greer Nelson #56001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__undercover": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Moon Knight - Marc Spector #56002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Savage Strike #56017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sharp Claws #56005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Air Cover #56012",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "fuel"
+					}
+				},
+				{
+					"card": "Energy #56020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hunted #56007",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

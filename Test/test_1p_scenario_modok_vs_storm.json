@@ -1,0 +1,509 @@
+{
+	"_comments": "Scenario Start Test :MODOK vs Storm",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm #36001a",
+					"deck_id": 28756
+				}
+			}
+		],
+		"scenario": {
+			"name": "Upgrading Adaptoids"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "select",
+			"value": "Thunderstorm",
+			"_comments": "choose weather effect for Storm deck"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Storm #36001a",
+					"deck_id": 28756
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "\"It's Alive!\" #50123",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Jailer #50120",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A.I.M. Jailer #50120",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Adaptoid #50113",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Adaptoid #50113",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Adaptoid #50113",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Automated Mobile Unit #50114",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Claustrophobia #36030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Diplomatic Immunity #50127",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Diplomatic Sanctions #50128",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Diplomatic Sanctions #50128",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Focusing Crystal #50115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hostage Situation #50121",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Monica Rappaccini #50126",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nanobots #50116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Blast #50124",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Blast #50124",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Enhancement #50122",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Force Field #50117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Machetes #50118",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Reverse Engineering #50119",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Scientist Supreme #50125",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "M.O.D.O.K. - A #50103a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Upgrading Adaptoids - 1B #50104b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Holding Cell #50108a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"lock": 2
+					},
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Strong Upgrade #50112",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Blizzard #36005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Hurricane #36003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sarah Garza #50107b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Strong Inhuman #50108b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Knife Fight #36034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Switchblade #36033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Knife Fight #36034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Clear Skies #36002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sarah Garza Upgrade #50111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Flying Inhuman #50105b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Leader of the Morlocks #36032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Upgrade #50110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Inhuman #50106b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Storm #36001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flying Upgrade #50109",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Callisto #36031",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Upgrading Adaptoids - 1A #50104a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"deck_holding_cell": [
+				{
+					"card": "Holding Cell #50107a",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Holding Cell #50105a",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				},
+				{
+					"card": "Holding Cell #50106a",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_all_purpose_token_name": "lock"
+					}
+				}
+			],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Endurance #36026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "X-Mansion #36025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"To Me, My X-Men!\" #36020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Gentle - Nezhno Abidemi #36016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"To Me, My X-Men!\" #36020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Effective Leadership #36021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Havok - Alex Summers #36014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #36028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lightning Bolt #36011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Uncanny X-Men #36018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Torrential Rain #36010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Weather Goddess #36009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Blast of Wind #36013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flash Freeze #36012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Blast of Wind #36013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #36029",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forge #36022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flash Freeze #36012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lightning Bolt #36011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Endurance #36026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Uncanny X-Men #36018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Effective Leadership #36021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Endurance #36026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "\"To Me, My X-Men!\" #36020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Leadership Skill #36019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "leadership"
+					}
+				},
+				{
+					"card": "Weather Goddess #36009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Torrential Rain #36010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The X-Jet #36023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Leadership Skill #36019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "leadership"
+					}
+				},
+				{
+					"card": "Uncanny X-Men #36018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mirage - Dani Moonstar #36015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ororo's Garden #36008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Storm's Cape #36007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Leadership Skill #36019",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "leadership"
+					}
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Adaptoid #50113",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Ororo Munroe #36001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Thunderstorm #36004",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Storm's Crown #36006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Utopia #36024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Weather Goddess #36009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pixie - Megan Gwynn #36017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #36027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Torrential Rain #36010",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

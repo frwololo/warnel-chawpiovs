@@ -1,0 +1,499 @@
+{
+	"_comments": "Scenario Start Test : Unus vs Magik",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ironheart #29001a",
+					"deck_id": 19388
+				}
+			}
+		],
+		"scenario": {
+			"name": "The Age of Apocalypse"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Ironheart #29001a",
+					"deck_id": 19388
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "A Minor Setback #29028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Barrage #45113",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Biomorphing #45107",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Culling the Weak #45070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Culling the Weak #45070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cyberpathy #45106",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gauntlet #45112",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hard-Drive #45114",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Molecular Control #45108",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psynapse #45116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Apocalypse Solution #45111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Apocalypse Solution #45111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Dark Riders #45117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Fittest #45109",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Fittest #45109",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tusk #45115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wolf Among Sheep #45110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wolf Among Sheep #45110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Wolf Among Sheep #45110",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 2 #45101b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Age of Apocalypse - 1B #45103b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Gene Pool #45071",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				},
+				{
+					"card": "Heart of the Empire #45104a",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Ironheart #29002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ironheart #29003a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Riri Williams #29002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Riri Williams #29003b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ironheart #29001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Rule by Force #29029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lucia von Bardas #29030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cyborg Tech #29031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Political Retribution #29032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Political Retribution #29032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 3 #45102a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 4 #45102b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mister Sinister #45179b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Abyss #45181b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "No Longer Worthy #45105b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Tyrant's Throne #45105a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mikhail Rasputin #45183b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Shadow King #45180b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Towering Citadel #45104b",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Age of Apocalypse - 1A #45103a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Helicarrier #29026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Snowguard - Amka Aliyak #29023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Morale Boost #29019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Patriot - Rayshaun Lucas #29016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Morale Boost #29019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "R&D Facility #29020",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "research"
+					}
+				},
+				{
+					"card": "Cloud 9 - Abby Boylen #29014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ingenuity #29027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stroke of Genius #29009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Push Ahead #29018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "New and Improved #29007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Photon Beam #29006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Photon Blasters #29012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ronnie Williams #29010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Propulsion Jets #29013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ingenuity #29027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Leadership #29021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tony Stark A.I. #29011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stroke of Genius #29009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Vivian #29024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Go All Out #29017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "R&D Facility #29020",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "research"
+					}
+				},
+				{
+					"card": "\"Go for Champions!\" #29025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "R&D Facility #29020",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "research"
+					}
+				},
+				{
+					"card": "Push Ahead #29018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Photon Beam #29006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sector Scan #29008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Leadership #29021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Morale Boost #29019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Go All Out #29017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Falcon - Joaquin Torres #29015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Fly Over #29005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Fly Over #29005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Push Ahead #29018",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Sugar Man #45182b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Riri Williams #29001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__child_prodigy": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Brawn - Amadeus Cho #29004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Agent 13 - Sharon Carter #29022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Photon Beam #29006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Go All Out #29017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ingenuity #29027",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "New and Improved #29007",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

@@ -16,7 +16,7 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Electro - 1"
+					"card": "Electro - 1 #27095"
 				},
 				{
 					"card": "Doctor Octopus - 1",
@@ -123,7 +123,7 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Electro - 1",
+					"card": "Electro - 1 #27095",
 					"tokens": {
 						"active_counter": 1
 					}

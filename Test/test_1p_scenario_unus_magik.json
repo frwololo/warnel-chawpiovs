@@ -1,0 +1,427 @@
+{
+	"_comments": "Scenario Start Test : Unus vs Magik",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik #45030a",
+					"deck_id": 37261
+				}
+			}
+		],
+		"scenario": {
+			"name": "Hunting Gene Traitors"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Magik #45030a",
+					"deck_id": 37261
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Culling the Weak #45070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genetic Experiments #45066",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Culling the Weak #45070",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genetic Experiments #45066",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Endless Ranks #45068",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Soldier #45069",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Hunter #45065",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Prelate #45067",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Prelate #45067",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Infinite Hunter #45065",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Prelate Sidearm #45063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Endless Ranks #45068",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Darkchilde #45053",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Prelate Armor #45064",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Unus - 1 #45059",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Hunting Gene Traitors - 1B #45062b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gene Pool #45071",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 4
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Magik #45030a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Belasco #45054",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ruler of Limbo #45055",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "S'ym #45056",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Witchfire #45057",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Battle for Limbo #45058",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Unus - 2 #45060",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Hunting Gene Traitors - 1A #45062a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Basic Spell #45051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bloodgem #45050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Full-Body Charge #45045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Blood Rage #45043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Clobber #45046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Aggression #45047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Goldballs - Fabio Medina #45041",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spiritual Meditation #45052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exorcism #45038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Test the Defense #45044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stepping Disc #45037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mystical Armor #45035",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magic Barrier #45040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Soul Strike #45039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magic Barrier #45040",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spiritual Meditation #45052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of Aggression #45047",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Soul Strike #45039",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exorcism #45038",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Basic Spell #45051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Blood Rage #45043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Clobber #45046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Basic Spell #45051",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Clobber #45046",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Full-Body Charge #45045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Scrying #45036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stepping Disc #45037",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Triage - Christopher Muse #45048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Full-Body Charge #45045",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Test the Defense #45044",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tempus - Eva Bell #45042",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Magik's Crown #45033",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Limbo #45032",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Test the Defense #45044",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Illyana Rasputin #45030b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__draw_spell": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Colossus - Piotr Rasputin #45031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stepford Cuckoos #45049",
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_all_purpose_token_name": "psi"
+					}
+				},
+				{
+					"card": "Soulsword #45034",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Blood Rage #45043",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Spiritual Meditation #45052",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Stepping Disc #45037",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

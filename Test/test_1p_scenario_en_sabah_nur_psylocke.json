@@ -1,0 +1,457 @@
+{
+	"_comments": "Scenario Start Test : En Sabah Nur vs Psylocke",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Psylocke #41001a",
+					"deck_id": 32976
+				}
+			}
+		],
+		"scenario": {
+			"name": "En Sabah Nur's Pyramid"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Psylocke #41001a",
+					"deck_id": 32976
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Biomorphic Blast #45150",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Body Swapped #41025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Celestial Armor #45156",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Celestial Tech #45158",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Celestial Tech #45158",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Celestial Weapon #45157",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Clan Akkaba Zealot #45161",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Clan Akkaba Zealot #45161",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Clan Akkaba Zealot #45161",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant Growth #45155",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant-Sized Despot #45152",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant-Sized Despot #45152",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ozymandias #45159",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Plugged In #45154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Scarab #45160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Source of Power #45153",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Staggering Strength #45149",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Staggering Strength #45149",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Technological Interface #45151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Technological Interface #45151",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Tyrant Worship #45162",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Apocalypse - 1 #45184a",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1B #45147b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Ancient Ritual #45163",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Psi-Katana #41002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psi-Katana #41002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psylocke #41001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Chimera #41026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Interdimensional Plunder #41027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Psionic Illusion #41028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Dragon #41029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Telekinetic Dragon #41029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rise of Apocalypse - 2A #45148a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Rise of Apocalypse - 2B #45148b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 1 #45184b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 1 #45184c",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Apocalypse - 2 #45185c",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "En Sabah Nur's Pyramid - 1A #45147a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [
+				{
+					"card": "Biomorphic Blast #45150",
+					"owner_hero_id": 0
+				}
+			],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "X-Bunker #41023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Directed Force #41019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Upside the Head #41015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Training Regimen #41008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Lay the Trap #41016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Float Like a Butterfly #41017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telepathic Suggestion #41007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telepathy #41024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mental Detection #41005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Captain Britain - Brian Braddock #41012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Angel - Warren Worthington III #41003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psionic Redirect #41006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mental Detection #41005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psionic Redirect #41006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telepathy #41024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pete Wisdom #41018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mental Detection #41005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flurry of Blades #41004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Soaring Hearts #41020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psionic Training #41010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Float Like a Butterfly #41017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "IPAC #41022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Float Like a Butterfly #41017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Upside the Head #41015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flurry of Blades #41004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Directed Force #41019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Upside the Head #41015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Weapons Training #41011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telepathic Suggestion #41007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Concussive Blow #05031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Concussive Blow #05031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Cypher - Doug Ramsey #41013",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Betsy Braddock #41001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Psi-Knife #41002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psi-Knife #41002a",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Concussive Blow #05031",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Directed Force #41019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "The Power of the Mind #40028",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Martial Arts Training #41009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Telepathy #41024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Flurry of Blades #41004",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

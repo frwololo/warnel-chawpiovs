@@ -1,0 +1,482 @@
+{
+	"_comments": "Scenario Start Test : Dark Beast vs Cyclops",
+	"test_conditions": {
+		"ignore_order": [
+			"deck_villain",
+			"set_aside",
+			"deck1",
+			"hand1"
+		]
+	},
+	"init": {
+		"phase": "GAME_NOT_STARTED",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cyclops #33001a",
+					"deck_id": 23225
+				}
+			}
+		],
+		"scenario": {
+			"name": "Dark Beast's Bogus Journey"
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_lot"
+		},
+		{
+			"type": "select",
+			"value": "cancel",
+			"_comments": "No mulligan"
+		},
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Cyclops #33001a",
+					"deck_id": 23225
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cruel Experiment #45124",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cruel Experiment #45124",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Earthquake #45143",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Evil Genius #45125",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Evil Genius #45125",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Evil Genius #45125",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genetic Enhancement #45123",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gladiator #45140",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "High-Tech Goggles #45122",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Imperial Guardsman #45145",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lost Visor #33027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Manta #45142",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Oracle #45141",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Time-Travel Shenanigans #45126",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Time-Travel Shenanigans #45126",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Trial by Combat #45146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Warstar #45144",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Dark Beast - 1 #45118",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Dark Beast's Bogus Journey - 1B #45121b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [
+				{
+					"card": "Blue Area of the Moon #45139",
+					"owner_hero_id": 0
+				}
+			],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Cyclops #33001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Mister Sinister #33028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genetic Manipulation #33029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gene Therapy #33030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gene Therapy #33030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Concussive Force #33031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Dark Beast - 2 #45119",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Police State #45138",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Armored Unibike #45135",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magistrate #45134",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Land Out of Time #45131",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant Ape #45130",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Escaped Mutant #45137",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Armored Unibike #45135",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Savage Land #45127",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Magistrate #45134",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Giant Ape #45130",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pterosaur #45128",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genosha #45133",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Village Under Attack #45132",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Velociraptor #45129",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genoshan Mech #45136",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Velociraptor #45129",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Dark Beast's Bogus Journey - 1A #45121a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Psychic Rapport #33023",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Game Time #33022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Teamwork #33017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Rockslide - Santo Vaccarro #33013",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Teamwork #33017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Effective Leadership #33018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Beast - Hank McCoy #33011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius #33025",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ricochet Beam #33009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Danger Room Training #33015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Practiced Defense #33006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exploit Weakness #33005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tactical Brilliance #33010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ricochet Beam #33009",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tactical Brilliance #33010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Strength #33026",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Angel - Warren Worthington III #33019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Tactical Brilliance #33010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Full Blast #33008",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Game Time #33022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Danger Room Training #33015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Effective Leadership #33018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Game Time #33022",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Teamwork #33017",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Coordinated Attack #33016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Practiced Defense #33006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Priority Target #33007",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Utopia #33020",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Coordinated Attack #33016",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Danger Room Training #33015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Dust - Sooraya Qadir #33012",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Field Commander #33004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ruby Quartz Visor #33003",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Coordinated Attack #33016",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Scott Summers #33001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__constant_training": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Phoenix - Jean Grey #33002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Danger Room #33021",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Exploit Weakness #33005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Blindfold - Ruth Aldine #33014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy #33024",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Priority Target #33007",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

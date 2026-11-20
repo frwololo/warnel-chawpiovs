@@ -1302,7 +1302,7 @@ func post_load_move():
 			host_card = find_card_by_name(host_id)
 			
 		if host_card:
-			card.attach_to_host(host_card)
+			card.attach_to_host(host_card,false, ["disable_attached_signal"])
 			if facedown:
 				card.set_is_faceup(false, false)
 				

@@ -906,8 +906,14 @@ func save_variable(script:ScriptTask) -> int:
 	var current_value = script.owner.script_variables.get(var_name, null)
 	match var_type:
 		"subject":
-			if typeof(value) in [TYPE_STRING, TYPE_DICTIONARY]:
-				value = {"subject" : value}
+			match typeof(value):
+				TYPE_STRING:
+					value = {"subject" : value}
+				TYPE_DICTIONARY: 
+					#two cases for dictionary: complex subject retrieval (thunderbolt backup),
+					#or function call (magneto's armor)
+					if !value.has("subject"):
+						value = {"subject" : value}
 			result = script._local_find_subjects(0, CFInt.RunType.NORMAL,value )
 			if !result:
 				return CFConst.ReturnCode.FAILED

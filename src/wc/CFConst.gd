@@ -1183,9 +1183,6 @@ const DEFAULT_SETTINGS:= {
 		# WebRTC room codes (web builds, and desktop with the webrtc-native plugin)
 		'signaling_url': 'wss://wololo.net/signal',
 	},
-	# "enet" (direct IP) or "webrtc" (room codes) when hosting from a desktop build.
-	# Web builds always use "webrtc"
-	'network_transport': 'enet',
 	'server': 'https://wololo.net/',
 	'notifications_level': 'normal',
 	'adventure_mode': true,

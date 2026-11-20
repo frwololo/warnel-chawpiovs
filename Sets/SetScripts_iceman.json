@@ -232,6 +232,7 @@
 	},
 	"Cryokinetic Perception": {
 		"response_iceman_freeze": {
+			"is_optional_board": true,
 			"board": [
 				{
 					"name": "constraints",

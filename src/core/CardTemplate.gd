@@ -2034,7 +2034,7 @@ func attach_to_host(
 #		_set_target_rotation(target_rotation)
 		emit_attached_signal = true
 		
-	if emit_attached_signal:		
+	if emit_attached_signal and !("disable_attached_signal" in tags):		
 		scripting_bus.emit_signal("card_attached",
 				self,
 				{"host_card": host, "tags": tags})

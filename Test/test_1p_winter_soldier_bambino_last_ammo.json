@@ -36,7 +36,8 @@
 			],
 			"identity1": [
 				{
-					"card": "Winter Soldier"
+					"card": "Winter Soldier",
+					"guid": "guid_1",
 				}
 			],
 			"others": [
@@ -47,6 +48,9 @@
 					"tokens": {
 						"ammo": 1
 					}
+					"script_variables": {
+						"my_current_host": ["guid_1"]
+					},
 				}
 			],
 			"enemies1": [

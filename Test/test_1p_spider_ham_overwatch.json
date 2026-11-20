@@ -26,7 +26,8 @@
 					"card": "Bomb Scare",
 					"tokens": {
 						"threat": 3
-					}
+					},
+					"guid": "guid_1"
 				}
 			],
 			"deck_villain": [
@@ -48,7 +49,10 @@
 				{
 					"card": "overwatch #30019",
 					"host": "Bomb Scare",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					"script_variables": {
+						"my_host":  ["guid_1"]
+					}
 				}
 			],
 			"deck1": [

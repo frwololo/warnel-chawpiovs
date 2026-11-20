@@ -44,3 +44,5 @@ scripts/output.json
 scripts/gen_scripts.py
 /Test/others
 *.patch
+libwebrtc_native.windows.template_release.x86_64.dll
+libwebrtc_native.linux.template_release.x86_64.so

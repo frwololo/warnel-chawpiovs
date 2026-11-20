@@ -36,8 +36,21 @@ signal release_check_completed()
 
 var _next_scene = ""
 var _next_scene_counter = 0
+
+# WebRTC prototype: "--webrtc-probe" on the command line,
+# or "?webrtc_probe" in the page URL for the HTML5 build
+func _webrtc_probe_requested() -> bool:
+	if "--webrtc-probe" in Array(OS.get_cmdline_args()):
+		return true
+	if OS.has_feature("JavaScript"):
+		return JavaScript.eval("new URLSearchParams(window.location.search).has('webrtc_probe')", true) == true
+	return false
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if _webrtc_probe_requested():
+		get_tree().call_deferred("change_scene", "res://src/wc/lobby/webrtc_probe/WebRTCProbe.tscn")
+		return
 	if cfc.game_settings.has("fullscreen"):
 		cfc.set_fullscreen(cfc.game_settings["fullscreen"])
 	

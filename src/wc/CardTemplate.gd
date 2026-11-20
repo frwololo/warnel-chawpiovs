@@ -2290,6 +2290,13 @@ func execute_scripts(
 		force_user_interaction_required = true
 		if gameData.is_forced_interrupt_mode():
 			force_user_interaction_required = false
+	#A script that only one client runs (a hero's setup, run by its owner) is
+	#sent to the other clients like a decision, even when it needs none.
+	#Otherwise it stays local: scripts without a decision are expected to run
+	#on every client, and the others never see its effect (X-23's Claws put
+	#into play at setup by Laura Kinney, Captain America's Shield...)
+	if orig_trigger_details.get("replicate_to_all_clients", false) and gameData.is_multiplayer_game:
+		force_user_interaction_required = true
 
 	var actual_trigger_type = trigger
 	orig_trigger_details["trigger_type"] = actual_trigger_type

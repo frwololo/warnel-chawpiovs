@@ -20,7 +20,13 @@ func _ready() -> void:
 	v_host_ip_box.text = ""
 	v_join_button.disabled = true
 
-	fetch_list_rooms()
+	if networkManager.is_enet_available():
+		fetch_list_rooms()
+	else:
+		# web builds only join online rooms, by room code
+		get_node("%RoomsListHeader").text = "Enter the room code given by the host"
+		v_host_ip_box.placeholder_text = "Room code"
+		v_join_button.disabled = false
 		
 	v_join_button.connect('pressed', self, 'on_button_pressed', ["Join"])
 	v_join_button.connect('mouse_entered', v_join_button, 'grab_focus')
@@ -163,10 +169,15 @@ func on_button_pressed(_button_name : String) -> void:
 		"Cancel":
 			get_tree().change_scene(CFConst.PATH_CUSTOM + 'MainMenu.tscn')
 
+# an IP address (direct connection) or an online room code
 func join_game(ip_address : String):
 	var next_scene_params = {
 		"host_ip" : ip_address,
 		} 
+	if networkManager.looks_like_room_code(ip_address) or !networkManager.is_enet_available():
+		next_scene_params = {
+			"room_code" : ip_address.strip_edges().to_upper(),
+			}
 	cfc.set_next_scene_params(next_scene_params)
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
 	

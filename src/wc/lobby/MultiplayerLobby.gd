@@ -31,6 +31,9 @@ var is_master = false
 var my_port = 0
 var network_is_ready = false
 var master_ip = ""
+# WebRTC: hosting or joining a room code instead of a direct IP
+var online_room = false
+var room_code = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -53,7 +56,12 @@ func _ready() -> void:
 
 	
 # Network setup
-	get_tree().connect("network_peer_connected", self, "_player_connected")
+	# peer_ready instead of network_peer_connected: a client cannot send
+	# anything before connected_to_server (see NetworkManager)
+	networkManager.connect("peer_ready", self, "_player_connected")
+	networkManager.connect("room_hosted", self, "_room_hosted")
+	networkManager.connect("room_joined", self, "_room_joined")
+	networkManager.connect("network_error", self, "_network_error")
 	get_tree().connect("network_peer_disconnected", self, "_player_disconnected")
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
@@ -63,16 +71,32 @@ func _ready() -> void:
 	$HolePunch.connect("error", self, "_nat_error")	
 
 	var params = cfc.get_next_scene_params()
-	if params.has("host_ip"):
+	if params.has("room_code"):
+		launch_button.hide()
+		is_master = false
+		online_room = true
+		room_code = params["room_code"]
+		add_log("joining room " + room_code)
+	elif params.has("host_ip"):
 		launch_button.hide()
 		is_master = false
 		master_ip = params["host_ip"]
 		add_log("joining as client. Server is:" + str(master_ip))
 	else:
 		is_master = true
+		online_room = params.get("online", false) \
+			or cfc.game_settings.get("network_transport", "enet") == "webrtc" \
+			or not networkManager.is_enet_available()
 		add_log("joining as server")		
 
-	if is_master:
+	if online_room:
+		if is_master:
+			_set_status("Creating an online room...", true)
+			networkManager.host_webrtc()
+		else:
+			_set_status("Joining room " + room_code + "...", true)
+			networkManager.join_webrtc(room_code)
+	elif is_master:
 		
 		http_request = HTTPRequest.new()
 		http_request.set_timeout(10.0)
@@ -99,6 +123,29 @@ func _ready() -> void:
 
 func add_log(value):
 	status.text += value + "\n"
+
+# WebRTC host: the room exists, other players join with its code
+func _room_hosted(code):
+	room_code = code
+	network_is_ready = true
+	v_folder_label.text = "Room code: " + code
+	v_folder_label.add_color_override("font_color", OK_COLOR)
+	my_info.name = "Player 1"
+	my_info.tests = gameData.run_auto_tests
+	_set_status("Room code: " + code + " - waiting for players...", true)
+	register_self(my_info)
+
+# WebRTC client: in the room, the connections to the other players are being made
+func _room_joined(code):
+	network_is_ready = true
+	v_folder_label.text = "Room code: " + code
+	my_info.name = "Player " + str(cfc.get_network_unique_id())
+	my_info.tests = gameData.run_auto_tests
+	_set_status("Connecting...", true)
+	register_self(my_info)
+
+func _network_error(message):
+	_set_status(message, false)
 
 func _nat_error(error_text, error_id):
 	add_log(error_text + " - ERRNO:" + str(error_id))
@@ -346,7 +393,7 @@ func _end_game(with_error = ""):
 		get_node("/root/Main").free()
 		show()
 
-	get_tree().set_network_peer(null) # Remove peer.
+	networkManager.close()
 	_set_status(with_error, false)
 	#Go back to lobby
 	get_tree().change_scene(CFConst.PATH_CUSTOM + 'lobby/MultiplayerLobby.tscn')
@@ -393,30 +440,14 @@ func _join_as_client(host_ip, host_port = 0, own_port = 0):
 	if network_is_ready:
 		return
 		
-	var ip = host_ip
-	var port = host_port
-	if !port:
-		port = CFConst.MULTIPLAYER_PORT
-	if not ip.is_valid_ip_address():
-		_set_status("IP address is invalid", false)	
-		return
-	add_log("joining as client:" + str(ip) +":" + str(port) + " (my port: )" + str(own_port))	
-	for attempt in 10:
-		peer = NetworkedMultiplayerENet.new()
-		peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)	
-		var result = peer.create_client(ip, port, 0, 0, own_port)
-		if result == OK:
-			network_is_ready = true
-			break
-		else:
-			add_log("could not join, ERRNO:" + str(result))
-			yield(get_tree().create_timer(1.0), 'timeout')
-	
-	if !network_is_ready:
-		add_log("failed conection after 10 attempts")
+	add_log("joining as client:" + str(host_ip) +":" + str(host_port if host_port else CFConst.MULTIPLAYER_PORT) + " (my port: )" + str(own_port))	
+	var state = networkManager.join_enet(host_ip, host_port, own_port)
+	if state is GDScriptFunctionState:
+		yield(state, "completed")
+	if !networkManager.uses_enet():
+		add_log("failed conection")
 		return
 		
-	get_tree().set_network_peer(peer)
 	my_info.name = "Player " + str(cfc.get_network_unique_id())
 	my_info.tests = gameData.run_auto_tests
 	_set_status("Connecting...", true)

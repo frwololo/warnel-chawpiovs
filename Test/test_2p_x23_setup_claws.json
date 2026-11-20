@@ -1,0 +1,82 @@
+{
+	"_comments": "Laura Kinney's setup puts X-23's Claws into play. Only X-23's owner (client 2) runs the setup script during IDENTITY_SETUP: the master must see the Claws too. Starting at MULLIGAN_DONE, the next step is IDENTITY_SETUP",
+	"init": {
+		"phase": "MULLIGAN_DONE",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Spider-Man"
+				}
+			},
+			{
+				"herodeckdata": {
+					"hero": "X-23"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"set_aside": [
+				{
+					"card": "X-23's Claws",
+					"owner_hero_id": 2
+				}
+			],
+			"deck1": [
+				{
+					"card": "Backflip"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Peter Parker"
+				}
+			],
+			"hand1": [
+				{
+					"card": "Mockingbird"
+				}
+			],
+			"deck2": [
+				{
+					"card": "Honey Badger"
+				}
+			],
+			"identity2": [
+				{
+					"card": "Laura Kinney #43001b"
+				}
+			],
+			"hand2": [
+				{
+					"card": "Sisterly Bond"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "other",
+			"value": "wait_a_bit"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"board": {
+			"upgrade_support2": [
+				{
+					"card": "X-23's Claws"
+				}
+			]
+		}
+	}
+}

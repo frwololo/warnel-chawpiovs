@@ -78,6 +78,14 @@ var _current_interrupting_cards:= []
 var throttle_after_no_brakes:int = 0
 var pending_stack_yield = {}
 const yield_max_wait_time : float= 5.0
+#a remote decision waits for this client to reach the same decision point:
+#the deciding client can legitimately be several seconds ahead
+const decision_max_wait_time : float= 15.0
+#checksum -> msec: remote decisions applied before this client reached their
+#decision point (after a timeout). When this client reaches it later, it must
+#not wait for a decision that already went through (see StackSync)
+var _decisions_applied_early := {}
+const DECISION_APPLIED_EARLY_EXPIRY_MSEC := 120000
 var history := {}
 #checksum -> Array of the hero ids expected to make that decision (can be empty)
 var pending_interaction_checksums := {}
@@ -608,10 +616,15 @@ func _process_incoming_network_events(delta):
 	if wait_reason:
 		ev.waited += delta
 		display_debug("yield for " + wait_reason + " in " + ev.type)
-		if ev.waited < yield_max_wait_time:
+		var max_wait = yield_max_wait_time
+		if _is_remote_decision(ev):
+			max_wait = decision_max_wait_time
+		if ev.waited < max_wait:
 			return false  # keep waiting, and keep the order
 		cfc.LOG("{desync} timeout waiting for " + wait_reason + ", inserting " + ev.type + " anyway - " + ev.checksum, true)
 		record_sync_problem("timeout waiting for " + wait_reason + " (" + str(ev.checksum) + ")")
+		if _is_remote_decision(ev):
+			_remember_decision_applied_early(ev.checksum)
 	#removed before it is applied: applying it can add (and, with
 	#speed_run_incoming_network_event, process) further network events
 	inbox.pop_first(StackInbox.NETWORK)
@@ -655,6 +668,29 @@ func _process_incoming_network_events(delta):
 		_:
 			#unsupported
 			return false
+
+#the outcome of a decision made on another client, as opposed to scripts every
+#client runs on its own
+func _is_remote_decision(ev) -> bool:
+	return ev.type == "add_stack_object" \
+			and ev.expected_run_mode == RUN_MODE.PENDING_USER_INTERACTION
+
+func _remember_decision_applied_early(checksum) -> void:
+	if !checksum or str(checksum).begins_with("manual"):
+		return
+	_decisions_applied_early[checksum] = OS.get_ticks_msec()
+
+#true (once) if the decision behind this checksum was already applied on this
+#client, before this client reached the decision point
+func consume_decision_applied_early(checksum) -> bool:
+	var now = OS.get_ticks_msec()
+	for key in _decisions_applied_early.keys():
+		if now - _decisions_applied_early[key] > DECISION_APPLIED_EARLY_EXPIRY_MSEC:
+			_decisions_applied_early.erase(key)
+	if !_decisions_applied_early.has(checksum):
+		return false
+	_decisions_applied_early.erase(checksum)
+	return true
 
 func send_error_to_master(error_message):
 	#todo send error message to master to attempt recovery
@@ -2133,6 +2169,7 @@ func reset():
 	_current_interrupted_event = {}
 	history = {}
 	pending_interaction_checksums = {}
+	_decisions_applied_early = {}
 	_local_user_busy = false
 	_pending_flush = {}
 	_stash_pending_flush = {}

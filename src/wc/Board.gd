@@ -892,6 +892,13 @@ func get_all_cards(include_piles = false) -> Array:
 	var cardsArray := []
 	for obj in get_children():
 		if obj as Card: cardsArray.append(obj)
+	#The order of the board's children is local: it depends on when each
+	#client finished moving a card onto the board (animations, frame rate).
+	#Anything that loops over these cards to add scripts to the stack must
+	#see the same order on every client, e.g. readying cards in PLAYER_READY
+	#(ready_card desync: Nick Fury before Stark Tower on one client only)
+	if gameData.is_multiplayer_game:
+		cardsArray.sort_custom(WCUtils, "sort_objects_by_guid")
 	cardsArray += $VillainZone.get_all_cards() #technically villain zone has no cards AFAIK
 
 	if !include_piles:

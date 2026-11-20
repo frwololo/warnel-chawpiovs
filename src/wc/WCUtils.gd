@@ -337,6 +337,10 @@ static func sort_cards(a, b):
 
 static func sort_by_guid(a, b):
 	return guidMaster.guid_to_int(a) < guidMaster.guid_to_int(b)
+
+#same as sort_by_guid, for the objects (cards...) instead of their guids
+static func sort_objects_by_guid(a, b):
+	return sort_by_guid(guidMaster.get_guid(a), guidMaster.get_guid(b))
 	
 static func to_grayscale(_texture : Texture) -> Texture:
 	var texture = _texture

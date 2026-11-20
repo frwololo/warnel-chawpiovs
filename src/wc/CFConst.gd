@@ -1180,7 +1180,12 @@ const DEFAULT_SETTINGS:= {
 		'create_room_url': 'wc/lobby.php?mode=create_room',
 		'list_rooms_url': 'wc/lobby.php?mode=list_rooms',
 		'join_room_url': 'wc/lobby.php?mode=join_room&room_name=__ROOM_NAME__',
+		# WebRTC room codes (web builds, and desktop with the webrtc-native plugin)
+		'signaling_url': 'wss://wololo.net/signal',
 	},
+	# "enet" (direct IP) or "webrtc" (room codes) when hosting from a desktop build.
+	# Web builds always use "webrtc"
+	'network_transport': 'enet',
 	'server': 'https://wololo.net/',
 	'notifications_level': 'normal',
 	'adventure_mode': true,
@@ -1224,7 +1229,6 @@ const PER_OS_INTERNAL_SETTINGS = {
 	"HTML5": {
 		"exit_is_toggle_fullscreen": true,
 		"disable_mods": true,
-		"disable_multiplayer": true,
 		"disable_tests": true,
 		"hide_folder_label_team_selection": true
 	},

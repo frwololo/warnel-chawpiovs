@@ -377,7 +377,8 @@ func identity_setup() -> void:
 		var hero_id = i+1
 		if hero_id in gameData.get_my_heroes():
 			var identity_card = gameData.get_identity_card(hero_id)
-			var func_return = identity_card.execute_scripts(identity_card, "setup")
+			#only the owner runs it: replicated to the other clients
+			var func_return = identity_card.execute_scripts(identity_card, "setup", {"replicate_to_all_clients": true})
 			if func_return is GDScriptFunctionState && func_return.is_valid():
 				yield(func_return, "completed")
 	set_current_step_complete(true, "identity_setup")		

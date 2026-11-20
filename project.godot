@@ -591,6 +591,7 @@ guidMaster="*res://src/multiplayer/GUID.gd"
 gamepadHandler="*res://src/wc/GamepadHandler.gd"
 fileDownloader="*res://src/wc/data/FileDownloader.gd"
 serverConfig="*res://src/wc/data/ServerConfig.gd"
+networkManager="*res://src/wc/network/NetworkManager.gd"
 
 [debug]
 
@@ -609,6 +610,11 @@ window/stretch/aspect="keep"
 [editor_plugins]
 
 enabled=PoolStringArray( "res://addons/Holepunch/plugin.cfg" )
+
+[gdnative]
+
+singletons=[ "res://addons/webrtc_native/webrtc_native.tres" ]
+singletons.HTML5=[  ]
 
 [global]
 

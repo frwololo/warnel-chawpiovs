@@ -852,7 +852,7 @@ func game_state_changed(_trigger_object = null,
 func init_network_players(players:Dictionary):
 	for player_network_id in players:
 		if is_multiplayer_game and (player_network_id != cfc.get_network_unique_id()):
-				get_tree().network_peer.set_peer_timeout(player_network_id, 1000, 5000, 15000)
+				networkManager.set_peer_timeout(player_network_id, 1000, 5000, 15000)
 		var info = players[player_network_id]
 		var new_player_data := PlayerData.new(info.name, info.id, player_network_id)
 		network_players[player_network_id] = new_player_data 
@@ -893,7 +893,7 @@ func get_network_id_by_hero_id(hero_id):
 	return owner.network_id
 
 func get_player_by_network_id(network_id) -> PlayerData:
-	return network_players[network_id]
+	return network_players.get(network_id, null)
 
 func get_player_by_index(id) -> PlayerData:
 	return network_players[id_to_network_id[id]]
@@ -906,16 +906,7 @@ func init_1player():
 	init_network_players(dic)
 	
 func init_as_server(port = 0):
-	var my_port = CFConst.MULTIPLAYER_PORT
-	if port:
-		my_port = port
-	var peer = NetworkedMultiplayerENet.new()
-	peer.set_compression_mode(NetworkedMultiplayerENet.COMPRESS_RANGE_CODER)
-	var err = peer.create_server(my_port, 4) # Maximum of 4 peers. TODO make this a config
-	if err != OK:
-		return err #does this ever run?
-	get_tree().set_network_peer(peer)
-	return err	
+	return networkManager.host_enet(port)
 
 func archive_save_folder(save_dir):
 	var dir:Directory = Directory.new()
@@ -3590,7 +3581,7 @@ func _connected_fail():
 
 func disconnect_from_network():
 	#var network_id = cfc.get_network_unique_id()
-	get_tree().network_peer = null
+	networkManager.close()
 	network_players = {}
 	id_to_network_id = {}
 

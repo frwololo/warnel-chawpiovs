@@ -370,6 +370,9 @@ func ping():
 		return
 	if !get_tree().network_peer:
 		return
+	# a client cannot send anything before connected_to_server
+	if !networkManager.can_send():
+		return
 		
 	var new_ping_time = Time.get_ticks_msec()
 	#ping every 2 seconds at most
@@ -2453,7 +2456,7 @@ func _rpc(object, func_name, arg0=null,
 		params.append(i)
 
 	if gameData.is_multiplayer_game:
-		object.callv("rpc", [func_name] +  params)
+		networkManager.send_rpc(object, 0, func_name, params)
 	else:
 		#object.callv(func_name, params)
 		call_deferred("_deliver_local_rpc", _local_rpc_generation, object, func_name, params)
@@ -2475,7 +2478,7 @@ func _rpc_id(object, client_id, func_name, arg0=null,
 		params.append(i)
 
 	if gameData.is_multiplayer_game:
-		object.callv("rpc_id", [client_id,func_name] + params)
+		networkManager.send_rpc(object, client_id, func_name, params)
 	else:
 		call_deferred("_deliver_local_rpc", _local_rpc_generation, object, func_name, params)
 

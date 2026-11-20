@@ -174,6 +174,13 @@ func should_defer_decision(exec_config: Dictionary) -> bool:
 #hero_ids: the heroes expected to make that decision (see
 #UserInteractionAuthority.expected_hero_ids), kept for is_waiting_for_remote_player
 func enter_pending_network_interaction(checksum, reason:="", hero_ids:= []):
+	#The decision arrived (and was applied, and possibly resumed) before this
+	#client reached its decision point: waiting for it now would wait forever.
+	#Seen on a master slower than the deciding client: Caught Off Guard's reveal
+	#decision was applied after a 5s timeout, then the master stopped for it.
+	if the_stack.consume_decision_applied_early(checksum):
+		cfc.LOG("{desync} decision " + str(checksum) + " was already applied, not waiting for it", true)
+		return
 	if reason:
 		the_stack.display_debug(reason)
 	if the_stack.pending_interaction_checksums:

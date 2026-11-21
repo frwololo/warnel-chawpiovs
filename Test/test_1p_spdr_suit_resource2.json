@@ -1,0 +1,327 @@
+{
+	"_comments": "SP//DR Suit resource test: bug: can't play limitlsee stamina",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Man Noir"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Host spider",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Aunt May & Uncle Ben",
+					"owner_hero_id": 1,
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Repurpose",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forcefield Generator",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Limitless Stamina",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Psychic Link"
+		},
+		{
+			"type": "select",
+			"value": [
+				"Repurpose",
+				"Forcefield Generator"
+			]
+		},
+		{
+			"type": "activate",
+			"value": "SP//dr Suit #31001a"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Goblin Thrall"
+		},
+		{
+			"type": "play",
+			"value": "Limitless Stamina"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "SP//dr Suit"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Green Goblin - 1 #02014",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "Unleashing the Mutagen - 1B #02017b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"set_aside": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Giant Monster Attack #31026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.O.R.B.I.U.S. #31027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Energy Drain #31028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Green Goblin - 2 #02015",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2A #02018a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Mutagen Cloud - 2B #02018b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "SP//dr Suit #31001b",
+					"owner_hero_id": 1
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Unleashing the Mutagen - 1A #02017a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Spider-Tingle #31020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Repurpose",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Forcefield Generator",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Limitless Stamina",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Goblin Thrall #02024",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "SP//dr Suit #31001a",
+					"owner_hero_id": 1,
+					"exhausted": false
+				}
+			],
+			"allies1": [
+				{
+					"card": "Spider-Man Noir"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "SP//dr #31002b",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Host spider",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Aunt May & Uncle Ben",
+					"owner_hero_id": 1,
+					"exhausted": true
+				},
+				{
+					"card": "Psychic Link",
+					"owner_hero_id": 1,
+					"exhausted": true
+				}
+			],
+			"hand1": []
+		}
+	}
+}

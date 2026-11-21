@@ -5416,22 +5416,30 @@ func get_resource_value_as_mana_no_cache(script, precompute_method = ""):
 		else:
 			sceng = _get_resource_sceng(script)
 		
-		_lockable_for_subject = true
-		
-
+		#whether this card, once chosen to pay, can still be a subject of
+		#the script it pays for. Only decided by the script that will
+		#actually pay: a precompute_resource_special whose condition fails
+		#(no sceng) must not overwrite what the "resource" script decided.
+		#It did for SP//dr Suit paying with a single Interface upgrade:
+		#set_resource_lock recomputed the special value, flipped this back to
+		#true, and Limitless Stamina could not ready the hero that paid for it
+		var lockable_for_subject = true
 		
 		if sceng:		
 			if (sceng.can_all_costs_be_paid):
 				
 				#alternate means of payment (i.e. not discarding from hand) do not discard, by default, and therefore can be subjects
-				_lockable_for_subject = false			
+				lockable_for_subject = false			
 				#But there are exceptions where the payment involves discarding, moving, etc...
 				#which would invalidate it as a subject
-				for script in sceng.scripts_queue:
-					if script.script_name in ["discard", "move_to_container"]:
-						_lockable_for_subject = true
+				for task in sceng.scripts_queue:
+					if task.script_name in ["discard", "move_to_container"]:
+						lockable_for_subject = true
 				
 				result_mana = compute_resource_value_as_mana(sceng)		
+
+		if sceng or !precompute_method:
+			_lockable_for_subject = lockable_for_subject
 		
 		#if the compute didn't get through, we return the regular printed value
 		if !result_mana and (my_state == "hand"):	

@@ -26,7 +26,9 @@
 			"schemes": [
 				{
 					"card": "01097b",
-					"tokens": {"threat": 3}
+					"tokens": {
+						"threat": 3
+					}
 				}
 			],
 			"deck1": [
@@ -37,7 +39,7 @@
 			"identity1": [
 				{
 					"card": "Winter Soldier",
-					"guid": "guid_1",
+					"guid": "guid_1"
 				}
 			],
 			"others": [
@@ -47,10 +49,12 @@
 					"host": "Winter Soldier",
 					"tokens": {
 						"ammo": 1
-					}
-					"script_variables": {
-						"my_current_host": ["guid_1"]
 					},
+					"script_variables": {
+						"my_current_host": [
+							"guid_1"
+						]
+					}
 				}
 			],
 			"enemies1": [
@@ -96,7 +100,7 @@
 			"type": "target",
 			"value": "01097b",
 			"_comments": "Winter soldier removes threat when killing a minion"
-		}		
+		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",
@@ -132,7 +136,9 @@
 			"schemes": [
 				{
 					"card": "01097b",
-					"tokens": {"threat": 1}
+					"tokens": {
+						"threat": 1
+					}
 				}
 			],
 			"deck1": [

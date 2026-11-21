@@ -178,6 +178,7 @@ func start_game():
 	
 	_game_started = true
 	_game_over = ""
+	_leaving_after_disconnect = false
 
 	remote_load_finalize()
 
@@ -3572,8 +3573,25 @@ func display_debug(msg, prefix = ""):
 func _player_connected(network_id):
 	pass
 	
+#a player left during a game: there is no way to go on without them
+#(their hero, their decisions...), and the others would wait forever
+#("clients still not aligned" in can_proceed_activation). End the game
+#for everyone left, as when the host leaves (_server_disconnected)
 func _player_disconnected(network_id):
-	pass
+	if !is_multiplayer_game or !network_players.has(network_id):
+		return
+	#a client losing the host also gets server_disconnected
+	if network_id == 1 and !get_tree().is_network_server():
+		return
+	if !is_game_started() or _game_over:
+		return #lobby, or the game over screen: nothing to wait for
+	if testSuite and is_instance_valid(testSuite) and testSuite.finished:
+		return
+	var player_name = network_players[network_id].name if network_players[network_id] else str(network_id)
+	cfc.LOG("{network} player " + str(player_name) + " (" + str(network_id) + ") disconnected during the game, leaving the game", true)
+	#deferred: emitted while the network peer is being polled, and leaving closes it
+	call_deferred("_leave_game_after_disconnect")
+	
 	
 func _connected_ok():
 	pass
@@ -3589,6 +3607,15 @@ func disconnect_from_network():
 
 func _server_disconnected():
 	display_debug("SERVER DISCONNECTED")
+	_leave_game_after_disconnect()
+
+#set until the next game starts: a client losing the host gets both
+#server_disconnected and (deferred) network_peer_disconnected
+var _leaving_after_disconnect := false
+func _leave_game_after_disconnect():
+	if _leaving_after_disconnect:
+		return
+	_leaving_after_disconnect = true
 	disconnect_from_network()
 	cleanup_post_game()
 	if testSuite and is_instance_valid(testSuite):

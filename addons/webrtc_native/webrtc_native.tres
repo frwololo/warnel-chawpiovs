@@ -19,3 +19,22 @@ entry/Android.x64 = "res://addons/webrtc_native/lib/libwebrtc_native.android.tem
 entry/iOS.armv7 = "res://addons/webrtc_native/lib/libwebrtc_native.ios.template_release.armv32.dylib"
 entry/iOS.arm64 = "res://addons/webrtc_native/lib/libwebrtc_native.ios.template_release.arm64.dylib"
 entry/iOS.x86_64 = "res://addons/webrtc_native/lib/libwebrtc_native.ios.template_release.x86_64.simulator.dylib"
+
+
+
+dependency/OSX.64 = []
+dependency/Windows.64 = []
+dependency/Windows.32 = []
+dependency/X11.64.x86_64 = []
+dependency/X11.32.x86_32 = []
+dependency/X11.64.arm64 =[]
+dependency/X11.32.arm32 = []
+dependency/Server.64.x86_64 = []
+dependency/Server.32.x86_32 = []
+dependency/Server.64.arm64 = []
+dependency/Server.32.arm32 = []
+dependency/Android.arm64-v8a = []
+dependency/Android.x64 = []
+dependency/iOS.armv7 = []
+dependency/iOS.arm64 = []
+dependency/iOS.x86_64 = []

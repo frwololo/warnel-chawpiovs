@@ -327,6 +327,8 @@ func _on_signaling_closed(_was_clean := false) -> void:
 	# while we are still waiting for our room
 	if transport == Transport.WEBRTC and not _rtc:
 		call_deferred("_fail", "The online server closed the connection")
+	elif _rtc:
+		cfc.LOG("{network} connection to the signaling server closed, game connections kept", true)
 
 
 func _send_signal(msg: Dictionary) -> void:
@@ -358,9 +360,18 @@ func _on_signaling_data() -> void:
 		"peer_joined":
 			_add_rtc_peer(int(msg.id), true)
 		"peer_left":
+			# the player's connection to the signaling server is gone, which
+			# says nothing about the game: proxies close idle WebSockets
+			# (Apache after 60 s by default), and then every other player was
+			# dropped from the game. Once connected, a player who really
+			# leaves is noticed by WebRTC itself (see _remove_dead_rtc_peers)
 			var id := int(msg.id)
 			if _rtc and _rtc.has_peer(id):
-				_rtc.remove_peer(id)
+				if _rtc.get_peer(id).get("connected", false):
+					cfc.LOG("{network} peer %d left the signaling server, game connection kept" % id, true)
+				else:
+					cfc.LOG("{network} peer %d left before its connection was ready" % id, true)
+					_rtc.remove_peer(id)
 		"room_closed":
 			cfc.LOG("{network} the host closed the room", true)
 		"offer", "answer":
@@ -451,6 +462,7 @@ func _on_connected_to_server() -> void:
 
 
 func _on_network_peer_disconnected(id: int) -> void:
+	cfc.LOG("{network} peer %d disconnected" % id, true)
 	_pending_ready_peers.erase(id)
 	for key in _incoming_transfers.keys():
 		if _incoming_transfers[key].sender == id:
@@ -458,6 +470,7 @@ func _on_network_peer_disconnected(id: int) -> void:
 
 
 func _on_server_disconnected() -> void:
+	cfc.LOG("{network} lost the connection to the host", true)
 	_server_reachable = false
 
 

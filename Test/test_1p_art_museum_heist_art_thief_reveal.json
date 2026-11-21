@@ -1,0 +1,337 @@
+{
+	"_comments": "Bug: Art Thief not letting us choose the art",
+	"test_conditions": {
+		"bug_type": "card_json",
+		"_comments": "card_json bug indicates the issue was found to be in the card json, not in the engine"
+	},		
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Daredevil"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Inspiring Pottery",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Flight Serum #60191",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Impossible Object",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stunning Landscape",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Art Thief",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Hammerhead - 1 #60086",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Art Museum Heist - 1B #60121b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Daredevil #60001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bullseye #60033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Deadliest Man Alive #60034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stolen Sai #60035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hammerhead - 2 #60087",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Art Museum Heist - 1A #60121a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Living Lie Detector #60010",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Man Without Fear #60018",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Daredevil #60001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"deck_sense1": [
+				{
+					"card": "Acute Tactility #60002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superior Taste #60006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heightened Hearing #60004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Radar Sense #60005",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Blindspot - Sam Chung #60019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Replica Shield #60124",
+					"owner_hero_id": 0,
+					"host": "60086"
+				},
+				{
+					"card": "Enhanced Olfaction #60003",
+					"owner_hero_id": 1,
+					"host": "Art Museum Heist - 1B #60121b"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Inspiring Pottery"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Daredevil"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Flight Serum #60191",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Impossible Object",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stunning Landscape",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Hammerhead - 1 #60086",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Art Museum Heist - 1B #60121b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Daredevil #60001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bullseye #60033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Deadliest Man Alive #60034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stolen Sai #60035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hammerhead - 2 #60087",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Art Museum Heist - 1A #60121a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Living Lie Detector #60010",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Man Without Fear #60018",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Daredevil #60001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Art Thief",
+					"owner_hero_id": 0
+				}
+			],
+			"upgrade_support1": [],
+			"deck_sense1": [
+				{
+					"card": "Acute Tactility #60002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superior Taste #60006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heightened Hearing #60004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Radar Sense #60005",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Blindspot - Sam Chung #60019",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Energy",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Replica Shield #60124",
+					"owner_hero_id": 0,
+					"host": "60086"
+				},
+				{
+					"card": "Enhanced Olfaction #60003",
+					"owner_hero_id": 1,
+					"host": "Art Museum Heist - 1B #60121b"
+				},
+				{
+					"card": "Inspiring Pottery",
+					"owner_hero_id": 0,
+					"host": "60086"
+				}
+			]
+		}
+	}
+}

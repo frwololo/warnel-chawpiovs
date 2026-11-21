@@ -1795,7 +1795,7 @@ func enemy_activates(delta) :
 			else:
 				if enemy.next_boost_card_to_reveal():
 					display_debug("go for one card boost reveal")
-					var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost"}, enemy, enemy, signal_details)
+					var stackEvent = SimplifiedStackScript.new({"name": "enemy_boost_reveal"}, enemy, enemy, signal_details)
 					theStack.add_script(stackEvent)
 				else:
 					display_debug("no more card boosts, going to the next step")

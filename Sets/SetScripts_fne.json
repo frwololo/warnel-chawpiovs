@@ -731,7 +731,7 @@
 				{
 					"name": "host_card",
 					"host": "villain",
-					"subject": "tutor",
+					"subject": "tutor_and_choose",
 					"is_cost": true,
 					"src_container": [
 						"deck_villain",
@@ -4159,12 +4159,13 @@
 								"Move": [
 									{
 										"name": "move_card_to_board",
-										"subject": "self"
+										"subject": "self",
+										"tags":["force_detach", "force_emit_card_moved_signal"] 
 									},
 									{
 										"name": "remove_card_script",
 										"subject": "self",
-										"script_trigger": "do_lightning"
+										"script_trigger": "do_sense"
 									}
 								],
 								"Don't Move": [
@@ -4180,14 +4181,15 @@
 				},
 				{
 					"name": "sequence",
-					"sequence_ability": "do_move",
+					"sequence_ability": "do_sense",
 					"subject": "tutor",
 					"src_container": [
 						"board",
 						"deck_sense_my_hero"
 					],
 					"subject_count": "all",
-					"filter_state_tutor": "trait_sense"
+					"filter_state_tutor": "trait_sense",
+					"delay_until_no_activity": true
 				}
 			]
 		}

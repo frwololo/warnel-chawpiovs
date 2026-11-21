@@ -2551,7 +2551,7 @@ func enemy_attack(script: ScriptTask) -> int:
 
 	return retcode
 
-func enemy_boost(boost_script: ScriptTask) -> int:
+func enemy_boost_reveal(boost_script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
 	
 	#reveal one boost card
@@ -2597,7 +2597,12 @@ func enemy_boost(boost_script: ScriptTask) -> int:
 	script_definition["current_boost_card"] = boost_card
 		
 	scripting_bus.emit_signal_on_stack("boost_card_revealed", boost_card, boost_trigger_details)
-						
+	
+	#shortcut for visual/audio satisfaction:
+	#If nobody reacts to the boost_card_revealed effect, we move directly to the activity
+	if !scripting_bus.get_signal_registered("boost_card_revealed"):
+		return enemy_boost_activity(boost_script)
+							
 	return retcode
 
 func enemy_boost_activity(boost_script: ScriptTask) -> int:
@@ -2688,7 +2693,7 @@ func enemy_boost_activity(boost_script: ScriptTask) -> int:
 				if boost_amount:
 					boost_card.hint("+" + str(boost_amount), Color8(100,255,150), {"position": "bottom_right"})
 				script_definition["boost"].append(boost_amount)
-			
+				cfc.play_sfx("enemy_boost")
 			#this is the final step so we arease everything
 			gameData.terminate_current_boost(script)
 

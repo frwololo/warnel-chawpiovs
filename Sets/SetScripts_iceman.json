@@ -33,11 +33,15 @@
 		},
 		"interrupt_defender_chosen": {
 			"trigger": "self",
+			"event_filters": {
+				"tags": ["basic_defense"]
+			},
 			"is_optional_board": true,
 			"condition_board": {
 				"func_name": "count_cards",
 				"func_params": {
 					"subject": "tutor",
+					"src_container": "set_aside",					
 					"filter_state_tutor": "Frostbite"
 				}
 			},

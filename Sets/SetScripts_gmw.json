@@ -1139,7 +1139,7 @@
 	"Close Call": {
 		"TODO": "campaign mode not supported",
 		"interrupt": {
-			"event_name": "enemy_boost",
+			"event_name": "enemy_boost_reveal",
 			"is_optional_hand": true,
 			"hand": [
 				{

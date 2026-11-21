@@ -1,0 +1,346 @@
+{
+	"_comments": "Bug: Nelson and Murdoch not triggering",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Daredevil"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Flight Serum #60191",
+					"owner_hero_id": 0
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Hammerhead - 1 #60086",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Art Museum Heist - 1B #60121b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				},
+				{
+					"card": "Deadliest Man Alive",
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Daredevil #60001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bullseye #60033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Deadliest Man Alive #60034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stolen Sai #60035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hammerhead - 2 #60087",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Art Museum Heist - 1A #60121a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Living Lie Detector #60010",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Man Without Fear #60018",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Matt Murdock #60001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular"
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Nelson and Murdock",
+					"owner_hero_id": 1
+				}
+			],
+			"deck_sense1": [
+				{
+					"card": "Acute Tactility #60002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superior Taste #60006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heightened Hearing #60004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Radar Sense #60005",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Living Lie Detector",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Legal Trouble",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Replica Shield #60124",
+					"owner_hero_id": 0,
+					"host": "60086"
+				},
+				{
+					"card": "Enhanced Olfaction #60003",
+					"owner_hero_id": 1,
+					"host": "Art Museum Heist - 1B #60121b"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Living Lie Detector"
+		},
+		{
+			"type": "target",
+			"value": "Deadliest Man Alive"
+		},
+		{
+			"type": "activate",
+			"value": "Nelson and Murdock"
+		},
+		{
+			"type": "target",
+			"value": "Hydra Regular"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Daredevil"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [
+				{
+					"card": "Flight Serum #60191",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Deadliest Man Alive"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Hammerhead - 1 #60086",
+					"owner_hero_id": 0,
+					"tokens": {
+						"tough": 1
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "Art Museum Heist - 1B #60121b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 1
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Daredevil #60001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Bullseye #60033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Deadliest Man Alive #60034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Stolen Sai #60035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Eye on the Target #60036",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hammerhead - 2 #60087",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "Art Museum Heist - 1A #60121a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Living Lie Detector #60010",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "The Man Without Fear #60018",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Legal Trouble",
+					"owner_hero_id": 1
+				},				
+				{
+					"card": "Living Lie Detector",
+					"owner_hero_id": 1
+				},
+
+			],
+			"identity1": [
+				{
+					"card": "Matt Murdock #60001b",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Regular",
+					"tokens": {
+						"confused": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Nelson and Murdock",
+					"owner_hero_id": 1
+				}
+			],
+			"deck_sense1": [
+				{
+					"card": "Acute Tactility #60002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Superior Taste #60006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Heightened Hearing #60004",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Radar Sense #60005",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [],
+			"others": [
+				{
+					"card": "Replica Shield #60124",
+					"owner_hero_id": 0,
+					"host": "60086"
+				},
+				{
+					"card": "Enhanced Olfaction #60003",
+					"owner_hero_id": 1,
+					"host": "Art Museum Heist - 1B #60121b"
+				}
+			]
+		}
+	}
+}

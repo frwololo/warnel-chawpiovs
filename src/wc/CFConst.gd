@@ -297,7 +297,8 @@ const Z_INDEX_HAND_CARDS_NORMAL :=200
 const OPTIONAL_SIGNALS:= [
 	"about_to_reveal",
 	"ally_played",
-		
+
+	"boost_card_revealed",		
 	"boost_card_resolved",
 	"bypass_guard_happened", 
 	"bypass_crisis_happened",

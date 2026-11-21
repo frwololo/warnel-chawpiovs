@@ -301,7 +301,7 @@
 		}
 	},
 	"Defiance": {
-		"interrupt_enemy_boost": {
+		"interrupt_enemy_boost_reveal": {
 			"is_optional_hand": true,
 			"hand": [
 				{

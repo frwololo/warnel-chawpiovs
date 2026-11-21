@@ -772,7 +772,7 @@ func matches_filters(_filters:Dictionary, owner_card, _trigger_details):
 		if !script:
 			return false
 		#switcheroo of the script for some particular events	
-		if script.script_name in ["enemy_attack_damage", "enemy_scheme_threat", "enemy_attack", "enemy_boost"]:
+		if script.script_name in ["enemy_attack_damage", "enemy_scheme_threat", "enemy_attack", "enemy_boost_reveal", "enemy_boost_activity"]:
 			script = script.owner.activity_script
 			if !script:
 				return false

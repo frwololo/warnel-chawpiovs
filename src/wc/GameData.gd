@@ -124,6 +124,8 @@ var _currently_acting_hero_id:= 1
 var attackers: = []
 #list of encounters that need to be revealed asap
 var immediate_encounters: = []
+#a new game was set up and its restart point is not saved yet
+var restart_point_pending := false
 var user_input_ongoing:int = 0 #ID of the current player (or remote player) doing a blocking game interraction
 var _garbage:= []
 var _targeting_ongoing= null
@@ -3344,6 +3346,7 @@ func erase_pending_scripts():
 
 	_current_encounter = null
 	immediate_encounters = []
+	restart_point_pending = false
 	
 
 func get_current_status():
@@ -3459,6 +3462,34 @@ func save_gamedata() -> Dictionary:
 
 	return json_data
 
+#"Restart" (OptionsMenu.restart_game) loads this file. It used to be saved at
+#the end of Board.post_cards_moved_load, but setup was not over then:
+#encounters dealt with immediate_reveal (Sinister Synchronization's Light at
+#the End) and setup scripts that go through the stack resolve afterwards,
+#and immediate_encounters is not part of a save, so on restart Light at the
+#End stayed in the facedown encounters.
+#Saved instead when the phase moves on for the first time (it cannot while
+#immediate encounters or the stack are pending), with the step being left
+#as the phase: on load, that step is marked complete and the game moves on
+#to the next one, so the mulligan is offered again.
+func save_restart_point(step_left:String):
+	if !restart_point_pending:
+		return
+	restart_point_pending = false
+	#not in parallel test workers: shared file
+	if cfc.is_test_worker():
+		return
+	var savedata = save_gamedata()
+	if !savedata:
+		return
+	savedata["phase"] = step_left
+	var file = File.new()
+	if file.open("user://Saves/_restart.json", File.WRITE) != OK:
+		cfc.LOG("{error} could not save the restart point", true)
+		return
+	file.store_string(JSON.print(savedata, "\t"))
+	file.close()
+
 func save_gamedata_to_file(path):
 	var savedata = save_gamedata()
 	var json = JSON.print(savedata, "\t")
@@ -3485,6 +3516,8 @@ remotesync func remote_load_game_data_finished(result:int):
 var _is_engine_ready = true
 remotesync func remote_load_gamedata(json_data:Dictionary):
 	_is_engine_ready = false
+	#a loaded game (including the restart itself) keeps the restart point it had
+	restart_point_pending = false
 
 	var previous_pause_state = cfc.game_paused
 	cfc.set_game_paused(true)

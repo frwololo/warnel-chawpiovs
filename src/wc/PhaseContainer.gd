@@ -708,6 +708,11 @@ remotesync func proceed_to_next_phase(mode = 0):
 				return
 				
 			please_start_next_step = false	
+			#first step change of a new game (usually GAME_NOT_STARTED ->
+			#PLAYER_MULLIGAN): setup has fully resolved. Not on step_started:
+			#start_phaseContainer starts the current step again when all
+			#clients are loaded, before the immediate encounters are revealed
+			gameData.save_restart_point(StepStrings[current_step])
 			if (current_step == CFConst.PHASE_STEP.SYSTEMS_CHECK):
 				current_step = CFConst.PHASE_STEP.PLAYER_TURN
 			elif ((current_step == CFConst.PHASE_STEP.VILLAIN_ACTIVATES) and gameData.villain_next_target(true, "proceed_to_next_phase")):

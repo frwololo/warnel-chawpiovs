@@ -503,11 +503,13 @@ func init_generic_stack(script, announce):
 	
 	#var announce_scene = StackEventDisplay.new(script)
 	storage["scene"] = announce_scene
-	
-	add_child_to_board(announce_scene)
 
 	if announce.get("show_ok", false):
 		announce_scene.show_ok_button()	
+			
+	add_child_to_board(announce_scene)
+
+
 				
 	announce_scene.set_target_position(GENERIC_STACK_POSITION * cfc.hardcoded_positions_modifier)
 	self.add_right_announce()		

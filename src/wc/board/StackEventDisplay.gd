@@ -36,6 +36,11 @@ var target_position = Vector2(0,0)
 var trigger = ""
 var is_collapsed = false
 
+const last_shown_message := {
+	"msg": "",
+	"owner": null
+}
+
 #if set to true, when the stack event goes off the stack, this will close this message
 #if set to false, you need another way to call terminate()
 var terminate_on_event_completion = true
@@ -58,7 +63,7 @@ func _init():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	load_text()
-	if !text_loaded:
+	if show_ok and !text_loaded:
 		force_close()
 		return
 
@@ -246,6 +251,19 @@ func load_card_texture() -> bool:
 
 func set_text_loaded(value):
 	text_loaded = value
+	
+	#there is a bug where the exact same message sometimes shows up twice,
+	#possibly because the same event goes on the stack twice and
+	#triggers this display
+	#the easiest way I have found is to not show the same message twice in a row
+	#this might catch some false positvies but I feel
+	#that for now this is a better experience
+	if show_ok and text_loaded == last_shown_message.msg:
+		force_close()
+		return
+	last_shown_message.msg = text_loaded
+		
+	
 	gameData.theAnnouncer.emit_signal("announce_text_loaded", self, text_loaded)
 func load_text():
 	if text_loaded:

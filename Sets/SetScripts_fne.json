@@ -9194,6 +9194,7 @@
 					"token_name": "threat"
 				}
 			},
+			"display_section": "forced interrupt",
 			"board": [
 				{
 					"name": "mod_tokens",

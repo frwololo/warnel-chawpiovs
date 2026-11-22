@@ -19,6 +19,7 @@ extends Node2D
 
 const VisualCue = preload("res://src/wc/visual_cues/VisualCue.gd")
 const CursorCue = preload("res://src/wc/visual_cues/CursorCue.gd")
+const ClickCue = preload("res://src/wc/visual_cues/ClickCue.gd")
 
 const KEEPALIVE_MSEC := 1000
 
@@ -51,6 +52,7 @@ func _ready():
 	scripting_bus.connect("step_started", self, "_on_step_started")
 
 	register_cue(CursorCue.new())
+	register_cue(ClickCue.new())
 
 func register_cue(cue: VisualCue):
 	cues[cue.cue_type] = cue
@@ -92,7 +94,8 @@ func _process(_delta):
 		if typeof(data) != TYPE_DICTIONARY:
 			continue
 		var data_hash = data.hash()
-		if data_hash == _sent_hash.get(cue_type) and now < _next_keepalive_msec.get(cue_type, 0):
+		if data_hash == _sent_hash.get(cue_type) and now < _next_keepalive_msec.get(cue_type, 0) \
+				and !cue.resend_unchanged:
 			continue
 		_sent_hash[cue_type] = data_hash
 		_next_keepalive_msec[cue_type] = now + KEEPALIVE_MSEC

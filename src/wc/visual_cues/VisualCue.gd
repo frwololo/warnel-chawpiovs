@@ -9,6 +9,11 @@ var cue_type := ""
 var send_interval_msec := 100
 #a remote player's view fades out when nothing came for this long
 var stale_after_msec := 3000
+#send what sample() returns at every sample, even unchanged (for short
+#lived events sent a few times in a row, so that one lost packet does not
+#lose the event). Otherwise unchanged data is only sent again every
+#VisualCues.KEEPALIVE_MSEC
+var resend_unchanged := false
 
 #what to send to the other players, as a small Dictionary of basic types
 #(no objects: cards are sent by guid), or null to send nothing

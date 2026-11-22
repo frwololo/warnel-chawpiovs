@@ -136,7 +136,7 @@
 				{
 					"card": "Out Front #60129a",
 					"owner_hero_id": 0,
-					"host": "60065",
+					"host": "60065"
 				}
 			]
 		}
@@ -157,8 +157,8 @@
 		{
 			"type": "select",
 			"value": "Echo",
-			"_comments": "alonnside indirect damage"
-		},		
+			"_comments": "alongside indirect damage"
+		},
 		{
 			"type": "play",
 			"value": "Army of One",
@@ -166,7 +166,7 @@
 		},
 		{
 			"type": "select",
-			"value":  "Get Their Attention"
+			"value": "Get Their Attention"
 		},
 		{
 			"type": "activate",
@@ -195,7 +195,7 @@
 			"type": "select",
 			"value": "Army of One",
 			"_comments": "Ready Echo"
-		},		
+		},
 		{
 			"type": "activate",
 			"value": "Echo",
@@ -215,7 +215,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Daredevil"
+					"hero": "Echo"
 				}
 			}
 		],
@@ -274,10 +274,6 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Alongside #60129b",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "Bullseye - 2 #60066",
 					"owner_hero_id": 0
 				},
@@ -287,6 +283,10 @@
 				},
 				{
 					"card": "Adamantium-Laced Spine #60068a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Out Front #60129a",
 					"owner_hero_id": 0
 				}
 			],
@@ -321,7 +321,7 @@
 					"owner_hero_id": 1
 				},
 				{
-					"card":  "Get Their Attention",
+					"card": "Get Their Attention",
 					"owner_hero_id": 1
 				},
 				{
@@ -346,9 +346,9 @@
 			"hand1": [],
 			"others": [
 				{
-					"card": "Out Front #60129a",
+					"card": "Alongside #60129b",
 					"owner_hero_id": 0,
-					"host": "60065",
+					"host": "60065"
 				}
 			]
 		}

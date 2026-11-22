@@ -6639,6 +6639,7 @@
 					"selection_count": 1,
 					"selection_type": "max",
 					"needs_selection": true,
+					"is_cost": true,
 					"script": {
 						"alterants": {
 							"all": [
@@ -6653,9 +6654,17 @@
 					}
 				},
 				{
+					"name": "add_script",
+					"subject": "previous",
+					"fetch_script": {
+						"script_path": "*/hand",
+						"replace_to_state": "board"
+					}
+				},				
+				{
 					"name": "execute_scripts",
 					"subject": "previous",
-					"require_exec_state": "hand",
+					"require_exec_state": "board",
 					"exec_trigger": "manual",
 					"delayed": true,
 					"tags": [

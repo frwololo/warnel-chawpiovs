@@ -643,9 +643,13 @@ func play_card(script: ScriptTask) -> int:
 		definition["grid_name"] = grid_name
 		retcode =  move_card_to_board(script)
 	
-			
-	scripting_bus.emit_signal_on_stack("card_played", card_to_play, {"from": from, "from_controller": from_controller })		
-	scripting_bus.emit_signal_on_stack(type_code + "_played", card_to_play, {"from": from, "from_controller": from_controller })
+	var signal_details = {
+		"from": from,
+		"from_controller": from_controller,
+		"tags": script.get_property(SP.KEY_TAGS)
+	}		
+	scripting_bus.emit_signal_on_stack("card_played", card_to_play, signal_details)		
+	scripting_bus.emit_signal_on_stack(type_code + "_played", card_to_play, signal_details)
 	return retcode	
 
 func force_play_card(script: ScriptTask) -> int:
@@ -3589,7 +3593,8 @@ func execute_scripts(script: ScriptTask) -> int:
 		"prev_subjects" : script.prev_subjects,
 		"parent_script": script,
 		"interrupt_parent_stack_uid": script.trigger_details.get("parent_stack_uid",0),
-		"trigger_identity_id": trigger_identity_id 
+		"trigger_identity_id": trigger_identity_id, 
+		"additional_tags": script.get_property(SP.KEY_TAGS)
 	}
 	var delayed = script.get_property("delayed", false)
 	

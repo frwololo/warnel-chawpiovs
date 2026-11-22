@@ -1362,7 +1362,16 @@ func load_cards_to_pile(card_data:Array, pile_name):
 			_guid_translation[card["guid"]] = new_card.get_guid()
 			#transforming inplace. Dangerous ?
 			#card["guid"] = new_card.get_guid()
-		if card_owner != pile_controller:
+		#a player card attached to another card ("others", loaded with an
+		#empty pile name) is controlled by its owner. The controller is not
+		#saved, and that pile has no controller (0): a loaded event tucked
+		#under Echo, controlled by nobody, was out of reach of its owner's
+		#scripts ("hand" did not become "hand1": Photographic Reflexes could
+		#not be discarded) and its effects had no hero. Encounter
+		#attachments get the controller of their host when attached
+		#(attach_to_host)
+		var keep_owner_as_controller = (pile_name == "" and card_owner > 0)
+		if card_owner != pile_controller and !keep_owner_as_controller:
 			new_card.set_controller_hero_id(pile_controller)
 		#new_card.load_from_json(card)
 		card_array.append(new_card)

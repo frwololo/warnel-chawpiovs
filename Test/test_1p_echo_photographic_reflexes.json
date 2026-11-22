@@ -187,14 +187,9 @@
 			"value": "Bullseye - 1 #60065"
 		},
 		{
-			"type": "play",
-			"value": "Photographic Reflexes #60040a",
-			"_comments": "replay Army of One"
-		},
-		{
-			"type": "select",
+			"type": "activate",
 			"value": "Army of One",
-			"_comments": "Ready Echo"
+			"_comments": "replay the tucked Army of One as if in hand (Photographic Reflexes is in hand): ready Echo, discard Photographic Reflexes"
 		},
 		{
 			"type": "activate",

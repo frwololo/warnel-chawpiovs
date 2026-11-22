@@ -138,10 +138,13 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 	return extra_script_uid
 
 func remove_extra_script(script_uid):
-	var details = extra_scripts.get(extra_script_uid, {})
+	var details = extra_scripts.get(script_uid, {})
 	extra_scripts.erase(script_uid)
 	_get_extra_scripts_cache = {}
 	check_ghost_card()
+	#stop listening to the triggers of the removed script (a response given
+	#by can_play_as_if_in_hand), as add_extra_script started listening to them
+	register_signals()
 	scripting_bus.emit_signal("card_script_removed", self, details)
 	return extra_script_uid
 
@@ -318,6 +321,18 @@ func _refresh_dummy_alterant(alterant):
 		else:
 			_dummy_alterants_cache[alterant] = result
 	
+#"play as if it were in your hand": the card gets a copy of its hand
+#scripts (all triggers: manual, interrupts, responses), moved to the state
+#it is in now ("pile" for a card in a deck or discard pile, "board" for a
+#card tucked under another one, e.g. Echo's Photographic Reflexes).
+#The cards granting it (the sources of the can_play_as_if_in_hand
+#alterant) can add their own rules to that copy with a
+#"play_as_if_in_hand" section in their scripts:
+#	"play_as_if_in_hand": {
+#		"additional_scripts": [...], appended to each script (costs paid
+#			after the regular ones, e.g. "discard Photographic Reflexes")
+#		"additional_tags": [...]  added to each task but constraints
+#	}
 func refresh_alterant_can_play_as_if_in_hand(before, after):		
 	var can_play_as_if_in_hand = after
 	var _can_play_as_if_in_hand = before
@@ -327,15 +342,20 @@ func refresh_alterant_can_play_as_if_in_hand(before, after):
 		var subscript = {}
 		var seek_state = "hand"
 		var fetched_scripts = self.retrieve_scripts_by_state(seek_state)
-		var new_state = "pile" #TODO more generic?
+		var new_state = get_state_exec()
+		if !(new_state in ["board", "pile"]):
+			new_state = "pile"
+		var rules = _play_as_if_in_hand_rules()
 		for key in fetched_scripts:
 			var fetched_script = fetched_scripts[key]
-			fetched_script[new_state] = fetched_script[seek_state]
+			if typeof(fetched_script) != TYPE_DICTIONARY:
+				continue
+			fetched_script[new_state] = _apply_play_as_if_in_hand_rules(fetched_script[seek_state], rules)
 			fetched_script.erase(seek_state)
-			var old_is_optional = "is_optional_" + seek_state
-			if fetched_script.has(old_is_optional):
-				fetched_script["is_optional_" + new_state] = fetched_script[old_is_optional]
-				fetched_script.erase(old_is_optional)
+			for prefix in ["is_optional_", "condition_"]:
+				if fetched_script.has(prefix + seek_state):
+					fetched_script[prefix + new_state] = fetched_script[prefix + seek_state]
+					fetched_script.erase(prefix + seek_state)
 			subscript[key] = fetched_script
 			
 		return self.add_extra_script( subscript, self.get_controller_hero_id())		
@@ -344,6 +364,67 @@ func refresh_alterant_can_play_as_if_in_hand(before, after):
 	elif _can_play_as_if_in_hand and !can_play_as_if_in_hand:
 		self.remove_extra_script(_can_play_as_if_in_hand)
 		return null
+
+#the "play_as_if_in_hand" sections of the cards that let this card be
+#played as if in hand, merged. A source counted twice (two copies of a
+#card granting it) adds its rules once
+func _play_as_if_in_hand_rules() -> Dictionary:
+	var rules = {"additional_scripts": [], "additional_tags": []}
+	var alteration = get_property_and_alterants("can_play_as_if_in_hand", false, 0).get("alteration", {})
+	var seen = []
+	for source in alteration.get("alterants_details", {}):
+		if !is_instance_valid(source) or !source.has_method("retrieve_scripts"):
+			continue
+		if source.canonical_id in seen:
+			continue
+		seen.append(source.canonical_id)
+		var source_rules = source.retrieve_scripts("play_as_if_in_hand")
+		rules["additional_scripts"] += source_rules.get("additional_scripts", []).duplicate(true)
+		for tag in source_rules.get("additional_tags", []):
+			if !tag in rules["additional_tags"]:
+				rules["additional_tags"].append(tag)
+	return rules
+
+#same as ScriptingEngine.add_tags_to_tags (not referenced from here: cyclic
+#dependency), tags can be a list or an if/then/else dictionary
+static func _add_tags_to_tags(existing_tags, additional_tags:Array):
+	match typeof(existing_tags):
+		TYPE_ARRAY:
+			return existing_tags + additional_tags
+		TYPE_DICTIONARY:
+			var result = existing_tags.duplicate(true)
+			for key in ["then", "else"]:
+				if existing_tags.has(key):
+					result[key] = existing_tags.get(key) + additional_tags
+			return result
+	return additional_tags.duplicate()
+
+func _apply_play_as_if_in_hand_rules(state_scripts, rules:Dictionary):
+	if !rules["additional_scripts"] and !rules["additional_tags"]:
+		return state_scripts
+	match typeof(state_scripts):
+		TYPE_ARRAY:
+			var result = []
+			for task in state_scripts:
+				if typeof(task) != TYPE_DICTIONARY:
+					result.append(task)
+					continue
+				task = task.duplicate(true)
+				#a constraints task's tags are the constraints themselves
+				if rules["additional_tags"] and task.get("name", "") != "constraints":
+					task["tags"] = _add_tags_to_tags(task.get("tags", []), rules["additional_tags"])
+				result.append(task)
+			return result + rules["additional_scripts"].duplicate(true)
+		TYPE_DICTIONARY:
+			#a choice between several scripts: the rules apply to each of them
+			var result = {}
+			for key in state_scripts:
+				if key in ["_rules", "macro_name"]:
+					result[key] = state_scripts[key]
+				else:
+					result[key] = _apply_play_as_if_in_hand_rules(state_scripts[key], rules)
+			return result
+	return state_scripts
 
 func refresh_alterant_blank_printed_text_box(before, after):	
 	var is_altered = after
@@ -1592,6 +1673,13 @@ func get_property(property: String, default = null, force_alterant_check = false
 		#there are a few exceptions we accept to return for inactive attachment cards
 		if !property in ["_code"]:
 			return default
+
+	#a boost card is not in play: its keywords (guard, patrol, toughness...)
+	#do not apply. It stays attached face up to its enemy once revealed, and
+	#board-wide checks found them (Hydra Mercenary's guard, as Rhino's
+	#boost, made Rhino guarded)
+	if _is_boost and property in CFConst.AUTO_KEYWORDS:
+		return default
 		
 	if CFConst.PERFORMANCE_HACKS:
 		if !state in [

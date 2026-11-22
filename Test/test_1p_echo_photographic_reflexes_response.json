@@ -1,0 +1,114 @@
+{
+	"_comments": "Photographic Reflexes: a response event tucked under Echo (Counter-Punch) is offered at its own timing while Photographic Reflexes is in hand. Playing it discards Photographic Reflexes and Watch and Learn does not tuck it again",
+	"init": {
+		"phase": "VILLAIN_ACTIVATES",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Echo"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Hydra Mercenary"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Stand Alone #60054",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Echo #60037a",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Photographic Reflexes #60040a",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Counter-Punch",
+					"owner_hero_id": 1,
+					"host": "60037a"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "select",
+			"value": "Echo",
+			"_comments": "Echo defends"
+		},
+		{
+			"type": "activate",
+			"value": "Counter-Punch",
+			"wait_longer": true,
+			"_comments": "response from under Echo, as if in hand"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Echo"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094",
+					"tokens": {
+						"damage": 2
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b"
+				}
+			],
+			"discard1": [
+				{
+					"card": "Photographic Reflexes #60040a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Counter-Punch",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [],
+		}
+	}
+}

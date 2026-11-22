@@ -3171,6 +3171,94 @@
 		}
 	},
 	"Echo": {
+		"_comments": "Photographic Reflexes: while it is in Echo's hand, the events tucked under Echo can be played as if they were in her hand (see CardTemplate.refresh_alterant_can_play_as_if_in_hand), 2 cheaper, by discarding a Photographic Reflexes. Echo grants it (a single source) so that two copies in hand do not reduce the cost by 4",
+		"alterants": {
+			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "can_play_as_if_in_hand",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_is_hosted_by": "Echo",
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					],
+					"filter_per_tutor_count": {
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Photographic Reflexes"
+								}
+							}
+						],
+						"filter_card_count": 1,
+						"comparison": "ge"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "cost",
+					"alteration": -2,
+					"filter_state_trigger": [
+						{
+							"filter_is_hosted_by": "Echo",
+							"filter_properties": {
+								"type_code": "event"
+							}
+						}
+					],
+					"filter_per_tutor_count": {
+						"subject": "tutor",
+						"subject_count": "all",
+						"src_container": "hand_my_hero",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"shortname": "Photographic Reflexes"
+								}
+							}
+						],
+						"filter_card_count": 1,
+						"comparison": "ge"
+					}
+				}
+			]
+		},
+		"play_as_if_in_hand": {
+			"additional_tags": [
+				"disable_watch_and_learn"
+			],
+			"additional_scripts": [
+				{
+					"name": "constraints",
+					"is_cost": true,
+					"tags": [
+						"hero_form"
+					]
+				},
+				{
+					"name": "discard",
+					"is_cost": true,
+					"subject": "tutor",
+					"src_container": "hand_my_hero",
+					"subject_count": 1,
+					"filter_state_tutor": [
+						{
+							"filter_properties": {
+								"shortname": "Photographic Reflexes"
+							}
+						}
+					],
+					"_comments": "after the regular costs: the -2 cost alterant lasts only while a Photographic Reflexes is in hand"
+				}
+			]
+		},
 		"response_card_played": {
 			"event_filters": {
 				"tags": [
@@ -6609,74 +6697,17 @@
 		}
 	},
 	"Photographic Reflexes": {
+		"_comments": "not played from the hand: while it is in hand, the events tucked under Echo can be played (click them) as if they were in hand, which discards it. See Echo's alterants and play_as_if_in_hand",
 		"manual": {
-			"condition_hand": {
-				"func_name": "count_cards",
-				"func_params": {
-					"subject": "attachments",
-					"filter_state_attachment": [
-						"event",
-						"use_printed_property"
-					],
-					"attachments_host": "Echo"
-				}
-			},
 			"hand": [
 				{
-					"name": "add_script",
-					"end_condition": {
-						"event": "card_played",
-						"event_filters": {
-							"trigger": "self"
-						}
-					},
-					"subject": "attachments",
-					"attachments_host": "Echo",
-					"filter_state_attachment": [
-						"event",
-						"use_printed_property"
-					],
-					"selection_count": 1,
-					"selection_type": "max",
-					"needs_selection": true,
+					"name": "constraints",
 					"is_cost": true,
-					"script": {
-						"alterants": {
-							"all": [
-								{
-									"filter_task": "get_property",
-									"filter_property_name": "cost",
-									"alteration": -2,
-									"trigger": "self"
-								}
-							]
-						}
-					}
-				},
-				{
-					"name": "add_script",
-					"subject": "previous",
-					"end_condition": {
-						"event": "card_played",
-						"event_filters": {
-							"trigger": "self"
-						}
-					},					
-					"fetch_script": {
-						"script_path": "*/hand",
-						"replace_to_state": "board"
-					}
-				},				
-				{
-					"name": "execute_scripts",
-					"subject": "previous",
-					"require_exec_state": "board",
-					"exec_trigger": "manual",
-					"delayed": true,
 					"tags": [
-						"disable_watch_and_learn"
+						"hero_form",
+						"alter_ego_form"
 					],
-					"_comments": "the 'delayed' keyword here makes it call a completely different code path which solves most freeze issues with execute_scripts"
+					"_comments": "never true: cannot be played by itself"
 				}
 			]
 		}

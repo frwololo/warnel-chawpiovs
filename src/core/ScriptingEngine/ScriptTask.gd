@@ -96,7 +96,7 @@ func prime(_prev_subjects: Array, run_type: int, sceng_stored_int: int, _all_pre
 		if ret is GDScriptFunctionState && ret.is_valid(): # Still working.
 			ret = yield(ret, "completed")
 		if !is_valid:
-			owner.cant_pay_cost_report("subjects", "no valid target")
+			owner.cant_pay_cost_report("subjects", "no valid target for " + str(script_name) + " (subject: " + str(get_property_raw(SP.KEY_SUBJECT)) + ")")
 	#print_debug(str(subjects), str(cost_dry_run))
 	# We emit a signal when done so that our ScriptingEngine
 	# knows we're ready to continue

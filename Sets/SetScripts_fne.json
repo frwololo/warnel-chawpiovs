@@ -3218,8 +3218,7 @@
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "tuck_card_under_me",
-					"host": "self",
+					"name": "host_card",
 					"subject": "trigger"
 				}
 			]
@@ -6640,7 +6639,6 @@
 					"selection_count": 1,
 					"selection_type": "max",
 					"needs_selection": true,
-					"is_cost": true,
 					"script": {
 						"alterants": {
 							"all": [

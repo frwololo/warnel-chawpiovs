@@ -192,6 +192,11 @@
 			"_comments": "replay Army of One"
 		},
 		{
+			"type": "select",
+			"value": "Army of One",
+			"_comments": "Ready Echo"
+		},		
+		{
 			"type": "activate",
 			"value": "Echo",
 			"_comment": "I'm ready, attack again"

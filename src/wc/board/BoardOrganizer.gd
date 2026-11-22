@@ -11,6 +11,8 @@ var card_size := CFConst.CARD_SIZE
 var card_play_scale := CFConst.PLAY_AREA_SCALE
 
 var my_name
+#hero whose zone this organizer lays out (0 for none)
+var my_hero_id := 0
 var box_type = BOX_TYPES.HORIZONTAL
 var my_children:= []
 var my_absolute_position: Vector2
@@ -35,6 +37,7 @@ func set_absolute_position(position):
 
 func setup(def:Dictionary, hero_id, _scale = 0):
 	my_name = def.get("name", "")
+	my_hero_id = int(hero_id) if hero_id else 0
 	my_scale = _scale if _scale else def.get("scale", 1)
 	
 	spacer = Vector2(50,50) *  cfc.hardcoded_positions_modifier.x
@@ -356,6 +359,20 @@ func _layout_signature() -> Array:
 			result.append("spacer")
 		else: #this is a hbox/vbox entiry
 			result.append(child._layout_signature())
+	return result
+
+#the piles and grids laid out by this organizer and its sub boxes:
+#[{"name": "allies2", "item": node}, ...]
+func get_item_nodes() -> Array:
+	var result = []
+	for child_data in my_children:
+		var child = child_data["item"]
+		if !is_instance_valid(child):
+			continue
+		if child as BoardPlacementGrid or child as Pile:
+			result.append({"name": child_data["name"], "item": child})
+		elif child_data["type"] in ["horizontal", "vertical"]:
+			result += child.get_item_nodes()
 	return result
 
 func retrieve_all_children_data():

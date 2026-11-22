@@ -3,8 +3,12 @@
 import os
 import sys
 import json
-import urllib.request 
 import imghdr
+
+import requests
+
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+
 
 parsed_json = []
 
@@ -55,15 +59,10 @@ def download_img(img_url, img_code, serverName, setName):
     
     print("dl " + img_url + " --> " + dest_filename)              
     try:
-        urllib.request.urlretrieve(img_url, dest_filename)        
-    except urllib.error.HTTPError as e:
-        print(f"HTTP error: {e}")
-        failed_dl(img_url)
-        return
-    except urllib.error.URLError as e:
-        print(f"URL error: {e}")
-        failed_dl(img_url)
-        return
+        with requests.get(img_url, headers=headers) as r:
+            with open(dest_filename, 'wb') as f:
+                f.write(r.content)
+
     except Exception as e:
         print(f"Unexpected error: {e}")
         failed_dl(img_url)
@@ -87,6 +86,7 @@ def download_img(img_url, img_code, serverName, setName):
 
     if do_skip:
         print("##\nskipping " + img_url + " of type " + image_type + "\n##")
+        failed_dl(img_url)
         return
     
     new_filename =  destFolder(serverName, setName) + img_code + extension

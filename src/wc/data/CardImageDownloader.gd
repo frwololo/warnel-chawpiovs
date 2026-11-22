@@ -36,7 +36,8 @@ const default_servers := {
 				"url": "https://marvel.champions-digital-game.com/card-art",
 				"health_check_url": "/bundles/cards/65001b.png",
 				"path": "/bundles/cards/[card_id].png",
-				"prioritize_relative_image_src": true,				
+				"prioritize_relative_image_src": true,
+				"force_extension": ".png"				
 		},	
 		"mc4db":	
 			{
@@ -118,6 +119,8 @@ const default_servers := {
 						"42": "41",						
 						"43": "44",
 						"44": "43",											
+						"51": "52", #Black Panther and Silk
+						"52": "51",
 						"53": "54",
 						"54": "53",
 					}
@@ -134,8 +137,14 @@ const default_servers := {
 				"url": "https://marvel.champions-digital-game.com/card-art-es",
 				"health_check_url": "/bundles/cards/01083.png",
 				"path": "/bundles/cards/[card_id].png",	
-				"prioritize_relative_image_src": true,			
-		},	
+				"prioritize_relative_image_src": true,	
+				"force_extension": ".png"		
+		},
+		"wololo_es": 
+			{
+				"url": "https://wololo.net",
+				"path": "/wc/images/ES/[box_name]/[card_id].jpg",	
+			},				
 	}
 }
 
@@ -240,6 +249,8 @@ func init_servers():
 				servers[lang][server_name] = servers["en"][server_name].duplicate(true)
 		for server_name in servers[lang]:		
 			var server = servers[lang][server_name]
+			if typeof(server) != TYPE_DICTIONARY:
+				continue
 			server["is_up"] = true #assume server is up so we can start downloading
 			server["health_check"] = "not_started"
 			if !server.has("health_check_url"):
@@ -594,7 +605,12 @@ func _get_image_dl_url_for_server(card_id, lang, server_name):
 
 	if image_src and server_info.get("prioritize_relative_image_src", false):
 		# marvelcdb's image_src often overrides card_id, etc...
-		# so we use it for that server		
+		# so we use it for that server	
+		var modified_image_src = image_src
+		var forced_extension = server_info.get("force_extension", "")
+		if forced_extension:
+			modified_image_src = image_src.replace(".jpg", forced_extension)
+			modified_image_src = image_src.replace(".webp", forced_extension)
 		return server_info["url"] + image_src	
 
 

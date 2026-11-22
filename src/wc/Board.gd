@@ -9,6 +9,7 @@ const _OPTIONAL_CONFIRM_SCENE = preload(_OPTIONAL_CONFIRM_SCENE_FILE)
 
 
 var heroZone = preload("res://src/wc/board/WCHeroZone.tscn")
+const VisualCuesScript = preload("res://src/wc/visual_cues/VisualCues.gd")
 var basicGrid = preload("res://src/wc/grids/BasicGrid.tscn")
 var basicPile = preload("res://src/core/Pile.tscn")
 
@@ -98,6 +99,11 @@ func _ready() -> void:
 	gameData.theStack.connect("manual_interaction_added_to_stack", self, "_manual_action_happened")	
 	#setup the controller handler
 	gamepadHandler.connect_viewport()	
+
+	#other players' mouse cursors and such, in multiplayer games
+	var visual_cues = VisualCuesScript.new()
+	visual_cues.name = "VisualCues"
+	add_child(visual_cues)
 		
 	board_ready()
 

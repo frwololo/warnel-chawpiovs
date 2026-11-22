@@ -29,7 +29,7 @@ const KEY_SUBJECT_CURRENT_HERO_TARGET:= "current_hero_target"
 const KEY_SUBJECT_EVENT_SOURCE_HERO:= "event_source_hero"
 const KEY_SUBJECT_V_ATTACHMENTS:= "attachments"
 const KEY_SUBJECT_V_CARDS_PLAYED_THIS_PHASE:= "cards_played_this_phase"
-const  KEY_SUBJECT_V_CARDS_PLAYED_THIS_ROUND:= "cards_played_this_round"
+const KEY_SUBJECT_V_CARDS_PLAYED_THIS_ROUND:= "cards_played_this_round"
 const KEY_ATTACHMENTS_HOST:= "attachments_host"
 
 const FILTER_HOST_OF := "filter_is_host_of"

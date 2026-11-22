@@ -802,6 +802,10 @@ static func script_definitions_pre_processing(script_definition):
 					if typeof(filter_array[0]) == TYPE_STRING:
 						var values = {}
 						var properties_count = 1
+						var use_printed_properties = false
+						if "use_printed_property" in filter_array:
+							filter_array.erase("use_printed_property")
+							use_printed_properties = true
 						for filter in filter_array:
 							var inverted = false
 							if filter.begins_with("!"):
@@ -811,6 +815,9 @@ static func script_definitions_pre_processing(script_definition):
 								var comparison =  {filter: 1, "comparison": "ge"}
 								if inverted:
 									comparison =  {filter: 0}
+								if use_printed_properties:
+									comparison["use_printed_property"] = true
+									
 								values["filter_properties" + str(properties_count)] = comparison
 								properties_count += 1
 							elif filter.begins_with("group_"):
@@ -819,12 +826,17 @@ static func script_definitions_pre_processing(script_definition):
 								var comparison = {"type_code": filter}
 								if inverted:
 									comparison["comparison"] =  "ne"
+								if use_printed_properties:
+									comparison["use_printed_property"] = true									
 								values["filter_properties" + str(properties_count)] = comparison
 								properties_count += 1
 							elif filter.begins_with("filter_"):
 								values[filter] = !inverted
 							else:
-								values["filter_properties" + str(properties_count)] = {"shortname": filter}
+								var comparison = {"shortname": filter}
+								if use_printed_properties:
+									comparison["use_printed_property"] = true									
+								values["filter_properties" + str(properties_count)] = comparison
 								properties_count += 1
 						script_definition[key] = [values]
 					else:

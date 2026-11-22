@@ -56,10 +56,19 @@ def download_img(img_url, img_code, serverName, setName):
     print("dl " + img_url + " --> " + dest_filename)              
     try:
         urllib.request.urlretrieve(img_url, dest_filename)        
-    except:
-        print("error downloading " + img_url)
+    except urllib.error.HTTPError as e:
+        print(f"HTTP error: {e}")
         failed_dl(img_url)
         return
+    except urllib.error.URLError as e:
+        print(f"URL error: {e}")
+        failed_dl(img_url)
+        return
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        failed_dl(img_url)
+        return
+
     
     extension = ".jpg"
     do_skip = False

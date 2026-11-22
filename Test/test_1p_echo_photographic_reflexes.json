@@ -1,0 +1,351 @@
+{
+	"_comments": "Bug: Photographic reflexes not doing anything",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Echo"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Incessant Pursuit #60071",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Bullseye - 1 #60065",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Getaway - 1B #60128b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"speed": 1,
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Echo #60037a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Kingpin #60061",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Manipulator #60062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Kingpin's Henchman #60063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Kingpin's Henchman #60063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pawn of the Kingpin #60064",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Alongside #60129b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bullseye - 2 #60066",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Damaged Spine #60068b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Adamantium-Laced Spine #60068a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Getaway - 1A #60128a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Stand Alone #60054",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "See No Evil, Hear No Evil #60055",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "In Harm's Way #60050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Echo's Katana #60045",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Echo #60037a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [
+				{
+					"card": "Army of One #60048",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Get Their Attention",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Photographic Reflexes #60040a",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Out Front #60129a",
+					"owner_hero_id": 0,
+					"host": "60065",
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Echo"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Bullseye - 1 #60065"
+		},
+		{
+			"type": "select",
+			"value": "Echo",
+			"_comments": "alonnside indirect damage"
+		},		
+		{
+			"type": "play",
+			"value": "Army of One",
+			"_comments": "Ready Echo"
+		},
+		{
+			"type": "select",
+			"value":  "Get Their Attention"
+		},
+		{
+			"type": "activate",
+			"value": "Echo",
+			"_comments": "Tuck Army of One"
+		},
+		{
+			"type": "activate",
+			"value": "Echo",
+			"_comment": "I'm ready, attack again"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Bullseye - 1 #60065"
+		},
+		{
+			"type": "play",
+			"value": "Photographic Reflexes #60040a",
+			"_comments": "replay Army of One"
+		},
+		{
+			"type": "activate",
+			"value": "Echo",
+			"_comment": "I'm ready, attack again"
+		},
+		{
+			"type": "choose",
+			"value": "Attack"
+		},
+		{
+			"type": "target",
+			"value": "Bullseye - 1 #60065"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Daredevil"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Incessant Pursuit #60071",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Bullseye - 1 #60065",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 6
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Getaway - 1B #60128b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"speed": 1,
+						"threat": 0
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Echo #60037a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Kingpin #60061",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Master Manipulator #60062",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Kingpin's Henchman #60063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Kingpin's Henchman #60063",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pawn of the Kingpin #60064",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Alongside #60129b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bullseye - 2 #60066",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Damaged Spine #60068b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Adamantium-Laced Spine #60068a",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Getaway - 1A #60128a",
+					"owner_hero_id": 0
+				}
+			],
+			"tmp_pile1": [],
+			"tmp_pile2": [],
+			"tmp_pile3": [],
+			"encounters_facedown1": [],
+			"encounters_reveal1": [],
+			"deck1": [
+				{
+					"card": "Stand Alone #60054",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "See No Evil, Hear No Evil #60055",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "In Harm's Way #60050",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Echo's Katana #60045",
+					"owner_hero_id": 1
+				},
+				{
+					"card":  "Get Their Attention",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Photographic Reflexes #60040a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Army of One #60048",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Echo #60037a",
+					"owner_hero_id": 1
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [],
+			"hand1": [],
+			"others": [
+				{
+					"card": "Out Front #60129a",
+					"owner_hero_id": 0,
+					"host": "60065",
+				}
+			]
+		}
+	}
+}

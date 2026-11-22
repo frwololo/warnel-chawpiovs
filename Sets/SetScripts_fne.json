@@ -295,7 +295,8 @@
 													{
 														"filter_properties": {
 															"resource_energy": 1,
-															"comparison": "ge"
+															"comparison": "ge",
+															"use_printed_property": true
 														}
 													}
 												]
@@ -318,7 +319,8 @@
 													{
 														"filter_properties": {
 															"resource_mental": 1,
-															"comparison": "ge"
+															"comparison": "ge",
+															"use_printed_property": true
 														}
 													}
 												]
@@ -341,7 +343,8 @@
 													{
 														"filter_properties": {
 															"resource_physical": 1,
-															"comparison": "ge"
+															"comparison": "ge",
+															"use_printed_property": true
 														}
 													}
 												]
@@ -364,7 +367,8 @@
 													{
 														"filter_properties": {
 															"resource_wild": 1,
-															"comparison": "ge"
+															"comparison": "ge",
+															"use_printed_property": true
 														}
 													}
 												]
@@ -563,7 +567,8 @@
 				},
 				{
 					"name": "ready_card",
-					"subject": "my_hero"
+					"subject": "my_hero",
+					"is_cost": true
 				}
 			]
 		}
@@ -2349,7 +2354,7 @@
 										"filter_properties2": {
 											"shortname": "Contingency Planning",
 											"comparison": "ne"
-										},
+										}
 									}
 								]
 							}
@@ -2405,7 +2410,6 @@
 							"trigger": "self"
 						}
 					}
-					
 				}
 			]
 		}
@@ -3228,7 +3232,10 @@
 				"func_name": "count_attachments>3",
 				"func_params": {
 					"subject": "self",
-					"filter_state_attachment": "event"
+					"filter_state_attachment": [
+						"event",
+						"use_printed_property"
+					]
 				}
 			},
 			"board": [
@@ -3240,7 +3247,10 @@
 					"needs_selection": true,
 					"selection_count": 1,
 					"selection_type": "equal",
-					"filter_state_attachment": "event"
+					"filter_state_attachment": [
+						"event",
+						"use_printed_property"
+					]
 				}
 			]
 		}
@@ -4160,7 +4170,10 @@
 									{
 										"name": "move_card_to_board",
 										"subject": "self",
-										"tags":["force_detach", "force_emit_card_moved_signal"] 
+										"tags": [
+											"force_detach",
+											"force_emit_card_moved_signal"
+										]
 									},
 									{
 										"name": "remove_card_script",
@@ -6598,6 +6611,17 @@
 	},
 	"Photographic Reflexes": {
 		"manual": {
+			"condition_hand": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "attachments",
+					"filter_state_attachment": [
+						"event",
+						"use_printed_property"
+					],
+					"attachments_host": "Echo"
+				}
+			},
 			"hand": [
 				{
 					"name": "add_script",
@@ -6608,12 +6632,15 @@
 						}
 					},
 					"subject": "attachments",
-					"subject_count": "all",
-					"attachments_host": "self",
-					"needs_subject": true,
+					"attachments_host": "Echo",
+					"filter_state_attachment": [
+						"event",
+						"use_printed_property"
+					],
 					"selection_count": 1,
 					"selection_type": "max",
 					"needs_selection": true,
+					"is_cost": true,
 					"script": {
 						"alterants": {
 							"all": [

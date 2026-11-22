@@ -6656,6 +6656,12 @@
 				{
 					"name": "add_script",
 					"subject": "previous",
+					"end_condition": {
+						"event": "card_played",
+						"event_filters": {
+							"trigger": "self"
+						}
+					},					
 					"fetch_script": {
 						"script_path": "*/hand",
 						"replace_to_state": "board"

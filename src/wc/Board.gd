@@ -405,15 +405,15 @@ func _process(delta:float):
 
 #todo move to a config file
 func get_hero_grid_start_coordinates():
-	var start_ys = [220,0,0,0]
+	var start_ys = [230,0,0,0]
 	var start_xs = [500,0,0,0]
 	match get_team_size():
 		2:
-			start_ys = [220,420]
+			start_ys = [230,420]
 		3:
-			start_ys = [220,320, 520]
+			start_ys = [230,320, 520]
 		4:
-			start_ys = [220, 220, 420, 620]
+			start_ys = [230, 220, 420, 620]
 		_:
 			start_ys = [300,0,0,0]
 			start_xs = [150,0,0,0]

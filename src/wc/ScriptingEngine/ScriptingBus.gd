@@ -49,6 +49,11 @@ signal stack_idle()
 #GUI and game Interface signals
 # warning-ignore:unused_signal
 signal current_playing_hero_changed(details) #before, after
+#a hero badge (HeroPhase) switched between ACTIVE and FINISHED, on every
+#client. hero_id, before, after (HeroPhase.State), player_choice (the player
+#clicked, as opposed to an interrupt or a new step)
+# warning-ignore:unused_signal
+signal hero_phase_status_changed(details)
 
 # warning-ignore:unused_signal
 signal stack_event_display_finished(details) #before, after

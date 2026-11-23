@@ -18,6 +18,7 @@ onready var label:Label = get_node("%Label")
 var textures:= {}
 var mode = Mode.PLAYER_TURN
 var hero_id = 0
+var desc_text = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -63,6 +64,31 @@ func hide_checkmark():
 
 func show_checkmark():
 	checkmark.visible = true	
+
+func get_desc_text():
+	if !desc_text:
+		#the threat icon has no hero
+		var hero_canonical_id = ""
+		var hero_name = ""
+		if hero_id:
+			var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
+			hero_canonical_id = hero_deck_data.get_hero_id()
+			hero_name = gameData.get_hero_name(hero_id)
+	
+		match mode:
+			Mode.PLAYER_TURN:
+				desc_text = "Player Turn" 
+			Mode.THREAT:
+				desc_text = "Villain adds threat on the main scheme" 			
+			Mode.VILLAIN_ACTIVATES:
+				desc_text = "Villain and minions activate against " + hero_name
+			Mode.ENCOUNTER:
+				desc_text = hero_name + " reveals encounter(s)"
+			_:
+				#unsupported
+				desc_text = ""
+	
+	return desc_text
 
 #runtime stages of the icon
 #reset at beginning of turn

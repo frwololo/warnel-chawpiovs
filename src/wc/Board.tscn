@@ -222,6 +222,7 @@ theme = ExtResource( 12 )
 [node name="PhaseBar" parent="." instance=ExtResource( 14 )]
 unique_name_in_owner = true
 position = Vector2( 650, 0 )
+scale = Vector2( 0.9, 0.9 )
 
 [node name="ViewBoard" type="TextureButton" parent="."]
 unique_name_in_owner = true

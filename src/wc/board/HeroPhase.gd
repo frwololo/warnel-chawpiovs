@@ -256,6 +256,12 @@ remotesync func switch_status(forced_state:int = -1, player_choice:bool = false)
 		return
 			
 	_update_labels()
+	scripting_bus.emit_signal("hero_phase_status_changed", {
+		"hero_id": hero_index,
+		"before": old_state,
+		"after": current_state,
+		"player_choice": player_choice,
+	})
 	var parent = gameData.phaseContainer
 	if parent and is_instance_valid(parent):
 		parent.check_end_of_player_phase()

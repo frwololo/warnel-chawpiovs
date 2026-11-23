@@ -1479,6 +1479,9 @@ func end_round():
 
 func get_hero_name(hero_id):
 	var hero_card = self.get_identity_card(hero_id)
+	if !hero_card:
+		return ""
+		
 	return hero_card.canonical_name
 
 func reset_villain_current_hero_target( force_switch_ui:= true, caller = ""):

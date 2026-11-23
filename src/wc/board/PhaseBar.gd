@@ -13,6 +13,7 @@ var phase_data = []
 #width of the threat phase (it has a single icon, see do_preload)
 const THREAT_PHASE_MIN_WIDTH := 100
 var all_phase_icons = []
+var active_icon = null
 var all_phase_headers = []
 var loaded = false
 
@@ -24,7 +25,10 @@ onready var phases:HBoxContainer = get_node("%Phases")
 # Called when the node enters the scene tree for the first time.
 
 func _ready():
+	scripting_bus.connect("would_reveal", self, "_encounter_would_reveal")	
 	scripting_bus.connect("step_about_to_start", self, "_game_step_about_to_start")	
+	scripting_bus.connect("step_ended", self, "_step_ended")
+	scripting_bus.connect("hero_phase_status_changed", self, "_hero_phase_status_changed")
 	do_preload()
 	pass
 	
@@ -108,11 +112,17 @@ var game_step_matches = {
 	CFConst.PHASE_STEP.PLAYER_TURN: PhaseBarIcon.Mode.PLAYER_TURN,
 	CFConst.PHASE_STEP.VILLAIN_THREAT: PhaseBarIcon.Mode.THREAT,	
 	CFConst.PHASE_STEP.VILLAIN_ACTIVATES: PhaseBarIcon.Mode.VILLAIN_ACTIVATES,
-	CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER: PhaseBarIcon.Mode.ENCOUNTER,	
+	CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER: PhaseBarIcon.Mode.ENCOUNTER,	
 }
+
+var one_hero_per_step = [
+	PhaseBarIcon.Mode.VILLAIN_ACTIVATES,
+	PhaseBarIcon.Mode.ENCOUNTER	
+]
 	
 func _game_step_about_to_start(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
+	get_node("%LabelRound").text = "Round " + str(gameData.current_round)
 	if game_step_matches.has(current_step):
 		var header_index = game_step_matches[current_step]
 		for i in all_phase_headers.size():
@@ -123,6 +133,60 @@ func _game_step_about_to_start(_trigger_object, details:Dictionary):
 				header.add_color_override("font_color", Color(0.3, 0.3, 0.3))
 		for icon in all_phase_icons:
 			if icon.mode == header_index:
-				icon.set_active()
+				if header_index in one_hero_per_step:
+					var current_target_hero = gameData.get_villain_current_hero_target()
+					if current_target_hero == icon.hero_id:
+						set_active_icon(icon)
+					else:
+						icon.set_inactive()
+				else:
+					set_active_icon(icon)
 			else:
 				icon.set_inactive()
+
+func set_active_icon(icon):
+	icon.set_active()
+	active_icon = icon
+	get_node("%LabelDesc").text = "Currently: " + icon.get_desc_text()
+	
+func _step_ended(_trigger_object, details:Dictionary):
+	var current_step = details["step"]
+	if game_step_matches.has(current_step):
+		var header_index = game_step_matches[current_step]
+		for icon in all_phase_icons:
+			if icon.mode <= header_index:
+					icon.set_completed()
+
+	if current_step == CFConst.PHASE_STEP.ROUND_END:
+		for icon in all_phase_icons:
+				icon.reset()				
+
+func _encounter_would_reveal(_card, _details):
+	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
+		return	
+	for icon in all_phase_icons:
+		if icon.mode != PhaseBarIcon.Mode.ENCOUNTER:
+			continue
+		var current_target_hero = gameData.get_villain_current_hero_target()
+		if current_target_hero == icon.hero_id:
+			set_active_icon(icon)
+		else:
+			icon.set_inactive()
+				
+func _hero_phase_status_changed(details: Dictionary):
+	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+		return
+		
+	var hero_id = details["hero_id"]
+	var finished = (details["after"] == HeroPhase.State.FINISHED)
+
+	for icon in all_phase_icons:
+		if icon.mode != PhaseBarIcon.Mode.PLAYER_TURN:
+			continue
+		if icon.hero_id != hero_id:
+			continue
+		if finished:
+			icon.set_completed()
+		else:
+			set_active_icon(icon)
+	#e.g. find the PLAYER_TURN icon for hero_id and call set_completed() / set_active()

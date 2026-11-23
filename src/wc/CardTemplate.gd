@@ -1809,7 +1809,20 @@ func attempt_to_play(user_click:bool = false, origin_event = null):
 	cfc.card_drag_ongoing = null
 	#tells gamedata that a manual action just happened
 	gameData.restart_manual_action_stopwatch()
+	if user_click:
+		_resume_finished_hero()
 	return execute_scripts(self,"manual",details)
+
+#A player who clicked "finished" for this player turn and now chooses to
+#play or activate a card is playing again: their hero badge goes back to
+#active
+func _resume_finished_hero():
+	if !gameData.phaseContainer or !is_instance_valid(gameData.phaseContainer):
+		return
+	var hero_id = get_controller_hero_id()
+	if !(hero_id in gameData.get_my_heroes()):
+		hero_id = gameData.get_current_local_hero_id()
+	gameData.phaseContainer.resume_finished_hero(hero_id)
 
 
 func network_request_rejected():

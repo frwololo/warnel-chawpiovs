@@ -451,6 +451,23 @@ func activate_hero(hero_id):
 	var hero_phase = heroesStatus[hero_id -1]
 	hero_phase.switch_status(HeroPhase.State.ACTIVE)	
 
+#During the player turn, a hero whose player clicked "finished" and then
+#plays or activates a card themselves is active again (their choice, so
+#remembered in chosen_state). Not when the badge is only active for an
+#interrupt or a response they are asked for: answering it does not resume
+#their turn
+func resume_finished_hero(hero_id):
+	if current_step != CFConst.PHASE_STEP.PLAYER_TURN:
+		return
+	if hero_id < 1 or hero_id > heroesStatus.size():
+		return
+	var hero_phase = heroesStatus[hero_id -1]
+	if hero_phase.chosen_state != HeroPhase.State.FINISHED:
+		return
+	if hero_phase.current_state != HeroPhase.State.FINISHED:
+		return
+	cfc._rpc(hero_phase, "switch_status", HeroPhase.State.ACTIVE, true)
+
 #Makes the hero badge active to pass an interrupt or request next phase.
 #new_step: a step starts, every hero gets its default status. Otherwise
 #(the stack ran something, an interrupt is over...), during the player

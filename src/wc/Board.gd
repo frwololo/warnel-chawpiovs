@@ -317,23 +317,39 @@ func _process(delta:float):
 	var modal_menu = cfc.get_modal_menu()
 	var viewboard = get_node("%ViewBoard")
 	var wallpaper = get_node("%wallpaper")
+
+	var need_lights_down = false	
+	
 	if modal_menu:
+		need_lights_down = true
 		if modal_menu.visible and modal_menu.rect_position and !viewboard.visible:
 #			var x = modal_menu.rect_position.x + modal_menu.rect_size.x/2 - viewboard.rect_size.x/2
 #			viewboard.rect_position = Vector2(x,modal_menu.rect_position.y - 85)
 			viewboard.visible = true
 			viewboard.self_modulate = Color(1.0,1.0,1.0)
 			move_child(viewboard, last_index)
+			need_lights_down = true
+
+		#wallpaper.self_modulate = Color(0.5,0.5,0.5)
+	else:
+		viewboard.visible = false
+
+	if gameData.is_multiplayer_game:
+		var remote_activity = gameData.theStack.is_waiting_for_remote_player()
+		if remote_activity and !gameData.theStack.is_player_allowed_to_click():
+			need_lights_down = true
+	
+	#show a "darker" ambiance when a remote player is blocking us,
+	#or when we're making a decision
+	if need_lights_down:
+		if wallpaper.self_modulate == Color(1,1,1):
 			$Tween.interpolate_property(
 			wallpaper,'self_modulate', wallpaper.self_modulate,
 			Color(0.5,0.5,0.5),
 			0.2, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 			$Tween.start()	
-		#wallpaper.self_modulate = Color(0.5,0.5,0.5)
 	else:
-		viewboard.visible = false
-		wallpaper.self_modulate = Color(1,1,1)
-	
+		wallpaper.self_modulate = Color(1,1,1)			
 	#
 	#logic to rollback game
 	#
@@ -379,7 +395,10 @@ func _process(delta:float):
 			_server_activity.rect_position = get_viewport_rect().size/2
 		_server_activity.modulate = Color(1, 1, 1, sin(_total_delta*2)*0.4 + 0.5)
 		_server_activity.rect_rotation = _total_delta * 100
-	pass
+
+			
+	
+	
 
 #todo move to a config file
 func get_hero_grid_start_coordinates():

@@ -611,7 +611,7 @@ func _get_image_dl_url_for_server(card_id, lang, server_name):
 		if forced_extension:
 			modified_image_src = image_src.replace(".jpg", forced_extension)
 			modified_image_src = image_src.replace(".webp", forced_extension)
-		return server_info["url"] + image_src	
+		return server_info["url"] + modified_image_src	
 
 
 	#other servers will generally craft the url based on the card id,

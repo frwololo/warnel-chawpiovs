@@ -299,10 +299,14 @@ func _process(delta:float):
 		return
 
 
+	var viewboard = get_node("%ViewBoard")
+
 	var last_index = get_child_count() - 1	
 	#hack to ensure the top menu remains at the top
+	move_child(get_node("%PhaseBar"), last_index)	
 	move_child(get_node("%TopMenu"), last_index)
-	
+	move_child(viewboard, last_index)
+		
 	if OS.get_name() == "HTML5":
 		if cfc.get_low_fps_counts() > 50:
 			get_node("%GeneralError").visible = true
@@ -315,7 +319,7 @@ func _process(delta:float):
 	
 	#offering possibility to view board while making a modal decision
 	var modal_menu = cfc.get_modal_menu()
-	var viewboard = get_node("%ViewBoard")
+
 	var wallpaper = get_node("%wallpaper")
 
 	var need_lights_down = false	
@@ -327,7 +331,6 @@ func _process(delta:float):
 #			viewboard.rect_position = Vector2(x,modal_menu.rect_position.y - 85)
 			viewboard.visible = true
 			viewboard.self_modulate = Color(1.0,1.0,1.0)
-			move_child(viewboard, last_index)
 			need_lights_down = true
 
 		#wallpaper.self_modulate = Color(0.5,0.5,0.5)

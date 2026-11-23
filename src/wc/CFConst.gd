@@ -499,7 +499,7 @@ const GRID_SETUP := {
 	},
 	"schemes" : {
 		"x" : 600,
-		"y" : 20,
+		"y" : 70,
 	},
 	"villain_misc" : {
 		"x" : 1500,

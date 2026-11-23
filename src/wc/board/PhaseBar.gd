@@ -1,5 +1,6 @@
 extends Node2D
 
+
 var phase_headers = [
 	"Player Turn",
 	"Threat",
@@ -8,6 +9,9 @@ var phase_headers = [
 ]
 
 var phase_data = []
+
+#width of the threat phase (it has a single icon, see do_preload)
+const THREAT_PHASE_MIN_WIDTH := 100
 var all_phase_icons = []
 var all_phase_headers = []
 var loaded = false
@@ -37,7 +41,15 @@ func do_preload():
 	for phase in PhaseBarIcon.Mode.size():
 		var header = phase_headers[phase]
 		var phase_info = VBoxContainer.new()
-		phase_info.size_flags_horizontal = Control.SIZE_FILL | Control.SIZE_EXPAND
+		#the Phases HBoxContainer shares its width between the phase_info
+		#boxes that have SIZE_EXPAND. The threat phase has a single icon:
+		#no SIZE_EXPAND, it only takes its minimum width (its header's or
+		#its icon's)
+		phase_info.rect_min_size.x = THREAT_PHASE_MIN_WIDTH
+		if phase == PhaseBarIcon.Mode.THREAT:
+			phase_info.size_flags_horizontal = Control.SIZE_FILL
+		else:
+			phase_info.size_flags_horizontal = Control.SIZE_FILL | Control.SIZE_EXPAND
 
 		#header		
 		var label = Label.new()
@@ -60,7 +72,9 @@ func do_preload():
 					all_phase_icons.append(icon)
 					
 			PhaseBarIcon.Mode.THREAT:
-				phase_contents.size_flags_horizontal = Control.SIZE_FILL | Control.SIZE_SHRINK_CENTER
+				#(inside a VBoxContainer, only the vertical flags change the
+				#box's height: the horizontal ones only fill or not its width)
+				phase_contents.size_flags_horizontal = Control.SIZE_FILL
 
 				var threat_icon = PhaseBarIconScene.instance()
 				threat_icon.setup(PhaseBarIcon.Mode.THREAT)

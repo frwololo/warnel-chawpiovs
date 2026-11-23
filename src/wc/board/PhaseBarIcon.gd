@@ -1,8 +1,9 @@
 class_name PhaseBarIcon
-extends Node2D
+#a Control (not a Node2D): it goes in the phase bar's HBoxContainers, which
+#only lay out Controls
+extends Control
 
 enum Mode {
-	NONE
 	PLAYER_TURN,
 	THREAT,
 	VILLAIN_ACTIVATES,
@@ -15,27 +16,21 @@ onready var checkmark:TextureRect = get_node("%Checkmark")
 onready var label:Label = get_node("%Label")
 
 var textures:= {}
-var mode = Mode.NONE
+var mode = Mode.PLAYER_TURN
 var hero_id = 0
-var loaded = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	label.visible = false
+	checkmark.visible = false
+	post_setup()
 	
-func _process(_delta:float):
-	if !loaded and label:	
-		label.visible = false
-		texture2.visible = false
-		checkmark.visible = false
-		post_setup()		
-
 
 func load_texture1(descriptor, position_x = 0, position_y = 0):
 	load_texture(texture1, descriptor, position_x, position_y)
 	
 func load_texture2(descriptor, position_x = 0, position_y = 0):
-	load_texture(texture1, descriptor, position_x, position_y)
+	load_texture(texture2, descriptor, position_x, position_y)
 	
 func set_grayscale_texture1():
 	set_grayscale_texture(texture1)
@@ -96,8 +91,11 @@ func setup(descriptor, _hero_id = 0):
 	hero_id = _hero_id
 
 func post_setup():
-	var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
-	var hero_canonical_id = hero_deck_data.get_hero_id()
+	#the threat icon has no hero
+	var hero_canonical_id = ""
+	if hero_id:
+		var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
+		hero_canonical_id = hero_deck_data.get_hero_id()
 	
 	match mode:
 		Mode.PLAYER_TURN:
@@ -110,10 +108,10 @@ func post_setup():
 			label.text = "???"			
 		Mode.VILLAIN_ACTIVATES:
 			load_texture1(hero_canonical_id)
-			load_texture2("attack", -5, 30)
+			load_texture2("attack", -15, 15)
 		Mode.ENCOUNTER:
 			load_texture1(hero_canonical_id)
-			load_texture2("card_back", -5, 30)
+			load_texture2("card_back", -15, 15)
 		_:
 			#unsupported
 			pass
@@ -161,7 +159,9 @@ func switch_texture(texture_rect, descriptor):
 	
 func set_grayscale_texture(texture):
 	switch_texture(texture, "grayscale")
+	modulate = Color(0.5,0.5,0.5)
 	
 func set_color_texture(texture):
 	switch_texture(texture, "color")
-	
+	modulate = Color(1.0,1.0,1.0)
+

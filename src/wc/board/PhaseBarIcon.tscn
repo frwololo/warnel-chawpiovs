@@ -5,7 +5,10 @@
 [ext_resource path="res://src/wc/board/PhaseBarIcon.gd" type="Script" id=3]
 [ext_resource path="res://assets/icons/checkmark.png" type="Texture" id=4]
 
-[node name="PhaseBarIcon" type="Node2D"]
+[node name="PhaseBarIcon" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 40, 40 )
 script = ExtResource( 3 )
 
 [node name="Texture1" type="TextureRect" parent="."]
@@ -17,8 +20,8 @@ expand = true
 
 [node name="Texture2" type="TextureRect" parent="."]
 unique_name_in_owner = true
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 32.0
+margin_bottom = 32.0
 texture = ExtResource( 2 )
 expand = true
 

@@ -27,7 +27,6 @@ onready var phases:HBoxContainer = get_node("%Phases")
 func _ready():
 	scripting_bus.connect("would_reveal", self, "_encounter_would_reveal")	
 	scripting_bus.connect("step_about_to_start", self, "_game_step_about_to_start")	
-	scripting_bus.connect("step_ended", self, "_step_ended")
 	scripting_bus.connect("hero_phase_status_changed", self, "_hero_phase_status_changed")
 	scripting_bus.connect("identity_changed_form", self, "_identity_changed_form")
 	#identity_changed_form is only emitted when something listens to it
@@ -150,7 +149,7 @@ func _game_step_about_to_start(_trigger_object, details:Dictionary):
 					else:
 						icon.set_inactive()
 				else:
-					set_active_icon(icon)
+					set_active_icon(icon,false)
 			else:
 				icon.set_inactive()
 
@@ -179,6 +178,9 @@ func _reorder_icons():
 				parent.move_child(icon, index)
 
 func _first_player_changed(_details:Dictionary):
+	for icon in all_phase_icons:
+			icon.reset()				
+					
 	_reorder_icons()
 
 #the hero or alter-ego portrait, and the villain activation's attack or thwart
@@ -190,22 +192,19 @@ func _identity_changed_form(card, _details = {}):
 		if icon.hero_id == hero_id:
 			icon.refresh_identity()
 
-func set_active_icon(icon):
+func set_active_icon(icon, mark_previous_as_completed = true):
 	icon.set_active()
 	active_icon = icon
 	get_node("%LabelDesc").text = "Currently: " + icon.get_desc_text()
-	
-func _step_ended(_trigger_object, details:Dictionary):
-	var current_step = details["step"]
-	if game_step_matches.has(current_step):
-		var header_index = game_step_matches[current_step]
-		for icon in all_phase_icons:
-			if icon.mode <= header_index:
-					icon.set_completed()
 
-	if current_step == CFConst.PHASE_STEP.ROUND_END:
-		for icon in all_phase_icons:
-				icon.reset()				
+	if !mark_previous_as_completed:
+		return
+
+	for one_icon in all_phase_icons:
+		if one_icon == icon:
+			return
+		one_icon.set_completed()
+		
 
 func _encounter_would_reveal(_card, _details):
 	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
@@ -234,5 +233,5 @@ func _hero_phase_status_changed(details: Dictionary):
 		if finished:
 			icon.set_completed()
 		else:
-			set_active_icon(icon)
+			set_active_icon(icon, false)
 	#e.g. find the PLAYER_TURN icon for hero_id and call set_completed() / set_active()

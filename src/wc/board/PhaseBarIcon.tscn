@@ -24,6 +24,7 @@ margin_right = 32.0
 margin_bottom = 32.0
 texture = ExtResource( 2 )
 expand = true
+stretch_mode = 6
 
 [node name="Checkmark" type="TextureRect" parent="."]
 unique_name_in_owner = true

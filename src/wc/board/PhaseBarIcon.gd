@@ -191,7 +191,9 @@ func load_texture(texture:TextureRect, descriptor, position_x, position_y):
 	
 	match descriptor:
 		"card_back":
-			var new_img = WCUtils.load_img("res://assets/card_backs/generic_back.png")
+			var new_img = WCUtils.load_img("user://Gfx/card_back.png")
+			if not new_img:
+				new_img = WCUtils.load_img("res://assets/card_backs/generic_back.png")
 			if not new_img:
 				return null	
 			color_tex = ImageTexture.new()

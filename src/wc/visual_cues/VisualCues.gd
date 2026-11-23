@@ -20,6 +20,7 @@ extends Node2D
 const VisualCue = preload("res://src/wc/visual_cues/VisualCue.gd")
 const CursorCue = preload("res://src/wc/visual_cues/CursorCue.gd")
 const ClickCue = preload("res://src/wc/visual_cues/ClickCue.gd")
+const TargetingCue = preload("res://src/wc/visual_cues/TargetingCue.gd")
 
 const KEEPALIVE_MSEC := 1000
 
@@ -53,6 +54,7 @@ func _ready():
 
 	register_cue(CursorCue.new())
 	register_cue(ClickCue.new())
+	register_cue(TargetingCue.new())
 
 func register_cue(cue: VisualCue):
 	cues[cue.cue_type] = cue

@@ -19,6 +19,11 @@ var textures:= {}
 var mode = Mode.PLAYER_TURN
 var hero_id = 0
 var desc_text = ""
+#what the hero textures currently show (see refresh_identity)
+var _shown_identity_id = ""
+var _shown_alter_ego = false
+#whether the textures are in color or grayscale (set_color/grayscale_texture)
+var _colored = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -116,16 +121,53 @@ func setup(descriptor, _hero_id = 0):
 	mode = descriptor
 	hero_id = _hero_id
 
+#card id of the hero's current form: the identity card's (hero or alter-ego),
+#or the hero's id before the identity card is on the board
+func _get_identity_id() -> String:
+	if !hero_id:
+		return ""
+	var identity = gameData.get_identity_card(hero_id)
+	if is_instance_valid(identity):
+		var code = identity.properties.get("_code", "")
+		if code:
+			return code
+	var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
+	return hero_deck_data.get_hero_id()
+
+func _is_alter_ego() -> bool:
+	if !hero_id:
+		return false
+	var identity = gameData.get_identity_card(hero_id)
+	return is_instance_valid(identity) and identity.is_alter_ego_form()
+
+#the portrait of the hero's current form and, for the villain's activation,
+#attack (hero form) or thwart (alter-ego form)
+func _load_identity_textures():
+	_shown_identity_id = _get_identity_id()
+	_shown_alter_ego = _is_alter_ego()
+	load_texture1(_shown_identity_id)
+	if mode == Mode.VILLAIN_ACTIVATES:
+		load_texture2("thwart" if _shown_alter_ego else "attack", -15, 15)
+
+#after the hero changed form: reloads the textures if what they show changed
+func refresh_identity():
+	if !hero_id or !texture1:
+		return
+	if _get_identity_id() == _shown_identity_id and _is_alter_ego() == _shown_alter_ego:
+		return
+	_load_identity_textures()
+	#the name can change too
+	desc_text = ""
+	#load_texture shows the color textures: back to the current look
+	if _colored:
+		set_color_all()
+	else:
+		set_grayscale_all()
+
 func post_setup():
-	#the threat icon has no hero
-	var hero_canonical_id = ""
-	if hero_id:
-		var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
-		hero_canonical_id = hero_deck_data.get_hero_id()
-	
 	match mode:
 		Mode.PLAYER_TURN:
-			load_texture1(hero_canonical_id)
+			_load_identity_textures()
 			hide_texture2()
 		Mode.THREAT:
 			load_texture1("threat")
@@ -133,10 +175,9 @@ func post_setup():
 			label.visible = true
 			label.text = "???"			
 		Mode.VILLAIN_ACTIVATES:
-			load_texture1(hero_canonical_id)
-			load_texture2("attack", -15, 15)
+			_load_identity_textures()
 		Mode.ENCOUNTER:
-			load_texture1(hero_canonical_id)
+			_load_identity_textures()
 			load_texture2("card_back", -15, 15)
 		_:
 			#unsupported
@@ -184,10 +225,12 @@ func switch_texture(texture_rect, descriptor):
 	pass
 	
 func set_grayscale_texture(texture):
+	_colored = false
 	switch_texture(texture, "grayscale")
 	modulate = Color(0.5,0.5,0.5)
 	
 func set_color_texture(texture):
+	_colored = true
 	switch_texture(texture, "color")
 	modulate = Color(1.0,1.0,1.0)
 

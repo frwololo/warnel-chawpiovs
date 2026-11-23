@@ -11,6 +11,11 @@ enum State {
 
 var hero_index
 var current_state = State.ACTIVE
+#the state the player chose by clicking the badge ("finished" for this
+#player turn), as opposed to the temporary changes of interrupts. The
+#badge goes back to it when an interrupt is over (see
+#PhaseContainer.reset_hero_activation_for_step)
+var chosen_state = State.ACTIVE
 var grayscale_tex:Texture
 var color_tex:Texture
 
@@ -185,19 +190,24 @@ func heroPhase_action() -> bool:
 	if !can_hero_phase_action():
 		return false	
 	if (hero_index == gameData.get_current_local_hero_id()):
+		#passing an interrupt is not choosing to finish the turn
+		var player_choice = true
 		if can_hero_pass():
 			GameRecorder.add_entry(GameRecorder.ACTIONS.PASS, str(self.hero_index) )
 			gameData.interrupt_player_pressed_pass(self.hero_index)		
 			#return to default
 			cfc.NMAP.board.grab_default_focus()
+			player_choice = false
 		else:
 			GameRecorder.add_entry(GameRecorder.ACTIONS.NEXT_PHASE, str(self.hero_index))
-		cfc._rpc(self,"switch_status")
+		cfc._rpc(self,"switch_status", -1, player_choice)
 	else:	
 		gameData.select_current_playing_hero(hero_index)
 	return true
 	
-remotesync func switch_status(forced_state:int = -1):
+#player_choice: the player clicked to finish (or resume) their turn,
+#remembered in chosen_state
+remotesync func switch_status(forced_state:int = -1, player_choice:bool = false):
 	var old_state = current_state
 	if (forced_state == -1):
 		current_state+=1
@@ -206,6 +216,9 @@ remotesync func switch_status(forced_state:int = -1):
 		
 	if (current_state > State.FINISHED):
 		current_state = State.ACTIVE
+
+	if player_choice:
+		chosen_state = current_state
 		
 	if current_state == old_state:
 		#don't do anything if no change

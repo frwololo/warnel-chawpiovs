@@ -451,10 +451,20 @@ func activate_hero(hero_id):
 	var hero_phase = heroesStatus[hero_id -1]
 	hero_phase.switch_status(HeroPhase.State.ACTIVE)	
 
-#Makes the hero badge active to pass an interrupt or request next phase
-func reset_hero_activation_for_step(hero_id):
+#Makes the hero badge active to pass an interrupt or request next phase.
+#new_step: a step starts, every hero gets its default status. Otherwise
+#(the stack ran something, an interrupt is over...), during the player
+#turn a hero goes back to what its player chose: a hero who clicked
+#"finished" stays finished while the others play cards. An interrupt or a
+#response they have to answer still makes them active meanwhile
+#(GlobalScriptStack.activate_exclusive_hero)
+func reset_hero_activation_for_step(hero_id, new_step := false):
 	var hero_phase = heroesStatus[hero_id -1]
 	var new_status = DEFAULT_HERO_STATUS.get(current_step, HeroPhase.State.FINISHED)
+	if new_step:
+		hero_phase.chosen_state = new_status
+	elif current_step == CFConst.PHASE_STEP.PLAYER_TURN:
+		new_status = hero_phase.chosen_state
 	hero_phase.switch_status(new_status)	
 
 func _step_started(	
@@ -467,7 +477,7 @@ func _step_started(
 	if (step >= CFConst.PHASE_STEP.PLAYER_TURN):
 		for i in range(gameData.get_team_size()):
 			var hero_index = i+1
-			reset_hero_activation_for_step(hero_index)
+			reset_hero_activation_for_step(hero_index, true)
 	
 	match step:	
 		CFConst.PHASE_STEP.PLAYER_MULLIGAN:

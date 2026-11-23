@@ -300,10 +300,10 @@ func _process(delta:float):
 
 
 	var viewboard = get_node("%ViewBoard")
-
+	var phasebar = get_node("%PhaseBar")
 	var last_index = get_child_count() - 1	
 	#hack to ensure the top menu remains at the top
-	move_child(get_node("%PhaseBar"), last_index)	
+	move_child(phasebar, last_index)	
 	move_child(get_node("%TopMenu"), last_index)
 	move_child(viewboard, last_index)
 		
@@ -336,6 +336,13 @@ func _process(delta:float):
 		#wallpaper.self_modulate = Color(0.5,0.5,0.5)
 	else:
 		viewboard.visible = false
+
+	#phasebar and viewboard are conflicting geographically
+	#todo something better than this
+	if viewboard.visible:
+		phasebar.modulate.a = 0.3
+	else:
+		phasebar.modulate.a = 1.0
 
 	if gameData.is_multiplayer_game:
 		var remote_activity = gameData.theStack.is_waiting_for_remote_player()
@@ -547,7 +554,7 @@ func grid_setup():
 
 	init_board_organizers(1)
 #	board_organizer.organize()
-
+	villain_displacement(gameData.scenario.villain_displacement_x)
 
 func get_hero_grid_setup() :
 	if _hero_grid_layout_cache:
@@ -2285,3 +2292,8 @@ func _on_ViewBoard_pressed():
 
 func _on_RollbackButton_pressed():
 	_pending_reload = 1
+
+#called if multiplevillains cause things to shift on the board
+func villain_displacement(x):
+	get_node("%PhaseBar").position.x = 650 + x
+	

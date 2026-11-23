@@ -17,27 +17,27 @@ texture = ExtResource( 1 )
 
 [node name="Phases" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
-margin_left = 36.0
-margin_top = 2.0
-margin_right = 702.0
-margin_bottom = 64.0
+margin_left = 17.0
+margin_top = 1.0
+margin_right = 683.0
+margin_bottom = 63.0
 rect_min_size = Vector2( 666, 62 )
 
 [node name="LabelRound" type="Label" parent="."]
 unique_name_in_owner = true
 margin_left = 36.0
-margin_top = 72.0
+margin_top = 62.0
 margin_right = 109.0
-margin_bottom = 91.0
+margin_bottom = 81.0
 custom_colors/font_color = Color( 0.9, 0.49, 0.31, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Round 1"
 
 [node name="LabelDesc" type="Label" parent="."]
 unique_name_in_owner = true
-margin_left = 111.0
-margin_top = 75.0
-margin_right = 717.0
-margin_bottom = 89.0
+margin_left = 102.0
+margin_top = 65.0
+margin_right = 708.0
+margin_bottom = 79.0
 text = "Currently: Game Setup & Mulligan"
 align = 1

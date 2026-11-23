@@ -16,6 +16,8 @@ var encounter_deck:Array
 var scenario_options:= {}
 var extra_decks: = []
 var grid_setup:= {}
+var villain_displacement_x = 0
+
 var scenario_data: = {}
 var set_aside := []
 var set_aside_index := {}
@@ -450,6 +452,7 @@ func load_from_dict(_scenario:Dictionary):
 	if !primitives:
 		_load_card_scenarios()
 	grid_setup = CFConst.GRID_SETUP.duplicate(true)	
+	villain_displacement_x = 0
 	scheme_card_id = _scenario.get("scheme_id")
 	if !scheme_card_id:
 		var _error =1
@@ -618,6 +621,9 @@ func setup_grid():
 					pass
 				else:
 					grid_setup[key]["x"] += displacement	
+		
+		villain_displacement_x = displacement
+		
 	
 	var coord_source = grid_setup["discard_villain"]
 	var x = 0
@@ -924,6 +930,7 @@ func reset():
 	extra_decks = []
 	_villains = []
 	grid_setup = {}
+	villain_displacement_x = 0
 	scenario_data = {}
 	_villains_by_level = {}
 	scenario_options = {}

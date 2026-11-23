@@ -69,6 +69,7 @@ func on_process_idle() -> bool:
 
 func reset() -> void:
 	.reset()
+	_clear_queued_manual_requests()
 	if _resync_scheduled:
 		cfc.LOG("error in stack reset: resync was scheduled: " + str(_resync_scheduled))
 	_resync_scheduled = 0
@@ -82,6 +83,186 @@ func reset() -> void:
 	_journal_diff_requested = false
 	_last_reported_divergence_uid = -1
 
+
+
+###
+### Manual plays that meet another player's action
+###
+#A player chooses the costs and targets of a card while another player's
+#card or ability resolves. When they clicked ok, their play used to be
+#dropped: the stack refused manual scripts while it was busy, and the master
+#rejected them while another client was busy or an interrupt window was
+#open. They wait here instead, and are sent again once the game is idle, if
+#what they paid with and targeted did not change in between
+
+#false: such plays are dropped, as in single player
+const QUEUE_BLOCKED_MANUAL_PLAYS := true
+const MANUAL_RETRY_DELAY_MSEC := 300
+#after that long, the play is dropped
+const MANUAL_QUEUE_TIMEOUT_MSEC := 60000
+
+var _queued_manual_requests := []
+#manual requests sent to the master, by checksum: sent again if the master
+#rejected them because the game was busy
+var _sent_manual_requests := {}
+#the queued request being sent again: if it waits again, it keeps its place
+#and its start time. {} when none (Godot 3 can't compare a Dictionary to null)
+var _retrying_manual_request := {}
+var _next_manual_retry_msec := 0
+
+func queue_blocked_manual_request(yield_data, reason, entry := {}) -> bool:
+	if !QUEUE_BLOCKED_MANUAL_PLAYS or !the_stack.sync_enabled:
+		return false
+	var is_retry = false
+	if entry.empty() and !_retrying_manual_request.empty():
+		entry = _retrying_manual_request
+		is_retry = true
+	if entry.empty():
+		entry = _new_manual_request_entry(yield_data)
+	if entry["answers_own_window"]:
+		return false
+	if OS.get_ticks_msec() - entry["queued_msec"] > MANUAL_QUEUE_TIMEOUT_MSEC:
+		cfc.LOG("manual request dropped, waited too long: " + str(yield_data["checksum"]))
+		return false
+	var changes = _manual_request_changes(entry)
+	if changes:
+		cfc.LOG("manual request dropped (" + changes + "): " + str(yield_data["checksum"]))
+		return false
+	if is_retry:
+		#keeps its place at the front
+		_queued_manual_requests.push_front(entry)
+	else:
+		_queued_manual_requests.append(entry)
+	_next_manual_retry_msec = OS.get_ticks_msec() + MANUAL_RETRY_DELAY_MSEC
+	the_stack.display_debug("manual request waits (" + reason + "): " + str(yield_data["checksum"]))
+	return true
+
+func on_manual_request_sent(checksum, yield_data) -> void:
+	var entry = _retrying_manual_request
+	if entry.empty():
+		entry = _new_manual_request_entry(yield_data)
+	_sent_manual_requests[checksum] = entry
+
+func take_sent_manual_request(checksum, owner_uid) -> Dictionary:
+	var result = _sent_manual_requests.get(checksum, {})
+	for key in _sent_manual_requests.keys():
+		var sceng = _sent_manual_requests[key]["yield_data"]["sceng"]
+		if key == checksum or !is_instance_valid(sceng) or !is_instance_valid(sceng.owner) \
+				or guidMaster.get_guid(sceng.owner) == owner_uid:
+			_sent_manual_requests.erase(key)
+	return result
+
+func process_queued_manual_requests() -> void:
+	if _queued_manual_requests.empty():
+		return
+	var now = OS.get_ticks_msec()
+	#drop what can no longer be played as chosen
+	for entry in _queued_manual_requests.duplicate():
+		var yield_data = entry["yield_data"]
+		var changes = _manual_request_changes(entry)
+		if !changes and now - entry["queued_msec"] > MANUAL_QUEUE_TIMEOUT_MSEC:
+			changes = "waited too long"
+		if changes:
+			cfc.LOG("manual request dropped (" + changes + "): " + str(yield_data["checksum"]))
+			_queued_manual_requests.erase(entry)
+			if is_instance_valid(yield_data["sceng"]):
+				the_stack.display_stack_error_for_card(yield_data["sceng"].owner)
+				the_stack.release_manual_request_locks(yield_data["sceng"])
+	if _queued_manual_requests.empty() or now < _next_manual_retry_msec:
+		return
+	if !_can_send_queued_manual_request():
+		return
+	var entry = _queued_manual_requests.pop_front()
+	var yield_data = entry["yield_data"]
+	the_stack.display_debug("sending waiting manual request again: " + str(yield_data["checksum"]))
+	_retrying_manual_request = entry
+	the_stack.create_and_add_script(
+		yield_data["sceng"],
+		yield_data["run_type"],
+		yield_data["trigger"],
+		yield_data["trigger_details"],
+		yield_data["action_name"] ,
+		yield_data["checksum"] )
+	_retrying_manual_request = {}
+
+func _new_manual_request_entry(yield_data) -> Dictionary:
+	var sceng = yield_data["sceng"]
+	return {
+		"yield_data": yield_data,
+		"queued_msec": OS.get_ticks_msec(),
+		"step": gameData.phaseContainer.current_step if is_instance_valid(gameData.phaseContainer) else -1,
+		#a card played to answer this player's own interrupt window
+		#belongs to that window: it is not played later as a normal card
+		"answers_own_window": (the_stack.interrupting_hero_id in gameData.get_my_heroes()) \
+				and !the_stack.get_allowed_interrupting_cards().empty(),
+		"snapshot": _manual_request_snapshot(sceng),
+	}
+
+#where the cards the play depends on are: the card itself, what pays for it,
+#its targets
+func _manual_request_snapshot(sceng) -> Array:
+	var result = []
+	var objects = [sceng.owner]
+	for prepaid in sceng.network_prepaid:
+		objects += prepaid.get("subjects", [])
+	for object in objects:
+		if typeof(object) != TYPE_OBJECT or !is_instance_valid(object):
+			continue
+		if !object.has_method("get_state_exec") or !("_is_exhausted" in object):
+			continue
+		result.append({
+			"card": object,
+			"parent": object.get_parent(),
+			"exhausted": object._is_exhausted,
+		})
+	return result
+
+#"" if nothing the play depends on changed, otherwise what changed
+func _manual_request_changes(entry) -> String:
+	var sceng = entry["yield_data"]["sceng"]
+	if !is_instance_valid(sceng) or !is_instance_valid(sceng.owner):
+		return "the card is gone"
+	if is_instance_valid(gameData.phaseContainer) and gameData.phaseContainer.current_step != entry["step"]:
+		return "the step changed"
+	for item in entry["snapshot"]:
+		var card = item["card"]
+		if !is_instance_valid(card):
+			return "a card it uses is gone"
+		if card.get_parent() != item["parent"]:
+			return card.canonical_name + " moved"
+		if card._is_exhausted != item["exhausted"]:
+			return card.canonical_name + " was exhausted or readied"
+	return ""
+
+#nothing is resolving or waiting, here or (as far as this client knows) on
+#the other clients: what the master checks before accepting a manual play
+func _can_send_queued_manual_request() -> bool:
+	var RUN_MODE = the_stack.RUN_MODE
+	if !the_stack.run_mode in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
+		return false
+	if the_stack.is_interrupt_mode() or !the_stack.get_allowed_interrupting_cards().empty():
+		return false
+	if !the_stack.stack.empty() or !the_stack._pending_flush.empty():
+		return false
+	if the_stack.inbox.has(StackInbox.LOCAL) or the_stack.inbox.has(StackInbox.NETWORK):
+		return false
+	if the_stack.my_script_requests_pending_execution > 0 or !the_stack.pending_interaction_checksums.empty():
+		return false
+	if gameData.get_sequence_scripts() or gameData.flow_blocks_new_action():
+		return false
+	for network_id in the_stack.all_clients_status.keys():
+		if network_id == cfc.get_network_unique_id():
+			continue
+		if !the_stack.get_client_status(network_id, "run_mode") in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
+			return false
+	return true
+
+func _clear_queued_manual_requests():
+	for entry in _queued_manual_requests:
+		the_stack.release_manual_request_locks(entry["yield_data"]["sceng"])
+	_queued_manual_requests = []
+	_sent_manual_requests = {}
+	_retrying_manual_request = {}
 
 ###
 ### Incoming network events

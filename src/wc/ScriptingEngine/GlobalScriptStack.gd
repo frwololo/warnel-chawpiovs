@@ -75,6 +75,7 @@ var interrupt_mode = InterruptMode.NONE
 var interrupting_hero_id = 0
 var _heroes_passed_optional_interrupt := {}
 var _current_interrupting_cards:= []
+
 var throttle_after_no_brakes:int = 0
 var pending_stack_yield = {}
 const yield_max_wait_time : float= 5.0
@@ -313,8 +314,12 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 	
 	if !run_mode in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION] :
 		if trigger in ["manual"]: #todo might need interrupt in there as well?
-			var _error = 1
+			#another player's action is resolving: the play can wait for it
+			#in multiplayer (StackSync.queue_blocked_manual_request)
+			if get_sync().queue_blocked_manual_request(yield_data, "run mode " + RunModeStr[run_mode]):
+				return null
 			display_stack_error_for_card(sceng.owner)
+			release_manual_request_locks(sceng)
 			#gameData.send_log_to_master("create_and_add_script run_mod error")
 			return null
 		elif sync_enabled:
@@ -346,6 +351,8 @@ func create_and_add_script(sceng, run_type, trigger, trigger_details, action_nam
 			if "decision_slot" in sceng and sceng.decision_slot > 0:
 				serialized_sceng["decision_slot"] = sceng.decision_slot
 				_log_slot("request for #" + str(sceng.decision_slot) + " '" + str(checksum) + "' (" + action_name + ")")
+			if trigger == "manual":
+				get_sync().on_manual_request_sent(checksum, yield_data)
 			my_script_requests_pending_execution += 1
 			set_run_mode(RUN_MODE.PENDING_REQUEST_ACK, "create_and_add_script - "  + action_name)
 			cfc._rpc_id(self,1, "master_create_and_add_script", expected_run_mode, serialized_sceng, run_type, trigger, action_name, checksum)
@@ -499,6 +506,7 @@ mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng
 		if allowed_interrupters:
 			if !owner_uid in allowed_interrupters:
 				accept_request = false
+				original_details["rejected_because"] = "interrupt window"
 		else:
 			#reject everything if other clients have something going on
 			for network_id in all_clients_status.keys():
@@ -506,6 +514,7 @@ mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng
 					continue #TODO other checks? 
 				if ! get_client_status(network_id, "run_mode") in [RUN_MODE.NOTHING_TO_RUN, RUN_MODE.PENDING_USER_INTERACTION]:
 					accept_request = false
+					original_details["rejected_because"] = "client " + str(network_id) + " busy"
 
 	
 	if accept_request:
@@ -518,6 +527,7 @@ mastersync func master_create_and_add_script(expected_run_mode, serialized_sceng
 		display_debug("Asking clients to add script " + action_name)
 		cfc._rpc(self,"client_create_and_add_stackobject", client_id, expected_run_mode, original_details, checksum)
 	else:
+		original_details["checksum"] = checksum
 		cfc._rpc_id(self, client_id, "rejected_add_script_request", expected_run_mode, original_details)
 
 func _apply_network_rng_state(new_state):
@@ -535,17 +545,37 @@ func display_stack_error_for_card(card):
 	display_debug("Add script request rejected for " + card.canonical_name)	
 
 remotesync func accepted_add_script_request (expected_run_mode, _original_details):	
+	get_sync().take_sent_manual_request(_original_details.get("checksum", ""), _original_details.get("owner_uid", ""))
 	my_script_requests_pending_execution -= 1
 	set_run_mode(expected_run_mode, "accepted_add_script_request")
 
 remotesync func rejected_add_script_request(expected_run_mode, details:={}):
 	var owner_uid = details.get("owner_uid", "")
-	display_stack_error_for_card(owner_uid)
+	var entry = get_sync().take_sent_manual_request(details.get("checksum", ""), owner_uid)
+	var queued = false
+	if !entry.empty():
+		queued = get_sync().queue_blocked_manual_request(entry["yield_data"], "rejected by the master: " \
+				+ str(details.get("rejected_because", "?")), entry)
+	if !queued:
+		display_stack_error_for_card(owner_uid)
+		if !entry.empty():
+			release_manual_request_locks(entry["yield_data"]["sceng"])
 		
 	my_script_requests_pending_execution -= 1
 	if !my_script_requests_pending_execution:
 		set_run_mode(expected_run_mode, "rejected_add_script_request")
 
+
+#the cards chosen to pay for a manual play were locked for that payment: a
+#play that does not reach the stack unlocks them
+func release_manual_request_locks(sceng):
+	if !is_instance_valid(sceng) or !sceng.network_prepaid:
+		return
+	for prepaid_data in sceng.network_prepaid:
+		for card in prepaid_data.get("subjects", []):
+			if typeof(card) == TYPE_OBJECT and is_instance_valid(card) and card.has_method("remove_resource_lock"):
+				card.remove_resource_lock()
+				card.tokens.remove_resource_lock()
 
 func get_allowed_interrupting_cards():
 	#todo
@@ -1213,6 +1243,8 @@ func _process(delta: float):
 	display_debug_info()
 	
 	show_server_activity()
+
+	get_sync().process_queued_manual_requests()
 	
 	if run_mode in [RUN_MODE.NOTHING_TO_RUN]: #, RUN_MODE.PENDING_USER_INTERACTION]:
 		if inbox.has(StackInbox.LOCAL):

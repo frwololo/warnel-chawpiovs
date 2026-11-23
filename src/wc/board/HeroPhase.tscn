@@ -130,13 +130,12 @@ margin_bottom = 106.0
 mouse_filter = 2
 custom_styles/panel = SubResource( 3 )
 
-[node name="NetworkActivity" type="TextureRect" parent="HBoxContainer/Control"]
+[node name="PlayerHint" type="TextureRect" parent="HBoxContainer/Control"]
 unique_name_in_owner = true
-visible = false
-margin_left = -47.0
-margin_top = -2.0
-margin_right = 24.0
-margin_bottom = 65.0
+margin_left = -120.0
+margin_top = -54.0
+margin_right = 29.0
+margin_bottom = 88.0
 texture = ExtResource( 4 )
 expand = true
 

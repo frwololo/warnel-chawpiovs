@@ -9,6 +9,8 @@ enum State {
 	FINISHED
 }
 
+var textures:= {}
+
 var hero_index
 var current_state = State.ACTIVE
 #the state the player chose by clicking the badge ("finished" for this
@@ -23,7 +25,7 @@ const face_size := Vector2(100, 100)
 
 onready var heroNode : TextureRect = get_node("%hero")
 onready var label := get_node("%Label")
-onready var network_activity := get_node("%NetworkActivity")
+onready var player_hint :TextureRect  = get_node("%PlayerHint")
 onready var selected :=  get_node("%ColorRect")
 onready var ping :=  get_node("%Ping")
 onready var first_player :=  get_node("%FirstPlayer")
@@ -37,7 +39,7 @@ var _ping_color = null
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	selected.visible = false
-	network_activity.visible = false
+	player_hint.visible = false
 	
 	update_picture()
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
@@ -93,12 +95,16 @@ func _process(_delta):
 		_ping_color = ping_color
 		ping.add_color_override("font_color", ping_color)
 
+	var show_player_hint = false
+
 	if gameData.phaseContainer.current_step == CFConst.PHASE_STEP.PLAYER_TURN:
 		match current_state:
 			State.ACTIVE:
 				heroNode.texture = color_tex
 			State.FINISHED:		
-				heroNode.texture = grayscale_tex		
+				heroNode.texture = grayscale_tex
+				show_player_hint = true	
+				player_hint.texture = get_texture("finished") 	
 	else:			
 		if hero_index in gameData.get_currently_playing_hero_ids():
 			heroNode.texture = color_tex
@@ -109,12 +115,37 @@ func _process(_delta):
 	if gameData.auto_gui_activity_ongoing():
 		heroNode.texture = grayscale_tex
 
+
 	if gameData.is_multiplayer_game:
 		var remote_activity = gameData.theStack.is_waiting_for_remote_player()
 		if hero_index in remote_activity:
-			network_activity.visible = true
-		else:
-			network_activity.visible = false
+			player_hint.texture = get_texture("network_activity") 
+			show_player_hint = true
+
+	player_hint.visible = show_player_hint
+			
+
+func get_texture(texture_key):
+	if !textures.has(texture_key):
+		var filename = ""
+		match texture_key:
+			"network_activity":
+				filename = "res://assets/icons/network_action.png"
+			"finished":
+				filename = "res://assets/icons/player_finished.png"
+			_:
+				#unsupported
+				pass
+				
+		if filename:
+			var new_img = WCUtils.load_img(filename)
+			if not new_img:
+				return null	
+			var imgtex = ImageTexture.new()
+			imgtex.create_from_image(new_img)	
+			textures[texture_key] = imgtex
+	
+	return textures.get(texture_key, null)		
 
 func init_hero(_hero_index):
 	hero_index = _hero_index

@@ -52,6 +52,28 @@ func on_process_idle() -> bool:
 func reset() -> void:
 	_log_and_reset_stats()
 
+#Manual plays (a player plays or activates a card) that meet another player's
+#action, see MultiplayerStackSync. In single player nothing else runs
+#meanwhile: they are dropped as they always were
+
+#a manual play could not reach the stack (reason): true if it waits to be
+#sent again. entry: what on_manual_request_sent kept for a rejected request
+func queue_blocked_manual_request(_yield_data, _reason, _entry := {}) -> bool:
+	return false
+
+#a manual play was sent to the master
+func on_manual_request_sent(_checksum, _yield_data) -> void:
+	pass
+
+#the master answered a manual play: what on_manual_request_sent kept for
+#it, {} if nothing
+func take_sent_manual_request(_checksum, _owner_uid) -> Dictionary:
+	return {}
+
+#called every frame from the stack's _process
+func process_queued_manual_requests() -> void:
+	pass
+
 
 ###
 ### Ordering statistics (diagnostics only, see the design doc's investigation)

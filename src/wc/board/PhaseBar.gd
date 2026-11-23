@@ -128,6 +128,10 @@ var one_hero_per_step = [
 func _game_step_about_to_start(_trigger_object, details:Dictionary):
 	var current_step = details["step"]
 	get_node("%LabelRound").text = "Round " + str(gameData.current_round)
+	
+	if current_step == CFConst.PHASE_STEP.VILLAIN_PASS_PLAYER_TOKEN:
+		for icon in all_phase_icons:
+			icon.reset()	
 	#also catches what changed without a signal (e.g. a loaded game)
 	_reorder_icons()
 	for icon in all_phase_icons:
@@ -177,10 +181,7 @@ func _reorder_icons():
 			if parent:
 				parent.move_child(icon, index)
 
-func _first_player_changed(_details:Dictionary):
-	for icon in all_phase_icons:
-			icon.reset()				
-					
+func _first_player_changed(_details:Dictionary):					
 	_reorder_icons()
 
 #the hero or alter-ego portrait, and the villain activation's attack or thwart

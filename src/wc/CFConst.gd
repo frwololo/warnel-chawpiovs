@@ -499,7 +499,7 @@ const GRID_SETUP := {
 	},
 	"schemes" : {
 		"x" : 600,
-		"y" : 60,
+		"y" : 60
 	},
 	"villain_misc" : {
 		"x" : 1500,
@@ -587,6 +587,7 @@ const HERO_GRID_SETUP := {
 	"enemies" : {
 		"x" : 350,
 		"y" : 00,
+		"display_name": "enemies"
 	},
 	"misc_encounter": {
 		"x" : 800,
@@ -600,10 +601,14 @@ const HERO_GRID_SETUP := {
 	"allies" : {
 		"x" : 350,
 		"y" : 220,
+		"display_name": "allies",
+		"bg_color": "hero_color"
 	},
 	"upgrade_support" : {
 		"x" : 350,
 		"y" : 440,
+		"display_name": "upgrade/support",
+		"bg_color": "hero_color"
 	},	
 								
 }

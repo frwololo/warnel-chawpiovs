@@ -89,7 +89,7 @@ func set_highlight(requested: bool,
 # Returns the name of the grid which is hosting this slot.
 # This is typically used with CFConst.BoardDropPlacement.SPECIFIC_GRID
 func get_grid_name() -> String:
-	return(owner_grid.name_label.text)
+	return(owner_grid.name)
 
 func reposition(new_position:Vector2):
 	if (occupying_card):

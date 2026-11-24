@@ -192,6 +192,24 @@ func _reorder_icons():
 			if parent:
 				parent.move_child(icon, index)
 
+	#all_phase_icons in the new display order too: phase by phase (in their
+	#current order), then left to right within each phase
+	var parents = []
+	for icon in all_phase_icons:
+		var parent = icon.get_parent()
+		if parent and !(parent in parents):
+			parents.append(parent)
+	var reordered = []
+	for parent in parents:
+		for child in parent.get_children():
+			if child in all_phase_icons:
+				reordered.append(child)
+	#an icon not in the tree keeps its place, at the end
+	for icon in all_phase_icons:
+		if !(icon in reordered):
+			reordered.append(icon)
+	all_phase_icons = reordered
+
 func _first_player_changed(_details:Dictionary):					
 	_reorder_icons()
 

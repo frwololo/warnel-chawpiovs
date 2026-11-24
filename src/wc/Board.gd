@@ -487,9 +487,12 @@ func grid_setup():
 			add_child(grid)
 			current_containers.append(grid)
 			grid.name = grid_name
-			grid.name_label.text = grid_name
+			#grid.name_label.text = grid_name
 			grid.rect_position = Vector2(x, y)			
 			grid.auto_extend = grid_info.get("auto_extend", true)
+			grid.set_display_name(grid_info.get("display_name", ""))
+			var bg_color = grid_info.get("bg_color", Color(0.0, 0.0,0.0))
+			grid.set_bg_color(bg_color)			
 			set_groups(grid, grid_info.get("groups", []))
 
 	
@@ -547,9 +550,16 @@ func grid_setup():
 				add_child(grid)
 				current_containers.append(grid)
 				grid.name = real_grid_name
-				grid.name_label.text = real_grid_name
+				#grid.name_label.text = real_grid_name
 				grid.rect_position = Vector2(x,y)
 				grid.auto_extend = grid_info.get("auto_extend", true)
+				grid.set_display_name(grid_info.get("display_name", ""))
+				var bg_color = grid_info.get("bg_color", Color(0.0, 0.0,0.0))
+				if typeof(bg_color) == TYPE_STRING and (bg_color == "hero_color"):
+					var meta_colors = gameData.get_hero_meta_colors(hero_id)
+					if meta_colors.size() > 0:
+						bg_color = meta_colors[0]
+				grid.set_bg_color(bg_color)
 				set_groups(grid, grid_info.get("groups", []))
 
 	init_board_organizers(1)

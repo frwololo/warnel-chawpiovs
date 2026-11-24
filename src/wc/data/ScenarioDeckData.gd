@@ -662,7 +662,7 @@ func setup_grid():
 			"scale": scale,
 			"type": "pile",
 		} 
-		for key in ["faceup", "auto_extend", "focusable"]:
+		for key in ["faceup", "auto_extend", "focusable", "display_name"]:
 			if extra_deck_data.has(key):
 				grid_setup[name][key] = extra_deck_data[key] 
 

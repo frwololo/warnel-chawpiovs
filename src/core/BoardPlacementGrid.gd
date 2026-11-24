@@ -26,6 +26,8 @@ signal card_added_to_slot (slot)
 const _SLOT_SCENE_FILE = CFConst.PATH_CORE + "BoardPlacementSlot.tscn"
 const _SLOT_SCENE = preload(_SLOT_SCENE_FILE)
 
+const LABEL_ORIENTATION_VERTICAL:= true
+
 # Set the highlight colour for all contained BoardPlacementSlot slots
 export(Color) var highlight = CFConst.TARGET_HOVER_COLOUR
 # If set to true, the grid will automatically add more slots
@@ -38,7 +40,18 @@ export var card_size := CFConst.CARD_SIZE
 export var card_play_scale := CFConst.PLAY_AREA_SCALE
 
 # Sets a custom label for this grid
-onready var name_label = $Control/Label
+onready var name_label:Label = $Control/Label
+var display_name = ""
+var modulate_color = Color(0.0, 0.0, 0.0)
+
+func set_display_name(value):
+	display_name = value.capitalize()
+	if name_label:
+		name_label.text = display_name
+
+func set_bg_color(value):
+	modulate_color = Color(value)
+	refresh_display()
 
 func _ready() -> void:
 	#grids don't take clicks (slots use the mouse pointer's Area2D, cards
@@ -56,21 +69,36 @@ func _ready() -> void:
 			MousePointer.MOUSE_RADIUS * 2 + 1)
 	$GridContainer.set("custom_constants/hseparation",
 			MousePointer.MOUSE_RADIUS * 2 + 1)
-	if not name_label.text:
-		name_label.text = name
+	
+	if LABEL_ORIENTATION_VERTICAL:
+		name_label.rect_rotation = -90
+		name_label.rect_position.x = 0		
+	name_label.text = display_name
 	
 	if CFConst.HIDE_GRID_BACKGROUND:
-		modulate = Color(0,0,0,0)
+		$GridContainer.modulate = Color(0,0,0,0)
+		self.self_modulate = Color(0,0,0,0)
 		
 	connect("card_added_to_slot", self, "_card_added")
 	connect("card_removed_from_slot", self, "_card_removed")
+	refresh_display()
 
+func _process(_delta: float):
+	if self.rect_size.y < 150:
+		name_label.visible = false
+		return
+	else:
+		name_label.visible = true
+		
+	if LABEL_ORIENTATION_VERTICAL:
+		name_label.rect_position.y = self.rect_size.y	
 
 func _card_added(card):
 	#add new slots ahead of time as needed, to avoid "yield" related issues
 	if (!auto_extend):
 		return
-	#find_available_slot()	
+	#find_available_slot()
+	refresh_display()	
 
 func _card_removed(card):
 	if (auto_extend):
@@ -78,9 +106,17 @@ func _card_removed(card):
 		for empty_slot in empty_slots:
 			$GridContainer.remove_child(empty_slot)
 			$Garbage.add_child(empty_slot)
-	pass
+	
+	refresh_display()
 
-
+func refresh_display():			
+	if get_all_cards() and display_name:
+		var sb = get_stylebox("panel").duplicate()  # duplicate so other panels sharing the theme aren't affected
+		sb.bg_color = modulate_color          # works if it's a StyleBoxFlat
+		add_stylebox_override("panel", sb)		
+		self.modulate.a = 1.0
+	else:
+		self.modulate.a = 0.0
 
 # If a BoardPlacementSlot object child in this container is highlighted
 # Returns the object. Else returns null

@@ -95,7 +95,7 @@ func get_card_index(card: Card) -> int:
 func get_grid(grid_name: String) -> BoardPlacementGrid:
 	var found_grid: BoardPlacementGrid = null
 	for grid in get_tree().get_nodes_in_group("placement_grid"):
-		if grid.name_label.text == grid_name:
+		if grid.name == grid_name:
 			found_grid = grid
 	return(found_grid)
 

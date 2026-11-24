@@ -126,6 +126,7 @@ var game_step_matches = {
 	CFConst.PHASE_STEP.PLAYER_TURN: PhaseBarIcon.Mode.PLAYER_TURN,
 	CFConst.PHASE_STEP.VILLAIN_THREAT: PhaseBarIcon.Mode.THREAT,	
 	CFConst.PHASE_STEP.VILLAIN_ACTIVATES: PhaseBarIcon.Mode.VILLAIN_ACTIVATES,
+	CFConst.PHASE_STEP.VILLAIN_DEAL_ENCOUNTER: PhaseBarIcon.Mode.ENCOUNTER,		
 	CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER: PhaseBarIcon.Mode.ENCOUNTER,	
 }
 
@@ -165,7 +166,8 @@ func _game_step_about_to_start(_trigger_object, details:Dictionary):
 					set_active_icon(icon,false)
 			else:
 				icon.set_inactive()
-
+	refresh_desc_text()
+	
 #hero ids in the order they play this round: first player first
 func _hero_order() -> Array:
 	var team_size = gameData.get_team_size()
@@ -201,20 +203,29 @@ func _identity_changed_form(card, _details = {}):
 	for icon in all_phase_icons:
 		if icon.hero_id == hero_id:
 			icon.refresh_identity()
+	refresh_desc_text()		
 
 func set_active_icon(icon, mark_previous_as_completed = true):
 	icon.set_active()
 	active_icon = icon
-	get_node("%LabelDesc").text = "Currently: " + icon.get_desc_text()
 
-	if !mark_previous_as_completed:
-		return
+	if mark_previous_as_completed:
+		for one_icon in all_phase_icons:
+			if one_icon == icon:
+				return
+			one_icon.set_completed()
 
-	for one_icon in all_phase_icons:
-		if one_icon == icon:
-			return
-		one_icon.set_completed()
+
+func refresh_desc_text():
+	if gameData.phaseContainer.current_step < CFConst.PHASE_STEP.PLAYER_TURN:
+		get_node("%LabelDesc").text = "Currently: Game Setup & Mulligan"
+	else:
+		get_node("%LabelDesc").text = "--"
 		
+	for icon in all_phase_icons:
+		if icon.is_active:
+			get_node("%LabelDesc").text = "Currently: " + icon.get_desc_text()
+			return
 
 func _encounter_would_reveal(_card, _details):
 	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.VILLAIN_REVEAL_ENCOUNTER:
@@ -227,6 +238,8 @@ func _encounter_would_reveal(_card, _details):
 			set_active_icon(icon)
 		else:
 			icon.set_inactive()
+	
+	refresh_desc_text()		
 				
 func _hero_phase_status_changed(details: Dictionary):
 	if gameData.phaseContainer.current_step != CFConst.PHASE_STEP.PLAYER_TURN:
@@ -244,8 +257,8 @@ func _hero_phase_status_changed(details: Dictionary):
 			icon.set_completed()
 		else:
 			set_active_icon(icon, false)
-	#e.g. find the PLAYER_TURN icon for hero_id and call set_completed() / set_active()
 
+	refresh_desc_text()
 
 func _on_TextureButton_pressed():
 	is_shown = !is_shown

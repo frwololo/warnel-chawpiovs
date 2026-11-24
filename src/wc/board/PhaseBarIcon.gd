@@ -14,6 +14,7 @@ onready var texture1:TextureRect = get_node("%Texture1")
 onready var texture2:TextureRect = get_node("%Texture2")
 onready var checkmark:TextureRect = get_node("%Checkmark")
 onready var label:Label = get_node("%Label")
+var is_active = false
 
 var textures:= {}
 var mode = Mode.PLAYER_TURN
@@ -82,7 +83,7 @@ func get_desc_text():
 	
 		match mode:
 			Mode.PLAYER_TURN:
-				desc_text = "Player Turn" 
+				desc_text = "Player Turn (" + hero_name + ")" 
 			Mode.THREAT:
 				desc_text = "Villain adds threat on the main scheme" 			
 			Mode.VILLAIN_ACTIVATES:
@@ -102,18 +103,22 @@ func get_desc_text():
 #set_inactive in all other cases
 
 func reset():
+	is_active = false
 	set_grayscale_all()
 	hide_checkmark()
 	
 func set_completed():
+	is_active = false
 	set_grayscale_all()	
 	show_checkmark()
 
 func set_active():
+	is_active = true
 	set_color_all()
 	hide_checkmark()
 
 func set_inactive():
+	is_active = false
 	set_grayscale_all()	
 	
 

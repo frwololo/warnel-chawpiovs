@@ -16,6 +16,7 @@ var all_phase_icons = []
 var active_icon = null
 var all_phase_headers = []
 var loaded = false
+var is_shown = true
 
 #the icon's scene: PhaseBarIcon.new() would only create its script, without
 #the Texture1, Texture2... child nodes the script looks for
@@ -25,6 +26,15 @@ onready var phases:HBoxContainer = get_node("%Phases")
 # Called when the node enters the scene tree for the first time.
 
 func _ready():
+	is_shown = cfc.get_setting("phasebar_visible")
+
+	if is_shown:
+		$UpDownButton.rect_rotation = 0
+		self.position.y = 0
+	else:
+		self.position.y = -60
+		$UpDownButton.rect_rotation = 180
+	
 	scripting_bus.connect("would_reveal", self, "_encounter_would_reveal")	
 	scripting_bus.connect("step_about_to_start", self, "_game_step_about_to_start")	
 	scripting_bus.connect("hero_phase_status_changed", self, "_hero_phase_status_changed")
@@ -40,8 +50,7 @@ func _ready():
 func _exit_tree():
 	scripting_bus.unregister_card(self)
 	
-func _process(_delta:float):
-	#do_preload()
+func _process(_delta:float):	
 	pass
 
 func do_preload():
@@ -236,3 +245,23 @@ func _hero_phase_status_changed(details: Dictionary):
 		else:
 			set_active_icon(icon, false)
 	#e.g. find the PLAYER_TURN icon for hero_id and call set_completed() / set_active()
+
+
+func _on_TextureButton_pressed():
+	is_shown = !is_shown
+	cfc.set_setting("phasebar_visible", is_shown)
+	$Tween.stop_all()
+	var x = self.position.x	
+	if is_shown:
+		$UpDownButton.rect_rotation = 0
+		$Tween.interpolate_property(self,'position',
+			self.position, Vector2(x,0), 0.2,
+			Tween.TRANS_CUBIC, Tween.EASE_OUT)
+		$Tween.start()
+	else:
+		$UpDownButton.rect_rotation = 180
+		$Tween.interpolate_property(self,'position',
+			self.position, Vector2(x,-60), 0.2,
+			Tween.TRANS_CUBIC, Tween.EASE_OUT)
+		$Tween.start()			
+	pass # Replace with function body.

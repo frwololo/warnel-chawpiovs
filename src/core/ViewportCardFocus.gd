@@ -19,6 +19,10 @@ onready var left_container = $VBC/CardDisplay/Left
 onready var left_card_container = $VBC/CardDisplay/Left/Container
 onready var left_text_container = $VBC/CardDisplay/Left/MsgContainer
 onready var right_container = $VBC/CardDisplay/Right
+#preview of the other side of the focused card (hero/alter ego, the other
+#stage of a scheme...), shown in right_container. $VBC is rotated for
+#horizontal cards, so "right of the preview" is then "below it" on screen
+var _back_preview = null
 
 onready var world_environemt : WorldEnvironment = $WorldEnvironment
 var viewport
@@ -37,6 +41,8 @@ func resize():
 	if _current_focus_source and is_instance_valid(_current_focus_source):
 		var card = _previously_focused_cards[_current_focus_source]
 		card.get_parent().rect_min_size = 	card.card_size*card.scale
+		if is_instance_valid(_back_preview) and _back_preview.visible:
+			_back_preview.set_card_size(card.card_size*card.scale)
 	pass
 	
 
@@ -72,6 +78,8 @@ func display_debug_info():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$VBC.visible = false
+	#shown only when the focused card has another side (see _update_back_preview)
+	right_container.visible = false
 	viewport = get_tree().get_root()
 	cfc.map_node(self)
 	var glow_enabled = cfc.game_settings.get('glow_enabled', true)
@@ -173,6 +181,10 @@ func reposition_vbc():
 		#We're showing the preview! keep processing	
 		var multiplier =  preview_card.focused_scale #* cfc.curr_scale		
 		display_size = preview_card.canonical_size * multiplier
+		#the back preview doubles the width (the height, on screen, for
+		#horizontal cards: the rotation below swaps them)
+		if right_container.visible:
+			display_size.x = display_size.x * 2 + $VBC/CardDisplay.get_constant("separation")
 		var board_card_size = card.card_size * card.scale
 		var board_top_left_corner = card._control.get_global_position()
 		var source_bounding:Rect2 = Rect2(board_top_left_corner,board_card_size)
@@ -328,6 +340,7 @@ func focus_card(card: Card, _show_preview := true) -> void:
 			# original, which may be in the middle of a flip animation: force them.
 			_sync_dupe_flip_visuals(dupe_focus)
 		_current_focus_source = card
+		_update_back_preview(card, dupe_focus)
 		
 	
 		
@@ -361,6 +374,44 @@ func focus_card(card: Card, _show_preview := true) -> void:
 		
 		return
 			
+
+# Code of the card on the other side of the focused card, "" if none or if
+# the preview doesn't show the card's front (facedown cards)
+func _get_back_preview_code(card: Card) -> String:
+	if !card.has_method("get_card_back_code"):
+		return ""
+	#the back preview is an image only
+	if cfc.get_setting("disable_card_images"):
+		return ""
+	if !(card.is_faceup or card.is_viewed):
+		return ""
+	var back_code = card.get_card_back_code()
+	if !back_code or back_code == card.canonical_id:
+		return ""
+	if !cfc.card_definitions.has(back_code):
+		return ""
+	return back_code
+
+# Shows the other side of the focused card next to its preview, or hides it
+func _update_back_preview(card: Card, dupe_focus: Card) -> void:
+	var back_code = _get_back_preview_code(card)
+	if !back_code:
+		right_container.visible = false
+		return
+	if !is_instance_valid(_back_preview):
+		_back_preview = SimpleCardDisplay.new()
+		_back_preview.name = "BackPreview"
+		#display only: the hovered card keeps the mouse
+		_back_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_back_preview.focus_mode = Control.FOCUS_NONE
+		right_container.add_child(_back_preview)
+	right_container.visible = true
+	_back_preview.visible = true
+	if _back_preview.card_id != back_code:
+		#don't show the previous card while this one's image downloads
+		_back_preview.texture_normal = null
+		_back_preview.load_card(back_code)
+	_back_preview.set_card_size(dupe_focus.card_size * dupe_focus.scale)
 
 # Instantly shows the front or back of a focus dupe to match its
 # is_faceup/is_viewed state, regardless of what its containers currently show

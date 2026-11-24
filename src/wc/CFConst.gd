@@ -1094,6 +1094,7 @@ const DEFAULT_SETTINGS:= {
 	"decks_base_url_backup": "https://marvelcdb.com/api/public/deck/",
 	"proxy_url": "/wc/wc_proxy.php",
 	'dont_show_msg': {},
+	"phasebar_visible": true,
 	'database': {
 #cycle 1	
 		"core": "https://marvelcdb.com/api/public/cards/core.json", #Core Box

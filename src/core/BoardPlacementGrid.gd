@@ -109,12 +109,18 @@ func _card_removed(card):
 	
 	refresh_display()
 
-func refresh_display():			
-	if get_all_cards() and display_name:
+func refresh_display():	
+	var my_cards = get_all_cards()	
+	if my_cards and display_name:
 		var sb = get_stylebox("panel").duplicate()  # duplicate so other panels sharing the theme aren't affected
 		sb.bg_color = modulate_color          # works if it's a StyleBoxFlat
 		add_stylebox_override("panel", sb)		
 		self.modulate.a = 1.0
+		if LABEL_ORIENTATION_VERTICAL:
+			if my_cards[0]._horizontal:
+				name_label.rect_position.x = -20
+			else:
+				name_label.rect_position.x = 0		
 	else:
 		self.modulate.a = 0.0
 

@@ -3004,7 +3004,14 @@ func start_play_sequence(cards, trigger, script):
 		
 	var owner_hero_id = WCScriptingEngine.get_hero_id_from_script(script)
 	var is_villain = false
-	if cards[0].is_encounter() or !owner_hero_id:
+	#an encounter card's sequence is a villain sequence even when its steps
+	#run on player cards: it waits for the phase container, not for the
+	#player to be allowed to click. Chain Lightning (revealed in the villain
+	#phase, a step on each character you control) was queued as a player
+	#sequence: it waited for the player turn, the reveal step waited for the
+	#sequence, and the game was stuck
+	var owner_is_encounter = is_instance_valid(script.owner) and script.owner.is_encounter()
+	if cards[0].is_encounter() or owner_is_encounter or !owner_hero_id:
 		if !owner_hero_id:
 			owner_hero_id = self.get_current_activity_hero_target()
 		is_villain = true

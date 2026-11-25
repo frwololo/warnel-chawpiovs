@@ -591,7 +591,8 @@ const HERO_GRID_SETUP := {
 	},
 	"misc_encounter": {
 		"x" : 800,
-		"y" : 00,		
+		"y" : 00,
+		"display_name": "encounters"				
 	},	
 	"identity" : {
 		"x" : 000,

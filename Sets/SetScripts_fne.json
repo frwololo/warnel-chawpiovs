@@ -6385,6 +6385,7 @@
 					"name": "move_card_to_container",
 					"dest_container": "hand",
 					"subject": "boardseek_and_choose",
+					"is_cost": true,
 					"filter_state_seek": [
 						{
 							"filter_is_hosted_by": "Echo",
@@ -9637,7 +9638,7 @@
 							"subject_count": 1,
 							"filter_state_seek": [
 								{
-									"filter_is_hosted_by": "Echo",
+									"filter_is_hosted_by": "Maya Lopez",
 									"filter_properties": {
 										"type_code": "event"
 									}

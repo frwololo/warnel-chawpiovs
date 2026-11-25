@@ -2162,12 +2162,17 @@ func retrieve_script_by_path(path:String):
 	return found_scripts
 
 func retrieve_scripts_by_state(seek_state:String):
-	var my_scripts = get_instance_runtime_scripts()
-	if !my_scripts:
-		# This retrieves all the script from the card, stored in cfc
-		# The seeks in them the specific trigger we're using in this
-		# execution
-		my_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)	
+	# The card's printed scripts (stored in cfc), with its runtime scripts
+	# on top, trigger by trigger. Runtime scripts used to replace the
+	# printed ones entirely: Contingency Planning tucks a card with
+	# disable_attach_trigger (runtime scripts = a card_moved_to_board
+	# override only), then fetches its "*/hand" scripts, which came back
+	# empty: the tucked card could not be played. It only worked while
+	# _get_extra_scripts_cache still held a stale {} for the card
+	var my_scripts = cfc.set_scripts.get(canonical_id,{}).duplicate(true)
+	var runtime_scripts = get_instance_runtime_scripts()
+	for key in runtime_scripts:
+		my_scripts[key] = runtime_scripts[key]
 	
 	var results = {}
 	for key in my_scripts:

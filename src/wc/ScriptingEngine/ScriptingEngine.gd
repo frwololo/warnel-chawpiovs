@@ -258,11 +258,18 @@ static func _compute_move_zones(subject, script):
 func move_card_to_board(script: ScriptTask) -> int:
 
 	#unique rule, max 1 per player, etc...
+	#A card put into play facedown (an Ultron drone) has no title: these rules
+	#don't apply to it (Board's counts already skip facedown cards). Without
+	#this, Ultron's Imperative put a single Drone into play when one of the
+	#top 2 cards was e.g. a Helicarrier while one was already in play
+	var is_facedown_move = "facedown" in script.get_property(SP.KEY_TAGS, [])
 	var to_remove = []
 	for card in script.subjects:
 		#var type_code = card.get_property("type_code")
 		#Villain cards are a notable exception, they get into play no matter what
 		if card.is_card_type("villain"):
+			continue
+		if is_facedown_move:
 			continue
 		if cfc.NMAP.board.unique_card_in_play(card):
 			to_remove.append(card)

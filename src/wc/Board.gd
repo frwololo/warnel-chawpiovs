@@ -22,6 +22,8 @@ var _has_victory_cards = false
 var _actions_happened_this_turn = 0
 var _pending_reload = 0
 
+var uses_default_wallpaper = true
+
 # heroZones is 1 indexed (index is hero_id)
 var heroZones: Dictionary = {}
 
@@ -94,6 +96,7 @@ func _ready() -> void:
 	scripting_bus.connect("target_selected", self, "_target_selected")
 	scripting_bus.connect("current_playing_hero_changed", self, "_current_playing_hero_changed")
 
+	scripting_bus.connect("card_damaged", self, "_card_damaged")
 	scripting_bus.connect("step_started", self, "_step_started")
 	scripting_bus.connect("all_clients_game_loaded", self, "_all_clients_game_loaded")	
 	gameData.theStack.connect("manual_interaction_added_to_stack", self, "_manual_action_happened")	
@@ -113,9 +116,38 @@ func init_wallpaper():
 		return	
 	var imgtex = ImageTexture.new()
 	imgtex.create_from_image(new_img)
-	var wallpaper:TextureRect = get_node("%wallpaper")
+	var wallpaper:TextureRect = get_node("%Wallpaper")
 	wallpaper.texture = imgtex
-	#large_picture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED		
+	uses_default_wallpaper = false
+	get_node("%WallpaperEffect").visible = false	
+
+func _card_damaged(card, details):
+	var hero_id = card.get_controller_hero_id()
+	if hero_id != gameData.get_current_local_hero_id():
+		return
+	if !card.is_card_type("hero") and !card.is_card_type("alter_ego"):
+		return
+		
+	var amount = details["amount"]
+	if !amount:
+		return	
+		
+	damage_wallpaper_effect(amount)
+
+func damage_wallpaper_effect(amount):
+	if !uses_default_wallpaper:
+		return
+
+	var wallpaper_effect = get_node("%WallpaperEffect")
+	wallpaper_effect.visible = true
+	var intensity = min (4.0, 1.5 * amount)
+	var duration = max (1.5, 1.0 * amount)
+	$Tween.interpolate_property(
+		wallpaper_effect,'self_modulate', Color(intensity ,1.0, 1.0, intensity),
+		Color(1.0,1.0, 1.0, 0.0),
+		duration, Tween.TRANS_QUART, Tween.EASE_OUT)
+	$Tween.start()	
+	
 
 func _all_clients_game_loaded(_details):
 	_pending_reload = 0
@@ -320,7 +352,7 @@ func _process(delta:float):
 	#offering possibility to view board while making a modal decision
 	var modal_menu = cfc.get_modal_menu()
 
-	var wallpaper = get_node("%wallpaper")
+	var wallpaper = get_node("%Wallpaper")
 
 	var need_lights_down = false	
 	
@@ -2301,6 +2333,8 @@ func _on_ViewBoard_pressed():
 
 
 func _on_RollbackButton_pressed():
+	damage_wallpaper_effect(3)
+	return
 	_pending_reload = 1
 
 #called if multiplevillains cause things to shift on the board

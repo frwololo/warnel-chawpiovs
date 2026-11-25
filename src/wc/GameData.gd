@@ -1004,7 +1004,7 @@ func reset_forced_current_playing_hero(override_hero = 0):
 	_forced_currently_playing_hero_id = 0
 
 #returns a list of hero ids that are currently allowed to play
-#(outsde of asking them for possible interruptions)
+#(outside of asking them for possible interruptions)
 func get_currently_playing_hero_ids():
 	
 	if _forced_currently_playing_hero_id:

@@ -252,7 +252,10 @@ static func get_villain_array_data(scenario_id, villain_key = "", expert = false
 	var villain_data = scheme_primitive.get("villains", [])	
 	match typeof(villain_data):
 		TYPE_ARRAY:
+			if expert:
+				return scheme_primitive.get("expert", {}).get("villains", [])
 			return villain_data	
+			
 		TYPE_DICTIONARY:
 			if !villain_key or !villain_data.has(villain_key):
 				villain_key = ""

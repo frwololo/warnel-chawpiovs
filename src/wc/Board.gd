@@ -2333,8 +2333,6 @@ func _on_ViewBoard_pressed():
 
 
 func _on_RollbackButton_pressed():
-	damage_wallpaper_effect(3)
-	return
 	_pending_reload = 1
 
 #called if multiplevillains cause things to shift on the board

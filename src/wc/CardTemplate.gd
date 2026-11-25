@@ -137,6 +137,18 @@ func add_extra_script(script_definition, allowed_hero_id = 0):
 	scripting_bus.emit_signal("card_script_added", self, extra_scripts[extra_script_uid])
 	return extra_script_uid
 
+#to call whenever the card's instance scripts (the `scripts` variable) change.
+#_get_extra_scripts caches what get_instance_runtime_scripts returns per
+#trigger, and with no extra scripts that comes from `scripts`. An Ultron
+#drone (a player card put facedown into play as a minion) gets the enemy
+#scripts: a "manual" lookup while it was a drone cached
+#"scripts_exist_but_not_for_your_use_case", and that stayed after the card
+#was turned faceup and its scripts cleared. Back in hand, the card had no
+#play script (cost check "no_manual_sceng"): it could never be played again
+func instance_scripts_changed():
+	_get_extra_scripts_cache = {}
+	queue_refresh_cache()
+
 func remove_extra_script(script_uid):
 	var details = extra_scripts.get(script_uid, {})
 	extra_scripts.erase(script_uid)
@@ -823,6 +835,7 @@ func _card_properties_modified(owner_card, details):
 		var new_value = details.get("new_property_value", "")
 		if new_value in ["villain", "leader", "minion"] and new_value != previous_value  and "emit_signal" in details["tags"]:
 			scripts = SetScripts_All.get_enemy_scripts()
+			instance_scripts_changed()
 		update_groups()
 		update_hero_groups()
 	queue_refresh_cache()
@@ -4131,7 +4144,8 @@ func set_is_faceup(
 				)				
 			if scripts:
 				cfc.LOG("removing extra scripts from card " + canonical_name + " as we turn it faceup")
-				scripts = {}				
+				scripts = {}
+				instance_scripts_changed()
 			
 			_hidden_properties = {}
 
@@ -6051,6 +6065,15 @@ const section_name_tr := {
 	}	
 }
 func get_printed_text(section = "", locale = ""):
+	#a facedown card on the board (an Ultron drone) shows its back and its
+	#printed properties are hidden (see set_is_faceup). Its printed text is
+	#hidden too: only text given to it at runtime (set_properties) is shown.
+	#The printed text comes from the card database (canonical_id), which
+	#doesn't know the card is facedown: a Drone that was a facedown
+	#Helicarrier attacking displayed "Max 1 per player. Action: Exhaust
+	#Helicarrier..." in StackEventDisplay
+	if is_onboard_facedown():
+		return properties.get("text", "") if !section else ""
 	if !locale:
 		locale = TranslationServer.get_locale().to_lower()
 	

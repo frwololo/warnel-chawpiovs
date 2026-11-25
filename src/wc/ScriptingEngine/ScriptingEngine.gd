@@ -1776,6 +1776,8 @@ static func disable_attach_triggers(script: ScriptTask):
 				}
 			] 
 		}
+		if subject.has_method("instance_scripts_changed"):
+			subject.instance_scripts_changed()
 
 func restore_scripts(script: ScriptTask) -> int:
 	var retcode: int = CFConst.ReturnCode.CHANGED
@@ -1798,6 +1800,8 @@ func restore_scripts(script: ScriptTask) -> int:
 				subject.scripts[key] = value
 			else:
 				subject.scripts.erase(key)
+		if subject.has_method("instance_scripts_changed"):
+			subject.instance_scripts_changed()
 	
 	return retcode		
 

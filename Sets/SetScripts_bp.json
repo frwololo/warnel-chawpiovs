@@ -76,11 +76,20 @@
 										"filter_property_name": "cost",
 										"alteration": -2,
 										"trigger": "self"
-									}
+									},								
 								]
 							}
 						}
 					},
+					{
+						"name": "add_script",
+						"end_condition": "card_played",
+						"subject": "previous",
+						"fetch_script": {
+							"script_path": "*/hand",
+							"replace_to_state": "pile"
+						}
+					},					
 					{
 						"name": "force_play_card",
 						"subject": "previous",

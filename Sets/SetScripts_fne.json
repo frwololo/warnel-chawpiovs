@@ -1009,46 +1009,7 @@
 		"once_per_phase": {
 			"__name__": "__damage"
 		},
-		"attack_happened": {
-			"event_filters": {
-				"filter_state_event_target": "filter_same_controller"
-			},
-			"condition_board": {
-				"func_name": "count_tokens",
-				"func_params": {
-					"subject": "self",
-					"token_name": "__damage"
-				}
-			},
-			"board": [
-				{
-					"name": "mod_tokens",
-					"subject": "self",
-					"modification": {
-						"if": {
-							"func_name": "get_scenario_option_value",
-							"func_params": {
-								"option_name": "expert_mode"
-							}
-						},
-						"then": 0,
-						"else": -1
-					},
-					"token_name": "__damage"
-				},
-				{
-					"name": "deal_damage",
-					"amount": 1,
-					"subject": "trigger"
-				},
-				{
-					"name": "add_threat",
-					"subject": "self",
-					"amount": 1
-				}
-			]
-		},
-		"enemy_attack_happened": {
+		"response_attack_happened": {
 			"event_filters": {
 				"filter_state_event_target": "filter_same_controller"
 			},
@@ -1899,7 +1860,7 @@
 					"name": "add_script",
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_subject": "group_friendly_my_hero",
+					"filter_state_seek": "group_friendly_my_hero",
 					"script": {
 						"do_lightning": {
 							"board": {
@@ -1955,7 +1916,7 @@
 					"sequence_ability": "do_lightning",
 					"subject": "boardseek",
 					"subject_count": "all",
-					"filter_state_subject": "group_friendly_my_hero"
+					"filter_state_seek": "group_friendly_my_hero"
 				}
 			]
 		}
@@ -2039,6 +2000,7 @@
 					"var_name": "old_scheme",
 					"var_type": "subject",
 					"value": "main_scheme",
+					"force_run_at_prime": true,
 					"_comments": "the main scheme in your play area"
 				},
 				{
@@ -3477,6 +3439,7 @@
 			]
 		},
 		"card_attached": {
+			"_silent": true,
 			"trigger": "Electric Charge",
 			"event_filters": {
 				"host_card": "self"
@@ -3513,6 +3476,21 @@
 						"Electric Charge"
 					]
 				},
+				{
+					"name": "mod_tokens",
+					"token_name": "charge",
+					"modification": "2p",
+					"subject": "Electric Charge"
+				}				
+			]
+		},
+		"card_attached": {
+			"_silent": true,		
+			"trigger": "Electric Charge",
+			"event_filters": {
+				"host_card": "self"
+			},
+			"board": [
 				{
 					"name": "mod_tokens",
 					"token_name": "charge",
@@ -3724,7 +3702,7 @@
 							],
 							"script": {
 								"do_lightning": {
-									"board": {
+									"hand": {
 										"_rules": {
 											"forced": true
 										},

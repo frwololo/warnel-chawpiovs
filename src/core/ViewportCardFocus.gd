@@ -43,7 +43,24 @@ func resize():
 		card.get_parent().rect_min_size = 	card.card_size*card.scale
 		if is_instance_valid(_back_preview) and _back_preview.visible:
 			_back_preview.set_card_size(card.card_size*card.scale)
+			_sync_back_preview_drawing(card)
 	pass
+
+# The focused dupe is a Node2D drawn with a high z_index (VIEWPORT_FOCUS
+# state: Z_INDEX_TOP_MENU + 500), above hand cards and selection windows.
+# The back preview is a Control: Controls have no z_index property in Godot 3
+# and it was drawn at z 0, behind them. Its canvas item gets the dupe's
+# z_index and transparency (should_hide_viewport_focus) instead.
+var _back_preview_z := [null, null]
+func _sync_back_preview_drawing(dupe_focus: Card) -> void:
+	_back_preview.modulate.a = dupe_focus.modulate.a
+	var z = [dupe_focus.z_index, dupe_focus.z_as_relative]
+	if z == _back_preview_z:
+		return
+	_back_preview_z = z
+	var item = _back_preview.get_canvas_item()
+	VisualServer.canvas_item_set_z_index(item, dupe_focus.z_index)
+	VisualServer.canvas_item_set_z_as_relative_to_parent(item, dupe_focus.z_as_relative)
 	
 
 func display_debug_info():
@@ -405,6 +422,7 @@ func _update_back_preview(card: Card, dupe_focus: Card) -> void:
 		_back_preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_back_preview.focus_mode = Control.FOCUS_NONE
 		right_container.add_child(_back_preview)
+		_back_preview_z = [null, null]
 	right_container.visible = true
 	_back_preview.visible = true
 	if _back_preview.card_id != back_code:
@@ -412,6 +430,7 @@ func _update_back_preview(card: Card, dupe_focus: Card) -> void:
 		_back_preview.texture_normal = null
 		_back_preview.load_card(back_code)
 	_back_preview.set_card_size(dupe_focus.card_size * dupe_focus.scale)
+	_sync_back_preview_drawing(dupe_focus)
 
 # Instantly shows the front or back of a focus dupe to match its
 # is_faceup/is_viewed state, regardless of what its containers currently show

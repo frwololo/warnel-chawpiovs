@@ -1,0 +1,340 @@
+{
+	"_comments": "Test Iceman Chill Out. Bug doesn't add Frostbite",
+	"test_conditions": {
+		"bug_type": "cant_repro",
+	},		
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iceman #46001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Hot-Headed #46024",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Electro - 1 #60076",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Frostbite #46002",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Iceman #46001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pyro #46025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Playing with Fire #46026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pyro's Flamethrower #46027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Burn! #46028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Burn! #46028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electro - 2 #60077",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60135a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60136a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60137a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60138a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Battle in the Bodega - 1B #60134b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bull in a China Shop - 1B #60135b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pawn Shop Showdown - 1B #60137b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A Slice of the Pizza Dough - 1B #60138b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60134a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Suppressing Fire #46014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ice Blast #46010",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [],
+			"misc_encounter1": [
+				{
+					"card": "Hung Out to Dry - 1B #60136b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iceman #46001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cryokinetic Perception #46005",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Chill Out!",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Genius",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Electric Charge #60079",
+					"owner_hero_id": 0,
+					"tokens": {
+						"charge": 2
+					},
+					"host": "60076"
+				},
+				{
+					"card": "Frostbite #46002",
+					"owner_hero_id": 1,
+					"host": "60076"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Chill Out!"
+		},
+		{
+			"type": "target",
+			"value": "Hung out to Dry"
+		},
+		{
+			"type": "target",
+			"value": "Electro - 1 #60076"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Iceman #46001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Hot-Headed #46024",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Electro - 1 #60076",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Iceman #46001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Pyro #46025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Playing with Fire #46026",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pyro's Flamethrower #46027",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Burn! #46028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Burn! #46028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Electro - 2 #60077",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60135a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60136a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60137a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60138a",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Battle in the Bodega - 1B #60134b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Bull in a China Shop - 1B #60135b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Pawn Shop Showdown - 1B #60137b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "A Slice of the Pizza Dough - 1B #60138b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Protection Racket - 1A #60134a",
+					"owner_hero_id": 0
+				}
+			],
+			"deck1": [
+				{
+					"card": "Suppressing Fire #46014",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ice Blast #46010",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [
+				{
+					"card": "Genius",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Chill Out!",
+					"owner_hero_id": 1
+				}
+			],
+			"enemies1": [],
+			"misc_encounter1": [
+				{
+					"card": "Hung Out to Dry - 1B #60136b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Iceman #46001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [],
+			"upgrade_support1": [
+				{
+					"card": "Cryokinetic Perception #46005",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [],
+			"others": [
+				{
+					"card": "Electric Charge #60079",
+					"owner_hero_id": 0,
+					"tokens": {
+						"charge": 2
+					},
+					"host": "60076"
+				},
+				{
+					"card": "Frostbite #46002",
+					"owner_hero_id": 1,
+					"host": "60076"
+				},
+				{
+					"card": "Frostbite #46002",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	}
+}

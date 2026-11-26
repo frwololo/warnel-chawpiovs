@@ -908,7 +908,11 @@
 		}
 	},
 	"Shadowcat - Kitty Pryde": {
-		"self_moved_to_board": {
+		"card_played": {
+			"trigger": "self",
+			"event_filters": {
+				"from": "hand_my_hero"
+			},
 			"board": [
 				{
 					"name": "nop",
@@ -923,7 +927,7 @@
 				},
 				{
 					"name": "add_script",
-					"end_condition": "phase_ended",
+					"end_condition": "round_ended",
 					"subject": "self",
 					"script": {
 						"alterants": {

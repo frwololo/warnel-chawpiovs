@@ -773,7 +773,7 @@
 				}
 			]
 		},
-		"_comments": "the removal itself is not prevented: the same amount is placed on the minion (trigger_details_amount, as Traffic Jam). Redemption's own effect is still a TODO"
+		"_comments": "the removal itself is not prevented: the same amount is placed on the minion (trigger_details_amount, as Traffic Jam)"
 	},
 	"The Raft": {
 		"response": {
@@ -1457,7 +1457,126 @@
 		}
 	},
 	"Redemption": {
-		"TODO": "take control of attached minion as a Redeemed ally"
+		"card_attached": {
+			"trigger": "self",
+			"board": [
+				{
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "host"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "my_minion",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "ally",
+						"shortname": "Redeemed",
+						"trait_redeemed": 1,
+						"thwart": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "my_minion",
+								"property": "scheme"
+							}
+						},
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "my_minion",
+								"property": "attack"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "my_minion",
+								"property": "health"
+							}
+						},
+						"thwart_cost": 1,
+						"attack_cost": 1
+					}
+				},
+				{
+					"name": "add_script",
+					"subject": "my_minion",
+					"script": {
+						"manual": {
+							"board": {
+								"thwart": [
+									{
+										"name": "constraints",
+										"is_cost": true,
+										"tags": [
+											"as_action"
+										]
+									},
+									{
+										"name": "exhaust_card",
+										"subject": "self",
+										"is_cost": true
+									},
+									{
+										"name": "thwart",
+										"subject": "target",
+										"is_cost": true,
+										"needs_subject": true,
+										"tags": [
+											"thwart",
+											"basic power"
+										],
+										"filter_state_subject": [
+											{
+												"filter_group": "group_schemes"
+											}
+										]
+									}
+								],
+								"attack": [
+									{
+										"name": "constraints",
+										"is_cost": true,
+										"tags": [
+											"as_action"
+										]
+									},
+									{
+										"name": "exhaust_card",
+										"subject": "self",
+										"is_cost": true
+									},
+									{
+										"name": "attack",
+										"subject": "target",
+										"is_cost": true,
+										"needs_subject": true,
+										"tags": [
+											"attack",
+											"basic power"
+										],
+										"filter_state_subject": [
+											{
+												"filter_group": "group_enemies"
+											}
+										]
+									}
+								]
+							}
+						}
+					}
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_minion"
+				}
+			]
+		},
+		"_comments": "approximation as for Ultron drones: the minion is moved facedown (blank text box) to the allies of the player it was engaged with, as a Redeemed ally. THW = printed SCH, ATK and hit points = printed values (damage tokens stay), 1 consequential damage after thwart/attack (thwart_cost/attack_cost). A facedown card only gets the scripts given to it, so its basic thwart/attack are added (same as SetScripts_All for allies)"
 	},
 	"White Wolf - Hunter": {
 		"attack_happened": {

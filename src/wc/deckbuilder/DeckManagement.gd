@@ -268,6 +268,11 @@ func get_focus_owner():
 
 func _load_heroes():
 	for hero_id in cfc.hero_ids:
+		#later forms of a hero (Ironheart 29002a, 29003a) share its display
+		#name: the last one used to replace the first one in
+		#hero_names_to_id, and new Ironheart decks started in the final form
+		if !cfc.is_base_hero_form(hero_id):
+			continue
 		#skip heroes that are not implemented
 		var hero_card_data = cfc.get_card_by_id(hero_id)
 		var alter_ego_id =  hero_card_data.get("back_card_code", "undef")
@@ -327,6 +332,8 @@ func _filter_decks(hero_id = ""):
 	else:
 		var names_to_id = {}
 		for my_hero_id in cfc.hero_ids:
+			if !cfc.is_base_hero_form(my_hero_id):
+				continue
 			var hero_card_data = cfc.get_card_by_id(my_hero_id)
 			var alter_ego_id =  hero_card_data.get("back_card_code", "undef")			
 			var hero_name = cfc.get_card_name_by_id(my_hero_id)

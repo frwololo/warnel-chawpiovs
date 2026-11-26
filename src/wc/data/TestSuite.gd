@@ -46,6 +46,9 @@ const POLL_EVERY_FRAME = true
 const SPEED_UP_GAME = true
 const SETTLE_FRAMES_SOLO := 10
 const SETTLE_FRAMES_MULTIPLAYER := 20
+#remote clients: how long finalize_test_allclients waits at most for the
+#master's last stack event to be resolved locally before checking the end state
+const REMOTE_FINALIZE_MAX_WAIT_MS := 5000
 #minimum delay between two test steps, even when the game is settled
 const MIN_STEP_TIME_IDLE := 0.05
 var _settled_frames := 0
@@ -1327,7 +1330,7 @@ func get_card_in_hero_board(card_id, hero_id):
 					
 #Check the end state for the current test
 func finalize_test():
-	cfc._rpc(self,"finalize_test_allclients", forced_status)	
+	cfc._rpc(self,"finalize_test_allclients", forced_status, 1, gameData.theStack.current_stack_uid)
 	return
 
 mastersync func test_finalized(result):
@@ -1386,7 +1389,13 @@ func check_test_passed(current_gamestate):
 	
 	return true
 
-remotesync func finalize_test_allclients(force_status:int, attempts = 1):
+#master_stack_uid: the master's current_stack_uid when it decided the test
+#was over. The master only waits for its own state to settle: a slower
+#remote client could still be resolving the last action (or not have
+#received it yet) and was checked too early, then once more 0.3 s later.
+#test_2p_hand_cannon failed this way on the remote client (villain without
+#damage: the Hand Cannon attack hadn't resolved there yet)
+remotesync func finalize_test_allclients(force_status:int, attempts = 1, master_stack_uid = -1):
 	var result = force_status
 	#last minute cleanup
 	cancel_targeting()
@@ -1400,6 +1409,20 @@ remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 			TestStatus.SKIPPED:
 				skipped.append(current_test_file)
 		return
+
+	if master_stack_uid >= 0 and !cfc.is_game_master():
+		var wait_start = OS.get_ticks_msec()
+		var max_wait_ms = REMOTE_FINALIZE_MAX_WAIT_MS * get_delay_multiplier()
+		while OS.get_ticks_msec() - wait_start < max_wait_ms:
+			if gameData.theStack.current_stack_uid >= master_stack_uid and is_locally_done():
+				break
+			yield(get_tree(), "idle_frame")
+		var waited = OS.get_ticks_msec() - wait_start
+		if waited > 0:
+			add_elapsed("remote finalize wait for the master's stack", waited, 1)
+		trace("finalize: local stack uid " + str(gameData.theStack.current_stack_uid) \
+				+ ", master " + str(master_stack_uid) + ", waited " + str(waited) + "ms")
+
 	var current_gamestate = gameData.save_gamedata()
 	
 	if check_test_passed(current_gamestate):
@@ -1410,7 +1433,7 @@ remotesync func finalize_test_allclients(force_status:int, attempts = 1):
 			#might be a timing thing, we retry
 			announce("test failure, retrying\n")
 			yield(get_tree().create_timer(0.3), "timeout")			
-			finalize_test_allclients(force_status, attempts-1)
+			finalize_test_allclients(force_status, attempts-1, master_stack_uid)
 			return
 		failed.append(current_test_file)
 		var trace_text = ""

@@ -3147,7 +3147,7 @@ func remove_threat(modification: int, script = null) -> int:
 		#some main schemes such as countdown to oblivion give themselves crisis,
 		#so it's ok to include the card itself in there
 		for card in all_cards:
-			#we add all acceleration tokens	
+			#we add all crisis tokens	
 			var crisis = card.get_property("scheme_crisis", 0, true)
 			if crisis:
 				if !self in card.get_active_main_schemes(): #last verification to make sure that the crisis card considers this main scheme as an active main scheme

@@ -396,47 +396,77 @@ static func get_villains_ids_from_set(card_set_code):
 	return result
 
 static func get_scheme_from_villain(villain_id):
+	var candidates = get_schemes_from_villain(villain_id)
+	return candidates[0] if candidates else {}
+
+#all the scenarios villain_id can be found in, as {scheme_id, expert}, in
+#_scenarios.json order. A villain can be in several scenarios (Electro in
+#5 of them in the Daredevil box)
+static func get_schemes_from_villain(villain_id) -> Array:
 	if !primitives:
 		_load_card_scenarios()	
 			
 	if !villain_id:
-		return {}
+		return []
 		
 	var villain_data = cfc.get_card_by_id(villain_id)
 	if !villain_data:
-		return {}
+		return []
 		
-	
+	var results = []
 	for scheme_id in primitives:
 		for expert in [false, true]:
 			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
 			for villain_ids in villain_groups:
 				if villain_id in villain_ids:
-					return {
+					results.append({
 						"scheme_id": scheme_id,
 						"expert": expert
-					}
+					})
+					break
+	if results:
+		return results
 	
 	#fallback, we try all villains in the set
 	var all_associated_villains = get_villains_ids_from_set(villain_data["card_set_code"])	
 	for scheme_id in primitives:
 		for expert in [false, true]:
 			var villain_groups = get_villain_id_groups_from_scheme(scheme_id, expert)
+			var found = false
 			for villain_ids in villain_groups:
 				for potential_match in all_associated_villains:
 					if potential_match in villain_ids:
-						return {
-							"scheme_id": scheme_id,
-							"expert": expert
-						}
-						
-	return {}
-	
-func load_from_villain(villain_id):
-	var scheme_info = get_scheme_from_villain(villain_id) 
-	if !scheme_info:
+						found = true
+						break
+				if found:
+					break
+			if found:
+				results.append({
+					"scheme_id": scheme_id,
+					"expert": expert
+				})
+	return results
+
+#board_card_ids: ids of the cards in play. When the villain is in several
+#scenarios, the scenario owning one of these cards as a scheme is picked
+#(e.g. a test with Electro and Hung Out to Dry in play is Protection Racket,
+#with its "main_scheme_per_player" setting)
+func load_from_villain(villain_id, board_card_ids:Array = []):
+	var candidates = get_schemes_from_villain(villain_id)
+	if !candidates:
 		var _error = 1
 		return
+	var scheme_info = candidates[0]
+	if candidates.size() > 1 and board_card_ids:
+		for candidate in candidates:
+			var found = false
+			for scheme in get_schemes(candidate["scheme_id"]):
+				if scheme.get("_code", "") in board_card_ids:
+					found = true
+					break
+			if found:
+				scheme_info = candidate
+				break
 
 	var scheme_id = scheme_info["scheme_id"]
 	var expert = scheme_info["expert"]

@@ -1354,6 +1354,27 @@ func remove_one_deck(deck_id):
 	
 	deck_definitions.erase(deck_id)		
 
+#The form a hero starts the game in. Ironheart has 3 hero cards in the same
+#set (29001a, 29002a, 29003a, all "Ironheart - Riri Williams"): only the
+#first one is a hero to pick or to build a deck for, the others are forms
+#it changes into during the game
+func get_base_hero_form(hero_id) -> String:
+	var hero_data = card_definitions.get(hero_id, {})
+	if hero_data.get("type_code", "") != "hero":
+		return hero_id
+	var set_code = hero_data.get("card_set_code", "").to_lower()
+	var result = hero_id
+	for card_data in cards_by_set.get(set_code, []):
+		if card_data.get("type_code", "") != "hero":
+			continue
+		var card_id = card_data.get("_code", "")
+		if card_id.ends_with("a") and card_id < result:
+			result = card_id
+	return result
+
+func is_base_hero_form(hero_id) -> bool:
+	return get_base_hero_form(hero_id) == hero_id
+
 func get_deck_hero_id(json_deck_data):
 	return json_deck_data.get("hero_code",json_deck_data.get("investigator_code", ""))
 	
@@ -1366,6 +1387,15 @@ func load_one_deck(json_deck_data, filepath = ""):
 	var hero_id = get_deck_hero_id(json_deck_data)
 
 	#Begin data fixes
+	#decks made for a later form of a hero (the deck editor used to create
+	#Ironheart decks for 29003a) start with its first form
+	var base_hero_id = get_base_hero_form(hero_id)
+	if base_hero_id != hero_id:
+		var slots = json_deck_data.get("slots", {})
+		if slots.has(hero_id):
+			slots[base_hero_id] = slots[hero_id]
+			slots.erase(hero_id)
+		hero_id = base_hero_id
 	json_deck_data["hero_code"] = hero_id
 	json_deck_data["filepath"] = filepath
 	#End data fixes

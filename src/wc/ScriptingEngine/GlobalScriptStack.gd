@@ -1727,6 +1727,23 @@ func _filter_potential_interrupters(potential_interrupters):
 			
 
 
+#A client that started more sequence steps than this one is busy with the
+#step this client is about to start, not with older work: it passed this
+#same check, and is most likely waiting for this client to run the step too.
+#Without this, test_2p_treachery_blood_to_spare deadlocked now and then: the
+#last client to finish the previous stack event saw the other one idle,
+#started the Blood to Spare step and went PENDING_USER_INTERACTION in the
+#same frame. Its NOTHING_TO_RUN status arrived together with
+#PENDING_USER_INTERACTION, so the other client never saw it idle, never
+#started the step, and both waited for each other.
+func _client_started_next_sequence_step(client_id) -> bool:
+	if client_id == cfc.get_network_unique_id():
+		return false
+	var remote_steps = get_client_status(client_id, "sequence_steps_started")
+	if typeof(remote_steps) != TYPE_INT:
+		return false
+	return remote_steps > gameData.sequence_steps_started
+
 func update_local_client_status():
 	_local_status_counter += 1
 	var my_network_id = cfc.get_network_unique_id()
@@ -1735,6 +1752,7 @@ func update_local_client_status():
 		"run_mode": run_mode,
 		"current_stack_uid": self.current_stack_uid,
 		"user_busy": _local_user_busy,
+		"sequence_steps_started": gameData.sequence_steps_started,
 	}
 
 #true while this client shows something its player has to look at or answer
@@ -1952,7 +1970,8 @@ func is_player_allowed_to_click(card = null) -> bool:
 			
 	return true
 
-func is_phasecontainer_allowed_to_next_step():
+#for_sequence: the check is for starting the next villain sequence step
+func is_phasecontainer_allowed_to_next_step(for_sequence := false):
 #	if !stack.empty():
 #		return false
 #
@@ -1965,6 +1984,8 @@ func is_phasecontainer_allowed_to_next_step():
 	for client_id in all_clients_status:
 		var _run_mode = get_client_status(client_id, "run_mode")
 		if _run_mode != RUN_MODE.NOTHING_TO_RUN:
+			if for_sequence and _client_started_next_sequence_step(client_id):
+				continue
 			return false
 				
 	match run_mode:

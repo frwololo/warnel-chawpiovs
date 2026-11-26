@@ -670,7 +670,7 @@
 	},
 	"46021": {
 		"alternate_art": true
-	},	
+	},
 	"47020": {
 		"text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
 		"real_text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
@@ -735,5 +735,8 @@
 	},
 	"60093": {
 		"boost": 1
+	},
+	"60178": {
+		"scheme_crisis": 1
 	}
 }

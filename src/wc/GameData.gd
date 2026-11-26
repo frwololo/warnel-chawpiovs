@@ -2869,6 +2869,11 @@ func get_ordered_hero_id(i):
 	return hero_id
 
 var _ready_for_next_sequence = true
+#number of villain sequence steps this client started in this game. Sent to the other
+#clients with the run mode (GlobalScriptStack.update_local_client_status):
+#all clients run the same steps in the same order, so a client with a higher
+#count has already started the step this client is about to start
+var sequence_steps_started:int = 0
 #the sequence step whose execute_scripts is still running, for the F9 dump
 var _sequence_step_waiting = ""
 func get_sequence_scripts(include_low_priority = false):
@@ -2906,7 +2911,7 @@ func get_sequence_wait_reason() -> String:
 		if !theStack.is_idle():
 			return "stack not idle"
 	if next_play_event["is_villain"]:
-		if !theStack.is_phasecontainer_allowed_to_next_step():
+		if !theStack.is_phasecontainer_allowed_to_next_step(true):
 			return "villain sequence: phase container not allowed to next step"
 	elif !theStack.is_player_allowed_to_click():
 		return "player sequence: player not allowed to click"
@@ -2953,7 +2958,7 @@ func sequence_queue_is_ready():
 		var _tmp = 1
 	
 	if next_play_event["is_villain"]:
-		if !gameData.theStack.is_phasecontainer_allowed_to_next_step():
+		if !gameData.theStack.is_phasecontainer_allowed_to_next_step(true):
 			return false		
 	else:	
 		#we already sent a request and should be waiting for full resolution	
@@ -2971,6 +2976,9 @@ func play_scripted_sequence():
 	_ready_for_next_sequence = false
 	#sequence_queue_is_ready() picks the high priority queue whenever it has something
 	var is_high_priority = !scripted_play_sequence.empty()
+	#only villain steps: every client starts them, through the same check
+	if ok_queue.front()["is_villain"]:
+		sequence_steps_started += 1
 	check_flow_start("sequence" if is_high_priority else "sequence_low", str(ok_queue.front()["card"].canonical_name))
 	var next_play_event = ok_queue.pop_front()
 	theStack.log_flow("sequence" if is_high_priority else "sequence_low", \
@@ -3353,6 +3361,7 @@ func erase_pending_scripts():
 	_priority_scripts = []
 	scripted_play_sequence = []
 	scripted_play_sequence_low_priority = []
+	sequence_steps_started = 0
 	#a step left running by the previous game or test must not block the next one
 	_ready_for_next_sequence = true
 	_sequence_step_waiting = ""
@@ -3516,6 +3525,23 @@ func save_gamedata_to_file(path):
 	file.close()
 
 #loads current game data from a json structure (rpc call to all clients)
+#ids of all the cards of a saved board, including attachments ("others").
+#Used to find the scenario of saves without one (test suite)
+func _get_board_card_ids(json_data:Dictionary) -> Array:
+	var result = []
+	var board = json_data.get("board", {})
+	for grid_name in board:
+		var cards = board[grid_name]
+		if typeof(cards) != TYPE_ARRAY:
+			continue
+		for card_def in cards:
+			if typeof(card_def) != TYPE_DICTIONARY or !card_def.get("card", ""):
+				continue
+			var card_id = cfc.get_corrected_card_id(card_def["card"])
+			if card_id:
+				result.append(card_id)
+	return result
+
 func load_gamedata(json_data:Dictionary):
 	json_data = WCUtils.replace_real_to_int(json_data)
 	gamesave_load_status = {}
@@ -3582,8 +3608,8 @@ remotesync func remote_load_gamedata(json_data:Dictionary):
 		if villain_def:
 			villain_def = villain_def[0].get("card", {})
 		if villain_def:
-			var villain_id = cfc.get_corrected_card_id(villain_def)		
-			scenario.load_from_villain(villain_id)
+			var villain_id = cfc.get_corrected_card_id(villain_def)
+			scenario.load_from_villain(villain_id, _get_board_card_ids(json_data))
 
 	#Board State ()
 	cfc.NMAP.board.loadstate_from_json(json_data)

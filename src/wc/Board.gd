@@ -588,6 +588,8 @@ func grid_setup():
 				grid.set_display_name(grid_info.get("display_name", ""))
 				var bg_color = grid_info.get("bg_color", Color(0.0, 0.0,0.0))
 				if typeof(bg_color) == TYPE_STRING and (bg_color == "hero_color"):
+					#set to 0 as a backup
+					bg_color = Color(0.0, 0.0,0.0)
 					var meta_colors = gameData.get_hero_meta_colors(hero_id)
 					if meta_colors.size() > 0:
 						bg_color = meta_colors[0]

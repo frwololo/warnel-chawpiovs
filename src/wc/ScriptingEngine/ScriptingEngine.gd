@@ -311,6 +311,16 @@ func move_card_to_board(script: ScriptTask) -> int:
 
 		script.script_definition = _compute_move_zones(subject, script)	
 
+		#a card in play can interrupt or respond to a minion engaging
+		#(Target Spotter): the engagement becomes its own stack event,
+		#which moves the card when it resolves (engage_minion)
+		if !script.script_definition.get("_engage_now", false):
+			var engage_grid = script.script_definition.get("grid_name", "")
+			if gameData.engage_minion_needs_stack(card, engage_grid):
+				gameData.add_engage_minion_to_stack(card, engage_grid, script.owner, script.get_property(SP.KEY_TAGS, []))
+				result = CFConst.ReturnCode.CHANGED
+				continue
+
 		if card.is_boost():
 			card.set_is_boost(false)
 			card._clear_attachment_status()
@@ -336,6 +346,16 @@ func move_card_to_board(script: ScriptTask) -> int:
 	script.set_subjects(subjects)
 	script.script_definition = backup
 	return result
+
+#a minion engaging a player, as its own stack event (see
+#GameData.add_engage_minion_to_stack): the move itself
+func engage_minion(script: ScriptTask) -> int:
+	if !script.subjects:
+		return CFConst.ReturnCode.FAILED
+	if (costs_dry_run()):
+		return CFConst.ReturnCode.CHANGED
+	script.script_definition["_engage_now"] = true
+	return move_card_to_board(script)
 
 func engage_player(script: ScriptTask) -> int:
 	script.script_definition["tags"] = add_tags_to_tags(script.get_property("tags", []), ["force_detach"])

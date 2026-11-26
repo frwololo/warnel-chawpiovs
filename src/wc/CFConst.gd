@@ -325,6 +325,16 @@ const OPTIONAL_SIGNALS:= [
 		
 	"villain_unique_card_conflict",
 ]
+#tasks that are their own stack event only when a card in play can interrupt
+#or respond to them (otherwise they run right away, without a stack event).
+#Their interrupts/responses are registered like signals (see
+#CardTemplate._compute_signal_registrations)
+#engage_minion: a minion engaging a player (Target Spotter: "When a minion
+#would engage a player")
+const OPTIONAL_STACK_TASKS:= [
+	"engage_minion",
+]
+
 #unless a card registers an interrupt, these signals will
 #be emitted directly without being added to the stack
 #this is an optimization to avoid calling the stack constantly for games that don't need it

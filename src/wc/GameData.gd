@@ -49,7 +49,9 @@ enum EncounterStatus {
 	OK_TO_EXECUTE,
 	PENDING_COMPLETE,
 	ENCOUNTER_COMPLETE,
-	ENCOUNTER_POST_COMPLETE
+	ENCOUNTER_POST_COMPLETE,
+	PENDING_ENGAGE, #a revealed minion's engage_minion is on the stack
+	ENGAGED, #that engage_minion was executed or prevented
 }
 
 
@@ -61,7 +63,9 @@ const EncounterStatusStr = [
 	"OK_TO_EXECUTE",
 	"PENDING_COMPLETE",
 	"ENCOUNTER_COMPLETE",
-	"ENCOUNTER_POST_COMPLETE"
+	"ENCOUNTER_POST_COMPLETE",
+	"PENDING_ENGAGE",
+	"ENGAGED",
 ]
 
 const _GAME_OVER_SCENE_FILE = CFConst.PATH_CUSTOM + "board/GameOver.tscn"
@@ -319,6 +323,9 @@ func _script_executed_from_stack (script):
 			return
 		"reveal_encounter":	
 			encounter_revealed() #this forces passing to the next step		
+			return
+		"engage_minion":
+			encounter_engaged(script)
 			return
 		"enemy_attack_happened", "enemy_scheme_happened":	
 			enemy_action_happened() #this forces passing to the next step
@@ -2452,6 +2459,14 @@ func reveal_encounter(delta:float):
 			_current_encounter.lock_controller_hero_id()
 					
 			var grid: BoardPlacementGrid = get_encounter_target_grid(_current_encounter)
+			#a card in play can interrupt or respond to a minion engaging
+			#(Target Spotter): the engagement is its own stack event
+			if grid and engage_minion_needs_stack(_current_encounter, grid.name):
+				#status first: encounter_engaged only acts in PENDING_ENGAGE
+				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_ENGAGE. Target_id " + str(target_id))
+				_current_encounter.encounter_status = EncounterStatus.PENDING_ENGAGE
+				add_engage_minion_to_stack(_current_encounter, grid.name)
+				return
 			var slot: BoardPlacementSlot = grid.find_available_slot()
 			if slot:
 				_current_encounter.move_to(cfc.NMAP.board, -1, slot)
@@ -2459,7 +2474,18 @@ func reveal_encounter(delta:float):
 				display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE. Target_id " + str(target_id))
 				_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE
 			else:
-				push_error("encounter ERROR: Missing target grid in reval_encounters")	
+				push_error("encounter ERROR: Missing target grid in reval_encounters")
+		EncounterStatus.PENDING_ENGAGE:
+			#waiting for the engage_minion stack event (encounter_engaged)
+			return
+		EncounterStatus.ENGAGED:
+			#the engagement may have been prevented (the minion is still in
+			#the revealed encounters pile, or was engaged elsewhere by the
+			#interrupt): post_reveal only for a minion that made it to the board
+			if _current_encounter.get_parent() == cfc.NMAP.board:
+				_current_encounter.execute_scripts(_current_encounter, "post_reveal") 
+			display_debug("encounter: " + _current_encounter.canonical_name + " moving to PENDING_COMPLETE. Target_id " + str(target_id))
+			_current_encounter.encounter_status = EncounterStatus.PENDING_COMPLETE	
 		EncounterStatus.PENDING_COMPLETE:
 			#there has to be a better way.... wait for a signal somehow ?
 			if cfc.get_modal_menu():
@@ -2520,6 +2546,59 @@ func encounter_revealed():
 	_current_encounter.encounter_status = EncounterStatus.OK_TO_EXECUTE
 	return
 
+#the revealed minion's engage_minion was executed or prevented
+func encounter_engaged(stack_event):
+	if !_current_encounter:
+		return
+	if _current_encounter.encounter_status != EncounterStatus.PENDING_ENGAGE:
+		return
+	var task = stack_event.get_tasks()[0] if stack_event.get_tasks() else null
+	if !task or !(_current_encounter in task.subjects):
+		return
+	display_debug("encounter_engaged: going from PENDING_ENGAGE to ENGAGED")
+	_current_encounter.encounter_status = EncounterStatus.ENGAGED
+
+#A minion engaging a player is a stack event (engage_minion, interruptible
+#and respondable like any task: "interrupt_engage_minion") only when a card
+#in play has an interrupt or response for it (Target Spotter). Otherwise the
+#minion is moved right away as before: no stack event, no pause (same idea as
+#boost_card_revealed). Only plain minions: a card put into play facedown as
+#a minion (Ultron drone) keeps its direct move
+func engage_minion_needs_stack(card, grid_name:String) -> bool:
+	if !is_instance_valid(card):
+		return false
+	if !grid_name.begins_with("enemies"):
+		return false
+	if card.get_property("type_code", "") != "minion":
+		return false
+	#already engaged with that player
+	if card.get_parent() == cfc.NMAP.board and card.get_grid_name() == grid_name:
+		return false
+	return scripting_bus.get_signal_registered("engage_minion") == WCScriptingBus.SignalLevel.INTERRUPT
+
+#engage_minion moves the card to grid_name when the stack executes it
+func add_engage_minion_to_stack(card, grid_name:String, owner = null, tags = []):
+	if !owner:
+		owner = card
+	#tags can also be an if/then/else dictionary (see add_tags_to_tags)
+	tags = tags.duplicate(true) if typeof(tags) in [TYPE_ARRAY, TYPE_DICTIONARY] else []
+	var hero_id = get_grid_controller_hero_id(grid_name)
+	var definition = {
+		"name": "engage_minion",
+		"grid_name": grid_name,
+		"target_hero_id": hero_id,
+		"tags": tags,
+	}
+	var details = {
+		"target_identity": get_identity_card(hero_id),
+		"target_hero_id": hero_id,
+	}
+	var task = ScriptTask.new(owner, definition, card, details)
+	task.set_subjects([card])
+	var stack_event = SimplifiedStackScript.new(task)
+	stack_event.add_log("engage_minion: " + card.canonical_name + " to " + grid_name)
+	theStack.add_script(stack_event)
+
 #TODO need to move this to some configuration driven logic
 func get_encounter_target_grid (encounter) -> BoardPlacementGrid:
 	var typecode = encounter.properties.get("type_code", "")
@@ -2557,6 +2636,8 @@ func _stack_event_deleted(event):
 #			defenders_chosen()
 		"reveal_encounter":	
 			encounter_revealed()				
+		"engage_minion":
+			encounter_engaged(event)
 
 var _active_main_scheme = null
 func set_active_main_scheme(new_scheme):

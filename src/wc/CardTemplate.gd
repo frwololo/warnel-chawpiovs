@@ -1755,7 +1755,7 @@ func register_signals():
 #[[signal name, has interrupt or response], ...]. Read only: scripts aren't modified
 static func _compute_signal_registrations(tmp_scripts) -> Array:
 	var result = []
-	for trigger in CFConst.OPTIONAL_SIGNALS + CFConst.NO_STACK_BY_DEFAULT_SIGNALS:
+	for trigger in CFConst.OPTIONAL_SIGNALS + CFConst.NO_STACK_BY_DEFAULT_SIGNALS + CFConst.OPTIONAL_STACK_TASKS:
 		if WCUtils.has_interrupt_or_response (tmp_scripts, trigger):
 			result.append([trigger, true])
 		else:

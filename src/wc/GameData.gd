@@ -855,6 +855,10 @@ func game_state_changed(_trigger_object = null,
 	cfc.flush_cache()
 
 func init_network_players(players:Dictionary):
+	#start from scratch: a previous game (e.g. single player, network id 1)
+	#must not leave its players behind
+	network_players = {}
+	id_to_network_id = {}
 	for player_network_id in players:
 		if is_multiplayer_game and (player_network_id != cfc.get_network_unique_id()):
 				networkManager.set_peer_timeout(player_network_id, 1000, 5000, 15000)

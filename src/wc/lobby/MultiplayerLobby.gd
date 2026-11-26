@@ -37,6 +37,12 @@ var room_code = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	#init_1player() sets is_multiplayer_game to false and nothing set it back:
+	#after a single player game, cfc._rpc delivered the lobby's RPCs locally
+	#(deferred) instead of sending them. set_network_player_index ran after
+	#_launch_game, so init_network_players got the host's entry without its
+	#"id" and crashed, and the other players never got launch_client_game
+	gameData.is_multiplayer_game = true
 
 	launch_button.disabled = true
 	cfc.default_button_focus(v_buttons)

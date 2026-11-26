@@ -1,0 +1,172 @@
+{
+	"_comments": "Target Spotter: interrupt when a minion would engage from a card effect (Infiltration puts the discarded Vulture into play engaged). Its last counter is used, so it is discarded (Uses); Vulture's Quickstrike does not attack",
+	"test_conditions": {
+		"ignore_order": [
+			"discard1"
+		]
+	},
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther #51001a"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 5
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Assault #01187"
+				},
+				{
+					"card": "Vulture #01167"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Target Spotter #51038",
+					"owner_hero_id": 1,
+					"tokens": {
+						"target": 1
+					}
+				}
+			],
+			"enemies1": [],
+			"hand1": [
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "For Justice!",
+					"owner_hero_id": 1
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "play",
+			"value": "Infiltration #51015"
+		},
+		{
+			"type": "choose",
+			"value": "3",
+			"_comments": "discard 3 cards from the encounter deck"
+		},		
+		{
+			"type": "target",
+			"value": "01097b"
+		},		
+
+
+		{
+			"type": "select",
+			"value": "Vulture #01167",
+			"_comments": "put the discarded minion into play engaged"
+		},
+		{
+			"type": "activate",
+			"value": "Target Spotter #51038",
+			"_comments": "use Target Spotter's interrupt when Vulture would engage"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther #51001a"
+				}
+			}
+		],
+		"board": {
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"discard_villain": [
+				{
+					"card": "Assault #01187"
+				},			
+				{
+					"card": "Hydra Mercenary"
+				},
+
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Vulture #01167",
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"upgrade_support1": [],
+			"discard1": [
+				{
+					"card": "For Justice!"
+				},
+				{
+					"card": "Infiltration #51015"
+				},
+				{
+					"card": "Target Spotter #51038"
+				}
+			]
+		}
+	}
+}

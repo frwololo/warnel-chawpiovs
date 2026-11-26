@@ -81,7 +81,7 @@
 										"filter_property_name": "cost",
 										"alteration": -2,
 										"trigger": "self"
-									},								
+									}
 								]
 							}
 						}
@@ -99,10 +99,10 @@
 							"script_path": "*/hand",
 							"replace_to_state": "pile"
 						}
-					},					
+					},
 					{
 						"name": "force_play_card",
-						"subject": "previous",
+						"subject": "previous"
 					}
 				]
 			}
@@ -579,8 +579,7 @@
 				{
 					"name": "ask_integer",
 					"ask_int_min": 1,
-					"ask_int_max": 5,
-					"is_cost": true
+					"ask_int_max": 5
 				},
 				{
 					"name": "discard",
@@ -594,10 +593,20 @@
 					"var_name": "my_discarded",
 					"var_type": "subject",
 					"value": "previous"
-				},
+				}
+			]
+		},
+		"card_played": {
+			"trigger": "self",
+			"all": [
 				{
 					"name": "thwart",
-					"amount": "retrieve_integer",
+					"amount": {
+						"func_name": "count_cards",
+						"func_params": {
+							"subject": "my_discarded"
+						}
+					},
 					"subject": "a_scheme"
 				},
 				{
@@ -614,10 +623,6 @@
 						}
 					]
 				},
-				{
-					"name": "forget_variable",
-					"var_name": "my_discarded"
-				}
 			]
 		},
 		"_comments": "filter_is_included_in reads a script variable (see SP.check_included_in_filter), so the discarded cards are saved as my_discarded (Card Shark pattern: discard, then save_variable previous)"
@@ -1595,7 +1600,46 @@
 			"__name__": "target",
 			"__amount__": 2
 		},
-		"TODO": "When a minion would engage a player, remove a counter → it cannot activate this phase; engage it"
+		"interrupt_engage_minion": {
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "target",
+					"modification": -1,
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "add_script",
+					"subject": "trigger_details_target",
+					"end_condition": "phase_ended",
+					"script": {
+						"alterants": {
+							"board": [
+								{
+									"filter_task": "get_property",
+									"filter_property_name": "cannot_activate",
+									"alteration": 1,
+									"trigger": "self"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "prevent",
+					"subject": "interrupted_event"
+				},
+				{
+					"name": "engage_player",
+					"subject": "trigger_details_target",
+					"target_identity": "my_hero",
+					"_engage_now": true
+				}
+			]
+		},
+		"_comments": "engage_minion is the stack event of a minion engaging a player (GameData.add_engage_minion_to_stack); its target is the minion. \"Engage that minion\": the engagement is replaced by one with Target Spotter's controller (_engage_now: moved right away, so it does not raise a new engage_minion)"
 	},
 	"Joystick": {
 		"interrupt": {

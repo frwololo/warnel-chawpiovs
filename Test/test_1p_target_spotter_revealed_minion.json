@@ -1,0 +1,157 @@
+{
+	"_comments": "Target Spotter: interrupt when a revealed minion would engage. Vulture (Quickstrike) cannot activate until the end of the phase, so it does not attack when it engages",
+	"init": {
+		"phase": "VILLAIN_DEAL_ENCOUNTER",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther #51001a"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				},
+				{
+					"card": "Vulture #01167"
+				}
+			],
+			"deck1": [
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"__can_change_form": 1
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Target Spotter #51038",
+					"owner_hero_id": 1,
+					"tokens": {
+						"target": 2
+					}
+				}
+			],
+			"enemies1": [],
+			"hand1": []
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Target Spotter #51038",
+			"_comments": "use Target Spotter's interrupt when Vulture would engage"
+		},
+		{
+			"type": "other",
+			"value": "wait_for_player_turn"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "Black Panther #51001a"
+				}
+			}
+		],
+		"board": {
+			"villain": [
+				{
+					"card": "01094"
+				}
+			],
+			"schemes": [
+				{
+					"card": "01097b",
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
+			"deck_villain": [
+				{
+					"card": "Advance #01186"
+				}
+			],
+			"identity1": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 0
+					}
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Target Spotter #51038",
+					"owner_hero_id": 1,
+					"tokens": {
+						"target": 1
+					}
+				}
+			],
+			"enemies1": [
+				{
+					"card": "Vulture #01167",
+					"tokens": {
+						"damage": 0
+					}
+				}
+			]
+		}
+	}
+}

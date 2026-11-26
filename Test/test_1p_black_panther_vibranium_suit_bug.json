@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -28,12 +28,12 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Vibranium Suit"
+					"card": "Vibranium Suit #01049"
 				},			
 			],
 			"identity1": [
 				{
-					"card": "Black Panther",
+					"card": "Black Panther #01040a",
 				}
 			],
 			"hand1": [
@@ -41,7 +41,7 @@
 					"card": "Wakanda Forever!"
 				},		
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},
 			]
 		}
@@ -53,7 +53,7 @@
 		},
 		{
 			"type": "select",
-			"value": ["Vibranium Suit"]
+			"value": ["Vibranium Suit #01049"]
 		},
 		{
 			"type": "target",
@@ -65,7 +65,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -88,17 +88,17 @@
 			],
 			"upgrade_support1": [
 				{
-					"card": "Vibranium Suit"
+					"card": "Vibranium Suit #01049"
 				},			
 			],
 			"identity1": [
 				{
-					"card": "Black Panther",
+					"card": "Black Panther #01040a",
 				}
 			],
 			"discard1": [
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},			
 				{
 					"card": "Wakanda Forever!"

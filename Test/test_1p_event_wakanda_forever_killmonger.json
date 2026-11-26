@@ -5,20 +5,20 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
 		"board": {
 			"villain": [
 				{
-					"card": "01094",
+					"card": "01094"
 				}
 			],
 			"schemes": [
 				{
-					"card": "01097b",					
-				}			
+					"card": "01097b"
+				}
 			],
 			"deck1": [
 				{
@@ -28,64 +28,69 @@
 			"enemies1": [
 				{
 					"card": "Killmonger",
-					"tokens": {"damage": 1}
+					"tokens": {
+						"damage": 1
+					}
 				}
-			],			
+			],
 			"upgrade_support1": [
 				{
 					"card": "Energy Daggers"
 				},
 				{
-					"card": "Panther Claws"
-				}				
+					"card": "Panther Claws #01047"
+				}
 			],
 			"identity1": [
 				{
-					"card": "Black Panther",
+					"card": "Black Panther #01040a"
 				}
 			],
 			"hand1": [
 				{
 					"card": "Wakanda Forever!"
-				},		
-				{
-					"card": "Shuri"
 				},
+				{
+					"card": "Shuri #01041"
+				}
 			]
 		}
 	},
-	"actions": [		
+	"actions": [
 		{
 			"type": "play",
 			"value": "Wakanda Forever!"
 		},
 		{
 			"type": "select",
-			"value": ["Energy Daggers", "Panther Claws"]
+			"value": [
+				"Energy Daggers",
+				"Panther Claws #01047"
+			]
 		},
 		{
 			"type": "target",
-			"value":  "Killmonger"
+			"value": "Killmonger"
 		},
 		{
 			"type": "activate",
-			"value":  "Black Panther"
+			"value": "Black Panther #01040a"
 		},
 		{
 			"type": "choose",
-			"value":  "attack"
-		},		
+			"value": "attack"
+		},
 		{
 			"type": "target",
-			"value":  "Killmonger"
-		},		
-	] ,
+			"value": "Killmonger"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -93,13 +98,15 @@
 			"villain": [
 				{
 					"card": "01094",
-					"tokens": {"damage":1}
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"schemes": [
 				{
-					"card": "01097b",					
-				}			
+					"card": "01097b"
+				}
 			],
 			"deck1": [
 				{
@@ -109,29 +116,31 @@
 			"enemies1": [
 				{
 					"card": "Killmonger",
-					"tokens": {"damage": 3}
+					"tokens": {
+						"damage": 3
+					}
 				}
-			],			
+			],
 			"upgrade_support1": [
 				{
 					"card": "Energy Daggers"
 				},
 				{
-					"card": "Panther Claws"
-				}				
+					"card": "Panther Claws #01047"
+				}
 			],
 			"identity1": [
 				{
-					"card": "Black Panther",
+					"card": "Black Panther #01040a"
 				}
 			],
-			"discard1": [		
+			"discard1": [
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},
 				{
 					"card": "Wakanda Forever!"
-				},				
+				}
 			]
 		}
 	}

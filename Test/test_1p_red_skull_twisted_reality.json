@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -65,12 +65,12 @@
 			],
 			"identity1": [
 				{
-					"card": "Black Panther"
+					"card": "Black Panther #01040a"
 				}
 			],
 			"allies1": [
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},
 				{
 					"card": "Jessica Jones",
@@ -79,7 +79,7 @@
 			],
 			"hand1": [
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				}
 			]
 		}
@@ -87,7 +87,7 @@
 	"actions": [
 		{
 			"type": "activate",
-			"value": "Black Panther"
+			"value": "Black Panther #01040a"
 		},
 		{
 			"type": "choose",
@@ -103,7 +103,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -158,12 +158,12 @@
 			],
 			"identity1": [
 				{
-					"card": "Black Panther"
+					"card": "Black Panther #01040a"
 				}
 			],
 			"allies1": [
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},
 				{
 					"card": "Jessica Jones",
@@ -172,7 +172,7 @@
 			],
 			"hand1": [
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				}
 			]
 		}

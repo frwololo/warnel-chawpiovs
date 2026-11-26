@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -30,12 +30,12 @@
 					"card": "Energy Daggers"
 				},
 				{
-					"card": "Panther Claws"
+					"card": "Panther Claws #01047"
 				}				
 			],
 			"identity1": [
 				{
-					"card": "Black Panther",
+					"card": "Black Panther #01040a",
 				}
 			],
 			"hand1": [
@@ -43,7 +43,7 @@
 					"card": "Wakanda Forever!"
 				},		
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},
 			]
 		}
@@ -55,7 +55,7 @@
 		},
 		{
 			"type": "select",
-			"value": ["Energy Daggers", "Panther Claws"]
+			"value": ["Energy Daggers", "Panther Claws #01047"]
 		},
 		{
 			"type": "target",
@@ -67,7 +67,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -93,17 +93,17 @@
 					"card": "Energy Daggers"
 				},
 				{
-					"card": "Panther Claws"
+					"card": "Panther Claws #01047"
 				}				
 			],
 			"identity1": [
 				{
-					"card": "Black Panther",
+					"card": "Black Panther #01040a",
 				}
 			],
 			"discard1": [		
 				{
-					"card": "Shuri"
+					"card": "Shuri #01041"
 				},
 				{
 					"card": "Wakanda Forever!"

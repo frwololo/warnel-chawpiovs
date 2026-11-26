@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -18,17 +18,17 @@
 			"deck_villain": [
 				{
 					"card": "advance"
-				},			
+				},
 				{
 					"card": "hydra mercenary"
 				},
 				{
 					"card": "hydra soldier"
-				},				
+				},
 				{
 					"card": "Caught off guard"
-				}				
-			],			
+				}
+			],
 			"schemes": [
 				{
 					"card": "01097b"
@@ -36,7 +36,7 @@
 			],
 			"deck1": [
 				{
-					"card": "Hawkeye - Clint Barton",
+					"card": "Hawkeye - Clint Barton"
 				},
 				{
 					"card": "Make the call"
@@ -49,19 +49,19 @@
 				},
 				{
 					"card": "Maria Hill"
-				},					
-			],		
+				}
+			],
 			"identity1": [
 				{
-					"card": "Black Panther",
-				}				
+					"card": "Black Panther #01040a"
+				}
 			],
 			"hand1": [
 				{
 					"card": "Jessica Jones"
 				},
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				}
 			]
 		}
@@ -74,15 +74,15 @@
 		},
 		{
 			"type": "other",
-			"value": "wait_for_player_turn",
-		},				
-	] ,
+			"value": "wait_for_player_turn"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -90,7 +90,9 @@
 			"villain": [
 				{
 					"card": "01094",
-					"tokens": {"damage": 1}
+					"tokens": {
+						"damage": 1
+					}
 				}
 			],
 			"enemies1": [
@@ -101,8 +103,8 @@
 			"discard_villain": [
 				{
 					"card": "Caught off guard"
-				},					
-			],				
+				}
+			],
 			"schemes": [
 				{
 					"card": "01097b"
@@ -112,11 +114,13 @@
 				{
 					"card": "Hawkeye - Clint Barton"
 				}
-			],				
+			],
 			"identity1": [
 				{
-					"card": "Black Panther",
-					"tokens": {"damage": 3}					
+					"card": "Black Panther #01040a",
+					"tokens": {
+						"damage": 3
+					}
 				}
 			],
 			"hand1": [
@@ -124,9 +128,9 @@
 					"card": "Jessica Jones"
 				},
 				{
-					"card": "Nick Fury"
+					"card": "Nick Fury #01084"
 				}
-			]			
+			]
 		}
 	}
 }

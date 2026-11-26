@@ -5,7 +5,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -38,7 +38,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Black Panther"
+					"card": "Black Panther #01040a"
 				}
 			],
 			"hand1": [
@@ -51,7 +51,7 @@
 	"actions": [	
 		{
 			"type": "select",
-			"value": "Black Panther",
+			"value": "Black Panther #01040a",
 		},		
 		{
 			"type": "play",
@@ -68,7 +68,7 @@
 		"heroes": [
 			{
 				"herodeckdata": {
-					"hero": "Black Panther"
+					"hero": "Black Panther #01040a"
 				}
 			}
 		],
@@ -91,7 +91,7 @@
 			],
 			"identity1": [
 				{
-					"card": "Black Panther"
+					"card": "Black Panther #01040a"
 				}
 			],
 			"discard1": [

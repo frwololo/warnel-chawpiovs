@@ -2084,6 +2084,12 @@
 					"src_container": "deck_villain"
 				},
 				{
+					"name": "save_variable",
+					"var_name": "my_discarded",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
 					"name": "move_card_to_board",
 					"subject": "tutor",
 					"subject_count": 1,
@@ -2094,10 +2100,14 @@
 							"filter_properties": {
 								"type_code": "minion"
 							},
-							"filter_is_included_in": "previous"
+							"filter_is_included_in": "my_discarded"
 						}
 					],
-					"_comments": "TODO 'first minion discarded'"
+					"_comments": "filter_is_included_in reads a script variable (SP.check_included_in_filter), hence my_discarded. First minion discarded: the top card is discarded first, so it is the lowest of the 7 in the discard pile, and tutor goes up the pile (sort_by node_index)"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_discarded"
 				}
 			]
 		},

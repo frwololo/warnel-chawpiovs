@@ -1213,7 +1213,6 @@ const BETA_SETS:= [
 	"deadpool",
 	"rogue",
 	"jubilee",
-	"bp",
 	"silk",
 	"falcon",
 	"tt",
@@ -1307,7 +1306,7 @@ const SCRIPT_BREAKPOINT_TRIGGER_NAME := "interrupt_thwart_started"
 
 
 const GAME_VERSION := "1.10.0"
-const BUILD_NUMBER := "20261119-1443"
+const BUILD_NUMBER := "20261126-1120"
 const VERSION_CHECK_URL := "https://api.github.com/repos/frwololo/warnel-chawpiovs/releases"
 const GITHUB_URL := "https://github.com/frwololo/warnel-chawpiovs/releases"
 

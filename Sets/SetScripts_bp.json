@@ -28,67 +28,69 @@
 			"__name__": "_inventor"
 		},
 		"manual": {
-			"board": [
-				{
-					"name": "constraints",
-					"is_cost": true,
-					"tags": [
-						"action_ability"
-					]
-				},
-				{
-					"name": "mod_tokens",
-					"token_name": "_inventor",
-					"modification": -1,
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "exhaust_card",
-					"subject": "self",
-					"is_cost": true
-				},
-				{
-					"name": "add_script",
-					"end_condition": "card_played",
-					"subject": "tutor_and_choose",
-					"src_container": "deck",
-					"filter_state_tutor": [
-						{
-							"filter_properties": {
-								"type_code": "upgrade",
-								"trait_black_panther": 1
-							}
-						},
-						{
-							"filter_properties": {
-								"type_code": "upgrade",
-								"trait_tech": 1
-							}
-						}
-					],
-					"script": {
-						"alterants": {
-							"all": [
-								{
-									"filter_task": "get_property",
-									"filter_property_name": "cost",
-									"alteration": -2,
-									"trigger": "self"
+			"board": {
+				"Inventor": [
+					{
+						"name": "constraints",
+						"is_cost": true,
+						"tags": [
+							"action_ability"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "_inventor",
+						"modification": -1,
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "exhaust_card",
+						"subject": "self",
+						"is_cost": true
+					},
+					{
+						"name": "add_script",
+						"end_condition": "card_played",
+						"subject": "tutor_and_choose",
+						"src_container": "deck",
+						"filter_state_tutor": [
+							{
+								"filter_properties": {
+									"type_code": "upgrade",
+									"trait_black_panther": 1
 								}
-							]
+							},
+							{
+								"filter_properties": {
+									"type_code": "upgrade",
+									"trait_tech": 1
+								}
+							}
+						],
+						"script": {
+							"alterants": {
+								"all": [
+									{
+										"filter_task": "get_property",
+										"filter_property_name": "cost",
+										"alteration": -2,
+										"trigger": "self"
+									}
+								]
+							}
 						}
+					},
+					{
+						"name": "execute_scripts",
+						"subject": "previous",
+						"require_exec_state": "deck",
+						"exec_trigger": "manual",
+						"delayed": true,
+						"_comments": "pattern from Team-Building Exercise; TODO verify playing from deck"
 					}
-				},
-				{
-					"name": "execute_scripts",
-					"subject": "previous",
-					"require_exec_state": "deck",
-					"exec_trigger": "manual",
-					"delayed": true,
-					"_comments": "pattern from Team-Building Exercise; TODO verify playing from deck"
-				}
-			]
+				]
+			}
 		}
 	},
 	"T'Challa": {

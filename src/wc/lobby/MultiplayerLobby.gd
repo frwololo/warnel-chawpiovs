@@ -22,6 +22,11 @@ var peer = null
 # dictionary indexed by network_id for each player.
 var players = {}
 var my_info = {name = "Name Unset", tests = []}
+#settings key of the player's name, saved when a game is launched
+const PLAYER_NAME_SETTING := "multiplayer_player_name"
+#the name given automatically ("Player 1"...), not saved unless the
+#player changed it
+var _automatic_name := ""
 var _multiplayer_desync = null
 
 var person = preload("res://src/wc/lobby/Player.tscn")
@@ -136,7 +141,7 @@ func _room_hosted(code):
 	network_is_ready = true
 	v_folder_label.text = "Room code: " + code
 	v_folder_label.add_color_override("font_color", OK_COLOR)
-	my_info.name = "Player 1"
+	my_info.name = _get_initial_name("Player 1")
 	my_info.tests = gameData.run_auto_tests
 	_set_status("Room code: " + code + " - waiting for players...", true)
 	register_self(my_info)
@@ -145,7 +150,7 @@ func _room_hosted(code):
 func _room_joined(code):
 	network_is_ready = true
 	v_folder_label.text = "Room code: " + code
-	my_info.name = "Player " + str(cfc.get_network_unique_id())
+	my_info.name = _get_initial_name("Player " + str(cfc.get_network_unique_id()))
 	my_info.tests = gameData.run_auto_tests
 	_set_status("Connecting...", true)
 	register_self(my_info)
@@ -223,6 +228,23 @@ func _on_Menu_resized() -> void:
 	
 func resize():
 	self.rect_scale =  cfc.hardcoded_positions_modifier
+
+#the name saved in the settings, or automatic_name if there is none
+func _get_initial_name(automatic_name:String) -> String:
+	_automatic_name = automatic_name
+	var saved_name = cfc.get_setting(PLAYER_NAME_SETTING)
+	if typeof(saved_name) == TYPE_STRING and saved_name.strip_edges():
+		return saved_name.strip_edges()
+	return automatic_name
+
+#called when the game is launched, on every client
+func _save_player_name():
+	var player_name = str(my_info.get("name", "")).strip_edges()
+	if !player_name or player_name == _automatic_name:
+		return
+	if player_name == cfc.get_setting(PLAYER_NAME_SETTING):
+		return
+	cfc.set_setting(PLAYER_NAME_SETTING, player_name)
 
 func register_self(info):
 	var id = cfc.get_network_unique_id()
@@ -358,6 +380,7 @@ remote func launch_client_game():
 	
 func _launch_game():	
 	# server pressed on launch, start the game!
+	_save_player_name()
 	gameData.init_network_players(players)
 	var game = load(CFConst.PATH_CUSTOM + "lobby/TeamSelection.tscn").instance()
 	# Connect deferred so we can safely erase it from the callback.
@@ -438,7 +461,7 @@ func _join_as_server(port = 0):
 	if !network_is_ready:
 		add_log("failed starting host after 10 attempts")
 	
-	my_info.name = "Player 1"	
+	my_info.name = _get_initial_name("Player 1")
 	my_info.tests = gameData.run_auto_tests
 	_set_status("Waiting for players...", true)
 	register_self(my_info)		
@@ -456,7 +479,7 @@ func _join_as_client(host_ip, host_port = 0, own_port = 0):
 		add_log("failed conection")
 		return
 		
-	my_info.name = "Player " + str(cfc.get_network_unique_id())
+	my_info.name = _get_initial_name("Player " + str(cfc.get_network_unique_id()))
 	my_info.tests = gameData.run_auto_tests
 	_set_status("Connecting...", true)
 	network_is_ready = true

@@ -28,6 +28,11 @@ const PLAYER_NAME_SETTING := "multiplayer_player_name"
 #player changed it
 var _automatic_name := ""
 var _multiplayer_desync = null
+#this client was kicked by the host and is leaving the lobby
+var _kicked := false
+#how long the host waits for a kicked player to leave by itself before
+#disconnecting it
+const KICK_DISCONNECT_DELAY := 1.0
 
 var person = preload("res://src/wc/lobby/Player.tscn")
 
@@ -390,12 +395,56 @@ func _launch_game():
 	hide()
 
 
-func _player_disconnected(_id):
+func _player_disconnected(id):
+	if _kicked:
+		return
+	#in the lobby: only the host leaving ends it for everyone
+	if is_visible_in_tree():
+		if cfc.is_game_master() or id != 1:
+			_remove_player(id, "left")
+			return
 	if cfc.is_game_master():
-		#TODO remove player from list
 		pass
 	else:
 		_end_game("Server disconnected")
+
+#host: the "Kick" button of a player
+func kick_player(network_id):
+	if !cfc.is_game_master() or network_id == cfc.get_network_unique_id():
+		return
+	if !players.has(network_id):
+		return
+	#the kicked player leaves by itself on receiving this. If it doesn't
+	#(e.g. it never gets the message), the host disconnects it
+	cfc._rpc_id(self, network_id, "kicked_by_host")
+	get_tree().create_timer(KICK_DISCONNECT_DELAY).connect("timeout", \
+			networkManager, "disconnect_peer", [network_id])
+	_remove_player(network_id, "kicked")
+
+#kicked player: back to the join page, which says why
+remote func kicked_by_host():
+	if cfc.get_rpc_sender_id() != 1:
+		return
+	_kicked = true
+	#deferred: this runs while the network peer is being polled
+	call_deferred("_leave_after_kick")
+
+func _leave_after_kick():
+	networkManager.close()
+	cfc.set_next_scene_params({"kicked": true})
+	get_tree().change_scene(CFConst.PATH_CUSTOM + 'menus/MultiplayerJoin.tscn')
+
+func _remove_player(network_id, reason := "left"):
+	var player_name = ""
+	if players.has(network_id):
+		player_name = str(players[network_id].get("name", ""))
+		players.erase(network_id)
+	var row = find_player_by_network_id(network_id)
+	if row:
+		players_container.remove_child(row)
+		row.queue_free()
+	if player_name:
+		_set_status(player_name + " " + reason, true)
 
 
 # Callback from SceneTree, only for clients (not server).
@@ -413,6 +462,8 @@ func _connected_fail():
 
 
 func _server_disconnected():
+	if _kicked:
+		return
 	_end_game("Server disconnected")
 
 ##### Game creation functions ######

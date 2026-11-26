@@ -474,6 +474,22 @@ func _on_server_disconnected() -> void:
 	_server_reachable = false
 
 
+# host only: drop one player (lobby "Kick"). The other players get
+# network_peer_disconnected for it, from the host (ENet) or when the kicked
+# player closes its own connections (WebRTC, every player is connected to
+# every other one)
+func disconnect_peer(network_id: int) -> void:
+	var peer = get_tree().network_peer
+	if not peer or not get_tree().is_network_server():
+		return
+	if not network_id in Array(get_tree().get_network_connected_peers()):
+		return
+	if transport == Transport.ENET and peer is NetworkedMultiplayerENet:
+		peer.disconnect_peer(network_id)
+	elif transport == Transport.WEBRTC and _rtc and _rtc.has_peer(network_id):
+		_rtc.remove_peer(network_id)
+
+
 func close() -> void:
 	if _signaling:
 		_closed_peers.append(_signaling)

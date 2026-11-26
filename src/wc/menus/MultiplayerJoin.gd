@@ -47,6 +47,20 @@ func _ready() -> void:
 		v_folder_label.text = "user folder:" + ProjectSettings.globalize_path("user://")
 	resize()
 	cfc.default_button_focus(v_buttons)
+	_show_kicked_message()
+
+#the lobby sends a kicked player back here with {"kicked": true}
+func _show_kicked_message():
+	var params = cfc.get_next_scene_params()
+	if !params.get("kicked", false):
+		return
+	cfc.set_next_scene_params({})
+	var message = Label.new()
+	message.text = "You have been kicked from the game by the host."
+	message.align = Label.ALIGN_CENTER
+	message.add_color_override("font_color", Color(1, 0.3, 0.3))
+	v_buttons.add_child(message)
+	v_buttons.move_child(message, 0)
 
 func fetch_list_rooms():
 	var rooms_list = get_node("%Rooms")

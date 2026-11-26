@@ -37,11 +37,15 @@ func _on_option_changed(value):
 	lobby.set_my_info({name =  value})
 	emit_signal("option_changed")
 
+func _on_kick_pressed():
+	lobby.kick_player(my_network_id)
+
 func _ready():
 	# Set-up remote options for other peers in the room so when a choice is made 
 	# it is reflected globally for every peer in that room
 	#var rpc_mode = MultiplayerAPI.RPC_MODE_REMOTE
 	#playerName.rset_config("text", rpc_mode)
 	
+	kick.connect("pressed", self, "_on_kick_pressed")
 	playerName.connect("text_entered", self, "_on_option_changed")
 	playerName.connect("text_changed", self, "_on_option_changed")

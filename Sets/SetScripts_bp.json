@@ -384,28 +384,9 @@
 	},
 	"Panther Claws": {
 		"special": {
-			"board": [
-				{
-					"name": "attack",
-					"amount": 2,
-					"subject": "an_enemy"
-				},
-				{
-					"name": "save_variable",
-					"var_name": "my_enemy",
-					"var_type": "subject",
-					"value": "previous"
-				},
-				{
-					"name": "sequence",
-					"sequence_ability": "do_discard_opt"
-				}
-			]
-		},
-		"do_discard_opt": {
 			"board": {
 				"_rules": {},
-				"Discard for bonus": [
+				"Discard: deal 3 additional damage (piercing)": [
 					{
 						"name": "discard",
 						"subject": "self",
@@ -413,8 +394,8 @@
 					},
 					{
 						"name": "attack",
-						"amount": 3,
-						"subject": "my_enemy",
+						"amount": 5,
+						"subject": "an_enemy",
 						"tags": [
 							"piercing"
 						]
@@ -422,12 +403,14 @@
 				],
 				"Keep": [
 					{
-						"name": "nop"
+						"name": "attack",
+						"amount": 2,
+						"subject": "an_enemy"
 					}
 				]
 			}
 		},
-		"_comments": "TODO the 3 additional damage should be part of the same attack"
+		"_comments": "the optional discard is chosen first so the 3 additional damage is part of the same attack (one attack of 5 with piercing)"
 	},
 	"Spider Bites": {
 		"special": {
@@ -436,6 +419,16 @@
 					"name": "nop",
 					"subject": "boardseek_and_choose",
 					"filter_state_seek": "group_identities"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_player",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "nop",
+					"subject": "my_player"
 				},
 				{
 					"name": "deal_damage",
@@ -468,10 +461,8 @@
 						"is_cost": true
 					},
 					{
-						"name": "mod_tokens",
-						"token_name": "stunned",
-						"modification": 1,
-						"subject": "villain"
+						"name": "nop",
+						"subject": "my_player"
 					},
 					{
 						"name": "mod_tokens",
@@ -480,19 +471,30 @@
 						"subject": "boardseek",
 						"subject_count": "all",
 						"filter_state_seek": [
-							"group_enemies_my_hero",
+							"group_enemies_previous_subject",
 							"minion"
-						],
-						"_comments": "TODO the chosen player is not carried into this sequence; group_enemies_my_player is not a valid group (stuns nothing for now)"
+						]
+					},
+					{
+						"name": "mod_tokens",
+						"token_name": "stunned",
+						"modification": 1,
+						"subject": "villain"
+					},
+					{
+						"name": "forget_variable",
+						"var_name": "my_player"
 					}
 				],
 				"Keep": [
 					{
-						"name": "nop"
+						"name": "forget_variable",
+						"var_name": "my_player"
 					}
 				]
 			}
-		}
+		},
+		"_comments": "the chosen player is saved as my_player; the nop on my_player right before each minion step makes group_enemies_previous_subject point to that player"
 	},
 	"Vibranium Suit": {
 		"special": {
@@ -585,8 +587,13 @@
 					"subject": "index",
 					"subject_index": "top",
 					"subject_count": "retrieve_integer",
-					"src_container": "deck_villain",
-					"is_cost": true
+					"src_container": "deck_villain"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_discarded",
+					"var_type": "subject",
+					"value": "previous"
 				},
 				{
 					"name": "thwart",
@@ -603,19 +610,170 @@
 							"filter_properties": {
 								"type_code": "minion"
 							},
-							"filter_is_included_in": "previous"
+							"filter_is_included_in": "my_discarded"
 						}
-					],
-					"_comments": "TODO only among the discarded cards"
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_discarded"
 				}
 			]
-		}
+		},
+		"_comments": "filter_is_included_in reads a script variable (see SP.check_included_in_filter), so the discarded cards are saved as my_discarded (Card Shark pattern: discard, then save_variable previous)"
 	},
 	"Going Undercover": {
-		"TODO": "When Defeated: look at the top 5 encounter cards, may add 1 non-scenario-specific card to the victory display, reorder the rest"
+		"card_defeated": {
+			"trigger": "self",
+			"all": [
+				{
+					"name": "save_variable",
+					"var_name": "my_top_cards",
+					"var_type": "subject",
+					"value": {
+						"subject": "index",
+						"subject_index": "top",
+						"subject_count": 5,
+						"src_container": "deck_villain"
+					}
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "victory_display",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"needs_selection": true,
+					"selection_count": 1,
+					"selection_type": "max",
+					"display_title": "you may add 1 card to the victory display",
+					"filter_state_tutor": [
+						{
+							"filter_is_included_in": "my_top_cards",
+							"filter_properties": {
+								"card_set_type_name_code": "villain",
+								"comparison": "ne"
+							}
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "deck_villain",
+					"dest_index": "bottom",
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "deck_villain",
+					"needs_selection": true,
+					"selection_count": 5,
+					"selection_type": "max",
+					"selection_show_cards_with_zero_value": true,
+					"display_title": "choose cards to put at the bottom of the encounter deck",
+					"filter_state_tutor": [
+						{
+							"filter_is_included_in": "my_top_cards"
+						}
+					]
+				},
+				{
+					"name": "move_card_to_container",
+					"dest_container": "deck_villain",
+					"subject": "tutor",
+					"subject_count": "all",
+					"subject_exclude": "all_previous",
+					"src_container": "deck_villain",
+					"needs_selection": true,
+					"selection_count": 5,
+					"selection_type": "as_much_as_possible",
+					"selection_show_cards_with_zero_value": true,
+					"display_title": "choose cards to move to top",
+					"filter_state_tutor": [
+						{
+							"filter_is_included_in": "my_top_cards"
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_top_cards"
+				}
+			]
+		},
+		"_comments": "top 5 saved first, as the top of the deck changes when a card goes to the victory display; reorder follows Heimdall (cards moved to the top in selection order). Non-scenario-specific = not from the villain set"
 	},
 	"Show of Empathy": {
-		"TODO": "threat removed from here is placed on a non-Elite minion; Redemption when threat >= remaining hit points"
+		"interrupt_remove_threat": {
+			"event_filters": {
+				"subject": "self"
+			},
+			"board": [
+				{
+					"name": "mod_tokens",
+					"token_name": "threat",
+					"modification": "trigger_details_amount",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						"minion",
+						"!trait_elite"
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_minion_hp",
+					"var_type": "int",
+					"value": {
+						"func_name": "get_remaining_damage",
+						"func_params": {
+							"subject": "my_minion"
+						}
+					}
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_tokens>=my_minion_hp",
+								"func_params": {
+									"subject": "my_minion",
+									"token_name": "threat"
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "move_card_to_container",
+									"subject": "self",
+									"dest_container": "victory_display"
+								},
+								{
+									"name": "host_card",
+									"host": "my_minion",
+									"subject": "find",
+									"filter_state_tutor": [
+										"Redemption"
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_minion"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_minion_hp"
+				}
+			]
+		},
+		"_comments": "the removal itself is not prevented: the same amount is placed on the minion (trigger_details_amount, as Traffic Jam). Redemption's own effect is still a TODO"
 	},
 	"The Raft": {
 		"response": {
@@ -640,10 +798,56 @@
 							"property": "scheme"
 						}
 					}
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_attachments>=4",
+								"func_params": {
+									"subject": "self",
+									"filter_state_attachment": [
+										"minion"
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "nop",
+									"subject": "a_player"
+								},
+								{
+									"name": "save_variable",
+									"var_name": "my_player",
+									"var_type": "subject",
+									"value": "previous"
+								},
+								{
+									"name": "deal_encounter",
+									"subject": "boardseek",
+									"subject_count": 1,
+									"sort_by": "random",
+									"filter_state_seek": [
+										{
+											"filter_is_hosted_by": "self",
+											"filter_properties": {
+												"type_code": "minion"
+											}
+										}
+									],
+									"target_identity": "my_player"
+								},
+								{
+									"name": "forget_variable",
+									"var_name": "my_player"
+								}
+							]
+						}
+					]
 				}
 			]
-		},
-		"TODO": "If there are at least 4 minions here, deal 1 random minion here to any player as a facedown encounter card"
+		}
 	},
 	"Invisibility Gear": {
 		"give_to_player_max1": {},
@@ -871,9 +1075,37 @@
 					"tags": [
 						"hero_action"
 					],
-					"team_up": [
-						"Black Panther",
-						"Black Panther"
+					"constraints": [
+						{
+							"func_name": "count_cards>=1",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "group_identities",
+										"filter_properties": {
+											"card_set_code": "black_panther"
+										}
+									}
+								]
+							}
+						},
+						{
+							"func_name": "count_cards>=1",
+							"func_params": {
+								"subject": "boardseek",
+								"subject_count": "all",
+								"filter_state_seek": [
+									{
+										"filter_group": "group_identities",
+										"filter_properties": {
+											"card_set_code": "black_panther_shuri"
+										}
+									}
+								]
+							}
+						}
 					]
 				},
 				{
@@ -905,7 +1137,7 @@
 				}
 			]
 		},
-		"_comments": "TODO team-up check between the two Black Panther heroes"
+		"_comments": "team_up looks cards up by name and both heroes are named Black Panther: the two identities are told apart by card_set_code (black_panther = T'Challa, black_panther_shuri = Shuri)"
 	},
 	"Build Support": {
 		"card_defeated": {
@@ -1004,13 +1236,15 @@
 		"give_obligation": {
 			"__to__": "Shuri"
 		},
-		"uses": {
-			"__name__": "doubt",
-			"__amount__": 4
-		},
 		"card_moved_to_board": {
 			"trigger": "self",
 			"board": [
+				{
+					"name": "mod_tokens",
+					"subject": "self",
+					"modification": 4,
+					"token_name": "doubt"
+				},
 				{
 					"name": "attach_to_card",
 					"subject": "my_identity"
@@ -1065,7 +1299,29 @@
 				}
 			]
 		},
-		"_comments": "TODO with Uses, the card is discarded at 0 counters; Victory 0 should send it to the victory display instead"
+		"on_load": {
+			"all": [
+				{
+					"name": "save_variable",
+					"var_type": "str",
+					"var_name": "my_all_purpose_token_name",
+					"value": "doubt"
+				}
+			]
+		},
+		"card_token_modified": {
+			"trigger": "self",
+			"filter_count": 0,
+			"filter_token_name": "doubt",
+			"board": [
+				{
+					"name": "move_card_to_container",
+					"subject": "self",
+					"dest_container": "victory_display"
+				}
+			]
+		},
+		"_comments": "Uses without the uses macro: the macro discards the card at 0 counters, Victory 0 sends it to the victory display"
 	},
 	"Klaw": {
 		"interrupt_enemy_attack": {

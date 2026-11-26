@@ -242,10 +242,43 @@ func _on_deck_changed(index):
 		return
 
 	var deck_data = decks_index[new_deck_id]		
-	if (cfc.get_network_unique_id() == my_owner_network_id) :
+	#the owner asks the host for this deck. Not while a list is being
+	#rebuilt (state received from the host, or decks refreshed): the
+	#selection there isn't a choice of the player
+	if (cfc.get_network_unique_id() == my_owner_network_id) and can_send_requests():
 		lobby.deck_changed(deck_data, my_index )
-		
+	deck_id = new_deck_id
 	load_deck_contents(deck_data)
+
+var _requests_disabled := 0
+func can_send_requests() -> bool:
+	if _requests_disabled:
+		return false
+	if lobby and lobby.is_applying_state():
+		return false
+	return true
+
+func is_mine() -> bool:
+	var owner_player = gameData.get_player_by_index(my_owner) if gameData.id_to_network_id.has(my_owner) else null
+	return owner_player != null and owner_player.network_id == cfc.get_network_unique_id()
+
+#displays a slot of the team state (TeamSelection.apply_team_state): its
+#hero, the decks listed (decks_list) and the chosen deck. Sends nothing
+func show_hero_deck(_hero_id, deck_data, decks_list):
+	_requests_disabled += 1
+	load_hero(_hero_id, decks_list)
+	if _hero_id and deck_data:
+		select_deck(deck_data.get("id"))
+	elif !_hero_id:
+		deck_id = 0
+	_requests_disabled -= 1
+
+func select_deck(_deck_id):
+	if !deck_id_to_item_id.has(_deck_id):
+		return
+	deckSelect.select(deckSelect.get_item_index(deck_id_to_item_id[_deck_id]))
+	deck_id = _deck_id
+	load_deck_contents(decks_index[_deck_id])
 
 func reset_deck_contents():
 	decks_data = []
@@ -302,7 +335,9 @@ func refresh_decks(new_decks_data = {}):
 		var item_id = deckSelect.get_item_id(deckSelect.get_selected())
 		_needs_refresh = item_id_to_deck_id.get(item_id, 0)
 
-	#reload our hero to refresh the deck list
+	#reload our hero to refresh the deck list (load_hero selects the last
+	#used deck: not a choice to send)
+	_requests_disabled += 1
 	load_hero(hero_id, new_decks_data)
 
 	#set the correct selected item again
@@ -311,14 +346,22 @@ func refresh_decks(new_decks_data = {}):
 		deckSelect.select(index)
 	print_debug("received download for " + str(_needs_refresh))	
 	_needs_refresh = 0
-	#_on_deck_changed(deckSelect.selected)	
+	_requests_disabled -= 1
+	#the deck actually selected
+	if deckSelect.selected >= 0:
+		_on_deck_changed(deckSelect.selected)
 	
-func _on_owner_changed(id):
+func _on_owner_changed(index):
 	if cfc.is_game_master():
-		#item_selected passes the id which is 0 indexed, but players are 1 indexed
-		my_owner = id+1 
+		#item_selected passes the position of the item in the list. Items were
+		#added with the player's index (1 indexed) as their id (_load_players),
+		#in the order of gameData.network_players, which isn't necessarily the
+		#order of player indexes: the id is the player
+		var player_index = playerName.get_item_id(index)
+		my_owner = player_index
 		_toggle_gui()
-		lobby.owner_changed(id, my_index)
+		#owner_changed takes the 0 indexed player
+		lobby.owner_changed(player_index - 1, my_index)
 
 func card_image_download_complete(card_id):
 	if card_id != hero_id:

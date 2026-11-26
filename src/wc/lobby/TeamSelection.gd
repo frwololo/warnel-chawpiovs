@@ -50,8 +50,26 @@ var OK_COLOR := 	Color(0.1,11,0.1)
 #
 var _current_dl_url := ""
 
-#integers per client
-var _pending_ack:= {}
+#
+# Team selection state, multiplayer (see apply_team_state)
+#
+#host: the version of the state, raised each time it is broadcast
+#client: the last version applied
+var _state_version := 0
+#host: a broadcast is scheduled (changes made in the same frame are sent once)
+var _broadcast_pending := false
+#host: network_id -> last state version that client applied
+var _client_state_versions := {}
+#host: what the host decided for the tab, scenario and expert mode
+var _host_tab := "HeroSelectionTab"
+var _host_scenario := ""
+var _host_expert := false
+#what is displayed, per slot: {"owner", "hero", "deck_id"}
+var _applied_slots := {}
+#heroes taken in the displayed state (disabled in the heroes grid)
+var _taken_heroes := []
+#true while a state is being displayed: GUI callbacks must not send requests
+var _applying_state := false
 #
 # shortcuts
 #
@@ -151,9 +169,10 @@ func _ready():
 	fileDownloader.connect("file_downloaded", self, "_file_downloaded")
 	fileDownloader.connect("download_error", self, "_download_error")
 
-	cfc.buttons_grab_focus_on_mouse_entered(self)	
+	cfc.buttons_grab_focus_on_mouse_entered(self)
 	disable_launch_button()
 	disable_step2_button()
+	_start_state_sync()
 	#select_tab("HeroSelectionTab")
 	
 	# More ui changes
@@ -180,10 +199,8 @@ func _ready():
 			owner_changed(1, 1)
 			var hero1 = "01001a"
 			var hero2 = "01010a"
-			var deck_data1 =  cfc.get_deck_data_for_hero(hero1)
-			var deck_data2 =  cfc.get_deck_data_for_hero(hero2)
-			cfc._rpc(self, "assign_hero", hero1, 0, {"deck_data": deck_data1})
-			cfc._rpc(self, "assign_hero", hero2 , 1, {"deck_data": deck_data2})
+			host_set_slot(0, hero1, _default_deck_for_hero(hero1))
+			host_set_slot(1, hero2, _default_deck_for_hero(hero2))
 			yield(get_tree().create_timer(0.5), "timeout")
 			scenario_select("01097a")
 			yield(get_tree().create_timer(0.5), "timeout")				
@@ -209,21 +226,18 @@ func get_menu_command_callback_data():
 		
 func process_menu_command(command):
 	if typeof(command) != TYPE_DICTIONARY:
-		return	
+		return
 	var heroes = command.get("heroes", "")
 	if !heroes:
 		#unsupported for now
 		return
+	if !cfc.is_game_master():
+		return
 
 	var slot = 0
 	for hero in heroes:
-		var hero_id = hero["hero_id"]
-		var deck_data = hero["deck_data"]		
-		cfc._rpc(self, "assign_hero", hero_id, slot)
-		yield(get_tree().create_timer(0.5), "timeout")
-		#cfc._rpc(self, "remote_deck_changed", deck_id, slot)
-		deck_changed(deck_data, slot, true)
-		slot +=1	
+		host_set_slot(slot, hero["hero_id"], hero["deck_data"])
+		slot +=1
 		
 
 
@@ -323,6 +337,9 @@ func process_loading_pipelines():
 	if !heroes_pipeline and !scenarios_pipeline:
 		loading = false
 		resize()
+		#a state received while the heroes were being added: grey out the
+		#heroes taken that weren't there yet
+		_update_taken_heroes()
 		if no_hero_loaded or no_scenario_loaded:
 			critical_error()
 		return
@@ -675,10 +692,10 @@ var _first_time_in_scenario_panel = true
 func select_tab(tab_name):
 	if (not cfc.is_game_master()):
 		return
-	add_pending_acks()			
-	cfc._rpc(self, "client_select_tab", tab_name)
+	_host_tab = tab_name
+	_host_state_changed()
 
-remotesync func client_select_tab(tab_name):		
+func _show_tab(tab_name):
 	for tab in get_node("%MainContainer").get_children():
 		tab.visible = true
 
@@ -726,8 +743,6 @@ remotesync func client_select_tab(tab_name):
 	if tab_name == "ScenarioSelectionTab" and _first_time_in_scenario_panel:
 		_first_time_in_scenario_panel = false
 		animate_scenario_tab()
-		
-	ack()	
 
 func animate_scenario_tab():
 	var children = all_scenarios_container.get_children()
@@ -821,16 +836,17 @@ func _create_team_container():
 					
 		heroes_container.add_child(new_team_member)
 		team[i] = HeroDeckData.new()
+		_applied_slots[i] = {"owner": 1, "hero": "", "deck_id": 0}
 		
 
 	
 func scenario_select(scenario_id):
 	if (not cfc.is_game_master()):
 		return
-	add_pending_acks()			
-	cfc._rpc(self, "client_scenario_select", scenario_id)
+	_host_scenario = scenario_id
+	_host_state_changed()
 
-remotesync func client_scenario_select(scenario_id):
+func _show_scenario(scenario_id):
 	_scenario = scenario_id
 
 	_load_modulars(scenario_id)
@@ -844,8 +860,6 @@ remotesync func client_scenario_select(scenario_id):
 		scenario_title.text = scenario_scene.get_text()
 	
 		load_scenario_options(scenario_id)
-		
-	ack()	
 
 func display_scenario_picture(villain_key = "", is_expert_mode = false):
 	var villain = ScenarioDeckData.get_first_villain_from_scheme(_scenario, is_expert_mode, villain_key)
@@ -933,54 +947,52 @@ func _scenario_villain_changed(index, option_button):
 	var villain_key = option_button.get_selected_metadata()
 	display_scenario_picture(villain_key)
 
-puppet func expert_mode_toggle (button_pressed):
-	ack()
-	get_node("%ExpertMode").set_pressed_no_signal(button_pressed)
-
 func _on_ExpertMode_toggled(button_pressed):
 	if (not cfc.is_game_master()):
 		return
-	add_pending_acks()	
-	cfc._rpc(self,"expert_mode_toggle", button_pressed)			
-	pass # Replace with function body.	
-	pass # Replace with function body.
+	_host_expert = button_pressed
+	_host_state_changed()
 
 
 #Calls the network master to ask for a hero slot
-#send hero_id information as well as my deck data for this hero
+#send hero_id information as well as the deck I want to start with
 func request_hero_slot(hero_id):
-	var all_deck_data = cfc.get_deck_data_for_hero(hero_id)
-	cfc._rpc_id(self, 1, "get_next_hero_slot",hero_id, all_deck_data)
+	cfc._rpc_id(self, 1, "request_hero", hero_id, _default_deck_for_hero(hero_id))
 
 #Attempt to get a slot for a given hero for a given player
-#If succesful, tell everyone to update their info
-mastersync func get_next_hero_slot(hero_id, remote_deck_data) -> int:
+#If succesful, everyone gets the new state. If not, the requester gets the
+#current state back (its display may be behind)
+mastersync func request_hero(hero_id, deck_data) -> int:
 	if (not cfc.is_game_master()):
 		return -1
-	var client_id = cfc.get_rpc_sender_id() 
+	var client_id = cfc.get_rpc_sender_id()
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.get_hero_id() == hero_id):
+			_send_team_state_to(client_id)
 			return -1
 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == ""):
-			add_pending_acks()
-			cfc._rpc(self, "assign_hero", hero_id, i, {"deck_data": remote_deck_data})
+			host_set_slot(i, hero_id, deck_data)
 			return i
-	return -1			
+	_send_team_state_to(client_id)
+	return -1
 
 func _hero_count_changed():
 	check_modulars_validity()
 
 func heroes_container_update(hero_id, slot):
 	var hero_deck_select = heroes_container.get_child(slot)
-	if hero_id:
+	#multiplayer: an empty slot stays visible, it shows its owner (and the
+	#host can change it). Hiding a released slot also hid that, and the slot
+	#could not be given to anyone else
+	if hero_id or gameData.is_multiplayer_game:
 		hero_deck_select.visible = true
 	else:
 		hero_deck_select.visible = false
-	
+
 	var count_visible = 0
 	for c in heroes_container.get_children():
 		if c.visible:
@@ -1010,42 +1022,233 @@ func scenarios_availability_update():
 			if shortname in shortnames:
 				villain.disable()		
 
-remotesync func assign_hero(hero_id, slot, data = {}):
-	#data update
-	var hero_deck_data: HeroDeckData = team[slot]
-	var previous_hero_id = hero_deck_data.get_hero_id()
-	hero_deck_data.set_hero_id(hero_id) #todo could use a signal here and the GUI would be listening
-	
-	#gui update
-	heroes_container_update(hero_id, slot)
-	scenarios_availability_update()
-	var hero_deck_select = heroes_container.get_child(slot)
-	hero_deck_select.load_hero(hero_id, data.get("deck_data", []))
-	if hero_id:
-		for child in all_heroes_container.get_children():
-			if child.hero_id == hero_id:
-				child.disable()
-	if previous_hero_id and previous_hero_id!= hero_id:
-		for child in all_heroes_container.get_children():
-			if child.hero_id == previous_hero_id:
-				child.enable()
-				
-	#counterpart in scenario panel
-	var text_rect:TextureRect = team_in_scenario.get_children()[slot+1]
-	if hero_id:
-		text_rect.texture = cfc.get_hero_portrait(hero_id)
-		text_rect.visible = true
+#The host is the only one changing the team (owners, heroes, decks), the tab,
+#the scenario and expert mode. Players send requests to it (request_hero,
+#request_release_hero, request_deck), it checks them, and after any change
+#it broadcasts the whole state (apply_team_state) with a version number.
+#Everyone, the host included, displays the state it receives, and clients
+#tell the host which version they applied (master_state_applied): launching
+#waits until all connected players have the latest one.
+#A client entering this screen asks for the state (request_team_state):
+#messages sent before its scene was ready are lost, and nothing else would
+#bring it up to date (that left clients thinking another player owned
+#their slot, and never sending their deck)
+
+func _start_state_sync():
+	if !gameData.is_multiplayer_game:
+		return
+	if cfc.is_game_master():
+		_host_state_changed()
 	else:
-		text_rect.texture = null
-		text_rect.visible = false				
+		cfc._rpc_id(self, 1, "request_team_state")
+
+#host: the state changed, broadcast it (once per frame)
+func _host_state_changed():
+	if (not cfc.is_game_master()):
+		return
+	if _broadcast_pending:
+		return
+	_broadcast_pending = true
+	call_deferred("_broadcast_team_state")
+
+func _broadcast_team_state():
+	_broadcast_pending = false
+	_state_version += 1
+	cfc._rpc(self, "apply_team_state", _build_team_state())
+
+func _build_team_state() -> Dictionary:
+	var slots = []
+	for i in HERO_COUNT:
+		var data: HeroDeckData = team[i]
+		slots.append({
+			"owner": data.owner.id,
+			"hero": data.get_hero_id(),
+			"deck": data.deck_data if data.get_hero_id() else {},
+		})
+	return {
+		"version": _state_version,
+		"slots": slots,
+		"tab": _host_tab,
+		"scenario": _host_scenario,
+		"expert": _host_expert,
+	}
+
+#host: the current state for one player (it just arrived, or its request
+#could not be done)
+func _send_team_state_to(network_id):
+	if (not cfc.is_game_master()):
+		return
+	if network_id == cfc.get_network_unique_id():
+		return
+	cfc._rpc_id(self, network_id, "apply_team_state", _build_team_state())
+
+mastersync func request_team_state():
+	_send_team_state_to(cfc.get_rpc_sender_id())
+
+mastersync func master_state_applied(version):
+	var client_id = cfc.get_rpc_sender_id()
+	_client_state_versions[client_id] = max(_client_state_versions.get(client_id, 0), version)
+	verify_launch_button()
+	verify_step2_button()
+
+#host: puts a hero (and its deck) in a slot, or empties it (hero_id "")
+func host_set_slot(slot, hero_id, deck_data = {}):
+	if (not cfc.is_game_master()):
+		return
+	var data: HeroDeckData = team[slot]
+	data.set_hero_id(hero_id) #also clears the deck
+	if hero_id and _is_deck_for_hero(deck_data, hero_id):
+		data.set_deck_data(deck_data)
+	_host_state_changed()
+
+#a deck can only go with its own hero (any of its forms)
+func _is_deck_for_hero(deck_data, hero_id) -> bool:
+	if typeof(deck_data) != TYPE_DICTIONARY or !deck_data:
+		return false
+	if !deck_data.get("id") or !deck_data.has("slots"):
+		return false
+	var deck_hero_id = cfc.get_deck_hero_id(deck_data)
+	if !deck_hero_id or !hero_id:
+		return false
+	if deck_hero_id == hero_id:
+		return true
+	return cfc.get_base_hero_form(deck_hero_id) == cfc.get_base_hero_form(hero_id)
+
+#the deck a player starts with when picking a hero: the last one used, or
+#the first one
+func _default_deck_for_hero(hero_id) -> Dictionary:
+	var decks = cfc.get_deck_data_for_hero(hero_id)
+	if !decks:
+		return {}
+	var last_deck_id = cfc.game_settings.get("last_deck", {}).get(hero_id, 0)
+	for deck in decks:
+		if str(deck.get("id")) == str(last_deck_id):
+			return deck
+	return decks[0]
+
+func is_applying_state() -> bool:
+	return _applying_state
+
+#everyone: display the state decided by the host
+remotesync func apply_team_state(state:Dictionary):
+	var version = state.get("version", 0)
+	var is_host = cfc.is_game_master()
+	if !is_host:
+		if version < _state_version:
+			return #an older state, arrived late
+		_state_version = version
+
+	_applying_state = true
+	var slots = state.get("slots", [])
+	for i in min(HERO_COUNT, slots.size()):
+		_apply_slot_state(i, slots[i])
+	_update_taken_heroes()
+	scenarios_availability_update()
 	_hero_count_changed()
-	ack()
+
+	if state.get("expert", false) != expert_mode.pressed:
+		expert_mode.set_pressed_no_signal(state.get("expert", false))
+	var scenario_id = state.get("scenario", "")
+	if scenario_id != _scenario:
+		_show_scenario(scenario_id)
+	var tab = state.get("tab", "HeroSelectionTab")
+	if tab != selected_tab:
+		_show_tab(tab)
+	_applying_state = false
+
+	verify_launch_button()
+	verify_step2_button()
+	if !is_host:
+		cfc._rpc_id(self, 1, "master_state_applied", version)
+
+func _apply_slot_state(slot, slot_state:Dictionary):
+	var data: HeroDeckData = team[slot]
+	var owner_index = slot_state.get("owner", 1)
+	var hero_id = slot_state.get("hero", "")
+	var deck_data = slot_state.get("deck", {})
+	var deck_id = deck_data.get("id", 0) if deck_data else 0
+	var previous = _applied_slots.get(slot, {"owner": 0, "hero": "", "deck_id": 0})
+
+	#data
+	if gameData.id_to_network_id.has(owner_index):
+		data.owner = gameData.get_player_by_index(owner_index)
+	if data.get_hero_id() != hero_id or data.get_deck_id() != deck_id:
+		data.set_hero_id(hero_id) #also clears the deck
+		if hero_id and deck_data:
+			data.set_deck_data(deck_data)
+
+	#gui
+	var hero_deck_select = heroes_container.get_child(slot)
+	if previous["owner"] != owner_index:
+		hero_deck_select.set_owner(owner_index)
+	var hero_changed = previous["hero"] != hero_id
+	if hero_changed:
+		heroes_container_update(hero_id, slot)
+		#counterpart in scenario panel
+		var text_rect:TextureRect = team_in_scenario.get_children()[slot+1]
+		if hero_id:
+			text_rect.texture = cfc.get_hero_portrait(hero_id)
+			text_rect.visible = true
+		else:
+			text_rect.texture = null
+			text_rect.visible = false
+	if hero_changed or previous["owner"] != owner_index or previous["deck_id"] != deck_id:
+		hero_deck_select.show_hero_deck(hero_id, deck_data, _decks_to_list(slot, hero_id, deck_data))
+
+	_applied_slots[slot] = {"owner": owner_index, "hero": hero_id, "deck_id": deck_id}
+
+#decks listed for a slot: mine for this hero if the slot is mine (the chosen
+#one included), otherwise only the chosen one (I can't change it)
+func _decks_to_list(slot, hero_id, deck_data) -> Array:
+	if !hero_id:
+		return []
+	var data: HeroDeckData = team[slot]
+	if data.owner and data.owner.network_id == cfc.get_network_unique_id():
+		var decks = cfc.get_deck_data_for_hero(hero_id).duplicate()
+		if deck_data:
+			var found = false
+			for deck in decks:
+				if str(deck.get("id")) == str(deck_data.get("id")):
+					found = true
+					break
+			if !found:
+				decks.append(deck_data)
+		return decks
+	if deck_data:
+		return [deck_data]
+	return []
+
+#heroes grid: heroes in the team are disabled, the others enabled
+func _update_taken_heroes():
+	var taken = []
+	for i in HERO_COUNT:
+		var hero_id = team[i].get_hero_id()
+		if hero_id:
+			taken.append(hero_id)
+	for child in all_heroes_container.get_children():
+		if child.hero_id in taken:
+			if child.available:
+				child.disable()
+		elif child.hero_id in _taken_heroes:
+			child.enable()
+	_taken_heroes = taken
+
+#the buttons (and the focus) are only changed when being ready changes: they
+#are checked each time a state is displayed, and moving the focus there
+#would take it away from a player using a deck list
+var _step2_ready = null
+var _launch_ready = null
 
 func verify_step2_button():
 	if selected_tab != "HeroSelectionTab":
+		_step2_ready = null
 		return
+	var ready = check_ready_for_step2()
+	if ready == _step2_ready:
+		return
+	_step2_ready = ready
 			
-	if check_ready_for_step2():
+	if ready:
 		enable_step2_button()
 		step2_button.grab_focus()
 	else:
@@ -1054,9 +1257,14 @@ func verify_step2_button():
 		
 func verify_launch_button():
 	if selected_tab != "ScenarioSelectionTab":
+		_launch_ready = null
 		return
+	var ready = check_ready_to_launch()
+	if ready == _launch_ready:
+		return
+	_launch_ready = ready
 			
-	if check_ready_to_launch():
+	if ready:
 		enable_launch_button()
 		launch_button.grab_focus()
 	else:
@@ -1077,6 +1285,10 @@ func get_focus_owner():
 	return focus_owner
 
 func check_ready_for_step2() -> bool:
+	#only the host moves everyone to the scenario tab
+	if !cfc.is_game_master():
+		return false
+
 	if !all_players_have_a_hero():
 		return false
 
@@ -1111,14 +1323,16 @@ func all_players_have_a_hero() -> bool:
 
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
-		if (data.get_hero_id()): 
+		if (data.get_hero_id()):
 			if (data.owner.network_id):
 				players_with_heroes[data.owner.network_id] = true
-			if (!data.get_deck_id()) or heroes_container.get_child(i).deckSelect.get_selected() == -1:
+			#the deck is in the team data (set by the host from the owner's
+			#request), whatever the deck list displayed here shows
+			if (!data.get_deck_id()):
 				return false
 	if players_with_heroes.size() != gameData.network_players.size():
 		return false
-	
+
 	return true
 
 func get_team_size():
@@ -1130,61 +1344,52 @@ func get_team_size():
 	return count		
 	
 func request_release_hero_slot(hero_id):
-	cfc._rpc_id(self,1, "release_hero_slot",hero_id)
+	cfc._rpc_id(self,1, "request_release_hero", hero_id)
 
 #Attempt to release a slot for a given hero for a given player
-#If succesful, tell everyone to update their info
-remotesync func release_hero_slot(hero_id) -> int:
+#If succesful, everyone gets the new state (the slot keeps its owner)
+mastersync func request_release_hero(hero_id) -> int:
 	if (not cfc.is_game_master()):
 		return -1
-	if !hero_id:
-		return -1	
-		
 	var client_id = cfc.get_rpc_sender_id()
+	if !hero_id:
+		_send_team_state_to(client_id)
+		return -1
 
-	var result = -1
 	for i in HERO_COUNT:
 		var data: HeroDeckData = team[i]
 		if (data.owner.network_id == client_id and data.get_hero_id() == hero_id):
-			cfc._rpc(self,"assign_hero", "", i)
-#			remaining_team_members -=1
-#			if (not remaining_team_members):
-#				launch_button.hide()
-			result = i
-			break
-	verify_launch_button()
-	verify_step2_button()
-	return result			
+			host_set_slot(i, "")
+			return i
+	_send_team_state_to(client_id)
+	return -1
 
+#host: owner dropdown of a slot (id: 0 indexed player)
 func owner_changed(id, index):
+	if (not cfc.is_game_master()):
+		return
 	#item_selected passes the id which is 0 indexed, but players are 1 indexed
 	var player : PlayerData = gameData.get_player_by_index(id+1)
 	team[index].owner = player
-	cfc._rpc(self,"remote_owner_changed",id,index)
+	_host_state_changed()
 
-remote func remote_owner_changed (id, index):
-	#update data
-	#item_selected passes the id which is 0 indexed, but players are 1 indexed
-	var player : PlayerData = gameData.get_player_by_index(id+1)
-	team[index].owner = player
-	#update GUI
-	var _heroDeckSelect = heroes_container.get_child(index)
-	_heroDeckSelect.set_owner(id+1)
+#the owner of a slot picked a deck in its list
+func deck_changed(deck_data, hero_index, _force_refresh = false):
+	cfc._rpc_id(self, 1, "request_deck", hero_index, deck_data)
 
-func deck_changed(deck_data, hero_index, force_refresh = false):
-	team[hero_index].set_deck_data(deck_data)
-	cfc._rpc(self,"remote_deck_changed",deck_data, hero_index, force_refresh)
+mastersync func request_deck(slot, deck_data):
+	if (not cfc.is_game_master()):
+		return
+	var client_id = cfc.get_rpc_sender_id()
+	var data: HeroDeckData = team.get(slot)
+	#only the owner of a slot with a hero, and only a deck for that hero
+	#(a deck must never put a hero back in an empty slot)
+	if !data or data.owner.network_id != client_id or !data.get_hero_id() \
+			or !_is_deck_for_hero(deck_data, data.get_hero_id()):
+		_send_team_state_to(client_id)
+		return
+	host_set_slot(slot, data.get_hero_id(), deck_data)
 
-
-remote func remote_deck_changed (deck_data, hero_index, force_refresh):
-	var client_id =  cfc.get_rpc_sender_id() 	
-	#update data
-	team[hero_index].set_deck_data(deck_data)
-	#update GUI
-	var _heroDeckSelect = heroes_container.get_child(hero_index)
-	_heroDeckSelect.set_deck(deck_data, client_id)
-	if force_refresh:
-		_heroDeckSelect.load_deck_contents(deck_data)		
 
 func request_deck_data(caller_id, _deck_id):
 	cfc._rpc_id(self, caller_id, "upload_deck_data", _deck_id)
@@ -1229,7 +1434,8 @@ func process_deck_download(deck_data):
 
 func refresh_deck_containers(hero_id, decks_data):
 	for child in heroes_container.get_children():
-		if child.get_hero_id() == hero_id:
+		#only my slots: the others show the deck their owner picked
+		if child.get_hero_id() == hero_id and child.is_mine():
 			child.refresh_decks(decks_data)
 
 var _ready_to_launch:= {}
@@ -1319,43 +1525,17 @@ func _on_Menu_resized() -> void:
 # Network Sanity functions
 #
 
-func add_pending_acks(except_me:=true):
-	var my_id = cfc.get_network_unique_id()
-	for client_id in gameData.network_players:
-		if client_id == my_id and except_me:
-			continue 
-		add_pending_ack(client_id)	
-
-func add_pending_ack(client_id):
-	if (!_pending_ack.has(client_id)):
-		_pending_ack[client_id] = 0	
-	_pending_ack[client_id] +=1
-
-func remove_pending_ack(client_id):
-	if (!_pending_ack.has(client_id)):
-		_pending_ack[client_id] = 0	
-			
-	if (_pending_ack[client_id]) > 0:
-		_pending_ack[client_id] -=1
-		return true
-	else:
-		var _error = 1
-		return false
-
-func ack():
-	cfc._rpc_id(self, 1, "master_ack")
-
-mastersync func master_ack():
-	var client_id = cfc.get_rpc_sender_id()
-	remove_pending_ack(client_id)
-	verify_launch_button()
-	verify_step2_button()	
-
+#host: some players haven't displayed the latest state yet (players who left
+#are not waited for)
 func are_acks_pending():
-	for client_id in gameData.network_players:
-		if (!_pending_ack.has(client_id)):
-			_pending_ack[client_id] = 0			
-		if _pending_ack[client_id]:
+	if _broadcast_pending:
+		return true
+	if !gameData.is_multiplayer_game:
+		return false
+	for client_id in get_tree().get_network_connected_peers():
+		if !gameData.network_players.has(client_id):
+			continue
+		if _client_state_versions.get(client_id, 0) < _state_version:
 			return true
 	return false
 

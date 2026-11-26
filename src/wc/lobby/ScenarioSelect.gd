@@ -237,7 +237,11 @@ func resize():
 
 	var screen_size = get_viewport().size/cfc.screen_scale
 	var grid_width = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_WIDTH"] * cfc.hardcoded_positions_modifier.x
-	var grid_height = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"] * cfc.hardcoded_positions_modifier.y
+	var grid_height = CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_HEIGHT"]
+	#same height as the %Scenarios container (TeamSelection._load_scenarios)
+	if lobby and lobby.has_method("get_container_y_size"):
+		grid_height = lobby.get_container_y_size(grid_height)
+	grid_height *= cfc.hardcoded_positions_modifier.y
 
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
@@ -250,9 +254,19 @@ func resize():
 	var columns = parent.columns
 	
 	var rows = int(ceil(float(float(total_scenarios) /float(columns))))
-	var image_width = grid_width / columns
-	var image_height = grid_height / rows - CFConst.TEAM_SELECTION_GUI["SCENARIO_LARGE_GRID_NAME_HEIGHT"]
-	var image_size = min(image_width, image_height)
+	#a cell is this VBoxContainer: the picture, the VBox separation and the
+	#name label (its real height, with the font set above), and cells are
+	#separated by the grid's h/vseparation. Only the picture is resized, so
+	#everything else is taken out of the space first: before, 15px per row
+	#were taken out, but a row really costs picture + 4 + label (~24px with
+	#the 16px font) + 4, and the grid ended up taller than its container
+	var name_height = scenario_name.get_combined_minimum_size().y
+	var vbox_separation = get_constant("separation")
+	var h_separation = parent.get_constant("hseparation")
+	var v_separation = parent.get_constant("vseparation")
+	var image_width = (grid_width - (columns - 1) * h_separation) / columns
+	var image_height = (grid_height - (rows - 1) * v_separation) / rows - name_height - vbox_separation
+	var image_size = floor(min(image_width, image_height))
 	
 	the_picture.rect_min_size = Vector2(image_size, image_size)
 

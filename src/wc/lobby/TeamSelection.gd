@@ -466,14 +466,14 @@ func _load_scenarios():
 	var ordered_scenarios = ScenarioDeckData.get_unlocked_scenarios() #names_to_id.keys()
 	ordered_scenarios.sort()
 
-	var t = ordered_scenarios.size()
-	var a = y_size
-	var b = -30 * t #TODO magic number 30 is text height
-	var c = -x_size * t
-	var delta = b*b - (4*a*c)
-	var x1 = int( (-b -sqrt(delta))/(2*a)) 
-	var x2 = int( (-b +sqrt(delta))/(2*a)) 
-	var grid_columns = max(x1, x2) + 1
+	#to test rendering
+	#ordered_scenarios = ordered_scenarios.slice(1, 18)
+
+	#rows are a whole number (ceil): the quadratic used before assumed
+	#total/columns rows, e.g. 6.1 rows of 9 for 55 scenarios when there are 7.
+	#30 approximates what a row needs besides the picture (name label and
+	#separations, see ScenarioSelect.resize, which sizes the pictures exactly)
+	var grid_columns = calc_columns(Vector2(x_size, y_size), Vector2(0, 30), ordered_scenarios.size())
 	grid_columns = max(grid_columns, 3)
 	all_scenarios_container.columns = grid_columns
 	
@@ -489,28 +489,37 @@ func get_container_y_size(expected_size):
 		return expected_size - get_node("%AdventureModeWarning").rect_size.y
 	return expected_size
 
-#calculates optimal number of columns for grid containing square items
+#height left for the heroes grid itself: HEROES_LARGE_GRID_HEIGHT is the
+#rect_min_size of %HeroesPanel (see _create_hero_container), a VBoxContainer
+#that also holds the title above the grid
+func get_heroes_grid_height() -> float:
+	var panel = get_node("%HeroesPanel")
+	var title = get_node("%HeroesTitle")
+	var panel_height = get_container_y_size(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"]) * cfc.hardcoded_positions_modifier.y
+	var title_height = max(title.get_combined_minimum_size().y, title.rect_size.y) if title.visible else 0
+	var separation = panel.get_constant("separation") if title.visible else 0
+	return panel_height - title_height - separation
+
+#calculates optimal number of columns for grid containing square items:
+#the column count that gives the largest items, fewest columns on a tie.
+#All counts are tried: the size isn't monotonic (whole rows), so stopping
+#at the first count that doesn't improve could miss a better one, and the
+#count returned used to be that first non-improving one, not the best
 func calc_columns(container_size, containee_offset, total_items):
 	var t = total_items
-	var max_size = -1000
-	var cols = 0
-	var rows = 0
-	for i in t:
-		if !i:
-			continue
-		cols = i
-		rows = t/cols
-		var remainder = t % cols 
-		if remainder:
-			rows+=1
-		var h = container_size.y/rows - containee_offset.y
-		var w = container_size.x/cols - containee_offset.x
-		var size = min (h, w)
+	if t <= 0:
+		return 1
+	var max_size = -INF
+	var best_cols = 1
+	for cols in range(1, t + 1):
+		var rows = int(ceil(float(t) / float(cols)))
+		var h = container_size.y / rows - containee_offset.y
+		var w = container_size.x / cols - containee_offset.x
+		var size = min(h, w)
 		if size > max_size:
 			max_size = size
-		else:
-			break	
-	return cols
+			best_cols = cols
+	return best_cols
 
 func _create_hero_container():
 	var y_size = get_container_y_size(CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"]) * cfc.hardcoded_positions_modifier.y
@@ -533,6 +542,8 @@ func _create_hero_container():
 	var ordered_names = names_to_id.keys()
 	ordered_names.sort()
 
+	#to test rendering
+	#ordered_names = ordered_names.slice(1, 18)
 
 	var grid_columns = calc_columns(Vector2(x_size, y_size), Vector2(0,CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_NAME_HEIGHT"]),  ordered_names.size())
 	grid_columns = max(grid_columns, 3)

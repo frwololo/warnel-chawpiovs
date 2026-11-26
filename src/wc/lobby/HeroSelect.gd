@@ -160,6 +160,10 @@ func resize():
 	var screen_size = get_viewport().size/cfc.screen_scale
 	var grid_width = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_WIDTH"] * cfc.hardcoded_positions_modifier.x
 	var grid_height = CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_HEIGHT"] * cfc.hardcoded_positions_modifier.y
+	#HEROES_LARGE_GRID_HEIGHT is for the whole heroes panel: the title above
+	#the grid (and the panel's separation) is taken out
+	if lobby and lobby.has_method("get_heroes_grid_height"):
+		grid_height = lobby.get_heroes_grid_height()
 	if screen_size.x > CFConst.LARGE_SCREEN_WIDTH:
 		var dynamic_font = cfc.get_font("res://fonts/ReggaeOne-Regular.ttf", 16)	
 		hero_name_label.add_font_override("font", dynamic_font)	
@@ -173,9 +177,19 @@ func resize():
 	if total_objects_in_container % columns:
 		rows += 1
 		
-	var image_width = grid_width / columns
-	var image_height = grid_height / rows - (CFConst.TEAM_SELECTION_GUI["HEROES_LARGE_GRID_NAME_HEIGHT"])
-	var image_size = min(image_width, image_height)
+	#a cell is this VBoxContainer: the picture, the VBox separation and the
+	#name label (its real height, with the font set above), and cells are
+	#separated by the grid's h/vseparation. Only the picture is resized, so
+	#everything else is taken out first: before, 15px per row were taken
+	#out, but a row really costs picture + 4 + label (~23px with the 16px
+	#font) + 4, so the grid ended up taller than HEROES_LARGE_GRID_HEIGHT
+	var name_height = hero_name_label.get_combined_minimum_size().y
+	var vbox_separation = get_constant("separation")
+	var h_separation = parent.get_constant("hseparation")
+	var v_separation = parent.get_constant("vseparation")
+	var image_width = (grid_width - (columns - 1) * h_separation) / columns
+	var image_height = (grid_height - (rows - 1) * v_separation) / rows - name_height - vbox_separation
+	var image_size = floor(min(image_width, image_height))
 	
 	hero_picture.rect_min_size = Vector2(image_size, image_size)
 

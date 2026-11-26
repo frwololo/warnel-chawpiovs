@@ -51,7 +51,12 @@
 					},
 					{
 						"name": "add_script",
-						"end_condition": "card_played",
+						"end_condition": {
+							"event": "card_played",
+							"event_filters": {
+								"trigger": "self"
+							}
+						},
 						"subject": "tutor_and_choose",
 						"src_container": "deck",
 						"filter_state_tutor": [
@@ -83,7 +88,12 @@
 					},
 					{
 						"name": "add_script",
-						"end_condition": "card_played",
+						"end_condition": {
+							"event": "card_played",
+							"event_filters": {
+								"trigger": "self"
+							}
+						},
 						"subject": "previous",
 						"fetch_script": {
 							"script_path": "*/hand",

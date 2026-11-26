@@ -695,7 +695,14 @@ func force_play_card(script: ScriptTask) -> int:
 			}
 		}
 		var subscript_id = subject.add_extra_script( subscript, my_hero_id)
-		gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, "card_played")
+		#removed when this card is played, not when any card is: if it can't be
+		#paid for, the override would otherwise stay on it (in the deck, for
+		#Shuri's Inventor) until another card is played
+		var removal_condition = {
+			"event": "card_played",
+			"event_filters": {"trigger": "self"}
+		}
+		gameData.theGameObserver.add_script_removal_effect(script, subject, subscript_id, removal_condition)
 		subject.attempt_to_play()			
 		
 	return retcode

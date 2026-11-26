@@ -2368,7 +2368,7 @@
 					},
 					"end_condition": {
 						"event": "card_played",
-						"filters": {
+						"event_filters": {
 							"trigger": "self"
 						}
 					}
@@ -9071,7 +9071,9 @@
 					"name": "add_script",
 					"end_condition": {
 						"event": "enemy_activation_finished",
-						"trigger": "self"
+						"event_filters": {
+							"trigger": "self"
+						}
 					},
 					"subject": "boardseek",
 					"subject_count": "all",

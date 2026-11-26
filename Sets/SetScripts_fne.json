@@ -7156,9 +7156,9 @@
 										"enemy_activation_finished": {
 											"all": [
 												{
-													"name": "give_as_boost_card",
-													"host": "current_hero_target",
-													"subject": "self"
+													"name": "deal_encounter",
+													"subject": "self",
+													"target_identity": "current_hero_target"
 												}
 											]
 										}
@@ -7215,9 +7215,9 @@
 										"enemy_activation_finished": {
 											"all": [
 												{
-													"name": "give_as_boost_card",
-													"host": "current_hero_target",
-													"subject": "self"
+													"name": "deal_encounter",
+													"subject": "self",
+													"target_identity": "current_hero_target"
 												}
 											]
 										}
@@ -7283,9 +7283,9 @@
 										"enemy_activation_finished": {
 											"all": [
 												{
-													"name": "give_as_boost_card",
-													"host": "current_hero_target",
-													"subject": "self"
+													"name": "deal_encounter",
+													"subject": "self",
+													"target_identity": "current_hero_target"
 												}
 											]
 										}

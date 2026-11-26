@@ -1648,6 +1648,19 @@
 	},
 	"Team-Building Exercise": {
 		"manual": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "tutor",
+					"subject_count": "all",
+					"src_container": "hand_my_hero",
+					"filter_state_tutor": [
+						{
+							"filter_shares_trait_with_identity": true
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",

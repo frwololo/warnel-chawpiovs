@@ -622,7 +622,7 @@
 							"filter_is_included_in": "my_discarded"
 						}
 					]
-				},
+				}
 			]
 		},
 		"_comments": "filter_is_included_in reads a script variable (see SP.check_included_in_filter), so the discarded cards are saved as my_discarded (Card Shark pattern: discard, then save_variable previous)"
@@ -957,6 +957,23 @@
 			],
 			"trigger": "self",
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							},
+							"is_script_owner": false
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "execute_scripts",
@@ -989,6 +1006,23 @@
 			],
 			"trigger": "self",
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							},
+							"is_script_owner": false
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "execute_scripts",
@@ -1021,6 +1055,23 @@
 			],
 			"trigger": "self",
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							},
+							"is_script_owner": false
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "execute_scripts",
@@ -1206,6 +1257,22 @@
 			]
 		},
 		"manual": {
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"subject_count": "all",
+					"filter_state_seek": [
+						{
+							"filter_group": "group_allies_my_hero",
+							"filter_properties": {
+								"trait_dora_milaje": 1,
+								"comparison": "ge"
+							}
+						}
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",

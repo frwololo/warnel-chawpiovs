@@ -184,6 +184,8 @@ static func _get_subjects_simplified(string_value, owner_card):
 	match string_value:
 		KEY_SUBJECT_V_MY_HERO:
 			var my_identity = owner_card.get_controller_hero_card()
+			if !my_identity:
+				return null
 			if !my_identity.is_hero_form():
 				return null
 			return my_identity

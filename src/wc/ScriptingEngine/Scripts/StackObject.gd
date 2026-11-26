@@ -280,6 +280,11 @@ func _get_display_text_nocache():
 					var text = owner.get_printed_text("When Defeated")
 					if text:
 						return text	
+			"stage_completed":
+				if owner:
+					var text = owner.get_printed_text("When Completed")
+					if text:
+						return text							
 			_:
 				var trigger_str = trigger.replace("_", " ")
 				var text = owner.get_printed_text(trigger_str)

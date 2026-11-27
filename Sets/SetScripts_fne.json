@@ -53,7 +53,9 @@
 				{
 					"name": "execute_scripts",
 					"exec_trigger": "manual",
-					"subject": "self"
+					"subject": "self",
+					"delayed": true,
+					"tags": ["ignore_constraints"]
 				}
 			]
 		}
@@ -166,7 +168,9 @@
 				{
 					"name": "execute_scripts",
 					"exec_trigger": "manual",
-					"subject": "self"
+					"subject": "self",
+					"delayed": true,
+					"tags": ["ignore_constraints"]
 				}
 			]
 		}
@@ -222,7 +226,9 @@
 				{
 					"name": "execute_scripts",
 					"exec_trigger": "manual",
-					"subject": "self"
+					"subject": "self",
+					"delayed": true,
+					"tags": ["ignore_constraints"]
 				}
 			]
 		}
@@ -4824,6 +4830,28 @@
 						"is_cost": true,
 						"tags": [
 							"hero_action"
+						]
+					},
+					{
+						"name": "exhaust_card",
+						"is_cost": true,
+						"subject": "boardseek",
+						"subject_count": "all",
+						"needs_selection": true,
+						"selection_type": "min",
+						"selection_count": 3,
+						"selection_optional": false,
+						"selection_what_to_count": {
+							"func_name": "get_subject_int_property",
+							"func_params": {
+								"property": "thwart"
+							}
+						},
+						"filter_state_seek": [
+							{
+								"filter_group": "group_friendly_my_hero",
+								"filter_is_exhausted": false
+							}
 						]
 					},
 					{

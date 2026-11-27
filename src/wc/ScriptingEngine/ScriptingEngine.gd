@@ -4221,6 +4221,9 @@ static func script_constraints(subject, params, script = null) -> int:
 	
 	var _tags: Array = params.get(SP.KEY_TAGS, [])
 	
+	if "ignore_constraints" in _tags:
+		return CFConst.ReturnCode.CHANGED
+	
 	var tags = []
 	for i in range (_tags.size()):
 		if _tags_to_tags.has(_tags[i]):

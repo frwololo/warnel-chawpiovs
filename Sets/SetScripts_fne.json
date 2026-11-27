@@ -2534,7 +2534,7 @@
 						"then": -1,
 						"else": 0
 					},
-					"trigger": "Self"
+					"trigger": "self"
 				},
 				{
 					"filter_task": "get_property",
@@ -2549,7 +2549,7 @@
 						"then": -1,
 						"else": 0
 					},
-					"trigger": "Self"
+					"trigger": "self"
 				}
 			]
 		}
@@ -2629,20 +2629,14 @@
 					]
 				},
 				{
-					"name": "save_variable",
-					"var_name": "my_host",
-					"var_type": "subject",
-					"value": "host"
+					"name": "attack",
+					"amount": 3,
+					"subject": "host"
 				},
 				{
 					"name": "discard",
 					"subject": "self",
 					"is_cost": true
-				},
-				{
-					"name": "attack",
-					"amount": 3,
-					"subject": "my_host"
 				}
 			]
 		},
@@ -3481,11 +3475,11 @@
 					"token_name": "charge",
 					"modification": "2p",
 					"subject": "Electric Charge"
-				}				
+				}
 			]
 		},
 		"card_attached": {
-			"_silent": true,		
+			"_silent": true,
 			"trigger": "Electric Charge",
 			"event_filters": {
 				"host_card": "self"
@@ -8955,19 +8949,13 @@
 			"is_optional_board": true,
 			"board": [
 				{
-					"name": "save_variable",
-					"var_name": "my_host",
-					"var_type": "subject",
-					"value": "host"
+					"name": "remove_threat",
+					"amount": 2,
+					"subject": "host"
 				},
 				{
 					"name": "discard",
 					"subject": "self"
-				},
-				{
-					"name": "remove_threat",
-					"amount": 2,
-					"subject": "my_host"
 				}
 			]
 		}

@@ -217,7 +217,15 @@ func get_sub_property(property: String, root, default = null):
 #		return(value)
 #	return(found_value)
 
+#Subjects the engine found by itself when the task was primed (tutor,
+#boardseek or "find" without a selection, or "previous"): the
+#ScriptingEngine finds them again when the task runs, after the costs are
+#paid (see ScriptingEngine._find_subjects_after_costs). Cleared whenever the
+#subjects are set from elsewhere (replacement effects, tasks built by code)
+var find_again_after_costs := false
+
 func set_subjects(new_subjects):
+	find_again_after_costs = false
 	match typeof(new_subjects):
 		TYPE_ARRAY:
 			subjects = new_subjects
@@ -306,6 +314,7 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 	#TODO MULTIPLAYER_MODIFICATION
 	var prepaid = set_subjects_from_network_prepaid()
 	if (null != prepaid):
+		find_again_after_costs = _subjects_found_by_engine()
 		return prepaid["subjects"]
 
 	var result = _local_find_subjects(stored_integer, run_type)
@@ -314,7 +323,23 @@ func _find_subjects(stored_integer := 0, run_type:int = CFInt.RunType.NORMAL) ->
 		result = yield(result, "completed")	
 	
 	set_subjects(result)
+	find_again_after_costs = _subjects_found_by_engine()
 	return subjects
+
+#true for the subjects of a non-cost task that no player chose (see
+#find_again_after_costs). A selection or a target is a decision, made once
+func _subjects_found_by_engine() -> bool:
+	if get_property(SP.KEY_IS_COST):
+		return false
+	if get_property(SP.KEY_NEEDS_SELECTION):
+		return false
+	#"find" is a tutor once primed (preprocess_subject_definition)
+	return get_property_raw(SP.KEY_SUBJECT) in [
+		SP.KEY_SUBJECT_V_TUTOR,
+		SP.KEY_SUBJECT_V_BOARDSEEK,
+		SP.KEY_SUBJECT_V_PREVIOUS,
+		"find"
+	]
 
 
 func preload_hero_collection():

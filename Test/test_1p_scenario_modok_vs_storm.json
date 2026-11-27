@@ -199,7 +199,7 @@
 					}
 				},
 				{
-					"card": "Strong Upgrade #50112",
+					"card": "Flying Upgrade #50109",
 					"owner_hero_id": 0
 				}
 			],
@@ -262,7 +262,7 @@
 					"owner_hero_id": 1
 				},
 				{
-					"card": "Flying Upgrade #50109",
+					"card": "Strong Upgrade #50112",
 					"owner_hero_id": 0
 				},
 				{
@@ -455,10 +455,7 @@
 			"enemies1": [
 				{
 					"card": "Adaptoid #50113",
-					"owner_hero_id": 0,
-					"tokens": {
-						"tough": 1
-					}
+					"owner_hero_id": 0
 				}
 			],
 			"misc_encounter1": [],

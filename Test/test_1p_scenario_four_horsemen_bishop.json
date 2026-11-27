@@ -51,119 +51,15 @@
 			"discard_villain": [],
 			"deck_villain": [
 				{
-					"card": "Ahab's Energy Spear #45099",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Golden Horse #45090",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Fear the Future #45025",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Horseman of Famine #45093",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Hunted #45072",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Horseman of Pestilence #45094",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Rough Riders #45096",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Hunted #45072",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Release the Hounds #45100",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Plague and Pestilence #45088",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Rough Riders #45096",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Horseman of Death #45095",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Caught Off Guard #01188",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Hound #45098",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "The Specter of Death #45089",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Advance #01186",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Assault #01187",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Hound #45098",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Golden Horse #45090",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "War-Weary #45073",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "War-Weary #45073",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "A Time of Famine #45087",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Horseman of War #45092",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Targeted for Extermination #45074",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Targeted for Extermination #45074",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "Advance #01186",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Rough Riders #45096",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Metal Wings #45091",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Assault #01187",
+					"card": "Advance #01186",
 					"owner_hero_id": 0
 				},
 				{
@@ -171,15 +67,23 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Shadow of the Past #01190",
+					"card": "Ahab's Energy Spear #45099",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Hound #45098",
+					"card": "Assault #01187",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Golden Horse #45090",
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Fear the Future #45025",
 					"owner_hero_id": 0
 				},
 				{
@@ -187,7 +91,103 @@
 					"owner_hero_id": 0
 				},
 				{
+					"card": "Golden Horse #45090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Golden Horse #45090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Golden Horse #45090",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of Death #45095",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of Famine #45093",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of Pestilence #45094",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Horseman of War #45092",
+					"owner_hero_id": 0
+				},
+				{
 					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hound #45098",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Hunted #45072",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Metal Wings #45091",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Release the Hounds #45100",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rough Riders #45096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rough Riders #45096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Rough Riders #45096",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Targeted for Extermination #45074",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Ravages of War #45086",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Specter of Death #45089",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "War-Weary #45073",
 					"owner_hero_id": 0
 				}
 			],
@@ -218,7 +218,7 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "The Ravages of War #45086",
+					"card": "Plague and Pestilence #45088",
 					"owner_hero_id": 0,
 					"tokens": {
 						"threat": 6
@@ -442,6 +442,18 @@
 					"owner_hero_id": 1
 				}
 			]
+		},
+		"scenario": {
+			"scheme_id": "45085a",
+			"modular_encounters": [
+				"hounds",
+				"dystopian_nightmare"
+			],
+			"expert_mode": false,
+			"scenario_options": {
+				"expert_mode": false,
+				"randomize_villain_activation_order": true
+			}
 		}
 	}
 }

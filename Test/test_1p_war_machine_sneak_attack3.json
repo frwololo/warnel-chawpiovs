@@ -70,10 +70,6 @@
 			"type": "select",
 			"value": "Jessica Jones"
 		},
-		{
-			"type": "select",
-			"value": "Goliath - Bill Foster #23015"
-		}
 	],
 	"end": {
 		"phase": "PLAYER_TURN",

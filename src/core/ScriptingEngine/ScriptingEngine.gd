@@ -330,6 +330,9 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 		
 	var prev_subjects := []
 	var has_else = self.has_else_condition()
+	#a task found other subjects once the costs were paid: the "previous"
+	#tasks after it are found again too
+	var subjects_changed_after_costs := false
 
 	if run_type in [CFInt.RunType.NORMAL, CFInt.RunType.ELSE]:
 		_pre_execution_run()
@@ -452,6 +455,18 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 			var subjects_ok = script.network_prepaid_sanity_check()
 			if !subjects_ok:
 				var _error = 1	
+			#the subjects were found before the costs were paid, the effect
+			#looks at the board as it is now (Cloak's "Fetch Dagger" paid
+			#with Dagger: she was locked as a resource in hand when primed,
+			#she is in the discard pile now)
+			if run_type == CFInt.RunType.NORMAL \
+					and execute_mode != CFInt.RunMode.COST_SCRIPTS_ONLY \
+					and not script.is_cost and script.find_again_after_costs:
+				var changed = _find_subjects_after_costs(script, prev_subjects, subjects_changed_after_costs)
+				if changed is GDScriptFunctionState:
+					changed = yield(changed, "completed")
+				if changed:
+					subjects_changed_after_costs = true
 			_pre_task_exec(script)
 			
 			#for some scripts we have a possibility to precompute their result
@@ -583,6 +598,25 @@ func execute(_run_type, execute_mode = CFInt.RunMode.BOTH) -> void:
 #			scripts_queue.pop_front()
 #			run_next_script(card_owner,
 #					scripts_queue,prev_subjects)
+
+#Finds again the subjects of a task primed before the costs were paid, when
+#no player chose them (ScriptObject.find_again_after_costs). Every client
+#does it on the same board, so the payment data isn't needed for them.
+#A "previous" task is only found again if an earlier task changed its
+#subjects this way: otherwise its subjects can't have changed.
+#Returns true if the subjects changed.
+func _find_subjects_after_costs(script: ScriptTask, current_prev_subjects: Array, earlier_changed: bool) -> bool:
+	if script.get_property_raw(SP.KEY_SUBJECT) == SP.KEY_SUBJECT_V_PREVIOUS:
+		if !earlier_changed:
+			return false
+		script.set_prev_subjects(current_prev_subjects)
+	var before = script.subjects.duplicate()
+	script.is_valid = true
+	var result = script._local_find_subjects(get_stored_integer(script), run_type)
+	if result is GDScriptFunctionState:
+		result = yield(result, "completed")
+	script.set_subjects(result)
+	return result != before
 
 func call_task(_script_name, script) -> int: 
 	var retcode = self.call(script.script_name, script)

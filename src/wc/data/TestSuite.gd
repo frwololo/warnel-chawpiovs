@@ -25,6 +25,14 @@ var short_wait_time: = 0.3 #below 0.4 has had failures formultiplayer
 var multiplayer_short_wait_time: = 0.8 #below 0.4 has had failures formultiplayer
 #amount of time to wait if the test explicitely requests it
 var max_wait_time: = 1.0
+#"select" without a window yet: how long (seconds, total time, times the
+#delay multiplier) to wait for it before failing the step. Proceeding
+#without the window lost the action, and the next "select" answered the
+#wrong prompt (test_2p_whirlwind_attack: the "cancel" against Whirlwind was
+#lost, "Captain Marvel" defended against Whirlwind instead of Rhino, and the
+#test timed out at Rhino's attack). Steps with "expected_to_fail" keep the
+#short wait: no window is a possible, intended, outcome for them
+const SELECT_WINDOW_MAX_WAIT := 10.0
 var multiplayer_max_wait_time = 2.0
 const shorten_animations = true
 const STOP_AFTER_FIRST_FAILURE = true
@@ -143,6 +151,15 @@ func get_current_selection_window():
 	if !_current_selection_windows:
 		return null
 	return _current_selection_windows.back()
+
+#a selection window this client can answer (registered, not being freed)
+func has_open_selection_window() -> bool:
+	var window = get_current_selection_window()
+	if !is_instance_valid(window):
+		return false
+	if window.is_queued_for_deletion():
+		return false
+	return true
 
 func remove_selection_window(object):
 	_current_selection_windows.erase(object)
@@ -641,8 +658,13 @@ func should_wait(my_action, _delta, _ready_delta = -1.0):
 	#up while not marked as "pending user interaction"
 	#ritual combat is such an example, at the time of writing
 	#see execute_scripts in Scriptingengine, for the culprit
-	if cfc.get_modal_menu() and action_type in ["choose", "select"] and _delta > 0.2:
-		return false
+	#For "select", only once its selection window is there: another modal
+	#menu doesn't take the selection
+	if cfc.get_modal_menu() and _delta > 0.2:
+		if action_type == "choose":
+			return false
+		if action_type == "select" and has_open_selection_window():
+			return false
 
 	var delay_multiplier = get_delay_multiplier(my_action)
 
@@ -720,11 +742,18 @@ func should_wait(my_action, _delta, _ready_delta = -1.0):
 	
 		#wait a bit if we need to choose from a selection window but that window isn't there
 	if (action_type == "select"):
-		if !(is_instance_valid(get_current_selection_window())):
-			if (wait_delta <long_wait_time  * delay_multiplier):
+		if !has_open_selection_window():
+			if expected_to_fail:
+				if (wait_delta <long_wait_time  * delay_multiplier):
+					count_delay("action_select")
+					return true
+			#the window is expected: wait for it (an action sent while the
+			#game was still getting to it), up to SELECT_WINDOW_MAX_WAIT of
+			#total time. Then action_select fails the test
+			elif (_delta < max(SELECT_WINDOW_MAX_WAIT, long_wait_time) * delay_multiplier):
 				count_delay("action_select")
 				return true
-			elif !expected_to_fail:
+			else:
 				announce("{warning} Timeout for "  + action_type + " " + str(action_value))
  
 	if (action_type == "target"):
@@ -1010,7 +1039,7 @@ remotesync func run_action(my_action:Dictionary,  skip_play_tests:= false):
 		"play":
 			action_play(action_hero, action_value)
 		"select":
-			action_select(action_hero, action_value)
+			action_select(action_hero, action_value, my_action.get("expected_to_fail", false))
 		"target":
 			action_target(action_hero, action_value)
 		"choose":
@@ -1077,7 +1106,7 @@ func action_play(hero_id, card_id_or_name):
 func action_activate(hero_id, card_id_or_name):
 	return action_play(hero_id, card_id_or_name)
 
-func action_select(hero_id, action_value):
+func action_select(hero_id, action_value, expected_to_fail = false):
 	var chosen_cards: Array = []
 	if typeof(action_value) == TYPE_ARRAY:
 		chosen_cards = action_value
@@ -1085,15 +1114,22 @@ func action_select(hero_id, action_value):
 		action_value = action_value.to_lower()
 		match action_value:
 			"ok":
-				ok_current_selection_window()			
+				var ok_result = ok_current_selection_window()
+				if ok_result != "done":
+					_select_action_failed(hero_id, action_value, ok_result, expected_to_fail)
+				return
 			"cancel":
-				return cancel_current_selection_window(false)
+				var cancel_result = cancel_current_selection_window(false)
+				if cancel_result != "done":
+					_select_action_failed(hero_id, action_value, cancel_result, expected_to_fail)
+				return
 			_:
 				chosen_cards = [action_value]
 	
 	if !is_instance_valid(get_current_selection_window()):
 		var _error = 1
 		clean_selection_window()
+		_select_action_failed(hero_id, action_value, "no_window", expected_to_fail)
 		return
 	
 	for i in range (chosen_cards.size()):
@@ -1118,7 +1154,8 @@ func action_select(hero_id, action_value):
 		remove_selection_window(current_window)
 	return
 
-func ok_current_selection_window():
+#"done", "refused" (the window didn't accept it) or "no_window"
+func ok_current_selection_window() -> String:
 	if !is_instance_valid(get_current_selection_window()):
 		var _error = 1
 		clean_selection_window()
@@ -1128,11 +1165,12 @@ func ok_current_selection_window():
 		var closed_ok = current_window.attempt_ok()
 		if closed_ok:
 			remove_selection_window(current_window)
-	else:
-		#TODO error handling
-		var _error =1
+			return "done"
+		return "refused"
+	return "no_window"
 
-func cancel_current_selection_window(force_cancel = true):
+#"done", "refused" (the window can't be canceled) or "no_window"
+func cancel_current_selection_window(force_cancel = true) -> String:
 	if !is_instance_valid(get_current_selection_window()):
 		var _error = 1
 		clean_selection_window()
@@ -1146,9 +1184,40 @@ func cancel_current_selection_window(force_cancel = true):
 			closed_ok = current_window.attempt_cancel()
 		if closed_ok:
 			remove_selection_window(current_window)
-	else:
-		#TODO error handling
-		var _error =1
+			return "done"
+		return "refused"
+	return "no_window"
+
+#a "select" (cards, ok or cancel) that could not be done. It used to be
+#silently skipped and the test went on, one answer behind. Traced either
+#way; with "expected_to_fail" that's an intended outcome, otherwise the
+#test fails at this step and stops (the next actions would answer the wrong
+#prompts, and a wait for the player turn would never end)
+func _select_action_failed(hero_id, action_value, reason, expected_to_fail):
+	var msg = "select " + str(action_value) + " (hero " + str(hero_id) + "): "
+	match reason:
+		"no_window":
+			msg += "no selection window"
+		"refused":
+			msg += "the selection window refused it"
+		_:
+			msg += str(reason)
+	if expected_to_fail:
+		trace(msg + " (expected_to_fail)")
+		return
+	trace("STEP FAILED: " + msg)
+	announce("{error} " + msg + "\n")
+	force_fail_current_test("step failed: " + msg)
+	cfc._rpc_id(self, 1, "abort_current_test", "step failed on client " + str(cfc.get_network_unique_id()) + ": " + msg)
+
+#master: a step failed (see _select_action_failed). The test is failed and
+#finalized once that action completes, instead of running the remaining
+#actions against the wrong prompts
+mastersync func abort_current_test(msg):
+	if !_force_failed:
+		force_fail_current_test(msg)
+	trace("aborting test: " + str(msg))
+	current_action = actions.size()
 
 func cancel_targeting():
 	if (_current_targeting_card):

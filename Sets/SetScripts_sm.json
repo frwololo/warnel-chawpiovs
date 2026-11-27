@@ -4509,13 +4509,6 @@
 					"name": "mod_tokens",
 					"token_name": "snoop",
 					"modification": 1,
-					"subject": "previous",
-					"_comments": "when boardseek is called, the selected card isn't in play yet, so this forces adding a token on it"
-				},
-				{
-					"name": "mod_tokens",
-					"token_name": "snoop",
-					"modification": 1,
 					"subject": "boardseek",
 					"subject_count": "all",
 					"filter_state_seek": [

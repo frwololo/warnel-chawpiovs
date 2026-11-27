@@ -113,8 +113,8 @@
 		"board": {
 			"set_aside": [
 				{
-					"card": "Elektra"
-				},
+					"card": "Shang-Chi #04098"
+				},			
 				{
 					"card": "Captured by Hydra"
 				}				
@@ -153,8 +153,8 @@
 			],
 			"hand1": [
 				{
-					"card": "Shang-Chi #04098"
-				}
+					"card": "Elektra"
+				},
 			],
 			"allies1": [
 				{

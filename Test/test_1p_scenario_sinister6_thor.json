@@ -52,171 +52,138 @@
 			"discard_villain": [],
 			"deck_villain": [
 				{
-					"card": "27142",
-					"owner_hero_id": 0,
-					"_comments": "Life-Size Decoy"
+					"card": "Advance #01186",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01190",
-					"owner_hero_id": 0,
-					"_comments": "Shadow of the Past"
+					"card": "Advance #01186",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01189",
-					"owner_hero_id": 0,
-					"_comments": "Gang-Up"
+					"card": "Assault #01187",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01188",
-					"owner_hero_id": 0,
-					"_comments": "Caught Off Guard"
+					"card": "Assault #01187",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27144",
-					"owner_hero_id": 0,
-					"_comments": "Hidden in Shadow"
+					"card": "Brute Force Barricade #27107",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27111",
-					"owner_hero_id": 0,
-					"_comments": "Partnership of Pain"
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27105",
-					"owner_hero_id": 0,
-					"_comments": "Team Leader"
+					"card": "Coordinated Effort #27143",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27112",
-					"owner_hero_id": 0,
-					"_comments": "Surprise!"
+					"card": "Frequent Flyers #27108",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01187",
-					"owner_hero_id": 0,
-					"_comments": "Assault"
+					"card": "From Every Direction #27146",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27111",
-					"owner_hero_id": 0,
-					"_comments": "Partnership of Pain"
+					"card": "From Every Direction #27146",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27112",
-					"owner_hero_id": 0,
-					"_comments": "Surprise!"
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27111",
-					"owner_hero_id": 0,
-					"_comments": "Partnership of Pain"
+					"card": "Heightened Morale #27103",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27106",
-					"owner_hero_id": 0,
-					"_comments": "Take One for the Team"
+					"card": "Heightened Morale #27103",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27142",
-					"owner_hero_id": 0,
-					"_comments": "Life-Size Decoy"
+					"card": "Hidden in Shadow #27144",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27109",
-					"owner_hero_id": 0,
-					"_comments": "High Fashion"
+					"card": "High Fashion #27109",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27112",
-					"owner_hero_id": 0,
-					"_comments": "Surprise!"
+					"card": "Life-Size Decoy #27142",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27104",
-					"owner_hero_id": 0,
-					"_comments": "Taunting Presence"
+					"card": "Life-Size Decoy #27142",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27146",
-					"owner_hero_id": 0,
-					"_comments": "From Every Direction"
+					"card": "Odin's Anger #06026",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27108",
-					"owner_hero_id": 0,
-					"_comments": "Frequent Flyers"
+					"card": "Partnership of Pain #27111",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27107",
-					"owner_hero_id": 0,
-					"_comments": "Brute Force Barricade"
+					"card": "Partnership of Pain #27111",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27143",
-					"owner_hero_id": 0,
-					"_comments": "Coordinated Effort"
+					"card": "Partnership of Pain #27111",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27104",
-					"owner_hero_id": 0,
-					"_comments": "Taunting Presence"
+					"card": "Robotic Enhancements #27110",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27146",
-					"owner_hero_id": 0,
-					"_comments": "From Every Direction"
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01186",
-					"owner_hero_id": 0,
-					"_comments": "Advance"
+					"card": "Surprise! #27112",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01186",
-					"owner_hero_id": 0,
-					"_comments": "Advance"
+					"card": "Surprise! #27112",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27103",
-					"owner_hero_id": 0,
-					"_comments": "Heightened Morale"
+					"card": "Surprise! #27112",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27145",
-					"owner_hero_id": 0,
-					"_comments": "Teamwork Makes the Dream Work"
+					"card": "Take One for the Team #27106",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27110",
-					"owner_hero_id": 0,
-					"_comments": "Robotic Enhancements"
+					"card": "Taunting Presence #27104",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "06026",
-					"owner_hero_id": 0,
-					"_comments": "Odin's Anger"
+					"card": "Taunting Presence #27104",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "01187",
-					"owner_hero_id": 0,
-					"_comments": "Assault"
+					"card": "Team Leader #27105",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27103",
-					"owner_hero_id": 0,
-					"_comments": "Heightened Morale"
+					"card": "Teamwork Makes the Dream Work #27145",
+					"owner_hero_id": 0
 				}
 			],
 			"villain": [
 				{
-					"card": "27099",
-					"owner_hero_id": 0,
-					"_comments": "Vulture - 1"
+					"card": "Kraven the Hunter - 1 #27097",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27096",
+					"card": "Electro - 1 #27095",
 					"owner_hero_id": 0,
-					"_comments": "Hobgoblin - 1",
 					"tokens": {
 						"active_counter": 1
 					}
@@ -224,17 +191,15 @@
 			],
 			"schemes": [
 				{
-					"card": "27100b",
+					"card": "Sinister Synchronization - 1B #27100b",
 					"owner_hero_id": 0,
-					"_comments": "Sinister Synchronization - 1B",
 					"tokens": {
 						"threat": 2
 					}
 				},
 				{
-					"card": "27102a",
+					"card": "Light at the End #27102a",
 					"owner_hero_id": 0,
-					"_comments": "Light at the End",
 					"tokens": {
 						"threat": 20
 					}
@@ -244,71 +209,58 @@
 			"victory_display": [],
 			"set_aside": [
 				{
-					"card": "06001a",
-					"owner_hero_id": 1,
-					"_comments": "Thor"
+					"card": "Thor #06001a",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06027",
-					"owner_hero_id": 0,
-					"_comments": "Family Feud"
+					"card": "Family Feud #06027",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "06028",
-					"owner_hero_id": 0,
-					"_comments": "Loki"
+					"card": "Loki #06028",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "06029",
-					"owner_hero_id": 0,
-					"_comments": "Frost Giant"
+					"card": "Frost Giant #06029",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "06029",
-					"owner_hero_id": 0,
-					"_comments": "Frost Giant"
+					"card": "Frost Giant #06029",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "06030",
-					"owner_hero_id": 0,
-					"_comments": "Trickster"
+					"card": "Trickster #06030",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27094",
-					"owner_hero_id": 0,
-					"_comments": "Doctor Octopus - 1"
+					"card": "Doctor Octopus - 1 #27094",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27095",
-					"owner_hero_id": 0,
-					"_comments": "Electro - 1"
+					"card": "Hobgoblin - 1 #27096",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27097",
-					"owner_hero_id": 0,
-					"_comments": "Kraven the Hunter - 1"
+					"card": "Scorpion - 1 #27098",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27098",
-					"owner_hero_id": 0,
-					"_comments": "Scorpion - 1"
+					"card": "Vulture - 1 #27099",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27101a",
-					"owner_hero_id": 0,
-					"_comments": "Sinister Beatdown - 2A"
+					"card": "Sinister Beatdown - 2A #27101a",
+					"owner_hero_id": 0
 				},
 				{
-					"card": "27101b",
-					"owner_hero_id": 0,
-					"_comments": "Sinister Beatdown - 2B"
+					"card": "Sinister Beatdown - 2B #27101b",
+					"owner_hero_id": 0
 				}
 			],
 			"removed_from_game": [
 				{
-					"card": "27100a",
-					"owner_hero_id": 0,
-					"_comments": "Sinister Synchronization - 1A"
+					"card": "Sinister Synchronization - 1A #27100a",
+					"owner_hero_id": 0
 				}
 			],
 			"tmp_pile1": [],
@@ -318,188 +270,153 @@
 			"encounters_reveal1": [],
 			"deck1": [
 				{
-					"card": "06020",
-					"owner_hero_id": 1,
-					"_comments": "Heimdall"
+					"card": "Heimdall #06020",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06018",
-					"owner_hero_id": 1,
-					"_comments": "Battle Fury"
+					"card": "Battle Fury #06018",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06014",
-					"owner_hero_id": 1,
-					"_comments": "Get Over Here!"
+					"card": "Get Over Here! #06014",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06006",
-					"owner_hero_id": 1,
-					"_comments": "Lightning Strike"
+					"card": "Lightning Strike #06006",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06014",
-					"owner_hero_id": 1,
-					"_comments": "Get Over Here!"
+					"card": "Get Over Here! #06014",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06015",
-					"owner_hero_id": 1,
-					"_comments": "Mean Swing"
+					"card": "Mean Swing #06015",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06005",
-					"owner_hero_id": 1,
-					"_comments": "Hammer Throw"
+					"card": "Hammer Throw #06005",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06021",
-					"owner_hero_id": 1,
-					"_comments": "Invulnerability"
+					"card": "Invulnerability #06021",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06003",
-					"owner_hero_id": 1,
-					"_comments": "Defender of the Nine Realms"
+					"card": "Defender of the Nine Realms #06003",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06009",
-					"owner_hero_id": 1,
-					"_comments": "Mjolnir"
+					"card": "Mjolnir #06009",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01090",
-					"owner_hero_id": 1,
-					"_comments": "Strength"
+					"card": "Strength #01090",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01088",
-					"owner_hero_id": 1,
-					"_comments": "Energy"
+					"card": "Energy #01088",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06005",
-					"owner_hero_id": 1,
-					"_comments": "Hammer Throw"
+					"card": "Hammer Throw #06005",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06003",
-					"owner_hero_id": 1,
-					"_comments": "Defender of the Nine Realms"
+					"card": "Defender of the Nine Realms #06003",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06005",
-					"owner_hero_id": 1,
-					"_comments": "Hammer Throw"
+					"card": "Hammer Throw #06005",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06021",
-					"owner_hero_id": 1,
-					"_comments": "Invulnerability"
+					"card": "Invulnerability #06021",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06015",
-					"owner_hero_id": 1,
-					"_comments": "Mean Swing"
+					"card": "Mean Swing #06015",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06004",
-					"owner_hero_id": 1,
-					"_comments": "For Asgard!"
+					"card": "For Asgard! #06004",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06003",
-					"owner_hero_id": 1,
-					"_comments": "Defender of the Nine Realms"
+					"card": "Defender of the Nine Realms #06003",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06018",
-					"owner_hero_id": 1,
-					"_comments": "Battle Fury"
+					"card": "Battle Fury #06018",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06008",
-					"owner_hero_id": 1,
-					"_comments": "God of Thunder"
+					"card": "God of Thunder #06008",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06015",
-					"owner_hero_id": 1,
-					"_comments": "Mean Swing"
+					"card": "Mean Swing #06015",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06019",
-					"owner_hero_id": 1,
-					"_comments": "Jarnbjorn"
+					"card": "Jarnbjorn #06019",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06014",
-					"owner_hero_id": 1,
-					"_comments": "Get Over Here!"
+					"card": "Get Over Here! #06014",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06011",
-					"owner_hero_id": 1,
-					"_comments": "Hercules"
+					"card": "Hercules #06011",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01089",
-					"owner_hero_id": 1,
-					"_comments": "Genius"
+					"card": "Genius #01089",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06002",
-					"owner_hero_id": 1,
-					"_comments": "Lady Sif"
+					"card": "Lady Sif #06002",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06017",
-					"owner_hero_id": 1,
-					"_comments": "Hall of Heroes"
+					"card": "Hall of Heroes #06017",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06012",
-					"owner_hero_id": 1,
-					"_comments": "Valkyrie"
+					"card": "Valkyrie #06012",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06008",
-					"owner_hero_id": 1,
-					"_comments": "God of Thunder"
+					"card": "God of Thunder #06008",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06006",
-					"owner_hero_id": 1,
-					"_comments": "Lightning Strike"
+					"card": "Lightning Strike #06006",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01055",
-					"owner_hero_id": 1,
-					"_comments": "The Power of Aggression"
+					"card": "The Power of Aggression #01055",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01052",
-					"owner_hero_id": 1,
-					"_comments": "Chase Them Down"
+					"card": "Chase Them Down #01052",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06010",
-					"owner_hero_id": 1,
-					"_comments": "Thor's Helmet"
+					"card": "Thor's Helmet #06010",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01091",
-					"owner_hero_id": 1,
-					"_comments": "Avengers Mansion"
+					"card": "Avengers Mansion #01091",
+					"owner_hero_id": 1
 				}
 			],
 			"discard1": [],
 			"enemies1": [],
+			"misc_encounter1": [],
 			"identity1": [
 				{
-					"card": "06001b",
+					"card": "Odinson #06001b",
 					"owner_hero_id": 1,
-					"_comments": "Odinson",
 					"tokens": {
 						"__worthy": 1,
 						"__can_change_form": 1
@@ -510,29 +427,24 @@
 			"upgrade_support1": [],
 			"hand1": [
 				{
-					"card": "01052",
-					"owner_hero_id": 1,
-					"_comments": "Chase Them Down"
+					"card": "Chase Them Down #01052",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06018",
-					"owner_hero_id": 1,
-					"_comments": "Battle Fury"
+					"card": "Battle Fury #06018",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "01055",
-					"owner_hero_id": 1,
-					"_comments": "The Power of Aggression"
+					"card": "The Power of Aggression #01055",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06007",
-					"owner_hero_id": 1,
-					"_comments": "Asgard"
+					"card": "Asgard #06007",
+					"owner_hero_id": 1
 				},
 				{
-					"card": "06021",
-					"owner_hero_id": 1,
-					"_comments": "Invulnerability"
+					"card": "Invulnerability #06021",
+					"owner_hero_id": 1
 				}
 			]
 		}

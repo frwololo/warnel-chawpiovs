@@ -953,6 +953,14 @@
 	},
 	"X-Gene": {
 		"resource": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event",
+						"faction_code": "hero"
+					}
+				}
+			],
 			"board": [
 				{
 					"name": "exhaust_card",
@@ -964,8 +972,7 @@
 					"amount": 1,
 					"resource_name": "wild"
 				}
-			],
-			"_comments": "TODO only for an identity-specific event"
+			]
 		}
 	},
 	"Multitalented": {

@@ -35,8 +35,7 @@
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
 						"Touched"
-					],
-					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
+					]
 				}
 			]
 		}
@@ -91,10 +90,17 @@
 		}
 	},
 	"Bulletproof Belle": {
-		"interrupt_enemy_initiates_attack": {
+		"interrupt_receive_damage": {
+			"event_filters": {
+				"amount": ">0",
+				"tags": [
+					"attack"
+				]
+			},
 			"is_optional_hand": true,
 			"filter_state_trigger": [
 				{
+					"filter_group": "group_enemies",
 					"filter_func": {
 						"func_name": "count_attachments",
 						"func_params": {
@@ -115,25 +121,9 @@
 					]
 				},
 				{
-					"name": "add_script",
-					"end_condition": "enemy_activation_finished",
-					"subject": "self",
-					"script": {
-						"interrupt_receive_damage": {
-							"event_filters": {
-								"tags": [
-									"attack"
-								]
-							},
-							"board": [
-								{
-									"name": "prevent",
-									"subject": "interrupted_event",
-									"amount": "all"
-								}
-							]
-						}
-					}
+					"name": "prevent",
+					"subject": "interrupted_event",
+					"amount": "all"
 				},
 				{
 					"name": "mod_tokens",
@@ -142,7 +132,7 @@
 					"subject": "my_hero"
 				}
 			],
-			"_comments": "TODO verify prevent all damage via add_script"
+			"_comments": "the damage of the attack, whoever takes it (hero or defending ally). The attacking enemy is the trigger"
 		}
 	},
 	"Cybernetic Enhancements": {
@@ -295,8 +285,7 @@
 					"filter_state_tutor": [
 						"minion",
 						"trait_reaver"
-					],
-					"_comments": "TODO 'topmost' ordering"
+					]
 				}
 			]
 		}
@@ -336,8 +325,7 @@
 					],
 					"filter_state_tutor": [
 						"Touched"
-					],
-					"_comments": "TODO move Touched from wherever it is (set aside or attached elsewhere) to the chosen character"
+					]
 				},
 				{
 					"name": "deal_damage",
@@ -513,7 +501,6 @@
 					"name": "add_script",
 					"end_condition": "enemy_activation_finished",
 					"subject": "current_activation_enemy",
-					"_comments": "TODO verify current_activation_enemy is the attacking enemy here",
 					"script": {
 						"alterants": {
 							"all": [
@@ -816,8 +803,7 @@
 						],
 						"filter_state_tutor": [
 							"Touched"
-						],
-						"_comments": "TODO move Touched from wherever it is (set aside or attached elsewhere) to the chosen character"
+						]
 					}
 				]
 			}
@@ -839,8 +825,7 @@
 					"dest_container": "set_aside",
 					"filter_state_tutor": [
 						"Touched"
-					],
-					"_comments": "TODO verify Touched can be found on the board via tutor 'board'"
+					]
 				}
 			]
 		},
@@ -1200,6 +1185,14 @@
 	},
 	"X-Gene": {
 		"resource": {
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "event",
+						"faction_code": "hero"
+					}
+				}
+			],
 			"board": [
 				{
 					"name": "exhaust_card",
@@ -1211,8 +1204,7 @@
 					"amount": 1,
 					"resource_name": "wild"
 				}
-			],
-			"_comments": "TODO only for an identity-specific event"
+			]
 		}
 	}
 }

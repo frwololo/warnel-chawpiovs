@@ -4424,7 +4424,7 @@
 					"per_token_self": {
 						"token_name": "__pool"
 					}
-				}				
+				}
 			]
 		},
 		"self_moved_to_board": {
@@ -4465,7 +4465,7 @@
 					"subject": "self",
 					"set_to_mod": true,
 					"token_name": "__pool"
-				}				
+				}
 			]
 		},
 		"round_ended": {
@@ -4505,7 +4505,7 @@
 					"subject": "self",
 					"set_to_mod": true,
 					"token_name": "__pool"
-				}	
+				}
 			]
 		}
 	},

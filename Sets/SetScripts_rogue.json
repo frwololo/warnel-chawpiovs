@@ -343,8 +343,7 @@
 					"subject": "my_hero"
 				}
 			]
-		},
-		"TODO": "You gain each of the attached character's traits until the end of the round"
+		}
 	},
 	"Gambit - Remy LeBeau": {
 		"self_moved_to_board": {
@@ -518,11 +517,219 @@
 		}
 	},
 	"Karma - Xi'an Coy Manh": {
-		"TODO": "take control of a non-Elite minion as a Controlled ally"
+		"card_played": {
+			"trigger": "self",
+			"event_filters": {
+				"from": "hand_my_hero"
+			},
+			"is_optional_board": true,
+			"board": [
+				{
+					"name": "nop",
+					"subject": "boardseek_and_choose",
+					"filter_state_seek": [
+						{
+							"filter_properties": {
+								"type_code": "minion"
+							},
+							"filter_properties2": {
+								"trait_elite": 0
+							}
+						}
+					]
+				},
+				{
+					"name": "save_variable",
+					"var_name": "my_minion",
+					"var_type": "subject",
+					"value": "previous"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "my_minion",
+					"grid_name": "allies_my_hero",
+					"tags": [
+						"facedown",
+						"Init"
+					],
+					"set_properties": {
+						"type_code": "ally",
+						"shortname": "Controlled",
+						"trait_controlled": 1,
+						"thwart": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "my_minion",
+								"property": "scheme"
+							}
+						},
+						"attack": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "my_minion",
+								"property": "attack"
+							}
+						},
+						"health": {
+							"func_name": "get_subject_int_printed_property",
+							"func_params": {
+								"subject": "my_minion",
+								"property": "health"
+							}
+						},
+						"thwart_cost": 2,
+						"attack_cost": 2
+					}
+				},
+				{
+					"name": "add_script",
+					"subject": "my_minion",
+					"script": {
+						"manual": {
+							"board": {
+								"thwart": [
+									{
+										"name": "constraints",
+										"is_cost": true,
+										"tags": [
+											"as_action"
+										]
+									},
+									{
+										"name": "exhaust_card",
+										"subject": "self",
+										"is_cost": true
+									},
+									{
+										"name": "thwart",
+										"subject": "target",
+										"is_cost": true,
+										"needs_subject": true,
+										"tags": [
+											"thwart",
+											"basic power"
+										],
+										"filter_state_subject": [
+											{
+												"filter_group": "group_schemes"
+											}
+										]
+									}
+								],
+								"attack": [
+									{
+										"name": "constraints",
+										"is_cost": true,
+										"tags": [
+											"as_action"
+										]
+									},
+									{
+										"name": "exhaust_card",
+										"subject": "self",
+										"is_cost": true
+									},
+									{
+										"name": "attack",
+										"subject": "target",
+										"is_cost": true,
+										"needs_subject": true,
+										"tags": [
+											"attack",
+											"basic power"
+										],
+										"filter_state_subject": [
+											{
+												"filter_group": "group_enemies"
+											}
+										]
+									}
+								]
+							}
+						}
+					}
+				}
+			]
+		},
+		"card_moved_to_pile": {
+			"trigger": "self",
+			"condition_pile": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_is_included_in": "my_minion"
+						}
+					]
+				}
+			},
+			"pile": [
+				{
+					"name": "remove_card_script",
+					"subject": "my_minion",
+					"script_trigger": "manual"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "my_minion",
+					"grid_name": "enemies_my_hero"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_minion"
+				}
+			]
+		},
+		"card_moved_to_hand": {
+			"trigger": "self",
+			"condition_hand": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_is_included_in": "my_minion"
+						}
+					]
+				}
+			},
+			"hand": [
+				{
+					"name": "remove_card_script",
+					"subject": "my_minion",
+					"script_trigger": "manual"
+				},
+				{
+					"name": "move_card_to_board",
+					"subject": "my_minion",
+					"grid_name": "enemies_my_hero"
+				},
+				{
+					"name": "forget_variable",
+					"var_name": "my_minion"
+				}
+			]
+		},
+		"_comments": "approximation as for Redemption: the minion is moved facedown (blank text box) to your allies as a Controlled ally. THW = printed SCH, ATK and hit points = printed values, 2 consequential damage after it thwarts or attacks (thwart_cost/attack_cost). A facedown card only gets the scripts given to it, so its basic thwart/attack are added. When Karma leaves play, the minion (if still in play) loses those scripts and comes back faceup, engaged with you"
 	},
 	"Med Lab": {
-		"manual": {
+		"alterants": {
 			"board": [
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "can_play_as_if_in_hand",
+					"alteration": 1,
+					"filter_state_trigger": [
+						{
+							"filter_is_hosted_by": "self"
+						}
+					]
+				}
+			]
+		},
+		"play_as_if_in_hand": {
+			"additional_scripts": [
 				{
 					"name": "constraints",
 					"is_cost": true,
@@ -532,12 +739,55 @@
 				},
 				{
 					"name": "exhaust_card",
+					"is_cost": true,
+					"subject": "host"
+				},
+				{
+					"name": "exhaust_card",
 					"subject": "self",
-					"is_cost": true
+					"_comments": "it enters play exhausted (after the regular play tasks, which put it into play)"
 				}
 			]
 		},
-		"TODO": "store an ally defeated by consequential damage, then play it from here"
+		"response_character_dies": {
+			"event_filters": {
+				"tags": [
+					"consequential_damage"
+				]
+			},
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards==0",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						{
+							"filter_is_hosted_by": "self"
+						}
+					]
+				},
+				"_comments": "limit 1 ally at a time"
+			},
+			"board": [
+				{
+					"name": "exhaust_card",
+					"subject": "self",
+					"is_cost": true
+				},
+				{
+					"name": "tuck_card_under_me",
+					"subject": "trigger"
+				}
+			]
+		},
+		"_comments": "the ally is tucked under Med Lab. While it's there it can be played as if it were in your hand (CardTemplate.refresh_alterant_can_play_as_if_in_hand, as Echo's Photographic Reflexes), as an alter-ego action, exhausting Med Lab"
 	},
 	"Misled": {
 		"reveal": {
@@ -828,8 +1078,7 @@
 					]
 				}
 			]
-		},
-		"TODO": "You gain each of the attached character's traits until the end of the round"
+		}
 	},
 	"Rogue's Jacket": {
 		"alterants": {
@@ -1019,10 +1268,216 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "conditional_script",
+					"options": [
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														"Touched"
+													]
+												}
+											},
+											"filter_properties2": {
+												"faction_code": "hero"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "nop",
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														"Touched"
+													]
+												}
+											},
+											"filter_properties2": {
+												"faction_code": "hero"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_container",
+									"subject": "tutor_and_choose",
+									"src_container": "discard_previous_subject",
+									"dest_container": "hand",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "event"
+											},
+											"filter_properties2": {
+												"faction_code": "hero"
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														"Touched"
+													]
+												}
+											},
+											"filter_properties2": {
+												"faction_code": "basic"
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "nop",
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														"Touched"
+													]
+												}
+											},
+											"filter_properties2": {
+												"faction_code": "basic"
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_container",
+									"subject": "tutor_and_choose",
+									"src_container": "discard_previous_subject",
+									"dest_container": "hand",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "event"
+											},
+											"filter_properties2": {
+												"faction_code": "basic"
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"condition": {
+								"func_name": "count_cards",
+								"func_params": {
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														"Touched"
+													]
+												}
+											},
+											"filter_func2": {
+												"func_name": "get_aspect_name",
+												"func_params": {
+													"subject": "trigger"
+												}
+											}
+										}
+									]
+								}
+							},
+							"nested_tasks": [
+								{
+									"name": "nop",
+									"subject": "boardseek",
+									"filter_state_seek": [
+										{
+											"filter_group": "group_friendly",
+											"filter_func": {
+												"func_name": "count_attachments",
+												"func_params": {
+													"subject": "trigger",
+													"filter_state_attachment": [
+														"Touched"
+													]
+												}
+											},
+											"filter_func2": {
+												"func_name": "get_aspect_name",
+												"func_params": {
+													"subject": "trigger"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "move_card_to_container",
+									"subject": "tutor_and_choose",
+									"src_container": "discard_previous_subject",
+									"dest_container": "hand",
+									"filter_state_tutor": [
+										{
+											"filter_properties": {
+												"type_code": "event"
+											},
+											"filter_func": {
+												"func_name": "get_aspect_name",
+												"func_params": {
+													"subject": "trigger"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					],
+					"_comments": "the Touched character's classification: identity-specific (faction hero), basic, or an aspect. discard_previous_subject is the discard pile of the Touched character's controller"
 				}
 			]
-		},
-		"TODO": "search the owner's discard pile for an event of the same classification as the Touched character"
+		}
 	},
 	"The Reavers": {
 		"card_defeated": {
@@ -1038,12 +1493,14 @@
 					]
 				},
 				{
-					"name": "reveal_encounter",
+					"name": "deal_encounter",
+					"immediate_reveal": true,
 					"subject": "index",
 					"subject_count": 1,
 					"subject_index": "retrieve_integer",
 					"src_container": "deck_villain",
-					"_comments": "TODO reveal for the player who defeated the scheme"
+					"target_identity": "trigger_details_source",
+					"_comments": "revealed by the player who defeated the scheme: the controller of the source of the threat removal (the thwarting character for a thwart)"
 				}
 			]
 		}
@@ -1104,6 +1561,17 @@
 						"else": 0
 					},
 					"trigger": "Rogue"
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "trait_*",
+					"trigger": "Rogue",
+					"per_boardseek": {
+						"subject": "host",
+						"filter_has_requested_property": true
+					},
+					"alteration": "per_boardseek",
+					"_comments": "Rogue's Skin Contact and Energy Transfer: you gain each of the attached character's traits until the end of the round. Touched is set aside when the player phase begins (Rogue's forced response), so the traits last while Touched stays attached (same wildcard as Absorbing Man)"
 				}
 			]
 		},

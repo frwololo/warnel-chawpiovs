@@ -413,7 +413,7 @@ master func master_resync(board_status):
 	var client_id = cfc.get_rpc_sender_id()
 	acks[client_id] = board_status
 	_acks[checksum] = acks
-	var error_msg = ""
+	var _error_msg = ""
 	if acks.size() == gameData.network_players.size():
 		var my_network_id = cfc.get_network_unique_id()
 		var my_status = acks[my_network_id]
@@ -421,7 +421,7 @@ master func master_resync(board_status):
 		for k in acks:
 			var other_status = acks[k]
 			if !(WCUtils.json_equal(my_status, other_status)):
-				error_msg = JSON.print({"my_status": my_status, "their_status" : other_status})
+				_error_msg = JSON.print({"my_status": my_status, "their_status" : other_status})
 				needs_reload = true					
 		_acks.erase(checksum)
 

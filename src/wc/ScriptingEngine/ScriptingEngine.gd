@@ -2489,8 +2489,14 @@ func move_boost_cards(script:ScriptTask) ->int:
 		#"historical" use case: move facedown boosts from villain to hero (venom goblin)
 		boost_cards = source.get_boost_cards(CFConst.FLIP_STATUS.FACEDOWN)
 	
+	#"as_encounter": dealt to the subject as facedown encounter cards (Mysterio,
+	#Master Key). Otherwise attached to the subject as boosts (Venom Goblin)
+	var as_encounter = script.get_property("as_encounter", false)
 	for card in boost_cards:
-		card.attach_to_host(subject, false, ["as_boost"])
+		if as_encounter:
+			gameData.deal_one_encounter_to(subject.get_controller_hero_id(), false, card)
+		else:
+			card.attach_to_host(subject, false, ["as_boost"])
 
 	return retcode
 	

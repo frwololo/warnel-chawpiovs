@@ -73,13 +73,8 @@ func show_checkmark():
 
 func get_desc_text():
 	if !desc_text:
-		#the threat icon has no hero
-		var hero_canonical_id = ""
-		var hero_name = ""
-		if hero_id:
-			var hero_deck_data = gameData.get_team_member(hero_id)["hero_data"]
-			hero_canonical_id = hero_deck_data.get_hero_id()
-			hero_name = gameData.get_hero_name(hero_id)
+		#note: the threat icon has no hero
+		var hero_name = gameData.get_hero_name(hero_id)
 	
 		match mode:
 			Mode.PLAYER_TURN:

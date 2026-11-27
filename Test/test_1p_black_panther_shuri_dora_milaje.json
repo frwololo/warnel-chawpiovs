@@ -1,0 +1,324 @@
+{
+	"_comments": "Bug: Dora Milaje Interaction not working",
+	"init": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "black Panther #51001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Sway the Masses #60109",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Purple Man - 1 #60097",
+					"owner_hero_id": 0
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Raft Breakout - 1B #60142b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Redemption #51036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Klaw #51032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Manipulated M.U.S.I.C. #51033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.U.S.I.C. #51034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Scream #51035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Scream #51035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Purple Man - 2 #60098",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Raft Breakout - 1A #60142a",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_stored_integer": 36
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Vibranium #51006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Panther Claws #51011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Kimoyo Beads #51010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sonic Rifle #51020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Drang #60146",
+					"owner_hero_id": 0
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"_inventor": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Okoye #51024",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 2
+					}
+				},
+				{
+					"card": "T'Challa #51002",
+					"owner_hero_id": 1
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Dora Milaje #51030",
+					"owner_hero_id": 1
+				}
+			],
+			"hand1": [
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Master Key #60143",
+					"owner_hero_id": 0,
+					"host": "60097"
+				}
+			]
+		}
+	},
+	"actions": [
+		{
+			"type": "activate",
+			"value": "Dora Milaje #51030"
+		},
+		{
+			"type": "select",
+			"value": "T'Challa #51002"
+		},
+		{
+			"type": "activate",
+			"value": "T'Challa #51002"
+		},
+		{
+			"type": "choose",
+			"value": "attack"
+		},
+		{
+			"type": "target",
+			"value": "Purple Man - 1 #60097"
+		}
+	],
+	"end": {
+		"phase": "PLAYER_TURN",
+		"heroes": [
+			{
+				"herodeckdata": {
+					"hero": "black Panther #51001a"
+				}
+			}
+		],
+		"board": {
+			"discard_villain": [],
+			"deck_villain": [
+				{
+					"card": "Sway the Masses #60109",
+					"owner_hero_id": 0
+				}
+			],
+			"villain": [
+				{
+					"card": "Purple Man - 1 #60097",
+					"owner_hero_id": 0,
+					"tokens": {
+						"damage": 3
+					}
+				}
+			],
+			"schemes": [
+				{
+					"card": "The Raft Breakout - 1B #60142b",
+					"owner_hero_id": 0,
+					"tokens": {
+						"threat": 2
+					}
+				}
+			],
+			"villain_misc": [],
+			"victory_display": [],
+			"set_aside": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Redemption #51036",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Klaw #51032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Manipulated M.U.S.I.C. #51033",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "M.U.S.I.C. #51034",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Scream #51035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "The Scream #51035",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Purple Man - 2 #60098",
+					"owner_hero_id": 0
+				}
+			],
+			"removed_from_game": [
+				{
+					"card": "The Raft Breakout - 1A #60142a",
+					"owner_hero_id": 0,
+					"script_variables": {
+						"my_stored_integer": 36
+					}
+				}
+			],
+			"deck1": [
+				{
+					"card": "Vibranium #51006",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Panther Claws #51011",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Kimoyo Beads #51010",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sonic Rifle #51020",
+					"owner_hero_id": 1
+				}
+			],
+			"discard1": [],
+			"enemies1": [
+				{
+					"card": "Drang #60146",
+					"owner_hero_id": 0
+				}
+			],
+			"misc_encounter1": [],
+			"identity1": [
+				{
+					"card": "Black Panther #51001a",
+					"owner_hero_id": 1,
+					"tokens": {
+						"_inventor": 1,
+						"__can_change_form": 1
+					}
+				}
+			],
+			"allies1": [
+				{
+					"card": "Okoye #51024",
+					"owner_hero_id": 1,
+					"tokens": {
+						"damage": 1
+					}
+				},
+				{
+					"card": "T'Challa #51002",
+					"owner_hero_id": 1,
+					"exhausted": true
+				}
+			],
+			"upgrade_support1": [
+				{
+					"card": "Dora Milaje #51030",
+					"owner_hero_id": 1,
+					"exhausted": true
+				}
+			],
+			"hand1": [
+				{
+					"card": "Infiltration #51015",
+					"owner_hero_id": 1
+				}
+			],
+			"others": [
+				{
+					"card": "Master Key #60143",
+					"owner_hero_id": 0,
+					"host": "60097"
+				}
+			]
+		}
+	}
+}

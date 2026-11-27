@@ -5974,7 +5974,8 @@
 					"name": "move_boost_cards",
 					"subject": "current_hero_target",
 					"source": "villain",
-					"filter_state_boost": "minion"
+					"filter_state_boost": "minion",
+					"as_encounter": true
 				}
 			]
 		}
@@ -6372,13 +6373,14 @@
 	},
 	"Mysterio": {
 		"interrupt_enemy_attack_damage": {
-			"trigger": "villain",
+			"trigger": "self",
 			"board": [
 				{
 					"name": "move_boost_cards",
 					"subject": "current_hero_target",
 					"source": "self",
-					"filter_state_boost": "treachery"
+					"filter_state_boost": "treachery",
+					"as_encounter": true
 				}
 			]
 		}

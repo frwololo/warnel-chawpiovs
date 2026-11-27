@@ -60,8 +60,13 @@ func get_stored_integer_as_int() -> int:
 	return 0
 
 func set_prev_subjects(new_subjects):
-	if prev_subjects and trigger_details["prev_subjects"]:
-		#we've already forced the previous subjects in an earlier step
+	#A script run by execute_scripts starts with the parent task's previous
+	#subjects (trigger_details "prev_subjects"). They only stand in until a
+	#task of this script has subjects: after that, "previous" is that task.
+	#Okoye's Special: "nop" chooses a Wakanda character, then add_script on
+	#"previous" went to the parent's previous (Dora Milaje) instead
+	if prev_subjects and trigger_details.get("prev_subjects") and !new_subjects:
+		#keep the previous subjects forced by the parent script
 		return
 	prev_subjects = new_subjects
 	parse_prev_subject_replacements()	

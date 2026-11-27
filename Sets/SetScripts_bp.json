@@ -116,6 +116,17 @@
 			],
 			"trigger": "self",
 			"is_optional_board": true,
+			"condition_board": {
+				"func_name": "count_cards",
+				"func_params": {
+					"subject": "boardseek",
+					"filter_state_seek": [
+						"group_upgrade_support_my_hero",
+						"upgrade",
+						"trait_black_panther"
+					]
+				}
+			},
 			"board": [
 				{
 					"name": "constraints",
@@ -346,6 +357,7 @@
 	},
 	"Kimoyo Beads": {
 		"special": {
+			"display_section": "special",
 			"board": [
 				{
 					"name": "thwart",
@@ -384,6 +396,7 @@
 	},
 	"Panther Claws": {
 		"special": {
+			"display_section": "special",
 			"board": {
 				"_rules": {},
 				"Discard: deal 3 additional damage (piercing)": [
@@ -414,6 +427,7 @@
 	},
 	"Spider Bites": {
 		"special": {
+			"display_section": "special",
 			"board": [
 				{
 					"name": "nop",
@@ -498,6 +512,7 @@
 	},
 	"Vibranium Suit": {
 		"special": {
+			"display_section": "special",
 			"board": [
 				{
 					"name": "heal",
@@ -989,6 +1004,7 @@
 			]
 		},
 		"special": {
+			"display_section": "special",
 			"board": [
 				{
 					"name": "remove_threat",
@@ -1038,6 +1054,7 @@
 			]
 		},
 		"special": {
+			"display_section": "special",
 			"board": [
 				{
 					"name": "deal_damage",
@@ -1087,6 +1104,7 @@
 			]
 		},
 		"special": {
+			"display_section": "special",
 			"board": [
 				{
 					"name": "nop",

@@ -55,7 +55,9 @@
 					"exec_trigger": "manual",
 					"subject": "self",
 					"delayed": true,
-					"tags": ["ignore_constraints"]
+					"tags": [
+						"ignore_constraints"
+					]
 				}
 			]
 		}
@@ -170,7 +172,9 @@
 					"exec_trigger": "manual",
 					"subject": "self",
 					"delayed": true,
-					"tags": ["ignore_constraints"]
+					"tags": [
+						"ignore_constraints"
+					]
 				}
 			]
 		}
@@ -228,7 +232,9 @@
 					"exec_trigger": "manual",
 					"subject": "self",
 					"delayed": true,
-					"tags": ["ignore_constraints"]
+					"tags": [
+						"ignore_constraints"
+					]
 				}
 			]
 		}
@@ -3230,32 +3236,13 @@
 			"filter_state_trigger": [
 				{
 					"filter_properties": {
-						"type_code": "event",
-						"faction_code": "aggression"
-					}
-				},
-				{
-					"filter_properties": {
-						"type_code": "event",
-						"faction_code": "justice"
-					}
-				},
-				{
-					"filter_properties": {
-						"type_code": "event",
-						"faction_code": "leadership"
-					}
-				},
-				{
-					"filter_properties": {
-						"type_code": "event",
-						"faction_code": "protection"
-					}
-				},
-				{
-					"filter_properties": {
-						"type_code": "event",
-						"faction_code": "pool"
+						"type_code": "event"
+					},
+					"filter_func": {
+						"func_name": "is_aspect_card",
+						"func_params": {
+							"subject": "trigger"
+						}
 					}
 				},
 				{

@@ -4543,7 +4543,7 @@ func is_aspect_card(params = {}, script:ScriptObject = null):
 		return false
 		
 	var faction = subject.get_property("faction_code", "")
-	return type in CFConst.ASPECTS
+	return faction in CFConst.ASPECTS
 
 func is_encounter(params = {}, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)

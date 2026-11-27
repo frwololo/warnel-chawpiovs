@@ -4397,7 +4397,34 @@
 					"per_token_self": {
 						"token_name": "__protection"
 					}
-				}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "thwart",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__pool"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "attack",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__pool"
+					}
+				},
+				{
+					"filter_task": "get_property",
+					"filter_property_name": "defense",
+					"trigger": "self",
+					"alteration": "per_token_self",
+					"per_token_self": {
+						"token_name": "__pool"
+					}
+				}				
 			]
 		},
 		"self_moved_to_board": {
@@ -4431,7 +4458,14 @@
 					"subject": "self",
 					"set_to_mod": true,
 					"token_name": "__protection"
-				}
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__pool"
+				}				
 			]
 		},
 		"round_ended": {
@@ -4464,7 +4498,14 @@
 					"subject": "self",
 					"set_to_mod": true,
 					"token_name": "__protection"
-				}
+				},
+				{
+					"name": "mod_tokens",
+					"modification": 0,
+					"subject": "self",
+					"set_to_mod": true,
+					"token_name": "__pool"
+				}	
 			]
 		}
 	},

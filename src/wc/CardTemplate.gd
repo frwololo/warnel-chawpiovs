@@ -4537,6 +4537,14 @@ func is_player_card(params = {}, script:ScriptObject = null):
 	var type = subject.get_property("type_code", "")
 	return type in CFConst.PLAYER_CARD_TYPES
 
+func is_aspect_card(params = {}, script:ScriptObject = null):
+	var subject = get_param_subject(params, script)
+	if !subject:
+		return false
+		
+	var faction = subject.get_property("faction_code", "")
+	return type in CFConst.ASPECTS
+
 func is_encounter(params = {}, script:ScriptObject = null):
 	var subject = get_param_subject(params, script)
 	if !subject:

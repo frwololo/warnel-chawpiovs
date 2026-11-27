@@ -426,22 +426,19 @@
 				}
 			]
 		},
-		"interrupt_card_dies": {
+		"card_defeated": {
 			"trigger": "self",
-			"board": [
+			"all": [
 				{
 					"name": "host_card",
 					"host": "my_attacker",
 					"subject": "tutor",
 					"src_container": "set_aside",
-					"filter_state_tutor": [
-						"Frostbite"
-					],
+					"filter_state_tutor": "Frostbite",
 					"_comments": "attach a set-aside copy of Frostbite"
 				}
 			]
 		},
-		"_comments": "pattern from Psionic Force Field (health 8)"
 	},
 	"Arctic Attack": {
 		"manual": {

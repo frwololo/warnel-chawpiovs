@@ -3014,6 +3014,29 @@
 		}
 	},
 	"Disturbed Psyche": {
+		"extra_rules": [
+			{
+				"override_get_next_villain": {
+					"all": [
+						{
+							"name": "nop",
+							"src_container": "set_aside",
+							"needs_subject": true,
+							"subject": "tutor",
+							"sort_by": "random",
+							"subject_count": 1,
+							"filter_state_tutor": [
+								{
+									"filter_properties": {
+										"type_code": "villain"
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],	
 		"phase_ended": {
 			"event_filters": {
 				"phase": "villain_phase"

@@ -189,7 +189,7 @@
 			],
 			"villain_misc": [
 				{
-					"card": "Holding Cell #50108a",
+					"card": "Holding Cell #50107a",
 					"owner_hero_id": 0,
 					"tokens": {
 						"lock": 2
@@ -206,7 +206,11 @@
 			"victory_display": [],
 			"set_aside": [
 				{
-					"card": "Blizzard #36005",
+					"card": "Psionic Upgrade #50110",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Clear Skies #36002",
 					"owner_hero_id": 1
 				},
 				{
@@ -214,11 +218,19 @@
 					"owner_hero_id": 1
 				},
 				{
-					"card": "Sarah Garza #50107b",
+					"card": "Callisto #36031",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Strong Inhuman #50108b",
+					"card": "Sarah Garza Upgrade #50111",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Blizzard #36005",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sarah Garza #50107b",
 					"owner_hero_id": 0
 				},
 				{
@@ -230,15 +242,7 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Knife Fight #36034",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Clear Skies #36002",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Sarah Garza Upgrade #50111",
+					"card": "Strong Inhuman #50108b",
 					"owner_hero_id": 0
 				},
 				{
@@ -246,11 +250,15 @@
 					"owner_hero_id": 0
 				},
 				{
+					"card": "Knife Fight #36034",
+					"owner_hero_id": 0
+				},
+				{
 					"card": "Leader of the Morlocks #36032",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Psionic Upgrade #50110",
+					"card": "Strong Upgrade #50112",
 					"owner_hero_id": 0
 				},
 				{
@@ -260,14 +268,6 @@
 				{
 					"card": "Storm #36001a",
 					"owner_hero_id": 1
-				},
-				{
-					"card": "Strong Upgrade #50112",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Callisto #36031",
-					"owner_hero_id": 0
 				}
 			],
 			"removed_from_game": [
@@ -281,14 +281,14 @@
 			"tmp_pile3": [],
 			"deck_holding_cell": [
 				{
-					"card": "Holding Cell #50107a",
+					"card": "Holding Cell #50105a",
 					"owner_hero_id": 0,
 					"script_variables": {
 						"my_all_purpose_token_name": "lock"
 					}
 				},
 				{
-					"card": "Holding Cell #50105a",
+					"card": "Holding Cell #50108a",
 					"owner_hero_id": 0,
 					"script_variables": {
 						"my_all_purpose_token_name": "lock"

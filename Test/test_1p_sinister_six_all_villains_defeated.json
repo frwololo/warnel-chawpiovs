@@ -137,13 +137,10 @@
 		"board": {
 			"villain": [
 				{
-					"card": "Doctor Octopus - 1"
+					"card": "Electro - 1"
 				}
 			],
 			"set_aside": [
-				{
-					"card": "Electro - 1"
-				},			
 				{
 					"card": "Vulture - 1"
 				},
@@ -155,6 +152,9 @@
 				},
 				{
 					"card": "Scorpion - 1"
+				},
+				{
+					"card": "Doctor Octopus - 1"
 				}
 			],
 			"discard_villain": [

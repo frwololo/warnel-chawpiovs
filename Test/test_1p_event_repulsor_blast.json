@@ -12,38 +12,42 @@
 		"board": {
 			"deck_villain": [
 				{
-					"card": "Shocker",
-				},			
-				{
-					"card": "Hydra Mercenary",
+					"card": "Shocker"
 				},
 				{
-					"card": "Stampede",
-				}				
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Stampede"
+				}
 			],
 			"villain": [
 				{
-					"card": "01113",
+					"card": "01113"
 				}
 			],
 			"schemes": [
 				{
 					"card": "01116b",
-					"tokens" :{"threat" : 3},
+					"tokens": {
+						"threat": 3
+					}
 				},
 				{
 					"card": "01126",
-					"tokens" :{"threat" : 3},
-				}				
-			],			
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
 			"hand1": [
 				{
 					"card": "The Power of Aggression"
 				},
 				{
 					"card": "Repulsor Blast"
-				}				
-			],			
+				}
+			],
 			"identity1": [
 				{
 					"card": "Iron Man"
@@ -52,7 +56,7 @@
 			"deck1": [
 				{
 					"card": "Supersonic Punch"
-				},				
+				},
 				{
 					"card": "Relentless Assault"
 				},
@@ -67,8 +71,7 @@
 				},
 				{
 					"card": "Chase Them down"
-				},				
-			
+				}
 			]
 		}
 	},
@@ -77,12 +80,12 @@
 			"type": "play",
 			"value": "Repulsor Blast",
 			"_comments": "play repulsor blast"
-		},	
+		},
 		{
 			"type": "target",
-			"value": "01113",
-		},	
-	] ,
+			"value": "01113"
+		}
+	],
 	"end": {
 		"phase": "PLAYER_TURN",
 		"heroes": [
@@ -95,54 +98,60 @@
 		"board": {
 			"deck_villain": [
 				{
-					"card": "Shocker",
-				},			
-				{
-					"card": "Hydra Mercenary",
+					"card": "Shocker"
 				},
 				{
-					"card": "Stampede",
-				}				
+					"card": "Hydra Mercenary"
+				},
+				{
+					"card": "Stampede"
+				}
 			],
 			"villain": [
 				{
 					"card": "01113",
-					"tokens": {"damage": 7}
+					"tokens": {
+						"damage": 5
+					}
 				}
 			],
 			"schemes": [
 				{
 					"card": "01116b",
-					"tokens" :{"threat" : 3},
+					"tokens": {
+						"threat": 3
+					}
 				},
 				{
 					"card": "01126",
-					"tokens" :{"threat" : 3},
-				}				
-			],			
+					"tokens": {
+						"threat": 3
+					}
+				}
+			],
 			"discard1": [
 				{
 					"card": "The Power of Aggression"
 				},
 				{
-					"card": "Supersonic Punch"
-				},					
-				{
-					"card": "Relentless Assault"
-				},
-				{
-					"card": "Tac Team"
-				},
-				{
-					"card": "Combat Training"
+					"card": "Chase Them down"
 				},
 				{
 					"card": "Uppercut"
 				},
 				{
+					"card": "Combat Training"
+				},
+				{
+					"card": "Tac Team"
+				},
+				{
+					"card": "Relentless Assault"
+				},
+				{
 					"card": "Repulsor Blast"
-				},				
-			],			
+				}
+			],
 			"identity1": [
 				{
 					"card": "Iron Man"
@@ -150,8 +159,8 @@
 			],
 			"deck1": [
 				{
-					"card": "Chase Them down"
-				}			
+					"card": "Supersonic Punch"
+				}
 			]
 		}
 	}

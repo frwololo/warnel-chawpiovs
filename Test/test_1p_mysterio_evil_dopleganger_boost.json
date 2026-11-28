@@ -49,6 +49,7 @@
 				}
 			],
 			"deck1": [
+
 				{
 					"card": "The Power of Protection"
 				},
@@ -93,13 +94,13 @@
 				},
 				{
 					"card": "Protective Ward"
-				},
+				},				
 				{
 					"card": "Momentum Shift"
 				},
 				{
 					"card": "Med Team"
-				}
+				},				
 			]
 		}
 	},
@@ -108,7 +109,7 @@
 			"type": "select",
 			"value": "cancel",
 			"_comments": "undefended attack"
-		},
+		}	,
 		{
 			"type": "other",
 			"value": "wait_for_player_turn"
@@ -154,7 +155,9 @@
 				},
 				{
 					"card": "Loose Ends"
-				}
+				},
+
+
 			],
 			"deck1": [
 				{
@@ -187,37 +190,38 @@
 				}
 			],
 			"enemies1": [
-				{
+							{
 					"card": "Hydra Mercenary"
-				}
+				},
 			],
 			"discard1": [
 				{
-					"card": "Clea"
-				},
-				{
 					"card": "Med Team"
-				},
+				},				
+				{
+					"card": "Momentum Shift"
+				},		
+				{
+					"card": "Magic Blast"
+				},					
+				{
+					"card": "Evil Doppleganger #27154"
+				}				
+			],
+			"hand1": [
+				{
+					"card": "Clea"
+				},			
 				{
 					"card": "Unflappable"
 				},
 				{
-					"card": "Evil Doppleganger #27154"
-				}
-			],
-			"hand1": [
-				{
-					"card": "Magic Blast"
-				},
-				{
 					"card": "Astral Projection"
-				},
+				},	
 				{
 					"card": "Protective Ward"
 				},
-				{
-					"card": "Momentum Shift"
-				}
+			
 			]
 		}
 	}

@@ -52,127 +52,157 @@
 			"deck_villain": [
 				{
 					"card": "A.I.M. Interference ([energy]) #50184a",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "A.I.M. Interference ([mental]) #50184b",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "A.I.M. Interference ([physical]) #50184c",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Advance #01186",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Advance #01186",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Assault #01187",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Assault #01187",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Baron Zemo's Sword #50170",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Battle of Wits #50175",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Battle of Wits #50175",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Caught Off Guard #01188",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Diplomatic Immunity #50127",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Diplomatic Sanctions #50128",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Diplomatic Sanctions #50128",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Divided Loyalties #50173",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Gang-Up #01189",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Might Makes Right #50176",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Might Makes Right #50176",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Monica Rappaccini #50126",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Reluctant Foe #50171",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "S.H.I.E.L.D. Agent #50172",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "S.H.I.E.L.D. Agent #50172",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Scientist Supreme #50125",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Shadow of the Past #01190",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "The Ends Justify the Means #50177",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "The Ends Justify the Means #50177",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Undermine Support #50174",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Weight of the World #28021",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				}
 			],
 			"villain": [
 				{
 					"card": "Baron Zemo - A1 #50165a",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				}
 			],
 			"schemes": [
 				{
 					"card": "Zemo's Manipulations - 1B #50167b",
 					"owner_hero_id": 0,
+					
 					"tokens": {
 						"threat": 2
 					}
@@ -182,6 +212,7 @@
 				{
 					"card": "Chief Surveillance Officer #50182a",
 					"owner_hero_id": 0,
+					
 					"tokens": {
 						"secret": 2
 					},
@@ -192,6 +223,7 @@
 				{
 					"card": "Chief Tactical Officer #50183a",
 					"owner_hero_id": 0,
+					
 					"tokens": {
 						"secret": 2
 					},
@@ -202,6 +234,7 @@
 				{
 					"card": "Chief Medical Officer #50181a",
 					"owner_hero_id": 0,
+					
 					"tokens": {
 						"secret": 2
 					},
@@ -213,106 +246,130 @@
 			"victory_display": [],
 			"set_aside": [
 				{
-					"card": "Nova #28001a",
-					"owner_hero_id": 1
-				},
-				{
 					"card": "\"Bring the War!\" #28022",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Warbringer #28023",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "War Delivery #28024",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "War Delivery #28024",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "\"The War's Been Brought\" #28025",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Baron Zemo - A2 #50165b",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "The Accusation - 2A #50168a",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "The Accusation - 2B #50168b",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Fighting Zemo - 3A #50169a",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Fighting Zemo - 3B #50169b",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Medical Officer's Aid #50181b",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
+				},
+				{
+					"card": "Nova #28001a",
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Surveillance Officer's Aid #50182b",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Tactical Officer's Aid #50183b",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
+				},
+				{
+					"card": "The Accusation - 2A #50168a",
+					"owner_hero_id": 0,
+					
+				},
+				{
+					"card": "The Accusation - 2B #50168b",
+					"owner_hero_id": 0,
+					
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0,
+					
+				},
+				{
+					"card": "War Delivery #28024",
+					"owner_hero_id": 0,
+					
+				},
+				{
+					"card": "Warbringer #28023",
+					"owner_hero_id": 0,
+					
 				}
 			],
 			"removed_from_game": [
 				{
 					"card": "Zemo's Manipulations - 1A #50167a",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				}
 			],
 			"tmp_pile1": [
 				{
 					"card": "Ideology #50190",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Security Scanner #50187",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
-					"card": "Security Clearance #50191",
-					"owner_hero_id": 0
+					"card": "Authority #50193",
+					"owner_hero_id": 0,
+					
 				}
 			],
 			"tmp_pile2": [
 				{
+					"card": "Security Clearance #50191",
+					"owner_hero_id": 0,
+					
+				},
+				{
 					"card": "Travel #50192",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Money #50188",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Authority #50193",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Blackmail #50189",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Medical Records #50185",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				},
 				{
 					"card": "Wiretap #50186",
-					"owner_hero_id": 0
+					"owner_hero_id": 0,
+					
 				}
 			],
 			"tmp_pile3": [],
@@ -321,139 +378,173 @@
 			"deck1": [
 				{
 					"card": "Everyday Hero #28019",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Honed Technique #28017",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "One by One #28014",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Chase Them Down #28011",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "One by One #28014",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Fluid Motion #28016",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "The Locust - Fernanda Rodriguez #28010",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Everyday Hero #28019",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Unleash Nova Force #28006",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "No Quarter #28013",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Pot Shot #28005",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Lightspeed Flight #28004",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Jesse Alexander #28008",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Connection to the Worldmind #28007",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Supernova Helmet #28009",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Champions Mobile Bunker #28020",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Fluid Motion #28016",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Connection to the Worldmind #28007",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Unleash Nova Force #28006",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Honed Technique #28017",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Pitchback #28012",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "The Power of Aggression #28015",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Moon Girl - Lunella Lafayette #28018",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "The Power of Aggression #28015",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "No Quarter #28013",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Lightspeed Flight #28004",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Pot Shot #28005",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Fluid Motion #28016",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "One by One #28014",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Pitchback #28012",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Chase Them Down #28011",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Forcefield Projection #28003",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Forcefield Projection #28003",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "No Quarter #28013",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				}
 			],
 			"discard1": [],
@@ -463,6 +554,7 @@
 				{
 					"card": "Sam Alexander #28001b",
 					"owner_hero_id": 1,
+					
 					"tokens": {
 						"__can_change_form": 1
 					}
@@ -473,27 +565,33 @@
 			"hand1": [
 				{
 					"card": "Ms. Marvel - Kamala Khan #28002",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Honed Technique #28017",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Lightspeed Flight #28004",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Pitchback #28012",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Everyday Hero #28019",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				},
 				{
 					"card": "Pot Shot #28005",
-					"owner_hero_id": 1
+					"owner_hero_id": 1,
+					
 				}
 			]
 		}

@@ -52,91 +52,11 @@
 			"discard_villain": [],
 			"deck_villain": [
 				{
-					"card": "\"I Really Want a Hot Dog!\" #30024",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Advance #01186",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Advance #01186",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Aerial Bombardment #40152",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Assault #01187",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Assault #01187",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Captive Hope #40131",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Caught Off Guard #01188",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Gang-Up #01189",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Genetic Mastery #40147",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Genetic Mastery #40147",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Get Nasty #40117",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Gorgeous George #40112",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "Hairbag #40113",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "High Ground #40154",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "High Ground #40154",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Molecular Control #40148",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Out of Reach #40153",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Ramrod #40114",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Ruckus #40115",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Shadow of the Past #01190",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Sinister Disguise #40144",
+					"card": "Advance #01186",
 					"owner_hero_id": 0
 				},
 				{
@@ -144,11 +64,23 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Sinister Soldier #40145",
+					"card": "High Ground #40154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sinister Disguise #40144",
 					"owner_hero_id": 0
 				},
 				{
 					"card": "Sinister Soldier #40145",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genetic Mastery #40147",
 					"owner_hero_id": 0
 				},
 				{
@@ -156,11 +88,79 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Slab #40116",
+					"card": "Aerial Bombardment #40152",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Out of Reach #40153",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gorgeous George #40112",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Advance #01186",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"I Really Want a Hot Dog!\" #30024",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Caught Off Guard #01188",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Molecular Control #40148",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genetic Mastery #40147",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Captive Hope #40131",
 					"owner_hero_id": 0
 				},
 				{
 					"card": "Teleported Away #40146",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Shadow of the Past #01190",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ruckus #40115",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "High Ground #40154",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Gang-Up #01189",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Get Nasty #40117",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sinister Soldier #40145",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Slab #40116",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Ramrod #40114",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Assault #01187",
 					"owner_hero_id": 0
 				}
 			],
@@ -183,43 +183,11 @@
 			"victory_display": [],
 			"set_aside": [
 				{
-					"card": "\"Feast on This!\" #30028",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "\"Feast on This!\" #30028",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "\"I'll Take That\" #40158",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "\"I'll Take That\" #40158",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Bulking Up - 2B #40141b",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Focusing In - 2A #40142a",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Focusing In - 2B #40142b",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Gobbler Glider #30027",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Impervious #40156",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Manufactured Drama #40160",
+					"card": "One Step Ahead #40162",
 					"owner_hero_id": 0
 				},
 				{
@@ -227,15 +195,19 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Nefarious Trap #30025",
+					"card": "Telepathy #40159",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "One Step Ahead #40162",
+					"card": "Gobbler Glider #30027",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "One Step Ahead #40162",
+					"card": "Super Strength #40155",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Sowing Discord #40161",
 					"owner_hero_id": 0
 				},
 				{
@@ -247,23 +219,15 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Sinister Intent - 1B #40139b",
+					"card": "Bulking Up - 2B #40141b",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Sowing Discord #40161",
+					"card": "Bulking Up - 2A #40141a",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Spider-Ham #30001a",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Super Strength #40155",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Telepathy #40159",
+					"card": "One Step Ahead #40162",
 					"owner_hero_id": 0
 				},
 				{
@@ -271,7 +235,43 @@
 					"owner_hero_id": 0
 				},
 				{
+					"card": "Focusing In - 2B #40142b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Impervious #40156",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"Feast on This!\" #30028",
+					"owner_hero_id": 0
+				},
+				{
 					"card": "Thrown Object #40157",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"I'll Take That\" #40158",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "\"Feast on This!\" #30028",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Manufactured Drama #40160",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Nefarious Trap #30025",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Spider-Ham #30001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Sinister Intent - 1B #40139b",
 					"owner_hero_id": 0
 				}
 			],
@@ -281,7 +281,7 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Bulking Up - 2A #40141a",
+					"card": "Focusing In - 2A #40142a",
 					"owner_hero_id": 0
 				},
 				{
@@ -434,7 +434,6 @@
 			],
 			"discard1": [],
 			"enemies1": [],
-			"misc_encounter1": [],
 			"identity1": [
 				{
 					"card": "Peter Porker #30001b",
@@ -481,8 +480,7 @@
 				{
 					"card": "Flight #40151",
 					"owner_hero_id": 0,
-					"host": "40136",
-					"host_guid": "guid_85"
+					"host": "40136"
 				}
 			]
 		}

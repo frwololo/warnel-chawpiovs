@@ -3062,7 +3062,6 @@
 				}
 			]
 		},
-		"TODO": "Setup: put the villain into play on a random side"
 	},
 	"Drained of Power": {
 		"uses": {
@@ -8693,6 +8692,7 @@
 				{
 					"name": "move_card_to_container",
 					"subject": "tutor",
+					"dest_container": "set_aside",
 					"subject_count": "all",
 					"src_container": [
 						"deck_villain"

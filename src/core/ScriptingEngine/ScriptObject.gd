@@ -338,6 +338,12 @@ func _subjects_found_by_engine() -> bool:
 		return false
 	if get_property(SP.KEY_NEEDS_SELECTION):
 		return false
+	#a random pick is made once, when primed: finding again would draw again
+	#and pick another card than the one announced (StackEventDisplay shows
+	#the primed subjects). Stop the Presses!: "move card to board (Robbie
+	#Robertson)" announced, another Daily Bugle support put into play
+	if get_property(SP.KEY_SORT_BY) == "random":
+		return false
 	#"find" is a tutor once primed (preprocess_subject_definition)
 	return get_property_raw(SP.KEY_SUBJECT) in [
 		SP.KEY_SUBJECT_V_TUTOR,

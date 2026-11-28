@@ -127,7 +127,7 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Mark V Armor #56069",
+					"card": "Mark V Helmet #56067",
 					"owner_hero_id": 0
 				},
 				{
@@ -198,10 +198,7 @@
 			"villain": [
 				{
 					"card": "Iron Man - 1 #56059",
-					"owner_hero_id": 0,
-					"tokens": {
-						"tough": 1
-					}
+					"owner_hero_id": 0
 				}
 			],
 			"schemes": [
@@ -486,7 +483,7 @@
 			],
 			"others": [
 				{
-					"card": "Mark V Helmet #56067",
+					"card": "Mark V Armor #56069",
 					"owner_hero_id": 0,
 					"host": "56059",
 					"host_guid": "guid_94"

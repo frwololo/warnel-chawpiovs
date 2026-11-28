@@ -67,10 +67,6 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Blue Area of the Moon #45139",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "Caught Off Guard #01188",
 					"owner_hero_id": 0
 				},
@@ -192,7 +188,7 @@
 			],
 			"villain_misc": [
 				{
-					"card": "Genosha #45133",
+					"card": "Blue Area of the Moon #45139",
 					"owner_hero_id": 0
 				}
 			],
@@ -268,6 +264,10 @@
 				},
 				{
 					"card": "Pterosaur #45128",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Genosha #45133",
 					"owner_hero_id": 0
 				},
 				{
@@ -477,21 +477,6 @@
 					"owner_hero_id": 1
 				}
 			]
-		},
-		"scenario": {
-			"scheme_id": "45121a",
-			"modular_encounters": [
-				"dystopian_nightmare"
-			],
-			"expert_mode": false,
-			"scenario_options": {
-				"expert_mode": false,
-				"ignore_setup_keyword": [
-					"The Savage Land #45127",
-					"Genosha #45133",
-					"Blue area of the Moon #45139"
-				]
-			}
 		}
 	}
 }

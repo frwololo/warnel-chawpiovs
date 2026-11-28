@@ -3427,7 +3427,7 @@
 				{
 					"name": "reveal_encounter",
 					"subject": "tutor",
-					"subject_index": "random",
+					"sort_by": "random",
 					"src_container": "victory_display",
 					"filter_state_tutor": [
 						{
@@ -10978,7 +10978,7 @@
 					"name": "move_card_to_board",
 					"src_container": "deck_villain",
 					"subject": "tutor",
-					"subject_index": "random",
+					"sort_by": "random",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -11350,7 +11350,7 @@
 					"subject": "tutor",
 					"src_container": "tmp_pile2",
 					"dest_container": "tmp_pile1",
-					"subject_index": "random",
+					"sort_by": "random",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -11374,7 +11374,7 @@
 					"subject": "tutor",
 					"src_container": "tmp_pile2",
 					"dest_container": "tmp_pile1",
-					"subject_index": "random",
+					"sort_by": "random",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -11398,7 +11398,7 @@
 					"subject": "tutor",
 					"src_container": "tmp_pile2",
 					"dest_container": "tmp_pile1",
-					"subject_index": "random",
+					"sort_by": "random",
 					"filter_state_tutor": [
 						{
 							"filter_properties": {
@@ -11471,7 +11471,7 @@
 						"subject": "tutor",
 						"subject_count": 2,
 						"up_to": true,
-						"subject_index": "random",
+						"sort_by": "random",
 						"src_container": "tmp_pile2"
 					},
 					{

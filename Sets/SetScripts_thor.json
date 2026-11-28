@@ -1072,7 +1072,7 @@
 				{
 					"name": "discard",
 					"subject": "tutor",
-					"subject_index": "top",
+					"sort_descending": true,
 					"up_to": true,
 					"subject_count": 3,
 					"src_container": "deck"

@@ -139,6 +139,10 @@
 					"owner_hero_id": 0
 				},
 				{
+					"card": "Paladin #56117",
+					"owner_hero_id": 0
+				},
+				{
 					"card": "Paladin's Pistol #56118",
 					"owner_hero_id": 0
 				},
@@ -160,10 +164,6 @@
 				},
 				{
 					"card": "S.H.I.E.L.D. Patrol #56111",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "S.H.I.E.L.D. Soldier #56109",
 					"owner_hero_id": 0
 				},
 				{
@@ -281,7 +281,7 @@
 			"tmp_pile3": [],
 			"encounters_facedown1": [
 				{
-					"card": "Paladin #56117",
+					"card": "S.H.I.E.L.D. Soldier #56109",
 					"owner_hero_id": 0
 				}
 			],

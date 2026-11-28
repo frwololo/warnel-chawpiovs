@@ -211,7 +211,43 @@
 			"victory_display": [],
 			"set_aside": [
 				{
-					"card": "Abyss #45181b",
+					"card": "Ironheart #29002a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ironheart #29003a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Riri Williams #29002b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Riri Williams #29003b",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Ironheart #29001a",
+					"owner_hero_id": 1
+				},
+				{
+					"card": "Rule by Force #29029",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Lucia von Bardas #29030",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Cyborg Tech #29031",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Political Retribution #29032",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Political Retribution #29032",
 					"owner_hero_id": 0
 				},
 				{
@@ -223,27 +259,11 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Cyborg Tech #29031",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Ironheart #29001a",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Ironheart #29002a",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Ironheart #29003a",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Lucia von Bardas #29030",
-					"owner_hero_id": 0
-				},
-				{
 					"card": "Mister Sinister #45179b",
+					"owner_hero_id": 0
+				},
+				{
+					"card": "Abyss #45181b",
 					"owner_hero_id": 0
 				},
 				{
@@ -251,27 +271,11 @@
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Political Retribution #29032",
+					"card": "The Tyrant's Throne #45105a",
 					"owner_hero_id": 0
 				},
 				{
-					"card": "Political Retribution #29032",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Riri Williams #29002b",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Riri Williams #29003b",
-					"owner_hero_id": 1
-				},
-				{
-					"card": "Rule by Force #29029",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "Sugar Man #45182b",
+					"card": "Mikhail Rasputin #45183b",
 					"owner_hero_id": 0
 				},
 				{
@@ -280,10 +284,6 @@
 				},
 				{
 					"card": "The Towering Citadel #45104b",
-					"owner_hero_id": 0
-				},
-				{
-					"card": "The Tyrant's Throne #45105a",
 					"owner_hero_id": 0
 				}
 			],
@@ -448,7 +448,7 @@
 			"discard1": [],
 			"enemies1": [
 				{
-					"card": "Mikhail Rasputin #45183b",
+					"card": "Sugar Man #45182b",
 					"owner_hero_id": 0,
 					"tokens": {
 						"tough": 1

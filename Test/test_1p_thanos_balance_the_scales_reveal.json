@@ -33,12 +33,12 @@
 				}
 			],
 			"set_aside": [
-				{
+							{
 					"card": "Balance the Scales #21115a"
 				},
-				{
+							{
 					"card": "Balance the Scales #21115b"
-				}
+				}				
 			],
 			"villain": [
 				{
@@ -155,37 +155,40 @@
 			],
 			"set_aside": [
 				{
-					"card": "The Infinity Stones - 1B #21114b"
+					"card": "The Infinity Stones"
 				},
 				{
-					"card": "Energy Duplication #21006"
+					"card": "Speed of Light"
 				},
 				{
-					"card": "Genius #12022"
+					"card": "Energy Duplication"
 				},
 				{
-					"card": "Photon Speed #21008"
+					"card": "Genius"
 				},
 				{
-					"card": "Gamma Blast #21007"
+					"card": "Mockingbird"
 				}
 			],
 			"deck1": [
 				{
-					"card": "Pulsar Shield #21009"
+					"card": "Pulsar shield"
+				},			
+				{
+					"card": "Make the Call"
 				},
 				{
-					"card": "Make the Call #03016"
+					"card": "Inspired"
+				},				
+				{
+					"card": "Photon Speed"
 				},
 				{
-					"card": "Inspired #01074"
-				},
-				{
-					"card": "Mockingbird - Bobbi Morse #03020"
-				},
-				{
-					"card": "Speed of Light #21010"
-				}
+					"card": "Gamma Blast"
+				},				
+
+
+
 			],
 			"enemies1": [
 				{

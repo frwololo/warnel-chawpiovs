@@ -5845,6 +5845,17 @@
 				"card_moved_to_pile",
 				"card_moved_to_hand"
 			],
+			"filter_state_trigger": [
+				{
+					"filter_properties": {
+						"Name": "Morlock"
+					},
+					"filter_properties2": {
+						"type_code": "ally"
+					}
+				}
+			],
+			"_comments": "only a Morlock leaving play can leave no Morlock in play. Any card moving to a pile used to check: the Hide! shuffle and Mutant Massacre 2A leaving play happen while the Morlocks of 2A's When Revealed are still queued (for_each_player priority scripts, nested conditional_script on the stack)",
 			"condition_board": {
 				"func_name": "!count_cards",
 				"func_params": {

@@ -157,7 +157,10 @@
 			],
 			"identity1": [
 				{
-					"card": "Nathan Summers"
+					"card": "Nathan Summers",
+					"tokens": {
+						"defeat": 0
+					}
 				}
 			],
 			"upgrade_support1": [],

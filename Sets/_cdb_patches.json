@@ -492,6 +492,12 @@
 		"printed_card_id": "38001a",
 		"_comments": "ffg have reversed A/B between Hero and Alter-ego on some cards. Some Databases choose to follow FFG, others such as marvelcdb swapped it"
 	},
+	"38013": {
+		"alternate_art": true
+	},		
+	"38015": {
+		"alternate_art": true
+	},	
 	"38019": {
 		"text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
 		"real_text": "Play only if your identity has the [[MUTANT]] trait. Max 1 per player.\n<b>Resource</b>: Exhaust X-Gene → generate a [wild] resource for an identity-specific event.",
